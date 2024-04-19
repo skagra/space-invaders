@@ -8,7 +8,6 @@
     ORG 0x0
     BLOCK mmap.FREE_MEMORY_START
 
-    include "screen.asm"
     include "utils.asm"
     include "draw.asm"
     
@@ -21,7 +20,7 @@ main:
     EI
 
     ; Fill the screen
-    LD H,screen.CA_BG_YELLOW
+    LD H,draw.CA_BG_YELLOW
     PUSH HL
     CALL draw.fill_screen
     POP HL
