@@ -1,5 +1,10 @@
     MODULE draw
 
+SCREEN_WIDTH_PIXELS:    EQU 256
+SCREEN_HEIGHT_PIXELS:   EQU 192
+SCREEN_WIDTH_CHARS:     EQU 32
+SCREEN_HEIGHT_CHARS:    EQU 24
+
 ; Flash attribute
 CA_FLASH:       EQU 0b10000000
 
@@ -65,5 +70,25 @@ fill_screen:
     POP IX,HL
     RET
 
-    ENDMODULE
+; https://www.overtakenbyevents.com/lets-talk-about-the-zx-specrum-screen-layout-part-three/
+; 15 14	13 12 11 10 9  8  7  6  5  4  3  2  1  0
+; 0  1  0  Y7 Y6 Y2 Y1 Y0 Y5 Y4 Y3 X4 X3 X2 X1 X0
 
+coords_to_mem:
+    LD H, 0 		
+    LD L, B 		    ; HL = Y
+    ADD HL, HL 	 	    ; HL = Y * 2
+    LD DE, screen_map   ; DE = SCREEN_MAP
+    ADD HL, DE 	 	    ; HL = SCREEN_MAP + (ROW * 2)
+    LD A, (HL) 	 	    ; IMPLEMENTS LD HL, (HL)
+    INC HL 	 	
+    LD H, (HL)
+    LD L, A 	 	    ; HL = ADDRESS OF FIRST PIXEL FROM SCREEN_MAP
+    LD D, 0 	 	
+    LD E, C 	 	    ; DE = X
+    ADD HL, DE 	 	    ; ADD THE CHAR X OFFSET
+    RET 		        ; RETURN SCREEN_MAP[Y*2] + X 
+
+screen_map: WORD 0x4000, 0x4100, 0x4200, 0x4300, 0x4400, 0x4500, 0x4600, 0x4700, 0x4020, 0x4120, 0x4220, 0x4320 
+
+    ENDMODULE

@@ -29,11 +29,11 @@ forever: JP forever
 
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is
-STACK_SIZE: EQU 100    
-            BLOCK    STACK_SIZE, 0
+STACK_SIZE: EQU 100*2    
+            BLOCK STACK_SIZE, 0
 STACK_TOP: EQU $-1
 
 ; Save snapshot for spectrum emulator
-    SAVESNA "z80-sample-program.sna",main
+    SAVESNA "space-invaders.sna",main
    
     ENDMODULE

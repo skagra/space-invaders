@@ -13,11 +13,12 @@
                 "zxBorderWidth": 20,
                 "vsyncInterrupt": true,
                 "zxKeyboard": true,
-                "zxBeeper": true
+                "zxBeeper": true,
+                "loadZxRom": true
             },
             "sjasmplus": [
                 {
-                    "path": "z80-sample-program.sld"
+                    "path": "space-invaders.sld"
                 }
             ],
             "history": {
@@ -29,9 +30,31 @@
             "commandsAfterLaunch": [],
             "rootFolder": "${workspaceFolder}",
             "topOfStack": "main.STACK_TOP",
-            "load": "z80-sample-program.sna",
+            "load": "space-invaders.sna",
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"
         },
+        {
+            "type": "dezog",
+            "request": "launch",
+            "name": "ZEsarUX",
+            "remoteType": "zrcp",
+            "sjasmplus": [
+                {
+                    "path": "space-invaders.sld"
+                }
+            ],
+            "history": {
+                "reverseDebugInstructionCount": 1000000,
+                "spotCount": 10,
+            },
+            "startAutomatically": false,
+            "commandsAfterLaunch": [],
+            "rootFolder": "${workspaceFolder}",
+            "topOfStack": "main.STACK_TOP",
+            "load": "space-invaders.sna",
+            "smallValuesMaximum": 513,
+            "tmpDir": ".tmp"
+        }
     ]
 }
