@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "screen-lookup-table", "screen-lookup-table\screen-lookup-table.csproj", "{290C8F88-6787-4E55-B49D-904B883A95EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{290C8F88-6787-4E55-B49D-904B883A95EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{290C8F88-6787-4E55-B49D-904B883A95EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{290C8F88-6787-4E55-B49D-904B883A95EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{290C8F88-6787-4E55-B49D-904B883A95EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A34E6AB6-2B6A-49E5-BF1C-4182B4FC55FD}
+	EndGlobalSection
+EndGlobal
