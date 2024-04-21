@@ -70,25 +70,103 @@ fill_screen:
     POP IX,HL
     RET
 
-; https://www.overtakenbyevents.com/lets-talk-about-the-zx-specrum-screen-layout-part-three/
 ; 15 14	13 12 11 10 9  8  7  6  5  4  3  2  1  0
-; 0  1  0  Y7 Y6 Y2 Y1 Y0 Y5 Y4 Y3 X4 X3 X2 X1 X0
+; 0  1  0  Y7 Y6 Y2 Y1 Y0 Y5 Y4 Y3 X7 X6 X5 X4 X3
+; 
+; X2 X1 X0 gives bit offset with screen byte
+
+; Push XY onto stack
+; Returns address in HL
 
 coords_to_mem:
-    LD H, 0 		
-    LD L, B 		    ; HL = Y
-    ADD HL, HL 	 	    ; HL = Y * 2
-    LD DE, screen_map   ; DE = SCREEN_MAP
-    ADD HL, DE 	 	    ; HL = SCREEN_MAP + (ROW * 2)
-    LD A, (HL) 	 	    ; IMPLEMENTS LD HL, (HL)
-    INC HL 	 	
-    LD H, (HL)
-    LD L, A 	 	    ; HL = ADDRESS OF FIRST PIXEL FROM SCREEN_MAP
-    LD D, 0 	 	
-    LD E, C 	 	    ; DE = X
-    ADD HL, DE 	 	    ; ADD THE CHAR X OFFSET
-    RET 		        ; RETURN SCREEN_MAP[Y*2] + X 
+    PUSH AF,BC,IX
+   
+    LD  IX,0
+    ADD IX,SP
+    LD BC, (IX+8)
 
-screen_map: WORD 0x4000, 0x4100, 0x4200, 0x4300, 0x4400, 0x4500, 0x4600, 0x4700, 0x4020, 0x4120, 0x4220, 0x4320 
+    LD A,C          ; Calculate Y2,Y1,Y0
+    AND %00000111   ; Mask out unwanted bits
+    OR %01000000    ; Set base address of screen
+    LD H,A          ; Store in H
+    LD A,C          ; Calculate Y7,Y6
+    RRA             ; Shift to position
+    RRA
+    RRA
+    AND %00011000   ; Mask out unwanted bits
+    OR H            ; OR with Y2,Y1,Y0
+    LD H,A          ; Store in H
+    LD A,C          ; Calculate Y5,Y4,Y3
+    RLA             ; Shift to position
+    RLA
+    AND %11100000   ; Mask out unwanted bits
+    LD L,A          ; Store in L
+    LD A,B          ; Calculate X4,X3,X2,X1,X0
+    RRA             ; Shift into position
+    RRA
+    RRA
+    AND %00011111   ; Mask out unwanted bits
+    OR L            ; OR with Y5,Y4,Y3
+    LD L,A          ; Store in L
+
+    POP IX,BC,AF
+    RET
+
+DS_PARAM_COORDS:            EQU 14
+DS_PARAM_SPRITE_DATA:       EQU 12
+
+draw_sprite:
+    PUSH AF,BC,DE,HL,IX
+
+    LD  IX,0
+    ADD IX,SP                           ; Point IX to the stack
+
+    LD HL, (IX+DS_PARAM_SPRITE_DATA)    ; Start of sprite data
+    LD BC, (HL)
+    LD (dims), BC                       ; Grab dimension data (X in characters, Y in pixel lines)
+
+    INC HL                              ; Skip to bitmap data
+    INC HL
+
+    LD DE, HL                           ; DE will point at sprite data throughout
+
+    LD HL, (IX+DS_PARAM_COORDS)         ; Grab the pixel coords
+
+    LD A,(y_dim)                        ; Y dim loop counter - pixel lines
+    LD C,A
+yloop:                      
+    PUSH HL                 
+    CALL coords_to_mem                  ; Memory location of screen byte into HL
+    LD A,(x_dim)                        ; X dim loop counter - character cells
+    LD B,A
+xloop:
+    LD A, (DE)                          ; Get sprite data for current byte
+    LD (HL), A                          ; Write sprite data to the screen
+
+    INC DE                              ; Move to next byte of sprite data
+    INC HL                              ; Move to next X cell
+
+    DEC B                               ; Decrease the X loop counter
+    JR NZ,xloop                         ; Next X
+    
+    POP HL                              ; Coords
+    INC HL                              ; Next Y row
+    
+    DEC C                               ; Y loop counter
+    JR NZ,yloop
+
+    POP IX,HL,DE,BC,AF   
+    RET
+
+dims:
+x_dim:   BLOCK 1
+y_dim:   BLOCK 1
+
+    MACRO X_OFFSET_IN_A reg
+        LD A,reg
+        AND 0b00000111
+    ENDM
 
     ENDMODULE
+
+   

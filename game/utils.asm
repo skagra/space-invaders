@@ -20,3 +20,12 @@ fill_mem:
     RET
 
 	ENDMODULE
+
+    MACRO SHIFTR_COUNT_IN_A reg
+.start  CP 0x00
+        JP Z,.end
+        DEC A
+        SRL reg
+        JP .start       
+.end
+    ENDM
