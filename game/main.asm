@@ -74,16 +74,16 @@ draw_pack_loop:
     ; POP HL
 
     ; Blank old sprite
-    LD DE,(HL)             ; Coords of current alien
-    PUSH DE     
-    LD DE,sprite_blank     ; Background square
-    PUSH DE
-    LD DE,mask_2_16
-    PUSH DE
-    CALL draw.draw_sprite
-    POP DE
-    POP DE
-    POP DE
+    ; LD DE,(HL)             ; Coords of current alien
+    ; PUSH DE     
+    ; LD DE,sprite_blank     ; Background square
+    ; PUSH DE
+    ; LD DE,mask_2_16
+    ; PUSH DE
+    ; CALL draw.draw_sprite
+    ; POP DE
+    ; POP DE
+    ; POP DE
 
     ; Move sprite to new position
     LD DE,(HL)              ; Coords
