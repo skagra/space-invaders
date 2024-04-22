@@ -184,8 +184,8 @@ draw_sprite:
     INC HL                              ; Skip to bitmap data
     INC HL
 
-    LD DE,HL                            ; DE will point at sprite data throughout
-
+    LD (ds_sprite_data_ptr), HL         ; Points to sprite data
+                                
     LD HL,(IX+DS_PARAM_COORDS)          ; Grab the pixel coords
     LD (ds_coords),HL                   ; And store for later (only the Y coord gets updated)
 
@@ -195,6 +195,9 @@ draw_sprite:
     LD A,(ds_x_coord)                   ; X coord
     AND 0b00000111                      ; Calculate the X offset withing the character cell
     LD (ds_x_offset), A                 ; Store it away for later use
+
+    LD HL,(IX+DS_PARAM_MASK)            ; Mask data
+    LD (ds_mask_data_ptr),HL            ; Points to the mask data
 
 ds_y_loop:   
     LD HL,(ds_coords)                   ; Current screen coords
@@ -209,30 +212,77 @@ ds_y_loop:
     LD HL,ds_x_spill                    ; Zero out rolling content from previous cell as we shift bitmap
     LD (HL),0x00
 
+    LD HL,ds_x_mask_spill               ; Zero out rolling mask spill 
+    LD (HL),0x00
+
 ds_x_loop:
+    ; Draw the mask
+
+    LD A, (ds_x_mask_spill)             ; Push single byte of last X content onto the stack
+    PUSH AF
+    
+    LD HL,(ds_mask_data_ptr)            ; Get mask data for current byte
+    LD A,(HL)                           
+
+    LD H,A                              ; X offset
+    LD A,(ds_x_offset)                  
+    LD L,A                     
+    
+    PUSH HL                             ; Push mask data and x offset 
+
+    CALL shift_n_and_merge              ; HL containts the shifted data
+    LD A,L
+    LD (ds_x_mask_spill),A
+              
+    LD A,H                              ; Write mask data to the screen
+    CPL 
+    LD HL,(ds_screen_mem_loc)
+    AND (HL)
+    LD (HL),A   
+    POP HL
+    POP HL                            
+                           
+    LD HL,(ds_mask_data_ptr)            ; Move to next byte of mask data
+    INC HL
+    LD (ds_mask_data_ptr),HL
+
+    ; End of draw mask
+
+    ; Draw the sprite
+
     LD A, (ds_x_spill)                  ; Push single byte of last X content onto the stack
     PUSH AF
-    LD A,(DE)                           ; Get sprite data for current byte
+    
+    LD HL,(ds_sprite_data_ptr)          ; Get sprite data for current byte
+    LD A,(HL)                           
+
     LD H,A
     LD A,(ds_x_offset)                  ; X offset
     LD L,A                     
+    
     PUSH HL
+
     CALL shift_n_and_merge              ; HL containts the shifted data
     LD A,L
     LD (ds_x_spill),A
               
     LD A,H                              ; Write sprite data to the screen
     LD HL,(ds_screen_mem_loc)
+    OR (HL)
     LD (HL),A   
     POP HL
     POP HL                            
+                           
+    LD HL,(ds_sprite_data_ptr)          ; Move to next byte of sprite data
+    INC HL
+    LD (ds_sprite_data_ptr),HL
 
-    INC DE                              ; Move to next byte of sprite data
+    ; End of drawing the sprite
 
     LD HL,(ds_screen_mem_loc)           ; Move to next X cell
     INC HL              
     LD (ds_screen_mem_loc), HL
-
+    
     DEC B                               ; Decrease the X loop counter
     JR NZ,ds_x_loop                     ; Next X
 
@@ -266,6 +316,9 @@ ds_x_offset:        BLOCK 1
 ds_screen_mem_loc:  BLOCK 2
 ; Spill over from one character cell to the next after shifting data
 ds_x_spill:         BLOCK 1
+ds_x_mask_spill:    BLOCK 1
+ds_sprite_data_ptr  BLOCK 2
+ds_mask_data_ptr    BLOCK 2
 
     ENDMODULE
 
