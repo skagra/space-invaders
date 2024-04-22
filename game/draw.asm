@@ -286,9 +286,17 @@ ds_x_loop:
     DEC B                               ; Decrease the X loop counter
     JR NZ,ds_x_loop                     ; Next X
 
-    ; Draw the last shifted part
+    ; Draw the last shifted part of the mask
+    LD A, (ds_x_mask_spill)
+    CPL 
+    LD HL,(ds_screen_mem_loc)
+    AND (HL)
+    LD (HL),A  
+
+    ; Draw the last shifted part of the sprite
     LD A, (ds_x_spill)
     LD HL,(ds_screen_mem_loc) 
+    OR (HL)
     LD (HL), A
 
     LD HL,(ds_coords)                   ; Next Y row
@@ -296,7 +304,7 @@ ds_x_loop:
     LD (ds_coords), HL
     
     DEC C                               ; Y loop counter
-    JR NZ,ds_y_loop
+    JP NZ,ds_y_loop
 
     POP IX,HL,DE,BC,AF   
 
