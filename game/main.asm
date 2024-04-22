@@ -56,17 +56,17 @@ draw_pack_loop:
     PUSH DE     
     LD DE,sprite_blank     ; Background square
     PUSH DE
-
-  ;  BIT 0,B
-  ;  JR Z,skip1
+    LD DE,mask_2_16
+    PUSH DE
     CALL draw.draw_sprite
-skip1: 
+    POP DE
     POP DE
     POP DE
 
     ; Move sprite to new position
     LD DE,(HL)              ; Coords
    ; INC DE                 ; Down one row
+    INC D
     INC D
   
     LD (HL),DE              ; Overwrite old coords with new
@@ -91,11 +91,11 @@ variant_2:
     INC HL
     INC HL
 variant_1:
-  ;  BIT 0,B
-  ;  JR Z,skip2
+    LD DE,mask_2_16
+    PUSH DE
     CALL draw.draw_sprite   ; Draw the alien sprite
-skip2:
     POP DE                  ; Remove parameters from stack
+    POP DE
     POP DE
     DEC B                   ; One more alien has been done, dec loop counter
     JR NZ,draw_pack_loop    ; Done drawing sheet of aliens?
@@ -122,8 +122,6 @@ aliens:         WORD 0x1060,sprite_a_1_0,sprite_a_1_1, 0x2060,sprite_a_1_0,sprit
 
                 WORD 0x1020,sprite_a_3_0,sprite_a_3_1, 0x2020,sprite_a_3_0,sprite_a_3_1, 0x3020,sprite_a_3_0,sprite_a_3_1, 0x4020,sprite_a_3_0,sprite_a_3_1, 0x5020,sprite_a_3_0,sprite_a_3_1
                 WORD 0x6020,sprite_a_3_0,sprite_a_3_1, 0x7020,sprite_a_3_0,sprite_a_3_1, 0x8020,sprite_a_3_0,sprite_a_3_1, 0x9020,sprite_a_3_0,sprite_a_3_1, 0xA020,sprite_a_3_0,sprite_a_3_1
-
-    DISPLAY "sprite_a_1_0=",sprite_a_1_0
 
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is
