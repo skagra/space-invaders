@@ -1,4 +1,4 @@
-sprite_blank:   BYTE 0x02, 0x08
+sprite_blank:   WORD 0x0208
                 BYTE 0b00000000, 0b00000000
                 BYTE 0b00000000, 0b00000000
                 BYTE 0b00000000, 0b00000000
@@ -9,7 +9,7 @@ sprite_blank:   BYTE 0x02, 0x08
                 BYTE 0b00000000, 0b00000000   
 
 ; First alien 
-sprite_a_1_0:   BYTE 0x02, 0x08
+sprite_a_1_0:   WORD 0x0208
                 BYTE 0b00000011, 0b11000000
                 BYTE 0b00011111, 0b11111000
                 BYTE 0b00111111, 0b11111100
@@ -19,7 +19,7 @@ sprite_a_1_0:   BYTE 0x02, 0x08
                 BYTE 0b00001101, 0b10110000
                 BYTE 0b00110000, 0b00001100
 
-sprite_a_1_1:   BYTE 0x02, 0x08
+sprite_a_1_1:   WORD 0x0208
                 BYTE 0b00000011, 0b11000000
                 BYTE 0b00011111, 0b11111000
                 BYTE 0b00111111, 0b11111100
@@ -30,7 +30,7 @@ sprite_a_1_1:   BYTE 0x02, 0x08
                 BYTE 0b00001100, 0b00110000
 
 ; Second alien
-sprite_a_2_0:   BYTE 0x02, 0x08
+sprite_a_2_0:   WORD 0x0208
                 BYTE 0b00000100, 0b00010000
                 BYTE 0b00010010, 0b00100100
                 BYTE 0b00010111, 0b11110100
@@ -40,7 +40,7 @@ sprite_a_2_0:   BYTE 0x02, 0x08
                 BYTE 0b00000100, 0b00010000
                 BYTE 0b00001000, 0b00001000
 
-sprite_a_2_1:   BYTE 0x02, 0x08
+sprite_a_2_1:   WORD 0x0208
                 BYTE 0b00000100, 0b00010000
                 BYTE 0b00000010, 0b00100000
                 BYTE 0b00000111, 0b11110000
@@ -51,7 +51,7 @@ sprite_a_2_1:   BYTE 0x02, 0x08
                 BYTE 0b00000011, 0b01100000
 
 ; Third alien
-sprite_a_3_0:   BYTE 0x02, 0x08
+sprite_a_3_0:   WORD 0x0208
                 BYTE 0b00000001, 0b10000000
                 BYTE 0b00000011, 0b11000000
                 BYTE 0b00000111, 0b11100000
@@ -61,7 +61,7 @@ sprite_a_3_0:   BYTE 0x02, 0x08
                 BYTE 0b00000101, 0b10100000
                 BYTE 0b00001010, 0b01010000
 
-sprite_a_3_1:   BYTE 0x02, 0x08
+sprite_a_3_1:   WORD 0x0208
                 BYTE 0b00000001, 0b10000000
                 BYTE 0b00000011, 0b11000000
                 BYTE 0b00000111, 0b11100000

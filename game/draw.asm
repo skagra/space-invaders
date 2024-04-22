@@ -85,32 +85,61 @@ coords_to_mem:
     ADD IX,SP
     LD BC, (IX+8)
 
-    LD A,C          ; Calculate Y2,Y1,Y0
-    AND %00000111   ; Mask out unwanted bits
-    OR %01000000    ; Set base address of screen
-    LD H,A          ; Store in H
-    LD A,C          ; Calculate Y7,Y6
-    RRA             ; Shift to position
+    LD A,C                              ; Calculate Y2,Y1,Y0
+    AND %00000111                       ; Mask out unwanted bits
+    OR %01000000                        ; Set base address of screen
+    LD H,A                              ; Store in H
+    LD A,C                              ; Calculate Y7,Y6
+    RRA                                 ; Shift to position
     RRA
     RRA
-    AND %00011000   ; Mask out unwanted bits
-    OR H            ; OR with Y2,Y1,Y0
-    LD H,A          ; Store in H
-    LD A,C          ; Calculate Y5,Y4,Y3
-    RLA             ; Shift to position
+    AND %00011000                       ; Mask out unwanted bits
+    OR H                                ; OR with Y2,Y1,Y0
+    LD H,A                              ; Store in H
+    LD A,C                              ; Calculate Y5,Y4,Y3
+    RLA                                 ; Shift to position
     RLA
-    AND %11100000   ; Mask out unwanted bits
-    LD L,A          ; Store in L
-    LD A,B          ; Calculate X4,X3,X2,X1,X0
-    RRA             ; Shift into position
+    AND %11100000                       ; Mask out unwanted bits
+    LD L,A                              ; Store in L
+    LD A,B                              ; Calculate X4,X3,X2,X1,X0
+    RRA                                 ; Shift into position
     RRA
     RRA
-    AND %00011111   ; Mask out unwanted bits
-    OR L            ; OR with Y5,Y4,Y3
-    LD L,A          ; Store in L
+    AND %00011111                       ; Mask out unwanted bits
+    OR L                                ; OR with Y5,Y4,Y3
+    LD L,A                              ; Store in L
 
     POP IX,BC,AF
     RET
+
+SHIFT_N_PARAM_STEPS:        EQU 6
+SHIFT_N_VALUE:              EQU 7
+SHIFT_N_OLD_VALUE:          EQU 9
+
+shift_n_and_merge:
+    PUSH BC,IX
+    LD  IX,0
+    ADD IX,SP                           ; Point IX to the stack
+  
+    LD B, (IX+SHIFT_N_PARAM_STEPS)      ; Loop counter
+
+    LD L, 0x00                          ; HL holds result
+    LD H, (IX+SHIFT_N_VALUE)            ; Value to shift
+shift_n_loop:
+    LD A,B
+    CP 0x00
+    JR Z,endloop 
+    SRL H                               ; Shift out low bit into carry
+    RR L 
+    DEC B
+    JR shift_n_loop
+endloop:
+    LD A,H                              ; Now shifted high byte
+    OR (IX+SHIFT_N_OLD_VALUE)           ; Merge in old value
+    LD H,A
+    
+    POP IX,BC
+    RET  
 
 DS_PARAM_COORDS:            EQU 14
 DS_PARAM_SPRITE_DATA:       EQU 12
@@ -121,52 +150,101 @@ draw_sprite:
     LD  IX,0
     ADD IX,SP                           ; Point IX to the stack
 
-    LD HL, (IX+DS_PARAM_SPRITE_DATA)    ; Start of sprite data
-    LD BC, (HL)
-    LD (dims), BC                       ; Grab dimension data (X in characters, Y in pixel lines)
+    LD HL,(IX+DS_PARAM_SPRITE_DATA)     ; Start of sprite data
+    LD BC,(HL)                          ; Grab dimension data (X in characters, Y in pixel lines)
+    LD (dims),BC                        ; And store for later
 
     INC HL                              ; Skip to bitmap data
     INC HL
 
-    LD DE, HL                           ; DE will point at sprite data throughout
+    LD DE,HL                            ; DE will point at sprite data throughout
 
-    LD HL, (IX+DS_PARAM_COORDS)         ; Grab the pixel coords
+    LD HL,(IX+DS_PARAM_COORDS)          ; Grab the pixel coords
+    LD (coords),HL                      ; And store for later (only the Y coord gets updated)
 
     LD A,(y_dim)                        ; Y dim loop counter - pixel lines
     LD C,A
-yloop:                      
+
+    LD A,(x_coord)                      ; X coord
+    AND 0b00000111                      ; Calculate the X offset withing the character cell
+    LD (x_offset), A                    ; Store it away for later use
+
+yloop:   
+    LD HL,(coords)                       ; Current screen coords
     PUSH HL                 
-    CALL coords_to_mem                  ; Memory location of screen byte into HL
+    CALL coords_to_mem                   ; Get Memory location of screen byte into HL
+    LD (screen_mem_loc), HL              ; Store the start of the row in screen memory
+    POP HL
+
     LD A,(x_dim)                        ; X dim loop counter - character cells
     LD B,A
+
+    LD HL,last_x_content                ; Zero out rolling content from previous cell as we shift bitmap
+    LD (HL),0x00            
 xloop:
+    LD A, (last_x_content)              ; Push single byte of last X content onto the stack
+    PUSH AF
     LD A, (DE)                          ; Get sprite data for current byte
-    LD (HL), A                          ; Write sprite data to the screen
+    LD H,A
+    LD A,(x_offset)                     ; X offset
+    LD L,A                     
+    PUSH HL
+    CALL shift_n_and_merge              ; HL containts the shifted data
+    LD A,L
+    LD (last_x_content),A
+              
+    LD A,H                              ; Write sprite data to the screen
+    LD HL,(screen_mem_loc)              
+    LD (HL),A   
+    POP HL
+    POP HL                            
 
     INC DE                              ; Move to next byte of sprite data
-    INC HL                              ; Move to next X cell
+
+    LD HL,(screen_mem_loc)              ; Move to next X cell
+    INC HL                
+    LD (screen_mem_loc), HL
 
     DEC B                               ; Decrease the X loop counter
     JR NZ,xloop                         ; Next X
-    
-    POP HL                              ; Coords
-    INC HL                              ; Next Y row
+
+    ; Draw the last shifted part
+    LD A, (last_x_content)
+    LD HL,(screen_mem_loc) 
+    LD (HL), A
+
+    LD HL,(coords)                      ; Next Y row
+    INC HL                              
+    LD (coords), HL
     
     DEC C                               ; Y loop counter
     JR NZ,yloop
 
     POP IX,HL,DE,BC,AF   
+
     RET
 
 dims:
-x_dim:   BLOCK 1
-y_dim:   BLOCK 1
+y_dim:      BLOCK 1
+x_dim:      BLOCK 1
 
-    MACRO X_OFFSET_IN_A reg
-        LD A,reg
-        AND 0b00000111
-    ENDM
+coords:  ; There is something odd with xy ordering
+y_coord: BLOCK 1
+x_coord: BLOCK 1
+
+x_offset:   BLOCK 1
+
+screen_mem_loc: BLOCK 2
+
+last_x_content: BLOCK 1
+
+    ; MACRO X_OFFSET_IN_A reg
+    ;     LD A,reg
+    ;     AND 0b00000111
+    ; ENDM
 
     ENDMODULE
 
    
+
+    

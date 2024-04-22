@@ -35,25 +35,47 @@ draw_pack_loop:
     ; Wait for screen blank
     HALT
 
+    ; LD HL,0x2130
+    ; PUSH HL
+    ; LD HL,sprite_a_1_0
+    ; PUSH HL
+    ; CALL draw.draw_sprite
+    ; POP HL
+    ; POP HL
+
+    ; LD HL,0x2440
+    ; PUSH HL
+    ; LD HL,sprite_a_1_0
+    ; PUSH HL
+    ; CALL draw.draw_sprite
+    ; POP HL
+    ; POP HL
+
     ; Blank old sprite
     LD DE,(HL)             ; Coords of current alien
     PUSH DE     
     LD DE,sprite_blank     ; Background square
     PUSH DE
+
+  ;  BIT 0,B
+  ;  JR Z,skip1
     CALL draw.draw_sprite
+skip1: 
     POP DE
     POP DE
 
     ; Move sprite to new position
     LD DE,(HL)              ; Coords
-    INC DE                  ; Down one row
+   ; INC DE                 ; Down one row
+    INC D
+  
     LD (HL),DE              ; Overwrite old coords with new
     PUSH DE                 ; New coords
     
     INC HL                  ; Skip to pointer to sprite data
     INC HL
 
-    BIT 0x01,C              ; Which variant of sprite to draw
+    BIT 0,C                 ; Which variant of sprite to draw
     JR Z,variant_2
     INC HL                  ; Skip to second variant of sprite
     INC HL
@@ -64,12 +86,15 @@ variant_2:
     INC HL                  ; Skip past the sprite pointer
     INC HL
 
-    BIT 0x01,C              ; If we selected the first variant then skip past the second variant pointer
+    BIT 0,C                 ; If we selected the first variant then skip past the second variant pointer
     JR NZ,variant_1
     INC HL
     INC HL
 variant_1:
+  ;  BIT 0,B
+  ;  JR Z,skip2
     CALL draw.draw_sprite   ; Draw the alien sprite
+skip2:
     POP DE                  ; Remove parameters from stack
     POP DE
     DEC B                   ; One more alien has been done, dec loop counter
@@ -80,6 +105,7 @@ variant_1:
 
 forever: JP forever
 
+; Data
     INCLUDE "sprite_data.asm"
 
 aliens:         WORD 0x1060,sprite_a_1_0,sprite_a_1_1, 0x2060,sprite_a_1_0,sprite_a_1_1, 0x3060,sprite_a_1_0,sprite_a_1_1, 0x4060,sprite_a_1_0,sprite_a_1_1, 0x5060,sprite_a_1_0,sprite_a_1_1
@@ -96,6 +122,8 @@ aliens:         WORD 0x1060,sprite_a_1_0,sprite_a_1_1, 0x2060,sprite_a_1_0,sprit
 
                 WORD 0x1020,sprite_a_3_0,sprite_a_3_1, 0x2020,sprite_a_3_0,sprite_a_3_1, 0x3020,sprite_a_3_0,sprite_a_3_1, 0x4020,sprite_a_3_0,sprite_a_3_1, 0x5020,sprite_a_3_0,sprite_a_3_1
                 WORD 0x6020,sprite_a_3_0,sprite_a_3_1, 0x7020,sprite_a_3_0,sprite_a_3_1, 0x8020,sprite_a_3_0,sprite_a_3_1, 0x9020,sprite_a_3_0,sprite_a_3_1, 0xA020,sprite_a_3_0,sprite_a_3_1
+
+    DISPLAY "sprite_a_1_0=",sprite_a_1_0
 
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is
