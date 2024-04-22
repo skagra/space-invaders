@@ -26,10 +26,32 @@ main:
     POP HL
 
     ; Draw some aliens
-    LD C, 20
+    LD C, 22
+
+    ; Start going right
+    LD A,DIRECTION_RIGHT
+    LD (direction),A
 animation_loop:
     LD B,50
     LD HL,aliens
+
+    LD A,C
+    AND 0b00000011
+    CP 0b00000010
+    JR NZ, notdown
+
+    LD A,(direction)    
+    CP DIRECTION_RIGHT
+    JR Z,switch_to_left
+    LD A,DIRECTION_RIGHT
+    LD (direction),A
+    JR switched_to_right
+switch_to_left:
+    LD A,DIRECTION_LEFT
+    LD (direction),A
+switched_to_right:
+
+notdown:
 
 draw_pack_loop:
     ; Wait for screen blank
@@ -65,10 +87,28 @@ draw_pack_loop:
 
     ; Move sprite to new position
     LD DE,(HL)              ; Coords
-   ; INC DE                 ; Down one row
+    LD A,C
+    AND 0b00000011
+    CP 0b00000010
+    JR Z, down
+
+    ; Sideways movement
+    LD A,(direction)
+    CP DIRECTION_RIGHT
+    JR Z,going_right
+    DEC D
+    DEC D
+    JR gone_left
+going_right:
     INC D
     INC D
-  
+gone_left:
+    JR moved
+down:
+    INC DE                 ; Down 2 rows
+    INC DE
+
+moved:
     LD (HL),DE              ; Overwrite old coords with new
     PUSH DE                 ; New coords
     
@@ -122,6 +162,11 @@ aliens:         WORD 0x1060,sprite_a_1_0,sprite_a_1_1, 0x2060,sprite_a_1_0,sprit
 
                 WORD 0x1020,sprite_a_3_0,sprite_a_3_1, 0x2020,sprite_a_3_0,sprite_a_3_1, 0x3020,sprite_a_3_0,sprite_a_3_1, 0x4020,sprite_a_3_0,sprite_a_3_1, 0x5020,sprite_a_3_0,sprite_a_3_1
                 WORD 0x6020,sprite_a_3_0,sprite_a_3_1, 0x7020,sprite_a_3_0,sprite_a_3_1, 0x8020,sprite_a_3_0,sprite_a_3_1, 0x9020,sprite_a_3_0,sprite_a_3_1, 0xA020,sprite_a_3_0,sprite_a_3_1
+
+direction:      BLOCK 1
+
+DIRECTION_LEFT: EQU 2
+DIRECTION_RIGHT: EQU 1
 
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is
