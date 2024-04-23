@@ -136,30 +136,26 @@ SHIFT_N_OLD_VALUE:          EQU 9
 
 shift_n_and_merge:
     PUSH BC,IX
-;     LD  IX,0
-;     ADD IX,SP                           ; Point IX to the stack
+    LD  IX,0
+    ADD IX,SP                           ; Point IX to the stack
   
-;     LD B, (IX+SHIFT_N_PARAM_STEPS)      ; Loop counter
+    LD B, (IX+SHIFT_N_PARAM_STEPS)      ; Loop counter
 
-;     LD L, 0x00                          ; HL holds result
-;     LD H, (IX+SHIFT_N_VALUE)            ; Value to shift
-; sn_loop:
-;     LD A,B
-;     CP 0x00
-;     JR Z,sn_endloop 
-;     SRL H                               ; Shift out low bit into carry
-;     RR L 
-;     DEC B
-;     JR sn_loop
-; sn_endloop:
-;     LD A,H                              ; Now shifted high byte
-;     OR (IX+SHIFT_N_OLD_VALUE)           ; Merge in old value
-;     LD H,A
+    LD L, 0x00                          ; HL holds result
+    LD H, (IX+SHIFT_N_VALUE)            ; Value to shift
+sn_loop:
+    LD A,B
+    CP 0x00
+    JR Z,sn_endloop 
+    SRL H                               ; Shift out low bit into carry
+    RR L 
+    DEC B
+    JR sn_loop
+sn_endloop:
+    LD A,H                              ; Now shifted high byte
+    OR (IX+SHIFT_N_OLD_VALUE)           ; Merge in old value
+    LD H,A
     
-
-    LD A,(IX+SHIFT_N_VALUE)
-
-
     POP IX,BC
     RET  
 
