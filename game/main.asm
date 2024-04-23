@@ -58,44 +58,8 @@ notdown:
 
 draw_pack_loop:
     ; Wait for screen blank
-    ; HALT
-
-    ; LD HL,0x2130            ; X,Y coords
-    ; PUSH HL
-    ; LD HL,(sprite_alien_1_variant_0_dims)     ; Dimensions
-    ; PUSH HL
-    ; LD HL,sprite_alien_1_variant_0            ; Sprite data
-    ; PUSH HL
-    ; LD HL,mask_2x16         ; Mask
-    ; PUSH HL
-    ; CALL draw.draw_sprite
-    ; POP HL
-    ; POP HL
-    ; POP HL
-    ; POP HL
-
-    ; LD HL,0x2438            ; X,Y coords
-    ; PUSH HL
-    ; LD HL,(sprite_alien_1_variant_0_dims)     ; Dimensions
-    ; PUSH HL
-    ; LD HL,sprite_alien_1_variant_0            ; Sprite data
-    ; PUSH HL
-    ; LD HL,mask_2x16         ; Mask
-    ; PUSH HL
-    ; CALL draw.draw_sprite
-    ; POP HL
-    ; POP HL
-    ; POP HL
-    ; POP HL
-
-    ; LD HL,0x2440
-    ; PUSH HL
-    ; LD HL,sprite_a_1_0
-    ; PUSH HL
-    ; CALL draw.draw_sprite
-    ; POP HL
-    ; POP HL
-
+    HALT
+    
     ; Blank old sprite
     LD DE,(HL)             ; Coords of current alien
     PUSH DE     
@@ -189,27 +153,25 @@ forever: JP forever
     INCLUDE "processed_sprites/sprite_alien_3_variant_0.asm"
     INCLUDE "processed_sprites/sprite_alien_3_variant_1.asm"
 
-; aliens:         WORD 0x1060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0x2060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0x3060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0x4060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0x5060,sprite_alien_1_variant_0,sprite_alien_1_variant_0
-;                 WORD 0x6060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0x7060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0x8060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0x9060,sprite_alien_1_variant_0,sprite_alien_1_variant_0, 0xA060,sprite_alien_1_variant_0,sprite_alien_1_variant_0
+aliens:         
+    WORD 0x1060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x2060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x3060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x4060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x5060,sprite_alien_1_variant_0,sprite_alien_1_variant_1
+    WORD 0x6060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x7060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x8060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x9060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0xA060,sprite_alien_1_variant_0,sprite_alien_1_variant_1
 
-aliens:         WORD 0x1060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x2060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x3060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x4060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x5060,sprite_alien_1_variant_0,sprite_alien_1_variant_1
-                WORD 0x6060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x7060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x8060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x9060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0xA060,sprite_alien_1_variant_0,sprite_alien_1_variant_1
+    WORD 0x1050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x2050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x3050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x4050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x5050,sprite_alien_1_variant_0,sprite_alien_1_variant_1
+    WORD 0x6050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x7050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x8050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x9050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0xA050,sprite_alien_1_variant_0,sprite_alien_1_variant_1
 
-                WORD 0x1050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x2050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x3050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x4050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x5050,sprite_alien_1_variant_0,sprite_alien_1_variant_1
-                WORD 0x6050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x7050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x8050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x9050,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0xA050,sprite_alien_1_variant_0,sprite_alien_1_variant_1
+    WORD 0x1040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x2040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x3040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x4040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x5040,sprite_alien_2_variant_0,sprite_alien_2_variant_1
+    WORD 0x6040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x7040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x8040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x9040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0xA040,sprite_alien_2_variant_0,sprite_alien_2_variant_1
 
-                WORD 0x1040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x2040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x3040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x4040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x5040,sprite_alien_2_variant_0,sprite_alien_2_variant_1
-                WORD 0x6040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x7040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x8040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x9040,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0xA040,sprite_alien_2_variant_0,sprite_alien_2_variant_1
+    WORD 0x1030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x2030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x3030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x4030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x5030,sprite_alien_2_variant_0,sprite_alien_2_variant_1
+    WORD 0x6030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x7030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x8030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x9030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0xA030,sprite_alien_2_variant_0,sprite_alien_2_variant_1
 
-                WORD 0x1030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x2030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x3030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x4030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x5030,sprite_alien_2_variant_0,sprite_alien_2_variant_1
-                WORD 0x6030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x7030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x8030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0x9030,sprite_alien_2_variant_0,sprite_alien_2_variant_1, 0xA030,sprite_alien_2_variant_0,sprite_alien_2_variant_1
+    WORD 0x1020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x2020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x3020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x4020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x5020,sprite_alien_3_variant_0,sprite_alien_3_variant_1
+    WORD 0x6020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x7020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x8020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x9020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0xA020,sprite_alien_3_variant_0,sprite_alien_3_variant_1
 
-                WORD 0x1020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x2020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x3020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x4020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x5020,sprite_alien_3_variant_0,sprite_alien_3_variant_1
-                WORD 0x6020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x7020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x8020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0x9020,sprite_alien_3_variant_0,sprite_alien_3_variant_1, 0xA020,sprite_alien_3_variant_0,sprite_alien_3_variant_1
-
-direction:      BLOCK 1
-DIRECTION_LEFT: EQU 2
-DIRECTION_RIGHT: EQU 1
+direction:          BLOCK 1
+DIRECTION_LEFT:     EQU 2
+DIRECTION_RIGHT:    EQU 1
 
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is
@@ -221,3 +183,18 @@ STACK_TOP: EQU $-1
     SAVESNA "space-invaders.sna",main
    
     ENDMODULE
+
+
+    ; LD HL,0x2130            ; X,Y coords
+    ; PUSH HL
+    ; LD HL,(sprite_alien_1_variant_0_dims)     ; Dimensions
+    ; PUSH HL
+    ; LD HL,sprite_alien_1_variant_0            ; Sprite data
+    ; PUSH HL
+    ; LD HL,mask_2x16         ; Mask
+    ; PUSH HL
+    ; CALL draw.draw_sprite
+    ; POP HL
+    ; POP HL
+    ; POP HL
+    ; POP HL

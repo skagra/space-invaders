@@ -64,7 +64,7 @@ fill_screen:
     ; Fill screen with the given colour
     LD  IX,0
     ADD IX,SP
-    LD HL, (ix+FS_PARAM_COLOUR)     ; get the bg colour from the stack
+    LD HL, (ix+FS_PARAM_COLOUR)         ; get the bg colour from the stack
     PUSH HL
     LD HL,mmap.SCREEN_ATTR_START
     PUSH HL
