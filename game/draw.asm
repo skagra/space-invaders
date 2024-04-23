@@ -126,39 +126,6 @@ coords_to_mem:
     POP IX,BC,AF
     RET
 
-;-----------------------------------------------------------
-; Shift sprite data right and merge in previous overspill
-;-----------------------------------------------------------
-
-SHIFT_N_PARAM_STEPS:        EQU 6
-SHIFT_N_VALUE:              EQU 7
-SHIFT_N_OLD_VALUE:          EQU 9
-
-shift_n_and_merge:
-    PUSH BC,IX
-    LD  IX,0
-    ADD IX,SP                           ; Point IX to the stack
-  
-    LD B, (IX+SHIFT_N_PARAM_STEPS)      ; Loop counter
-
-    LD L, 0x00                          ; HL holds result
-    LD H, (IX+SHIFT_N_VALUE)            ; Value to shift
-sn_loop:
-    LD A,B
-    CP 0x00
-    JR Z,sn_endloop 
-    SRL H                               ; Shift out low bit into carry
-    RR L 
-    DEC B
-    JR sn_loop
-sn_endloop:
-    LD A,H                              ; Now shifted high byte
-    OR (IX+SHIFT_N_OLD_VALUE)           ; Merge in old value
-    LD H,A
-    
-    POP IX,BC
-    RET  
-
 ;------------------------------------------------
 ; Draw a sprite
 ;
@@ -167,9 +134,10 @@ sn_endloop:
 ; PUSH mask location (NOT used currently)
 ;------------------------------------------------
 
-DS_PARAM_COORDS:            EQU 16
+DS_PARAM_COORDS:            EQU 18
+DS_PARAM_DIMS:              EQU 16
 DS_PARAM_SPRITE_DATA:       EQU 14
-DS_PARAM_MASK:              EQU 12
+DS_PARAM_MASK_DATA:         EQU 12
 
 draw_sprite:
     PUSH AF,BC,DE,HL,IX
@@ -177,116 +145,78 @@ draw_sprite:
     LD  IX,0
     ADD IX,SP                           ; Point IX to the stack
 
-    LD HL,(IX+DS_PARAM_SPRITE_DATA)     ; Start of sprite data
-    LD BC,(HL)                          ; Grab dimension data (X in characters, Y in pixel lines)
-    LD (ds_dims),BC                     ; And store for later
-
-    INC HL                              ; Skip to bitmap data
-    INC HL
-
-    LD (ds_sprite_data_ptr), HL         ; Points to sprite data
-                                
+    ; Get and store the coords
     LD HL,(IX+DS_PARAM_COORDS)          ; Grab the pixel coords
     LD (ds_coords),HL                   ; And store for later (only the Y coord gets updated)
 
-    LD A,(ds_y_dim)                     ; Y dim loop counter - pixel lines
-    LD C,A
+    ; Get and store the dimensions
+    LD HL,(IX+DS_PARAM_DIMS)            ; Grab dimension data (X in characters, Y in pixel lines)
+    LD (ds_dims),HL                     ; And store for later
 
+    ; Find the correct shifted version of the sprite data
+    LD HL,(IX+DS_PARAM_SPRITE_DATA)     ; Start of sprite lookup table
     LD A,(ds_x_coord)                   ; X coord
     AND 0b00000111                      ; Calculate the X offset withing the character cell
-    LD (ds_x_offset), A                 ; Store it away for later use
+    SLA A                               ; Double the offset as the lookup table contains words
+    LD D,0x00
+    LD E,A
+    ADD HL,DE                           ; Add the offset into the table to the base of the table
+    LD DE, (HL)                         ; Lookup the sprite data in the table
+    LD (ds_sprite_data_ptr), DE         ; Points to sprite data
+     
+    ; Find the correct shifted version of the mask data
+    LD HL,(IX+DS_PARAM_MASK_DATA)       ; Start of mask lookup table
+    LD A,(ds_x_coord)                   ; X coord
+    AND 0b00000111                      ; Calculate the X offset withing the character cell
+    SLA A                               ; Double the offset as the lookup table contains words
+    LD D,0x00
+    LD E,A
+    ADD HL,DE                           ; Add the offset into the table to the base of the table
+    LD DE, (HL)                         ; Lookup the sprite data in the table
+    LD (ds_mask_data_ptr), DE           ; Points to mask data
 
-    LD HL,(IX+DS_PARAM_MASK)            ; Mask data
-    LD (ds_mask_data_ptr),HL            ; Points to the mask data
+    LD A,(ds_y_dim)                     ; Y loop counter set from y dimension
+    LD C,A
 
 ds_y_loop:   
     LD HL,(ds_coords)                   ; Current screen coords
     PUSH HL                 
     CALL coords_to_mem                  ; Get Memory location of screen byte into HL
-    LD (ds_screen_mem_loc), HL          ; Store the start of the row in screen memory
+    LD (ds_screen_mem_loc),HL           ; Store the start of the row in screen memory
     POP HL
 
     LD A,(ds_x_dim)                     ; X dim loop counter - character cells
     LD B,A
 
-    LD HL,ds_x_spill                    ; Zero out rolling content from previous cell as we shift bitmap
-    LD (HL),0x00
-
-    LD HL,ds_x_mask_spill               ; Zero out rolling mask spill 
-    LD (HL),0x00
-
 ds_x_loop:
-    ; Draw the mask -->
-
-    ; Set up call to shift_n_and merge to shift mask data based on x offset in character cell
-    LD A, (ds_x_mask_spill)             ; Push single byte of last X content onto the stack
-    PUSH AF
-    
-    LD HL,(ds_mask_data_ptr)            ; Get mask data for current byte
-    LD A,(HL)                           
-
-    LD H,A                              ; X offset
-    LD A,(ds_x_offset)                  
-    LD L,A                     
-    
-    PUSH HL                             ; Push mask data and x offset 
-
-    CALL shift_n_and_merge              ; HL containts the shifted data
-
-    ; Use results from shift_n_and merge to write mask data to screen
-    LD A,L
-    LD (ds_x_mask_spill),A              ; Store the new spill over for next time
-              
-    LD A,H                              ; Write mask data to the screen
+    ; Draw mask -->
+    LD HL,(ds_mask_data_ptr)            ; Get the mask data
+    LD A,(HL)                                  
     CPL                                 ; Compliment the mask
-    LD HL,(ds_screen_mem_loc)
-    AND (HL)                            ; And with screen memory
-    LD (HL),A                           ; And write screen memory
-    POP HL                              ; Pop the parameters for shift_n_and_merge back off the stack
-    POP HL                            
-
-    ; Done writing mask data, move pointer for mask data forwards for next iteration                       
+    LD HL,(ds_screen_mem_loc)           ; Get screen byte
+    AND (HL)                            ; And notted mask with screen byte
+    LD (HL),A                           ; Write screen memory
+  
+    ; Done writing mask data, move pointer on for next iteration                     
     LD HL,(ds_mask_data_ptr)            ; Move to next byte of mask data
     INC HL
     LD (ds_mask_data_ptr),HL
-
     ; <-- End of draw mask
 
-    ; Draw the sprite -->
+    ; Draw sprite -->
+    LD HL,(ds_sprite_data_ptr)          ; Get sprite data
+    LD A,(HL)                                     
+    LD HL,(ds_screen_mem_loc)           ; Get screen byte
+    OR (HL)                             ; Or sprite data with screen byte
+    LD (HL),A                           ; Write screen memory
 
-    ; Set up call to shift_n_and merge to shift sprite data based on x offset in character cell
-    LD A, (ds_x_spill)                  ; Push single byte of last X content onto the stack
-    PUSH AF
-    
-    LD HL,(ds_sprite_data_ptr)          ; Get sprite data for current byte
-    LD A,(HL)                           
-
-    LD H,A                              ; X offset
-    LD A,(ds_x_offset)                  
-    LD L,A                     
-    
-    PUSH HL                             ; Push sprite data and x offset
-
-    CALL shift_n_and_merge              ; HL containts the shifted data
-
-    ; Use results from shift_n_and merge to write sprite data to screen
-    LD A,L                              ; Store the new spill over sprite data
-    LD (ds_x_spill),A   
-              
-    LD A,H                              ; Write sprite data to the screen
-    LD HL,(ds_screen_mem_loc)
-    OR (HL)
-    LD (HL),A   
-    POP HL                              ; Ditch the parameters we pushed for shift_n_and_merge
-    POP HL                            
-                           
+    ; Done writing sprite data, move pointer on for next iteration                                 
     LD HL,(ds_sprite_data_ptr)          ; Move to next byte of sprite data
     INC HL
     LD (ds_sprite_data_ptr),HL
+    ; <-- End of draw sprite
 
-    ; End of drawing the sprite
-
-    ; Done writing sprite data, move pointer for sprite data forwards for next iteration  
+    ; Done writing current byte of current row - move to next X cell 
     LD HL,(ds_screen_mem_loc)           ; Move to next X cell
     INC HL              
     LD (ds_screen_mem_loc), HL
@@ -295,21 +225,8 @@ ds_x_loop:
     DEC B                               ; Decrease the X loop counter
     JR NZ,ds_x_loop                     ; Next X
 
-    ; Draw the last shifted part of the mask
-    LD A, (ds_x_mask_spill)
-    CPL 
-    LD HL,(ds_screen_mem_loc)
-    AND (HL)
-    LD (HL),A  
-
-    ; Draw the last shifted part of the sprite
-    LD A, (ds_x_spill)
-    LD HL,(ds_screen_mem_loc) 
-    OR (HL)
-    LD (HL), A
-
     ; Move to next pixel row   
-    LD HL,(ds_coords)                   ; Next Y row
+    LD HL,(ds_coords)                   ; Next pixel row
     INC HL                              
     LD (ds_coords), HL
     
@@ -321,23 +238,15 @@ ds_x_loop:
 
     RET
 
-; Sprite dimensions
-ds_dims:
-ds_y_dim:           BLOCK 1
-ds_x_dim:           BLOCK 1
-; Current sprint location (only y is updated)
-ds_coords:  
+ds_coords:                              ; Sprite location (only y is updated)
 ds_y_coord:         BLOCK 1
 ds_x_coord:         BLOCK 1
-; X offset within a character cell
-ds_x_offset:        BLOCK 1
-; Current location in screen memory map
-ds_screen_mem_loc:  BLOCK 2
-; Spill over from one character cell to the next after shifting data
-ds_x_spill:         BLOCK 1
-ds_x_mask_spill:    BLOCK 1
-ds_sprite_data_ptr  BLOCK 2
-ds_mask_data_ptr    BLOCK 2
+ds_dims:                                ; Sprite dimensions
+ds_y_dim:           BLOCK 1
+ds_x_dim:           BLOCK 1
+ds_sprite_data_ptr  BLOCK 2             ; Pointer to current sprite data byte
+ds_mask_data_ptr    BLOCK 2             ; Pointer to current mask data byte
+ds_screen_mem_loc:  BLOCK 2             ; Pointer to current screen byte
 
     ENDMODULE
 
