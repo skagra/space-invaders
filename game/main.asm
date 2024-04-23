@@ -8,6 +8,8 @@
     ORG 0x0
     BLOCK mmap.FREE_MEMORY_START
 
+    ORG 0x8000 ; Skip ULA contended memory? https://worldofspectrum.org/faq/reference/48kreference.htm
+
     INCLUDE "utils.asm"
     INCLUDE "draw.asm"
     
@@ -74,16 +76,16 @@ draw_pack_loop:
     ; POP HL
 
     ; Blank old sprite
-    ; LD DE,(HL)             ; Coords of current alien
-    ; PUSH DE     
-    ; LD DE,sprite_blank     ; Background square
-    ; PUSH DE
-    ; LD DE,mask_2_16
-    ; PUSH DE
-    ; CALL draw.draw_sprite
-    ; POP DE
-    ; POP DE
-    ; POP DE
+    LD DE,(HL)             ; Coords of current alien
+    PUSH DE     
+    LD DE,sprite_blank     ; Background square
+    PUSH DE
+    LD DE,mask_2_16
+    PUSH DE
+    CALL draw.draw_sprite
+    POP DE
+    POP DE
+    POP DE
 
     ; Move sprite to new position
     LD DE,(HL)              ; Coords
@@ -164,7 +166,6 @@ aliens:         WORD 0x1060,sprite_a_1_0,sprite_a_1_1, 0x2060,sprite_a_1_0,sprit
                 WORD 0x6020,sprite_a_3_0,sprite_a_3_1, 0x7020,sprite_a_3_0,sprite_a_3_1, 0x8020,sprite_a_3_0,sprite_a_3_1, 0x9020,sprite_a_3_0,sprite_a_3_1, 0xA020,sprite_a_3_0,sprite_a_3_1
 
 direction:      BLOCK 1
-
 DIRECTION_LEFT: EQU 2
 DIRECTION_RIGHT: EQU 1
 

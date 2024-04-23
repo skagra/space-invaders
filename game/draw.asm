@@ -115,7 +115,7 @@ coords_to_mem:
     RLA
     AND 0b11100000                      ; Mask out unwanted bits
     LD L,A                              ; Store in L
-    LD A,B                              ; Calculate X4,X3,X2,X1,X0
+    LD A,B                              ; Calculate X7,X6,X5,X4,X3
     RRA                                 ; Shift into position
     RRA
     RRA
@@ -136,26 +136,30 @@ SHIFT_N_OLD_VALUE:          EQU 9
 
 shift_n_and_merge:
     PUSH BC,IX
-    LD  IX,0
-    ADD IX,SP                           ; Point IX to the stack
+;     LD  IX,0
+;     ADD IX,SP                           ; Point IX to the stack
   
-    LD B, (IX+SHIFT_N_PARAM_STEPS)      ; Loop counter
+;     LD B, (IX+SHIFT_N_PARAM_STEPS)      ; Loop counter
 
-    LD L, 0x00                          ; HL holds result
-    LD H, (IX+SHIFT_N_VALUE)            ; Value to shift
-sn_loop:
-    LD A,B
-    CP 0x00
-    JR Z,sn_endloop 
-    SRL H                               ; Shift out low bit into carry
-    RR L 
-    DEC B
-    JR sn_loop
-sn_endloop:
-    LD A,H                              ; Now shifted high byte
-    OR (IX+SHIFT_N_OLD_VALUE)           ; Merge in old value
-    LD H,A
+;     LD L, 0x00                          ; HL holds result
+;     LD H, (IX+SHIFT_N_VALUE)            ; Value to shift
+; sn_loop:
+;     LD A,B
+;     CP 0x00
+;     JR Z,sn_endloop 
+;     SRL H                               ; Shift out low bit into carry
+;     RR L 
+;     DEC B
+;     JR sn_loop
+; sn_endloop:
+;     LD A,H                              ; Now shifted high byte
+;     OR (IX+SHIFT_N_OLD_VALUE)           ; Merge in old value
+;     LD H,A
     
+
+    LD A,(IX+SHIFT_N_VALUE)
+
+
     POP IX,BC
     RET  
 
@@ -216,8 +220,9 @@ ds_y_loop:
     LD (HL),0x00
 
 ds_x_loop:
-    ; Draw the mask
+    ; Draw the mask -->
 
+    ; Set up call to shift_n_and merge to shift mask data based on x offset in character cell
     LD A, (ds_x_mask_spill)             ; Push single byte of last X content onto the stack
     PUSH AF
     
@@ -231,46 +236,52 @@ ds_x_loop:
     PUSH HL                             ; Push mask data and x offset 
 
     CALL shift_n_and_merge              ; HL containts the shifted data
+
+    ; Use results from shift_n_and merge to write mask data to screen
     LD A,L
-    LD (ds_x_mask_spill),A
+    LD (ds_x_mask_spill),A              ; Store the new spill over for next time
               
     LD A,H                              ; Write mask data to the screen
-    CPL 
+    CPL                                 ; Compliment the mask
     LD HL,(ds_screen_mem_loc)
-    AND (HL)
-    LD (HL),A   
-    POP HL
+    AND (HL)                            ; And with screen memory
+    LD (HL),A                           ; And write screen memory
+    POP HL                              ; Pop the parameters for shift_n_and_merge back off the stack
     POP HL                            
-                           
+
+    ; Done writing mask data, move pointer for mask data forwards for next iteration                       
     LD HL,(ds_mask_data_ptr)            ; Move to next byte of mask data
     INC HL
     LD (ds_mask_data_ptr),HL
 
-    ; End of draw mask
+    ; <-- End of draw mask
 
-    ; Draw the sprite
+    ; Draw the sprite -->
 
+    ; Set up call to shift_n_and merge to shift sprite data based on x offset in character cell
     LD A, (ds_x_spill)                  ; Push single byte of last X content onto the stack
     PUSH AF
     
     LD HL,(ds_sprite_data_ptr)          ; Get sprite data for current byte
     LD A,(HL)                           
 
-    LD H,A
-    LD A,(ds_x_offset)                  ; X offset
+    LD H,A                              ; X offset
+    LD A,(ds_x_offset)                  
     LD L,A                     
     
-    PUSH HL
+    PUSH HL                             ; Push sprite data and x offset
 
     CALL shift_n_and_merge              ; HL containts the shifted data
-    LD A,L
-    LD (ds_x_spill),A
+
+    ; Use results from shift_n_and merge to write sprite data to screen
+    LD A,L                              ; Store the new spill over sprite data
+    LD (ds_x_spill),A   
               
     LD A,H                              ; Write sprite data to the screen
     LD HL,(ds_screen_mem_loc)
     OR (HL)
     LD (HL),A   
-    POP HL
+    POP HL                              ; Ditch the parameters we pushed for shift_n_and_merge
     POP HL                            
                            
     LD HL,(ds_sprite_data_ptr)          ; Move to next byte of sprite data
@@ -279,10 +290,12 @@ ds_x_loop:
 
     ; End of drawing the sprite
 
+    ; Done writing sprite data, move pointer for sprite data forwards for next iteration  
     LD HL,(ds_screen_mem_loc)           ; Move to next X cell
     INC HL              
     LD (ds_screen_mem_loc), HL
     
+    ; Are we done writing this pixel row?
     DEC B                               ; Decrease the X loop counter
     JR NZ,ds_x_loop                     ; Next X
 
@@ -299,10 +312,12 @@ ds_x_loop:
     OR (HL)
     LD (HL), A
 
+    ; Move to next pixel row   
     LD HL,(ds_coords)                   ; Next Y row
     INC HL                              
     LD (ds_coords), HL
     
+    ; Is there another pixel row to write?
     DEC C                               ; Y loop counter
     JP NZ,ds_y_loop
 
