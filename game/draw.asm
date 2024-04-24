@@ -205,13 +205,61 @@ fsar_x_loop:
     RET
 
 fsar_top_left:  
-fsar_y:             BLOCK 1
-fsar_x:             BLOCK 1
+fsar_y:                 BLOCK 1
+fsar_x:                 BLOCK 1
 fsar_dim:
-fsar_dim_height:    BLOCK 1
-fsar_dim_width:     BLOCK 1
-fsar_attribute:     BLOCK 1
+fsar_dim_height:        BLOCK 1
+fsar_dim_width:         BLOCK 1
+fsar_attribute:         BLOCK 1
 fsar_line_step_bytes:   BLOCK 1
+
+;------------------------------------------------------------------------------
+; Fill a stripe across the screen with the given attribute
+;
+; Usage:
+;   PUSH start Y and height word - Y high byte, Height low byte
+;   PUSH color attribute word - In low byte of pair
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
+FSAS_YH_PARAM:  EQU 12
+FAAS_A_PARAM:   EQU 10
+
+fill_screen_attribute_stripe:
+    PUSH BC,DE,HL,IX
+
+    LD  IX,0                            ; Get the stack pointer
+    ADD IX,SP
+
+    LD HL, (IX+FSAS_YH_PARAM)           ; H = Y coord, L = height
+    LD BC, (IX+FAAS_A_PARAM)            ; C = Attribute   
+
+    ; XY Coords
+    LD D,0x00;                          ; X=0
+    LD E,H                              ; Y as supplied
+    PUSH DE
+
+    ; XY Dimensions
+    LD D,SCREEN_WIDTH_CHARS             ; X dimension full screen width
+    LD E,L                              ; Y dimension as supplied
+    PUSH DE
+
+    PUSH BC                             ; Colour attribute
+
+    call fill_screen_attributes_rect
+
+    POP BC
+    POP DE
+    POP DE
+
+    POP  IX,HL,DE,BC  
+
+    RET
 
 ;------------------------------------------------------------------------------
 ; Translate x,y coordinates to a screen map memory location

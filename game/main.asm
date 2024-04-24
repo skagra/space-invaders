@@ -1,14 +1,19 @@
-; SLD Features
+    ; SLD Features
     DEVICE ZXSPECTRUM48
     SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
 
     INCLUDE "memory_map.asm"
 
-; Reserve space for screen memory and skip over for code start    
+    ; Reserve space for screen memory and skip over for code start    
     ORG 0x0
     BLOCK mmap.FREE_MEMORY_START
-
-    ORG 0x8000 ; Skip ULA contended memory? https://worldofspectrum.org/faq/reference/48kreference.htm
+    
+    ;---
+    ; Skip ULA contended memory? 
+    ; https://worldofspectrum.org/faq/reference/48kreference.htm
+    ; Check this
+    ORG 0x8000 
+    ;---
 
     INCLUDE "utils.asm"
     INCLUDE "draw.asm"
@@ -17,62 +22,51 @@
 
 main:
     ; Set up stack
-
     DI                          
     LD SP,STACK_TOP
     EI
 
+    ; Clear the screen
     call draw.wipe_screen
 
-    ; Fill the screen
+    ; Fill screen with some default colour attribute
     LD H,draw.CA_BG_BLACK | draw.CA_FG_WHITE
     PUSH HL
     CALL draw.fill_screen_attributes
     POP HL
 
-; FSAR_PARAM_TOP_LEFT:          EQU 16
-; FSAR_PARAM_DIM:               EQU 14
-; FSAR_PARAM_ATTRIBUTE:         EQU 12
+    ; Fill a strip across the screen with a colour atttribute
+    LD H,0x04                                   ; Top left X
+    LD L,0x05                                   ; Height
+    PUSH HL
+    LD HL,draw.CA_BG_BLUE | draw.CA_FG_MAGENTA  ; Attribute
+    PUSH HL
+    CALL draw.fill_screen_attribute_stripe
+    POP HL
+    POP HL
 
-    LD HL,0x0505        ; top left
+    ; Fill a rectangle with a colour attribute
+    LD HL,0x0505                                ; Top left X Y
     PUSH HL
-    LD HL,0x050A        ; dimensions
+    LD HL,0x050A                                ; Dimensions X dim Y dim
     PUSH HL
-    LD HL,draw.CA_BG_GREEN | draw.CA_FG_YELLOW
+    LD HL,draw.CA_BG_GREEN | draw.CA_FG_YELLOW  ; Attribute
     PUSH HL
     CALL draw.fill_screen_attributes_rect
     POP HL
     POP HL
     POP HL
 
-    ; Draw some aliens
-    LD C, 22
+    ; Count of animation cycles
+    LD C, 60
 
-    ; Start going right
+    ; Alien pack direction
     LD A,DIRECTION_RIGHT
     LD (direction),A
 
 animation_loop:
-    LD B,50
-    LD HL,aliens
-
-    LD A,C
-    AND 0b00000011
-    CP 0b00000010
-    JR NZ, notdown
-
-    LD A,(direction)    
-    CP DIRECTION_RIGHT
-    JR Z,switch_to_left
-    LD A,DIRECTION_RIGHT
-    LD (direction),A
-    JR switched_to_right
-switch_to_left:
-    LD A,DIRECTION_LEFT
-    LD (direction),A
-switched_to_right:
-
-notdown:
+    LD B,50                 ; Alien pack size
+    LD HL,aliens            ; Pointer to aliens definitions
 
 draw_pack_loop:
     ; Wait for screen blank
@@ -96,19 +90,19 @@ draw_pack_loop:
     POP DE
 
     ; Move sprite to new position
-    LD DE,(HL)              ; Coords - at start of alien definition
+    LD DE,(HL)              ; Coords are at start of alien definition
     LD A,C
-    AND 0b00000011
+    AND 0b00000011          ; Is it time to move down instead of sideways?
     CP 0b00000010
     JR Z, down
 
     ; Sideways movement
-    LD A,(direction)
+    LD A,(direction)        ; Are we going left or right?
     CP DIRECTION_RIGHT
     JR Z,going_right
     DEC D
     DEC D
-    JR gone_left
+    JR moved
 going_right:
     INC D
     INC D
@@ -155,6 +149,24 @@ variant_1:
     POP DE
     DEC B                   ; One more alien has been done, dec loop counter
     JR NZ,draw_pack_loop    ; Done drawing sheet of aliens?
+
+    LD A,C                  ; Is it time to chnage direction?
+    AND 0b00000011
+    CP 0b00000010
+    JR NZ, notdown
+
+    LD A,(direction)    
+    CP DIRECTION_RIGHT
+    JR Z,switch_to_left
+    LD A,DIRECTION_RIGHT
+    LD (direction),A
+    JR switched_to_right
+switch_to_left:
+    LD A,DIRECTION_LEFT
+    LD (direction),A
+switched_to_right:
+
+notdown:
 
     DEC C                   ; One more cycle of animating pack done
     JP NZ,animation_loop    ; Done animating?
