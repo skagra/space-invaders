@@ -17,14 +17,32 @@
 
 main:
     ; Set up stack
+
     DI                          
     LD SP,STACK_TOP
     EI
 
+    call draw.wipe_screen
+
     ; Fill the screen
     LD H,draw.CA_BG_BLACK | draw.CA_FG_WHITE
     PUSH HL
-    CALL draw.fill_screen
+    CALL draw.fill_screen_attributes
+    POP HL
+
+; FSAR_PARAM_TOP_LEFT:          EQU 16
+; FSAR_PARAM_DIM:               EQU 14
+; FSAR_PARAM_ATTRIBUTE:         EQU 12
+
+    LD HL,0x0505        ; top left
+    PUSH HL
+    LD HL,0x050A        ; dimensions
+    PUSH HL
+    LD HL,draw.CA_BG_GREEN | draw.CA_FG_YELLOW
+    PUSH HL
+    CALL draw.fill_screen_attributes_rect
+    POP HL
+    POP HL
     POP HL
 
     ; Draw some aliens

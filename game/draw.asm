@@ -41,63 +41,207 @@ CA_BG_CYAN:     EQU CA_COL_CYAN << 3
 CA_BG_YELLOW:   EQU CA_COL_YELLOW << 3
 CA_BG_WHITE:    EQU CA_COL_WHITE << 3
 
-;--------------------------------------------------------------
-; Erase screen and fill with given colour attributes
-; PUSH color
-;--------------------------------------------------------------
-FS_PARAM_COLOUR: EQU 7
-fill_screen:
+;------------------------------------------------------------------------------
+; Erase the screen
+;
+; Usage:
+;   -
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
+wipe_screen:
     PUSH HL,IX    
 
-    ; Erase contents of screen
-    LD HL,0x0000
+    ; Set up call to utils.fill_mem
+    LD HL,0x0000                        ; Fill with zero values (blank)
     PUSH HL
-    LD HL,mmap.SCREEN_START
+    LD HL,mmap.SCREEN_START             ; Start of screen area
     PUSH HL
-    LD HL, mmap.SCREEN_SIZE
+    LD HL, mmap.SCREEN_SIZE             ; Length of screen area
     PUSH HL
-    CALL utils.fill_mem
-    POP HL
+    CALL utils.fill_mem                 ; Erase the screen
+    POP HL                              ; Ditch the supplied parameters
     POP HL
     POP HL
 
-    ; Fill screen with the given colour
-    LD  IX,0
+    POP IX,HL
+
+    RET
+
+;------------------------------------------------------------------------------
+; Fill screen with given colour attributes
+;
+; Usage:
+;   PUSH attribute byte (in high byte of pair)
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
+FSA_PARAM_ATTRIBUTE: EQU 7                  ; Colour attributes
+
+fill_screen_attributes:
+    PUSH HL,IX   
+
+    LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
-    LD HL, (ix+FS_PARAM_COLOUR)         ; get the bg colour from the stack
+
+    ; Set up call to utils.fill_mem
+    LD HL, (ix+FSA_PARAM_ATTRIBUTE)         ; Get the colour attribute
+    PUSH HL                             
+    LD HL,mmap.SCREEN_ATTR_START        ; Start of the screen attribute area
     PUSH HL
-    LD HL,mmap.SCREEN_ATTR_START
+    LD HL,mmap.SCREEN_ATTR_SIZE         ; Length of the screen attribute area
     PUSH HL
-    LD HL,mmap.SCREEN_ATTR_SIZE
-    PUSH HL
-    CALL utils.fill_mem
-    POP HL
+    CALL utils.fill_mem                 ; Fill the screen attribute area
+    POP HL                              ; Ditch the supplied parameters
     POP HL
     POP HL 
 
     POP IX,HL
+
     RET
 
-;-------------------------------------------------------------------------
+;------------------------------------------------------------------------------
+; Fill a rectangle with the given attribute
+;
+; The structure of the screen memory address is formed as follows:
+;
+;   15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0
+;   1  0  0  1  1 0  Y4 Y3 Y2 Y1 Y0 X4 X3 X2 X1 X0
+; 
+; Usage:
+;   PUSH coords word - X high byte, Y low byte
+;   PUSH dimensions word - X dim high byte, Y dim low byte
+;   PUSH color attribute - In low byte of pair
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
+FSAR_PARAM_TOP_LEFT:          EQU 16
+FSAR_PARAM_DIM:               EQU 14
+FSAR_PARAM_ATTRIBUTE:         EQU 12
+
+fill_screen_attributes_rect:
+    PUSH AF,BC,DE,HL,IX
+
+    LD  IX,0                            ; Get the stack pointer
+    ADD IX,SP
+
+    LD HL,(IX+FSAR_PARAM_ATTRIBUTE)     ; Get the colour attribute
+    LD A,L
+    LD (fsar_attribute),A
+
+    LD HL,(IX+FSAR_PARAM_TOP_LEFT)      ; Top left of rect to fill
+    LD (fsar_top_left),HL
+
+    LD HL,(IX+FSAR_PARAM_DIM)           ; Width and hight of rect to fill
+    LD (fsar_dim),HL
+
+    ; Calculate the starting address
+    LD DE, mmap.SCREEN_ATTR_START       ; Base address of attribute map
+    LD A,(fsar_x)                       ; Set low order byte from x coord
+    LD E,A 
+    
+    LD H,0x00                           ; Take y coord
+    LD A,(fsar_y)                       ; Multiple x32
+    LD L,A             
+    SLA L
+    RL H
+    SLA L
+    RL H
+    SLA L
+    RL H
+    SLA L
+    RL H
+    SLA L
+    RL H
+    ADD DE,HL                           ; DE will track memory to write                       
+
+    ; Calculate line step bytes
+    LD A,(fsar_dim_width)               ; Subtract the width of the block 
+    LD B,A                              ; from bytes in a line
+    LD A, SCREEN_WIDTH_CHARS
+    SUB B
+    LD (fsar_line_step_bytes),A         ; Store away line step update
+    
+    LD A,(fsar_dim_height)              ; Set y loop counter (B) from height
+    LD B,A
+
+fsar_y_loop:
+    LD A,(fsar_dim_width)               ; Set x loop counter (C) from width
+    LD C,A
+
+fsar_x_loop:
+    LD A, (fsar_attribute)              ; Get the screen attribute
+    LD (DE),A                           ; Store at current screen map location
+    INC DE                              ; Move to next screen map location
+
+    DEC C                               ; Any more to do in this line?
+    JR NZ,fsar_x_loop                   
+
+    LD H,0x00                           ; Move to next line
+    LD A,(fsar_line_step_bytes)
+    LD L,A
+    ADD DE,HL
+
+    DEC B                               ; Any more lines to do?
+    JR NZ,fsar_y_loop
+
+    POP IX,HL,DE,BC,AF
+
+    RET
+
+fsar_top_left:  
+fsar_y:             BLOCK 1
+fsar_x:             BLOCK 1
+fsar_dim:
+fsar_dim_height:    BLOCK 1
+fsar_dim_width:     BLOCK 1
+fsar_attribute:     BLOCK 1
+fsar_line_step_bytes:   BLOCK 1
+
+;------------------------------------------------------------------------------
 ; Translate x,y coordinates to a screen map memory location
 ;
-; This is the structure of the screen memory address
-; 15 14	13 12 11 10 9  8  7  6  5  4  3  2  1  0
-; 0  1  0  Y7 Y6 Y2 Y1 Y0 Y5 Y4 Y3 X7 X6 X5 X4 X3
-; 
-; X2 X1 X0 gives bit offset with screen byte, and so are ignored here
+; The structure of the screen memory address is formed as follows:
 ;
-; Push XY 
-; Returns address in HL
-;-------------------------------------------------------------------------
+;   15 14 13 12 11 10 9  8  7  6  5  4  3  2  1  0
+;   0  1  0  Y7 Y6 Y2 Y1 Y0 Y5 Y4 Y3 X7 X6 X5 X4 X3
+; 
+; As X2,X1,X0 gives bit offset with screen byte they are ignored here
+;
+; Usage:
+;   PUSH coords word - X high byte, Y low byte
+;
+; Return values:
+;   HL - Screen address
+;
+; Registers modified:
+;   HL
+;------------------------------------------------------------------------------
 
-CTM_PARAM_COORDS:   EQU 8
+CTM_PARAM_COORDS:   EQU 8               ; Coordinates
+
 coords_to_mem:
     PUSH AF,BC,IX
    
-    LD  IX,0
+    LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
-    LD BC, (IX+CTM_PARAM_COORDS)
+
+    LD BC, (IX+CTM_PARAM_COORDS)        ; Get coords from the black
 
     LD A,C                              ; Calculate Y2,Y1,Y0
     AND 0b00000111                      ; Mask out unwanted bits
@@ -124,26 +268,35 @@ coords_to_mem:
     LD L,A                              ; Store in L
 
     POP IX,BC,AF
+
     RET
 
-;------------------------------------------------
+;------------------------------------------------------------------------------
 ; Draw a sprite
 ;
-; PUSH coords
-; PUSH sprite data location
-; PUSH mask location (NOT used currently)
-;------------------------------------------------
+; Usage:
+;   PUSH coords word - X high byte, Y low byte
+;   PUSH dimensions word - X dim high byte, Y dim low byte
+;   PUSH address of pre-shifted sprite lookup table
+;   PUSH address of pre-shifted mask lookup table
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
 
-DS_PARAM_COORDS:            EQU 18
-DS_PARAM_DIMS:              EQU 16
-DS_PARAM_SPRITE_DATA:       EQU 14
-DS_PARAM_MASK_DATA:         EQU 12
+DS_PARAM_COORDS:            EQU 18      ; Sprite coordinates
+DS_PARAM_DIMS:              EQU 16      ; Sprite dimensions
+DS_PARAM_SPRITE_DATA:       EQU 14      ; Sprite pre-shifted data lookup table
+DS_PARAM_MASK_DATA:         EQU 12      ; Mask pre-shifted data lookup table
 
 draw_sprite:
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0
-    ADD IX,SP                           ; Point IX to the stack
+    LD  IX,0                            ; Point IX to the stack
+    ADD IX,SP                           
 
     ; Get and store the coords
     LD HL,(IX+DS_PARAM_COORDS)          ; Grab the pixel coords
@@ -238,7 +391,7 @@ ds_x_loop:
 
     RET
 
-ds_coords:                              ; Sprite location (only y is updated)
+ds_coords:                              ; Sprite location (y is updated to line being drawn)
 ds_y_coord:         BLOCK 1
 ds_x_coord:         BLOCK 1
 ds_dims:                                ; Sprite dimensions
