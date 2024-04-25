@@ -292,6 +292,7 @@ coords_to_mem:
     LD BC, (IX+CTM_PARAM_COORDS)        ; Get coords from the stack
     LD B, 0x00                          ; B=0x00, C=Y coord
     SLA C                               ; Double Y to get offset in table (as table contains words)
+    RL B
     LD HL, y_lookup_table               ; Base of lookup table in HL
     ADD HL,BC                           ; Location of the row start in the lookup table
     LD BC,(HL)                          ; Location of row start
@@ -425,7 +426,7 @@ ds_x_loop:
     LD HL,(ds_sprite_data_ptr)          ; Get sprite data
     LD A,(HL)                                     
     LD HL,(ds_screen_mem_loc)           ; Get screen byte
-    OR (HL)                             ; Or sprite data with screen byte
+    XOR (HL)                             ; Or sprite data with screen byte
     LD (HL),A                           ; Write screen memory
 
     ; Done writing sprite data, move pointer on for next iteration                                 
