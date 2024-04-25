@@ -17,6 +17,8 @@
 
     INCLUDE "utils.asm"
     INCLUDE "draw.asm"
+    INCLUDE "print.asm"
+    INCLUDE "keyboard.asm"
     
     MODULE main
 
@@ -54,6 +56,14 @@ main:
     PUSH HL
     CALL draw.fill_screen_attributes_rect
     POP HL
+    POP HL
+    POP HL
+
+    LD HL,hello
+    PUSH HL
+    LD HL,0x0205
+    PUSH HL
+    CALL print.print_string
     POP HL
     POP HL
 
@@ -147,8 +157,38 @@ variant_1:
     POP DE
     POP DE
     POP DE
+    
+
+    PUSH HL                 ; Need to restore after call
+    CALL keyboard.get_movement_keys
+    LD A,L                  ; Keys pressed (we'd save this not act right away?)
+    AND keyboard.FIRE_KEY_DOWN
+
+    JR NZ,left_not_down
+    LD HL, "A"
+    PUSH HL
+    LD HL, 0x0000
+    PUSH HL
+    CALL print.print_char
+    POP HL
+    POP HL
+    JR keys_done
+
+left_not_down:
+    LD HL, " "
+    PUSH HL
+    LD HL, 0x0000
+    PUSH HL
+    CALL print.print_char
+    POP HL
+    POP HL
+
+keys_done:
+
     DEC B                   ; One more alien has been done, dec loop counter
-    JR NZ,draw_pack_loop    ; Done drawing sheet of aliens?
+    POP HL                  ; Restore
+
+    JP NZ,draw_pack_loop    ; Done drawing sheet of aliens?
 
     LD A,C                  ; Is it time to chnage direction?
     AND 0b00000011
@@ -167,7 +207,6 @@ switch_to_left:
 switched_to_right:
 
 notdown:
-
     DEC C                   ; One more cycle of animating pack done
     JP NZ,animation_loop    ; Done animating?
 
@@ -202,6 +241,10 @@ aliens:
 direction:          BLOCK 1
 DIRECTION_LEFT:     EQU 2
 DIRECTION_RIGHT:    EQU 1
+
+hello: 
+    BYTE "hello"
+    BYTE 0
 
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is

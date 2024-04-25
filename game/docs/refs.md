@@ -3,6 +3,7 @@
 * [Computer Archeology](https://www.computerarcheology.com/Arcade/SpaceInvaders/)
 * [Classic Gaming](http://www.classicgaming.cc/classics/space-invaders/)
 * [Rom Disassembly](https://www.computerarcheology.com/Arcade/SpaceInvaders/Code.html)
+* [Coloured Gels](https://tobiasvl.github.io/blog/space-invaders/)
 
 
 # Z80
@@ -21,3 +22,5 @@
  * [L Break into Program](http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum)
 * [World of Spectrum - org](https://worldofspectrum.org/)
 * [World of Spectrum - net](https://worldofspectrum.net/)
+* [ROM Disassembly](http://primrosebank.net/computers/zxspectrum/docs/CompleteSpectrumROMDisassemblyThe.pdf)
+* [Keyboard Scanning](http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum/keyboard)
