@@ -8,8 +8,7 @@
 ; Usage:
 ;   PUSH rr                 ; Make space for the return value
 ;   CALL get_movement_keys
-;   LD A,(SP)               ; Grab the result
-;   POP rr                  ; Ditch the result stack space
+;   POP rr                  ; Grab the result is LSB
 ;   
 ; Return values:
 ;   -
@@ -19,9 +18,13 @@
 ;
 ;------------------------------------------------------------------------------
 
-LEFT_KEY_DOWN:  EQU 0b00000001
-RIGHT_KEY_DOWN: EQU 0b00000010
-FIRE_KEY_DOWN:  EQU 0b00000100
+LEFT_KEY_DOWN_MASK:  EQU 0b00000001
+RIGHT_KEY_DOWN_MASK: EQU 0b00000010
+FIRE_KEY_DOWN_MASK:  EQU 0b00000100
+
+LEFT_KEY_DOWN_BIT:  EQU 0
+RIGHT_KEY_DOWN_BIT: EQU 1
+FIRE_KEY_DOWN_BIT:  EQU 2
 
 LR_PORT:        EQU 0xFDFE
 LEFT_KEY_BIT:   EQU 0   
@@ -49,7 +52,7 @@ get_movement_keys:
     BIT LEFT_KEY_BIT,D
     JR NZ,.left_not_pressed       
     LD A,E                      ; Left pressed so flag in result
-    OR LEFT_KEY_DOWN
+    OR LEFT_KEY_DOWN_MASK
     LD E,A
     
 .left_not_pressed:
@@ -57,7 +60,7 @@ get_movement_keys:
     BIT RIGHT_KEY_BIT,D         ; Right pressed?
     JR NZ,.right_not_pressed
     LD A,E                      ; Right key pressed so flag in result
-    OR RIGHT_KEY_DOWN
+    OR RIGHT_KEY_DOWN_MASK
     LD E,A
 
 .right_not_pressed:
@@ -68,7 +71,7 @@ get_movement_keys:
     BIT FIRE_KEY_BIT,A          ; Fire key pressed?
     JR NZ,.fire_not_pressed       
     LD A,E                      ; Fire pressed so flag in result
-    OR FIRE_KEY_DOWN
+    OR FIRE_KEY_DOWN_MASK
     LD E,A
 
 .fire_not_pressed:

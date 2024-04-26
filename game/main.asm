@@ -24,12 +24,14 @@
 
 BOTTOM_GEL_TOP_LEFT_Y:  EQU draw.SCREEN_HEIGHT_CHARS-6
 BOTTOM_GEL_HEIGHT:      EQU 5
-
-main:
-    ; Set up stack
-    DI                          
-    LD SP,STACK_TOP
-    EI
+BASES_GEL_TOP_LEFT_X:   EQU 3
+BASES_GEL_TOP_LEFT_Y:   EQU draw.SCREEN_HEIGHT_CHARS-1
+BASES_GEL_WIDTH:        EQU 10
+BASES_GEL_HEIGHT:       EQU 1
+SPACESHIP_GEL_LEFT_Y:   EQU 2
+SPACESHIP_GEL_HEIGHT:   EQU 1
+init_screen:
+    PUSH HL
 
     ; Clear the screen
     call draw.wipe_screen
@@ -40,23 +42,214 @@ main:
     CALL draw.fill_screen_attributes
     POP HL
 
-    ; Green fg across bottom of screen to simulate a gel
-    LD H,BOTTOM_GEL_TOP_LEFT_Y                                   ; Top left X
-    LD L,BOTTOM_GEL_HEIGHT                                   ; Height
+    ; Green gel to cover active player base and defences
+    LD H,BOTTOM_GEL_TOP_LEFT_Y                                  ; Top left X
+    LD L,BOTTOM_GEL_HEIGHT                                      ; Height
     PUSH HL
-    LD HL,draw.CA_FG_GREEN  ; Attribute
+    LD HL,draw.CA_FG_GREEN                                      ; Green fg attribute
     PUSH HL
     CALL draw.fill_screen_attribute_stripe
     POP HL
     POP HL
 
-    LD HL,hello
+    ; Gren gel covering bases showing remaining lives
+    LD H,BASES_GEL_TOP_LEFT_X                                   ; Top left X
+    LD L,BASES_GEL_TOP_LEFT_Y                                   ; Top left Y
     PUSH HL
-    LD HL,0x0205
+    LD H,BASES_GEL_WIDTH                                        ; Width
+    LD L,BASES_GEL_HEIGHT                                       ; Height
+    PUSH HL
+    LD HL,draw.CA_FG_GREEN                                      ; Green fg attribute
+    PUSH HL
+    CALL draw.fill_screen_attributes_rect
+    POP HL
+    POP HL
+    POP HL
+
+    ; REed just below scores - for spaceship and exploding player missiles
+    LD H,SPACESHIP_GEL_LEFT_Y                                   ; Top left X
+    LD L,SPACESHIP_GEL_HEIGHT                                   ; Height
+    PUSH HL
+    LD HL,draw.CA_FG_RED                                        ; Red fg attribute
+    PUSH HL
+    CALL draw.fill_screen_attribute_stripe
+    POP HL
+    POP HL
+
+    ; Draw static screen labels. 
+    LD HL,score_line_0_text
+    PUSH HL
+    LD HL,0x0000
     PUSH HL
     CALL print.print_string
     POP HL
     POP HL
+
+    LD HL,score_line_1_text
+    PUSH HL
+    LD HL,0x0001
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+
+    LD HL,lives_and_creds_text
+    PUSH HL
+    LD HL,draw.SCREEN_HEIGHT_CHARS-1
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+
+    POP HL
+
+    CALL draw_score_1
+    CALL draw_score_2
+    CALL draw_high_score
+    CALL draw_credit
+    CALL draw_bases_count
+    CALL draw_bases
+
+    RET
+
+; TODO
+draw_score_1:
+    RET
+
+; TODO
+draw_score_2:
+    RET
+
+; TODO
+draw_high_score:
+    RET
+
+; TODO
+draw_credit:
+    RET
+    
+; TODO
+draw_bases_count:
+    RET
+
+draw_bases:
+    PUSH DE
+
+    LD D,RESERVE_BASE_1_X
+    LD E,RESERVE_BASE_Y
+    PUSH DE
+    CALL draw_reserve_base
+    POP DE
+
+    LD D,RESERVE_BASE_2_X
+    LD E,RESERVE_BASE_Y
+    PUSH DE
+    CALL draw_reserve_base
+    POP DE
+
+    POP DE
+
+    RET
+
+RESERVE_BASE_Y:     EQU draw.SCREEN_HEIGHT_PIXELS-8-1
+RESERVE_BASE_1_X:   EQU 3*8
+RESERVE_BASE_2_X:   EQU RESERVE_BASE_1_X+16
+
+DB_COORDS:  EQU 6
+draw_reserve_base:
+    PUSH DE,IX
+
+    LD  IX,0                            ; Point IX to the stack
+    ADD IX,SP  
+
+    LD DE,(IX+DB_COORDS)
+    PUSH DE     
+    ; HACK
+    LD DE, 0x0308
+    PUSH DE
+    LD DE,sprite_base     
+    PUSH DE
+    LD DE,mask_2x16
+    PUSH DE
+    CALL draw.draw_sprite
+    POP DE
+    POP DE
+    POP DE
+    POP DE
+
+    POP IX,DE
+
+    RET
+
+score_line_0_text:    BYTE " SCORE<1>   HI-SCORE   SCORE<2> ",0
+score_line_1_text:    BYTE "   0000      0000        0000   ",0
+lives_and_creds_text: BYTE " 3                    CREDIT 00 ",0
+
+process_player:
+    PUSH AF,DE
+
+    LD A, (player_x)    ; Coords
+    LD D,A
+    LD E, PLAYER_Y
+    PUSH DE
+
+    ; HACK          
+    LD DE, 0x0308       ; Dimensions
+    PUSH DE
+
+    LD DE,sprite_base   ; Sprite    
+    PUSH DE
+
+    LD DE,mask_2x16     ; Sprite mask
+    PUSH DE
+
+    CALL draw.draw_sprite
+    POP DE
+    POP DE
+    POP DE
+    POP DE
+
+    PUSH DE
+    CALL keyboard.get_movement_keys
+    POP DE
+
+    BIT keyboard.LEFT_KEY_DOWN_BIT,E
+    JR Z,.left_not_pressed
+
+    LD A,(player_x)
+    DEC A
+    CP MIN_PLAYER_X
+    JR Z,.done
+    LD (player_x),A
+    JR .done
+
+.left_not_pressed
+    BIT keyboard.RIGHT_KEY_DOWN_BIT,E
+    JR Z,.done
+    LD A,(player_x)
+    INC A
+    CP MAX_PLAYER_X
+    JR NC,.done
+    LD (player_x),A
+
+.done:
+
+    POP DE,AF
+
+    RET
+
+player_x:   BYTE draw.SCREEN_WIDTH_PIXELS/2-8
+PLAYER_Y:   EQU draw.SCREEN_HEIGHT_PIXELS-8*2-1
+MIN_PLAYER_X:   EQU 0
+MAX_PLAYER_X:   EQU draw.SCREEN_WIDTH_PIXELS-16
+
+main:
+    ; Set up stack
+    DI                          
+    LD SP,STACK_TOP
+    EI
+
+    CALL init_screen
 
     ; Count of animation cycles
     LD C, 60
@@ -123,7 +316,6 @@ moved:
     ; HACK
     LD DE, 0x0308
     PUSH DE
-    ; HACK
 
     BIT 0,C                 ; Which variant of sprite to draw
     JR Z,variant_2
@@ -149,7 +341,7 @@ variant_1:
     POP DE
     POP DE
 
-;    CALL do_base
+    CALL process_player
 
     DEC B                   ; One more alien has been done, dec loop counter
     JP NZ,draw_pack_loop    ; Done drawing sheet of aliens?
@@ -171,6 +363,8 @@ switch_to_left:
 switched_to_right:
 
 notdown:
+
+
     DEC C                   ; One more cycle of animating pack done
     JP NZ,animation_loop    ; Done animating?
 
@@ -219,6 +413,7 @@ forever: JP forever
 ; Data
     INCLUDE "processed_sprites/mask_2x16.asm"
     INCLUDE "processed_sprites/sprite_blank.asm"
+    INCLUDE "processed_sprites/sprite_base.asm"
     INCLUDE "processed_sprites/sprite_alien_1_variant_0.asm"
     INCLUDE "processed_sprites/sprite_alien_1_variant_1.asm"
     INCLUDE "processed_sprites/sprite_alien_2_variant_0.asm"
