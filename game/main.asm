@@ -22,6 +22,20 @@
     
     MODULE main
 
+;------------------------------------------------------------------------------
+;
+; Draw the initial screen.
+; 
+; Usage:
+;   CALL init_screen
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
 BOTTOM_GEL_TOP_LEFT_Y:  EQU draw.SCREEN_HEIGHT_CHARS-6
 BOTTOM_GEL_HEIGHT:      EQU 5
 BASES_GEL_TOP_LEFT_X:   EQU 3
@@ -66,7 +80,7 @@ init_screen:
     POP HL
     POP HL
 
-    ; REed just below scores - for spaceship and exploding player missiles
+    ; Red gel just below scores - for spaceship and exploding player missiles
     LD H,SPACESHIP_GEL_LEFT_Y                                   ; Top left X
     LD L,SPACESHIP_GEL_HEIGHT                                   ; Height
     PUSH HL
@@ -108,7 +122,7 @@ init_screen:
     CALL draw_high_score
     CALL draw_credit
     CALL draw_bases_count
-    CALL draw_bases
+    CALL draw_reserve_bases
 
     RET
 
@@ -132,7 +146,8 @@ draw_credit:
 draw_bases_count:
     RET
 
-draw_bases:
+; TODO
+draw_reserve_bases:
     PUSH DE
 
     LD D,RESERVE_BASE_1_X
@@ -155,14 +170,15 @@ RESERVE_BASE_Y:     EQU draw.SCREEN_HEIGHT_PIXELS-8-1
 RESERVE_BASE_1_X:   EQU 3*8
 RESERVE_BASE_2_X:   EQU RESERVE_BASE_1_X+16
 
-DB_COORDS:  EQU 6
+DRB_PARAM_COORDS:  EQU 6
+
 draw_reserve_base:
     PUSH DE,IX
 
-    LD  IX,0                            ; Point IX to the stack
+    LD  IX,0                                ; Point IX to the stack
     ADD IX,SP  
 
-    LD DE,(IX+DB_COORDS)
+    LD DE,(IX+DRB_PARAM_COORDS)             
     PUSH DE     
     ; HACK
     LD DE, 0x0308
@@ -185,63 +201,127 @@ score_line_0_text:    BYTE " SCORE<1>   HI-SCORE   SCORE<2> ",0
 score_line_1_text:    BYTE "   0000      0000        0000   ",0
 lives_and_creds_text: BYTE " 3                    CREDIT 00 ",0
 
+;------------------------------------------------------------------------------
+;
+; Draw the player base, read the keyboard and move the player base based on 
+; key presses.
+; 
+; Usage:
+;   CALL process_player
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
 process_player:
     PUSH AF,DE
 
-    LD A, (player_x)    ; Coords
+    ; Draw the player base sprite
+    LD A, (player_x)                        ; Player base coords
     LD D,A
     LD E, PLAYER_Y
     PUSH DE
 
     ; HACK          
-    LD DE, 0x0308       ; Dimensions
+    LD DE, 0x0308                           ; Player base dimensions
     PUSH DE
 
-    LD DE,sprite_base   ; Sprite    
+    LD DE,sprite_base                       ; Sprite    
     PUSH DE
 
-    LD DE,mask_2x16     ; Sprite mask
+    LD DE,mask_2x16                         ; Sprite mask
     PUSH DE
 
+    CALL draw.draw_sprite                   ; Draw the player base sprite
+    POP DE
+    POP DE
+    POP DE
+    POP DE
+
+    ; Read the keyboard
+    PUSH DE                                 ; Allocate space on stack for return value
+    CALL keyboard.get_movement_keys
+    POP DE                                  ; Keys pressed
+
+    ; Update player base position based on keys pressed
+    BIT keyboard.LEFT_KEY_DOWN_BIT,E        ; Left pressed?
+    JR Z,.left_not_pressed                  ; No
+
+    LD A,(player_x)                         ; Get current player base X coord
+    DEC A                                   ; Decrease it to move left
+    CP MIN_PLAYER_X                         ; Have we hit the left most point?
+    JR Z,.done                              ; Yes so don't update
+    LD (player_x),A                         ; Update the location of the player base
+    JR .done
+
+.left_not_pressed
+    BIT keyboard.RIGHT_KEY_DOWN_BIT,E       ; Right pressed?
+    JR Z,.done                              ; No
+    LD A,(player_x)                         ; Get current player base X coord
+    INC A                                   ; Increase it to move right
+    CP MAX_PLAYER_X                         ; Have we hit the right most point?
+    JR NC,.done                             ; Yes so don't update
+    LD (player_x),A                         ; Update the location of the player base
+
+.done:
+    POP DE,AF
+
+    RET
+
+player_x:       BYTE draw.SCREEN_WIDTH_PIXELS/2-8
+PLAYER_Y:       EQU draw.SCREEN_HEIGHT_PIXELS-8*2-1
+MIN_PLAYER_X:   EQU 0
+MAX_PLAYER_X:   EQU draw.SCREEN_WIDTH_PIXELS-16
+
+
+DA_PARAM_OLD_COORDS:    EQU 12
+DA_PARAM_NEW_COORDS:    EQU 10
+DA_PARAM_SPRITE_DATA:   EQU 8
+
+draw_alien:
+    PUSH DE,IX
+
+    LD  IX,0                                ; Point IX to the stack
+    ADD IX,SP 
+
+    ; Blank old sprite position
+    LD DE,(IX+DA_PARAM_OLD_COORDS)          ; Coords
+    PUSH DE     
+    ; HACK
+    LD DE, 0x0308                           ; Dimensions
+    PUSH DE
+    LD DE,sprite_blank                      ; Background square
+    PUSH DE
+    LD DE,mask_2x16                         ; Mask
+    PUSH DE
     CALL draw.draw_sprite
     POP DE
     POP DE
     POP DE
     POP DE
 
+    ; Draw sprite in new position
+    LD DE,(IX+DA_PARAM_NEW_COORDS)          ; Coords
+    PUSH DE     
+    ; HACK
+    LD DE, 0x0308                           ; Dimensions
     PUSH DE
-    CALL keyboard.get_movement_keys
+    LD DE,(IX+DA_PARAM_SPRITE_DATA)         ; Background square
+    PUSH DE
+    LD DE,mask_2x16                         ; Mask
+    PUSH DE
+    CALL draw.draw_sprite
+    POP DE
+    POP DE
+    POP DE
     POP DE
 
-    BIT keyboard.LEFT_KEY_DOWN_BIT,E
-    JR Z,.left_not_pressed
-
-    LD A,(player_x)
-    DEC A
-    CP MIN_PLAYER_X
-    JR Z,.done
-    LD (player_x),A
-    JR .done
-
-.left_not_pressed
-    BIT keyboard.RIGHT_KEY_DOWN_BIT,E
-    JR Z,.done
-    LD A,(player_x)
-    INC A
-    CP MAX_PLAYER_X
-    JR NC,.done
-    LD (player_x),A
-
-.done:
-
-    POP DE,AF
+    POP IX,DE
 
     RET
-
-player_x:   BYTE draw.SCREEN_WIDTH_PIXELS/2-8
-PLAYER_Y:   EQU draw.SCREEN_HEIGHT_PIXELS-8*2-1
-MIN_PLAYER_X:   EQU 0
-MAX_PLAYER_X:   EQU draw.SCREEN_WIDTH_PIXELS-16
 
 main:
     ; Set up stack
@@ -249,6 +329,7 @@ main:
     LD SP,STACK_TOP
     EI
 
+    ; Draw the initial screen
     CALL init_screen
 
     ; Count of animation cycles
@@ -259,21 +340,20 @@ main:
     LD (direction),A
 
 animation_loop:
-    LD B,50                 ; Alien pack size
-    LD HL,aliens            ; Pointer to aliens definitions
+    LD B,50                                 ; Alien pack size
+    LD HL,aliens                            ; Pointer to aliens definitions
 
 draw_pack_loop:
     ; Wait for screen blank
     HALT
     
     ; Blank old sprite
-    LD DE,(HL)             ; Coords of current alien
+    LD DE,(HL)                              ; Coords of current alien
     PUSH DE     
     ; HACK
     LD DE, 0x0308
     PUSH DE
-    ; HACK
-    LD DE,sprite_blank     ; Background square
+    LD DE,sprite_blank                      ; Background square
     PUSH DE
     LD DE,mask_2x16
     PUSH DE
@@ -364,53 +444,12 @@ switched_to_right:
 
 notdown:
 
-
     DEC C                   ; One more cycle of animating pack done
     JP NZ,animation_loop    ; Done animating?
 
 forever: JP forever
 
-; move_sprite:
-;  ... old and new 
-
-; do_base:
-;     PUSH AF,HL                 
-;     CALL keyboard.get_movement_keys ; Get which keys are pressed
-;     LD A,L                          ; Keys pressed
-
-;     LD A,(base_x)                   ; Coords
-;     LD D,A
-;     LD E,base_y
-
-;     LD DE, 0x0308                   ; Size
-;     PUSH DE
-    
-;     LD DE,sprite_blank             ; Background square
-;     PUSH DE
-
-;     LD DE,mask_2x16                 ; Mask
-;     PUSH DE
-;     CALL draw.draw_sprite
-
-
-;     AND keyboard.LEFT_KEY_DOWN
-;     JR Z,left_not_down
-
-;     JR keys_done
-; left_not_down:
-;     LD A,L
-;     AND keyboard.RIGHT_KEY_DOWN
-;     JR Z,keys_done
-
-; keys_done:
-
-;     POP HL,AF
-;     RET
-
-; base_x:     WORD 120
-; base_y:     EQU 192-8
-
-; Data
+; Sprite data
     INCLUDE "processed_sprites/mask_2x16.asm"
     INCLUDE "processed_sprites/sprite_blank.asm"
     INCLUDE "processed_sprites/sprite_base.asm"
@@ -421,6 +460,7 @@ forever: JP forever
     INCLUDE "processed_sprites/sprite_alien_3_variant_0.asm"
     INCLUDE "processed_sprites/sprite_alien_3_variant_1.asm"
 
+; Alien pack
 aliens:         
     WORD 0x1060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x2060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x3060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x4060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x5060,sprite_alien_1_variant_0,sprite_alien_1_variant_1
     WORD 0x6060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x7060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x8060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0x9060,sprite_alien_1_variant_0,sprite_alien_1_variant_1, 0xA060,sprite_alien_1_variant_0,sprite_alien_1_variant_1
@@ -441,9 +481,6 @@ direction:          BLOCK 1
 DIRECTION_LEFT:     EQU 2
 DIRECTION_RIGHT:    EQU 1
 
-hello: 
-    BYTE "hello",0
-
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is
 STACK_SIZE: EQU 100*2    
@@ -454,18 +491,3 @@ STACK_TOP: EQU $-1
     SAVESNA "space-invaders.sna",main
    
     ENDMODULE
-
-
-    ; LD HL,0x2130            ; X,Y coords
-    ; PUSH HL
-    ; LD HL,(sprite_alien_1_variant_0_dims)     ; Dimensions
-    ; PUSH HL
-    ; LD HL,sprite_alien_1_variant_0            ; Sprite data
-    ; PUSH HL
-    ; LD HL,mask_2x16         ; Mask
-    ; PUSH HL
-    ; CALL draw.draw_sprite
-    ; POP HL
-    ; POP HL
-    ; POP HL
-    ; POP HL
