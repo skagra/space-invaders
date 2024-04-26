@@ -31,11 +31,11 @@ print_string:
     LD DE,(IX+PS_PARAM_STRING)          ; Pointer to current character
     LD BC,(IX+PS_PARAM_COORDS)          ; Current coords X in B, Y in C
 
-ps_char_loop:
+.ps_char_loop:
     ; Get character to print
     LD A,(DE)                           ; Have we hit the end of the string?
     CP 0x00
-    JR Z,ps_done
+    JR Z,.ps_done
 
     LD H, 0x00  
     LD L,A
@@ -52,9 +52,9 @@ ps_char_loop:
     ADD HL,BC
     LD BC,HL
 
-    JR ps_char_loop                     ; Next character
+    JR .ps_char_loop                    ; Next character
 
-ps_done:
+.ps_done:
     POP IX,HL,DE,BC,AF
 
     RET
@@ -93,7 +93,7 @@ print_char:
     PUSH HL                             ; Space for return value
     CALL char_coords_to_mem
     POP HL                              ; Grab return value
-    LD (pc_print_mem_ptr),HL            ; Store the result
+    LD (.pc_print_mem_ptr),HL           ; Store the result
     POP HL                              ; Ditch the supplied parameter
 
     ; Find the bitmap for the required character
@@ -106,33 +106,33 @@ print_char:
     SLA E
     RL D
     ADD HL,DE                           ; HL now points at character bitmap
-    LD (pc_char_data_ptr), HL           ; Store pointer to first byte of character data 
+    LD (.pc_char_data_ptr), HL          ; Store pointer to first byte of character data 
 
     LD B,0x08                           ; Loop counter for drawing bytes of character data
 
-pc_y_loop:
-    LD HL,(pc_char_data_ptr)            ; Get character bits to print
+.pc_y_loop:
+    LD HL,(.pc_char_data_ptr)           ; Get character bits to print
     LD A,(HL)
     
     INC HL                              ; Move character data pointer to next byte
-    LD (pc_char_data_ptr),HL
+    LD (.pc_char_data_ptr),HL
 
-    LD HL,(pc_print_mem_ptr)            ; Write character bits into screen memory
+    LD HL,(.pc_print_mem_ptr)           ; Write character bits into screen memory
     LD (HL), A
 
     LD DE,0x0100                        ; Move pointer to screen memory down a line
     ADD HL,DE
-    LD (pc_print_mem_ptr),HL
+    LD (.pc_print_mem_ptr),HL
 
     DEC B                               ; Done?
-    JR NZ,pc_y_loop 
+    JR NZ,.pc_y_loop 
 
     POP IX,HL,DE,BC,AF
 
     RET
 
-pc_print_mem_ptr:  BLOCK 2
-pc_char_data_ptr:  BLOCK 2
+.pc_print_mem_ptr:  BLOCK 2
+.pc_char_data_ptr:  BLOCK 2
 
 ;------------------------------------------------------------------------------
 ;
@@ -172,7 +172,7 @@ char_coords_to_mem:
     LD B, 0x00                          ; B=0x00, C=Y coord
     SLA C                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, cctm_y_lookup_table          ; Base of lookup table in HL
+    LD HL, .cctm_y_lookup_table         ; Base of lookup table in HL
     ADD HL,BC                           ; Location of the row start in the lookup table
     LD BC,(HL)                          ; Location of row start
     LD HL,BC                            ; Move result into HL
@@ -189,7 +189,7 @@ char_coords_to_mem:
 
     RET
 
-cctm_y_lookup_table:
+.cctm_y_lookup_table:
 	WORD 0x4000, 0x4020, 0x4040, 0x4060, 0x4080, 0x40A0,  0x40C0,  0x40E0
 	WORD 0x4800, 0x4820, 0x4840, 0x4860, 0x4880, 0x48A0,  0x48C0,  0x48E0
 	WORD 0x5000, 0x5020, 0x5040, 0x5060, 0x5080, 0x50A0,  0x50C0,  0x50E0

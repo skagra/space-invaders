@@ -22,6 +22,9 @@
     
     MODULE main
 
+BOTTOM_GEL_TOP_LEFT_Y:  EQU draw.SCREEN_HEIGHT_CHARS-6
+BOTTOM_GEL_HEIGHT:      EQU 5
+
 main:
     ; Set up stack
     DI                          
@@ -31,31 +34,19 @@ main:
     ; Clear the screen
     call draw.wipe_screen
 
-    ; Fill screen with some default colour attribute
+    ; Fill screen with black bg, white fg
     LD L,draw.CA_BG_BLACK | draw.CA_FG_WHITE
     PUSH HL
     CALL draw.fill_screen_attributes
     POP HL
 
-    ; Fill a strip across the screen with a colour atttribute
-    LD H,0x04                                   ; Top left X
-    LD L,0x05                                   ; Height
+    ; Green fg across bottom of screen to simulate a gel
+    LD H,BOTTOM_GEL_TOP_LEFT_Y                                   ; Top left X
+    LD L,BOTTOM_GEL_HEIGHT                                   ; Height
     PUSH HL
-    LD HL,draw.CA_BG_BLUE | draw.CA_FG_MAGENTA  ; Attribute
+    LD HL,draw.CA_FG_GREEN  ; Attribute
     PUSH HL
     CALL draw.fill_screen_attribute_stripe
-    POP HL
-    POP HL
-
-    ; Fill a rectangle with a colour attribute
-    LD HL,0x0505                                ; Top left X Y
-    PUSH HL
-    LD HL,0x050A                                ; Dimensions X dim Y dim
-    PUSH HL
-    LD HL,draw.CA_BG_GREEN | draw.CA_FG_YELLOW  ; Attribute
-    PUSH HL
-    CALL draw.fill_screen_attributes_rect
-    POP HL
     POP HL
     POP HL
 
@@ -256,8 +247,7 @@ DIRECTION_LEFT:     EQU 2
 DIRECTION_RIGHT:    EQU 1
 
 hello: 
-    BYTE "hello"
-    BYTE 0
+    BYTE "hello",0
 
 ; Put the stack immediated after the code
 ; This seems to be needed so the debugger knows where the stack is

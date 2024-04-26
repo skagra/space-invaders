@@ -8,6 +8,9 @@
             "args": [
                 "--sld=space-invaders.sld",
                 "--fullpath",
+                "--sym=${workspaceFolder}/.tmp/symbols.txt",
+                "--lst=${workspaceFolder}/.tmp/listing.txt",
+                // "--syntax=f",
                 "main.asm"
             ],
             "problemMatcher": {

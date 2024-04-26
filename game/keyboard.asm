@@ -47,31 +47,31 @@ get_movement_keys:
 
     ; Left key
     BIT LEFT_KEY_BIT,D
-    JR NZ,left_not_pressed       
+    JR NZ,.left_not_pressed       
     LD A,E                      ; Left pressed so flag in result
     OR LEFT_KEY_DOWN
     LD E,A
     
-left_not_pressed:
+.left_not_pressed:
     ; Right key
     BIT RIGHT_KEY_BIT,D         ; Right pressed?
-    JR NZ,right_not_pressed
+    JR NZ,.right_not_pressed
     LD A,E                      ; Right key pressed so flag in result
     OR RIGHT_KEY_DOWN
     LD E,A
 
-right_not_pressed:
+.right_not_pressed:
     ; Fire key
     LD BC,FIRE_PORT             ; Fire port
     IN A,(C)                    ; Read the port into the accumulator
 
     BIT FIRE_KEY_BIT,A          ; Fire key pressed?
-    JR NZ,fire_not_pressed       
+    JR NZ,.fire_not_pressed       
     LD A,E                      ; Fire pressed so flag in result
     OR FIRE_KEY_DOWN
     LD E,A
 
-fire_not_pressed:
+.fire_not_pressed:
     LD D,0x00                   ; Return the result on the stack
     LD (IX+GMK_RTN_KEYS),E      
 
