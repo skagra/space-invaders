@@ -32,7 +32,7 @@ main:
     call draw.wipe_screen
 
     ; Fill screen with some default colour attribute
-    LD H,draw.CA_BG_BLACK | draw.CA_FG_WHITE
+    LD L,draw.CA_BG_BLACK | draw.CA_FG_WHITE
     PUSH HL
     CALL draw.fill_screen_attributes
     POP HL
@@ -157,37 +157,10 @@ variant_1:
     POP DE
     POP DE
     POP DE
-    
 
-    PUSH HL                 ; Need to restore after call
-    CALL keyboard.get_movement_keys
-    LD A,L                  ; Keys pressed (we'd save this not act right away?)
-    AND keyboard.FIRE_KEY_DOWN
-
-    JR NZ,left_not_down
-    LD HL, "A"
-    PUSH HL
-    LD HL, 0x0000
-    PUSH HL
-    CALL print.print_char
-    POP HL
-    POP HL
-    JR keys_done
-
-left_not_down:
-    LD HL, " "
-    PUSH HL
-    LD HL, 0x0000
-    PUSH HL
-    CALL print.print_char
-    POP HL
-    POP HL
-
-keys_done:
+;    CALL do_base
 
     DEC B                   ; One more alien has been done, dec loop counter
-    POP HL                  ; Restore
-
     JP NZ,draw_pack_loop    ; Done drawing sheet of aliens?
 
     LD A,C                  ; Is it time to chnage direction?
@@ -211,6 +184,46 @@ notdown:
     JP NZ,animation_loop    ; Done animating?
 
 forever: JP forever
+
+; move_sprite:
+;  ... old and new 
+
+; do_base:
+;     PUSH AF,HL                 
+;     CALL keyboard.get_movement_keys ; Get which keys are pressed
+;     LD A,L                          ; Keys pressed
+
+;     LD A,(base_x)                   ; Coords
+;     LD D,A
+;     LD E,base_y
+
+;     LD DE, 0x0308                   ; Size
+;     PUSH DE
+    
+;     LD DE,sprite_blank             ; Background square
+;     PUSH DE
+
+;     LD DE,mask_2x16                 ; Mask
+;     PUSH DE
+;     CALL draw.draw_sprite
+
+
+;     AND keyboard.LEFT_KEY_DOWN
+;     JR Z,left_not_down
+
+;     JR keys_done
+; left_not_down:
+;     LD A,L
+;     AND keyboard.RIGHT_KEY_DOWN
+;     JR Z,keys_done
+
+; keys_done:
+
+;     POP HL,AF
+;     RET
+
+; base_x:     WORD 120
+; base_y:     EQU 192-8
 
 ; Data
     INCLUDE "processed_sprites/mask_2x16.asm"

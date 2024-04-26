@@ -1,5 +1,6 @@
     MODULE draw
 
+; Scree dimensions
 SCREEN_WIDTH_PIXELS:    EQU 256
 SCREEN_HEIGHT_PIXELS:   EQU 192
 SCREEN_WIDTH_CHARS:     EQU 32
@@ -42,10 +43,11 @@ CA_BG_YELLOW:   EQU CA_COL_YELLOW << 3
 CA_BG_WHITE:    EQU CA_COL_WHITE << 3
 
 ;------------------------------------------------------------------------------
+;
 ; Erase the screen
 ;
 ; Usage:
-;   -
+;   CALL wipe_screen
 ;
 ; Return values:
 ;   -
@@ -74,19 +76,23 @@ wipe_screen:
     RET
 
 ;------------------------------------------------------------------------------
+;
 ; Fill screen with given colour attributes
 ;
 ; Usage:
-;   PUSH attribute byte (in high byte of pair)
+;   PUSH rr                             ; Attribute byte in LSB
+;   CALL fill_screen_attributes
+;   POP rr                              ; Ditch the supplied parameter
 ;
 ; Return values:
 ;   -
 ;
 ; Registers modified:
 ;   -
+;
 ;------------------------------------------------------------------------------
 
-FSA_PARAM_ATTRIBUTE: EQU 7                  ; Colour attributes
+FSA_PARAM_ATTRIBUTE: EQU 6              ; Colour attributes
 
 fill_screen_attributes:
     PUSH HL,IX   
@@ -95,7 +101,7 @@ fill_screen_attributes:
     ADD IX,SP
 
     ; Set up call to utils.fill_mem
-    LD HL, (ix+FSA_PARAM_ATTRIBUTE)         ; Get the colour attribute
+    LD HL, (ix+FSA_PARAM_ATTRIBUTE)     ; Get the colour attribute
     PUSH HL                             
     LD HL,mmap.SCREEN_ATTR_START        ; Start of the screen attribute area
     PUSH HL
@@ -111,6 +117,7 @@ fill_screen_attributes:
     RET
 
 ;------------------------------------------------------------------------------
+;
 ; Fill a rectangle with the given attribute
 ;
 ; The structure of the screen memory address is formed as follows:
@@ -119,9 +126,13 @@ fill_screen_attributes:
 ;   1  0  0  1  1 0  Y4 Y3 Y2 Y1 Y0 X4 X3 X2 X1 X0
 ; 
 ; Usage:
-;   PUSH coords word - X high byte, Y low byte
-;   PUSH dimensions word - X dim high byte, Y dim low byte
-;   PUSH color attribute - In low byte of pair
+;   PUSH rr                             ; Cell coords of top left X MSB, Y LSB
+;   PUSH rr                             ; Rectange dimensions X MSB, Y LSB
+;   PUSH rr                             ; Colour attribute in LSB
+;   CALL fill_screen_attributes_rect
+;   POP rr                              ; Ditch the supplied parameters
+;   POP rr
+;   POP rr
 ;
 ; Return values:
 ;   -
@@ -214,11 +225,12 @@ fsar_attribute:         BLOCK 1
 fsar_line_step_bytes:   BLOCK 1
 
 ;------------------------------------------------------------------------------
+;
 ; Fill a stripe across the screen with the given attribute
 ;
 ; Usage:
-;   PUSH start Y and height word - Y high byte, Height low byte
-;   PUSH color attribute word - In low byte of pair
+;   PUSH rr                             ; Top Y in MSB, Height in LSB
+;   PUSH rr                             ; Attribute in LSB
 ;
 ; Return values:
 ;   -
@@ -262,6 +274,7 @@ fill_screen_attribute_stripe:
     RET
 
 ;------------------------------------------------------------------------------
+;
 ; Translate x,y coordinates to a screen map memory location
 ;
 ; The structure of the screen memory address is formed as follows:
@@ -272,19 +285,22 @@ fill_screen_attribute_stripe:
 ; As X2,X1,X0 gives bit offset with screen byte they are ignored here
 ;
 ; Usage:
-;   PUSH coords word - X high byte, Y low byte
+;   PUSH rr                             ; Coords word X MSB Y LSB
+;   PUSH rr                             ; Space for return value
 ;
 ; Return values:
-;   HL - Screen address
+;   -
 ;
 ; Registers modified:
-;   HL
+;   -
+;
 ;------------------------------------------------------------------------------
 
-CTM_PARAM_COORDS:   EQU 8               ; Coordinates
+CTM_PARAM_COORDS:   EQU 12              ; Coordinates
+CTM_RTN_MEM:        EQU 10              ; Memory location return value
 
 coords_to_mem:
-    PUSH AF,BC,IX
+    PUSH AF,BC,HL,IX
    
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
@@ -307,7 +323,9 @@ coords_to_mem:
     OR L                                ; OR with Y5,Y4,Y3
     LD L,A                              ; Store in L
   
-    POP IX,BC,AF
+    LD (IX+CTM_RTN_MEM),HL              ; Put the return value on the stack
+
+    POP IX,HL,BC,AF
 
     RET
 
@@ -399,8 +417,10 @@ draw_sprite:
 
 ds_y_loop:   
     LD HL,(ds_coords)                   ; Current screen coords
-    PUSH HL                 
+    PUSH HL 
+    PUSH HL                             ; Space for the return value
     CALL coords_to_mem                  ; Get Memory location of screen byte into HL
+    POP HL
     LD (ds_screen_mem_loc),HL           ; Store the start of the row in screen memory
     POP HL
 
