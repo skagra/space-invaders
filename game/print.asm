@@ -13,6 +13,7 @@
 ; Registers modified:
 ;   -
 ;------------------------------------------------------------------------------
+
 init:
     RET
     
@@ -35,17 +36,18 @@ init:
 ;
 ;------------------------------------------------------------------------------
 
-PS_PARAM_STRING:    EQU 14
-PS_PARAM_COORDS:    EQU 12
-
 print_string:
+    
+._PARAM_STRING:    EQU 14
+._PARAM_COORDS:    EQU 12
+
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
-    LD DE,(IX+PS_PARAM_STRING)          ; Pointer to current character
-    LD BC,(IX+PS_PARAM_COORDS)          ; Current coords X in B, Y in C
+    LD DE,(IX+._PARAM_STRING)        ; Pointer to current character
+    LD BC,(IX+._PARAM_COORDS)        ; Current coords X in B, Y in C
 
 .ps_char_loop:
     ; Get character to print
@@ -94,27 +96,28 @@ print_string:
 ;
 ;------------------------------------------------------------------------------
 
-PC_PARAM_CHAR:      EQU 14
-PC_PARAM_COORDS:    EQU 12
-
 print_char:
+
+._PARAM_CHAR:      EQU 14
+._PARAM_COORDS:    EQU 12
+
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
     ; Calculate memory location from coords
-    LD HL,(IX+PC_PARAM_COORDS)
+    LD HL,(IX+._PARAM_COORDS)
     PUSH HL
     PUSH HL                             ; Space for return value
     CALL char_coords_to_mem
     POP HL                              ; Grab return value
-    LD (.pc_print_mem_ptr),HL           ; Store the result
+    LD (._print_mem_ptr),HL             ; Store the result
     POP HL                              ; Ditch the supplied parameter
 
     ; Find the bitmap for the required character
     LD HL,mmap.ROM_CHARACTER_SET-0x100  ; Then the char data is at character code * 8 offset
-    LD DE,(IX+PC_PARAM_CHAR)            ; Get the char to draw
+    LD DE,(IX+._PARAM_CHAR)             ; Get the char to draw
     SLA E                               ; Multiply char code by 8
     RL D
     SLA E
@@ -122,23 +125,23 @@ print_char:
     SLA E
     RL D
     ADD HL,DE                           ; HL now points at character bitmap
-    LD (.pc_char_data_ptr), HL          ; Store pointer to first byte of character data 
+    LD (._char_data_ptr), HL            ; Store pointer to first byte of character data 
 
     LD B,0x08                           ; Loop counter for drawing bytes of character data
 
 .pc_y_loop:
-    LD HL,(.pc_char_data_ptr)           ; Get character bits to print
+    LD HL,(._char_data_ptr)             ; Get character bits to print
     LD A,(HL)
     
     INC HL                              ; Move character data pointer to next byte
-    LD (.pc_char_data_ptr),HL
+    LD (._char_data_ptr),HL
 
-    LD HL,(.pc_print_mem_ptr)           ; Write character bits into screen memory
+    LD HL,(._print_mem_ptr)             ; Write character bits into screen memory
     LD (HL), A
 
     LD DE,0x0100                        ; Move pointer to screen memory down a line
     ADD HL,DE
-    LD (.pc_print_mem_ptr),HL
+    LD (._print_mem_ptr),HL
 
     DEC B                               ; Done?
     JR NZ,.pc_y_loop 
@@ -147,8 +150,8 @@ print_char:
 
     RET
 
-.pc_print_mem_ptr:  BLOCK 2
-.pc_char_data_ptr:  BLOCK 2
+._print_mem_ptr:  BLOCK 2
+._char_data_ptr:  BLOCK 2
 
 ;------------------------------------------------------------------------------
 ;
@@ -174,38 +177,39 @@ print_char:
 ;
 ;------------------------------------------------------------------------------
 
-CCTM_PARAM_COORDS:   EQU 12             ; Coordinates
-
-CCTM_RTN_ADDR:       EQU 10             ; Return address
 char_coords_to_mem:
+
+._PARAM_COORDS:   EQU 12             ; Coordinates
+._RTN_ADDR:       EQU 10             ; Return address
+
     PUSH AF,BC,HL,IX
    
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
     ; Y row
-    LD BC, (IX+CCTM_PARAM_COORDS)       ; Get coords from the stack
+    LD BC, (IX+._PARAM_COORDS)          ; Get coords from the stack
     LD B, 0x00                          ; B=0x00, C=Y coord
     SLA C                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, .cctm_y_lookup_table         ; Base of lookup table in HL
+    LD HL, ._Y_LOOKUP_TABLE         ; Base of lookup table in HL
     ADD HL,BC                           ; Location of the row start in the lookup table
     LD BC,(HL)                          ; Location of row start
     LD HL,BC                            ; Move result into HL
 
     ; Calculate X7,X6,X5,X4,X3
-    LD BC, (IX+CCTM_PARAM_COORDS)       ; Get coords from the stack
+    LD BC, (IX+._PARAM_COORDS)          ; Get coords from the stack
     LD A,B                              ; Grab the x coord
     OR L                                ; OR it into memory address
     LD L,A                              ; Store in L
   
-    LD (IX+CCTM_RTN_ADDR),HL            ; Set the return value on the stack
+    LD (IX+._RTN_ADDR),HL               ; Set the return value on the stack
     
     POP IX,BC,HL,AF
 
     RET
 
-.cctm_y_lookup_table:
+._Y_LOOKUP_TABLE:
 	WORD 0x4000, 0x4020, 0x4040, 0x4060, 0x4080, 0x40A0,  0x40C0,  0x40E0
 	WORD 0x4800, 0x4820, 0x4840, 0x4860, 0x4880, 0x48A0,  0x48C0,  0x48E0
 	WORD 0x5000, 0x5020, 0x5040, 0x5060, 0x5080, 0x50A0,  0x50C0,  0x50E0

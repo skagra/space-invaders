@@ -35,6 +35,7 @@ main:
     ; Count of animation cycles
     LD C, 0xFF
 
+    ; Initialise all modules
     CALL utils.init
     CALL draw.init
     CALL print.init
@@ -47,19 +48,21 @@ main:
     CALL game_screen.init_screen
 
 animation_loop:
-    LD B,alien_pack.ALIEN_PACK_SIZE        ; Alien pack size
-    CALL alien_pack.reset_to_pack_start
-    CALL alien_pack.adjust_alien_pack_direction
+    LD B,alien_pack._ALIEN_PACK_SIZE             ; Alien pack size counter for drawing aliens
+    CALL alien_pack.reset_to_pack_start         ; New cycle of drawing aliens
+    CALL alien_pack.adjust_alien_pack_direction ; Change the direction of movement of the pack if needed
 
 draw_pack_loop:
-    CALL player.process_player              ; Read keyboard and modify player position
-    CALL alien_pack.move_alien              ; Sets current_alien_new_coords
+    CALL player.process_player                  ; Read keyboard and modify player position
+    CALL alien_pack.move_alien                  ; Sets current_alien_new_coords
     
+    ; MUCH OF THIS NEEDS TO GO INTO PACK MODULE - and select varient should be part of move alien (change its name!)
+    ; USE state in name of all state variables
     ; Set up parameters for wiping old alien and drawing new
-    LD HL,(alien_pack.current_alien_ptr)    ; Old coords
+    LD HL,(alien_pack._current_alien_ptr)  ; Old coords
     LD DE,(HL)
-    PUSH DE                                 ; Push old coords
-    LD DE,(current_alien_new_coords)        ; Push new coords 
+    PUSH DE                                     ; Push old coords
+    LD DE,(current_alien_new_coords)            ; Push new coords 
     PUSH DE
 
     ; Skip to pointer to pointer to first sprite variant data
@@ -67,33 +70,33 @@ draw_pack_loop:
     INC HL
 
     ; Select sprite variant - keyed off C the alien loop counter
-    PUSH BC                                 ; Push variant determinant
-    PUSH HL                                 ; Push pointer to pointer to first variant sprite data
-    PUSH HL                                 ; Make some space for the return value
+    PUSH BC                                     ; Push variant determinant
+    PUSH HL                                     ; Push pointer to pointer to first variant sprite data
+    PUSH HL                                     ; Make some space for the return value
     CALL alien_pack.select_sprite_variant
-    POP DE                                  ; Return value pop pointer to selected variant sprite data
-    POP HL                                  ; Pop param - pointer to pointer to first variant 
-    POP HL                                  ; Pop param - variant determinant
-    PUSH DE                                 ; Push pointer to sprite data to use
+    POP DE                                      ; Return value pop pointer to selected variant sprite data
+    POP HL                                      ; Pop param - pointer to pointer to first variant 
+    POP HL                                      ; Pop param - variant determinant
+    PUSH DE                                     ; Push pointer to sprite data to use
 
     ; Overwrite the old alien coords with the new ones
-    LD HL,(alien_pack.current_alien_ptr)               
+    LD HL,(alien_pack._current_alien_ptr)               
     LD DE,(current_alien_new_coords)
     LD (HL),DE
 
     ; Move ptr to next alien in the pack
     LD DE,0x06                              
     ADD HL,DE
-    LD (alien_pack.current_alien_ptr),HL
+    LD (alien_pack._current_alien_ptr),HL
 
     ; Wait for raster sync
     HALT
 
     ; Draw the current alien
     CALL alien_pack.draw_alien
-    POP HL                                  ; Ditch sprite data param
-    POP HL                                  ; Ditch new coords param
-    POP HL                                  ; Ditch old coords param
+    POP HL                                      ; Ditch sprite data param
+    POP HL                                      ; Ditch new coords param
+    POP HL                                      ; Ditch old coords param
 
     ; Draw the player base
     CALL player.draw_player
@@ -112,9 +115,9 @@ forever: JP forever
 current_alien_new_coords:   BLOCK 2
 
 ; Put the stack immediately after the code
-STACK_SIZE: EQU 100*2    
-            BLOCK STACK_SIZE, 0
-STACK_TOP: EQU $-1
+STACK_SIZE:                 EQU 100*2    
+                            BLOCK STACK_SIZE, 0
+STACK_TOP:                  EQU $-1
 
 ; Save snapshot for spectrum emulator
     SAVESNA "space-invaders.sna",main

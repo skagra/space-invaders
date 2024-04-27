@@ -108,16 +108,17 @@ wipe_screen:
 ;
 ;------------------------------------------------------------------------------
 
-FSA_PARAM_ATTRIBUTE: EQU 6              ; Colour attributes
-
 fill_screen_attributes:
+
+._PARAM_ATTRIBUTE: EQU 6                ; Colour attributes
+
     PUSH HL,IX   
 
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
     ; Set up call to utils.fill_mem
-    LD HL, (ix+FSA_PARAM_ATTRIBUTE)     ; Get the colour attribute
+    LD HL, (ix+._PARAM_ATTRIBUTE)       ; Get the colour attribute
     PUSH HL                             
     LD HL,mmap.SCREEN_ATTR_START        ; Start of the screen attribute area
     PUSH HL
@@ -157,33 +158,34 @@ fill_screen_attributes:
 ;   -
 ;------------------------------------------------------------------------------
 
-FSAR_PARAM_TOP_LEFT:          EQU 16
-FSAR_PARAM_DIM:               EQU 14
-FSAR_PARAM_ATTRIBUTE:         EQU 12
-
 fill_screen_attributes_rect:
+
+._PARAM_TOP_LEFT:          EQU 16
+._PARAM_DIM:               EQU 14
+._PARAM_ATTRIBUTE:         EQU 12
+
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL,(IX+FSAR_PARAM_ATTRIBUTE)     ; Get the colour attribute
+    LD HL,(IX+._PARAM_ATTRIBUTE)        ; Get the colour attribute
     LD A,L
-    LD (.fsar_attribute),A
+    LD (._attribute),A
 
-    LD HL,(IX+FSAR_PARAM_TOP_LEFT)      ; Top left of rect to fill
-    LD (.fsar_top_left),HL
+    LD HL,(IX+._PARAM_TOP_LEFT)         ; Top left of rect to fill
+    LD (._top_left),HL
 
-    LD HL,(IX+FSAR_PARAM_DIM)           ; Width and hight of rect to fill
-    LD (.fsar_dim),HL
+    LD HL,(IX+._PARAM_DIM)              ; Width and hight of rect to fill
+    LD (._dim),HL
 
     ; Calculate the starting address
     LD DE, mmap.SCREEN_ATTR_START       ; Base address of attribute map
-    LD A,(.fsar_x)                      ; Set low order byte from x coord
+    LD A,(._x)                          ; Set low order byte from x coord
     LD E,A 
     
     LD H,0x00                           ; Take y coord
-    LD A,(.fsar_y)                      ; Multiple x32
+    LD A,(._y)                          ; Multiple x32
     LD L,A             
     SLA L
     RL H
@@ -198,47 +200,47 @@ fill_screen_attributes_rect:
     ADD DE,HL                           ; DE will track memory to write                       
 
     ; Calculate line step bytes
-    LD A,(.fsar_dim_width)              ; Subtract the width of the block 
+    LD A,(._dim_width)                  ; Subtract the width of the block 
     LD B,A                              ; from bytes in a line
     LD A, SCREEN_WIDTH_CHARS
     SUB B
-    LD (.fsar_line_step_bytes),A        ; Store away line step update
+    LD (._line_step_bytes),A            ; Store away line step update
     
-    LD A,(.fsar_dim_height)             ; Set y loop counter (B) from height
+    LD A,(._dim_height)                 ; Set y loop counter (B) from height
     LD B,A
 
-.fsar_y_loop:
-    LD A,(.fsar_dim_width)              ; Set x loop counter (C) from width
+.y_loop:
+    LD A,(._dim_width)                  ; Set x loop counter (C) from width
     LD C,A
 
-.fsar_x_loop:
-    LD A, (.fsar_attribute)             ; Get the screen attribute
+._x_loop:
+    LD A, (._attribute)                 ; Get the screen attribute
     LD (DE),A                           ; Store at current screen map location
     INC DE                              ; Move to next screen map location
 
     DEC C                               ; Any more to do in this line?
-    JR NZ,.fsar_x_loop                   
+    JR NZ,._x_loop                   
 
     LD H,0x00                           ; Move to next line
-    LD A,(.fsar_line_step_bytes)
+    LD A,(._line_step_bytes)
     LD L,A
     ADD DE,HL
 
     DEC B                               ; Any more lines to do?
-    JR NZ,.fsar_y_loop
+    JR NZ,.y_loop
 
     POP IX,HL,DE,BC,AF
 
     RET
 
-.fsar_top_left:  
-.fsar_y:                 BLOCK 1
-.fsar_x:                 BLOCK 1
-.fsar_dim:
-.fsar_dim_height:        BLOCK 1
-.fsar_dim_width:         BLOCK 1
-.fsar_attribute:         BLOCK 1
-.fsar_line_step_bytes:   BLOCK 1
+._top_left:  
+._y:                 BLOCK 1
+._x:                 BLOCK 1
+._dim:
+._dim_height:        BLOCK 1
+._dim_width:         BLOCK 1
+._attribute:         BLOCK 1
+._line_step_bytes:   BLOCK 1
 
 ;------------------------------------------------------------------------------
 ;
@@ -255,17 +257,18 @@ fill_screen_attributes_rect:
 ;   -
 ;------------------------------------------------------------------------------
 
-FSAS_YH_PARAM:  EQU 12
-FAAS_A_PARAM:   EQU 10
-
 fill_screen_attribute_stripe:
+
+._PARAM_Y:      EQU 12
+._PARAM_ATTR:   EQU 10
+
     PUSH BC,DE,HL,IX
 
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL, (IX+FSAS_YH_PARAM)           ; H = Y coord, L = height
-    LD BC, (IX+FAAS_A_PARAM)            ; C = Attribute   
+    LD HL, (IX+._PARAM_Y)               ; H = Y coord, L = height
+    LD BC, (IX+._PARAM_ATTR)            ; C = Attribute   
 
     ; XY Coords
     LD D,0x00;                          ; X=0
@@ -312,26 +315,27 @@ fill_screen_attribute_stripe:
 ;
 ;------------------------------------------------------------------------------
 
-CTM_PARAM_COORDS:   EQU 12              ; Coordinates
-CTM_RTN_MEM:        EQU 10              ; Memory location return value
-
 coords_to_mem:
+
+._PARAM_COORDS:   EQU 12                ; Coordinates
+._RTN_MEM:        EQU 10                ; Memory location return value
+
     PUSH AF,BC,HL,IX
    
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
-    LD BC, (IX+CTM_PARAM_COORDS)        ; Get coords from the stack
+    LD BC, (IX+._PARAM_COORDS)          ; Get coords from the stack
     LD B, 0x00                          ; B=0x00, C=Y coord
     SLA C                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, .y_lookup_table              ; Base of lookup table in HL
+    LD HL, ._Y_LOOKUP_TABLE             ; Base of lookup table in HL
     ADD HL,BC                           ; Location of the row start in the lookup table
     LD BC,(HL)                          ; Location of row start
     LD HL,BC                            ; Move result into HL
 
     ; Calculate X7,X6,X5,X4,X3
-    LD BC, (IX+CTM_PARAM_COORDS)        ; Get coords from the stack
+    LD BC, (IX+._PARAM_COORDS)          ; Get coords from the stack
     LD A,B                              ; Grab the x coord
     SRL A                               ; Shift into position
     SRL A
@@ -339,13 +343,13 @@ coords_to_mem:
     OR L                                ; OR with Y5,Y4,Y3
     LD L,A                              ; Store in L
   
-    LD (IX+CTM_RTN_MEM),HL              ; Put the return value on the stack
+    LD (IX+._RTN_MEM),HL                ; Put the return value on the stack
 
     POP IX,HL,BC,AF
 
     RET
 
-.y_lookup_table:
+._Y_LOOKUP_TABLE:
 	WORD 0x4000, 0x4100, 0x4200, 0x4300, 0x4400, 0x4500, 0x4600, 0x4700
 	WORD 0x4020, 0x4120, 0x4220, 0x4320, 0x4420, 0x4520, 0x4620, 0x4720
 	WORD 0x4040, 0x4140, 0x4240, 0x4340, 0x4440, 0x4540, 0x4640, 0x4740
@@ -387,103 +391,104 @@ coords_to_mem:
 ;   -
 ;------------------------------------------------------------------------------
 
-DS_PARAM_COORDS:            EQU 18      ; Sprite coordinates
-DS_PARAM_DIMS:              EQU 16      ; Sprite dimensions
-DS_PARAM_SPRITE_DATA:       EQU 14      ; Sprite pre-shifted data lookup table
-DS_PARAM_MASK_DATA:         EQU 12      ; Mask pre-shifted data lookup table
-
 draw_sprite:
+
+._PARAM_COORDS:            EQU 18       ; Sprite coordinates
+._PARAM_DIMS:              EQU 16       ; Sprite dimensions
+._PARAM_SPRITE_DATA:       EQU 14       ; Sprite pre-shifted data lookup table
+._PARAM_MASK_DATA:         EQU 12       ; Mask pre-shifted data lookup table
+
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                            ; Point IX to the stack
     ADD IX,SP                           
 
     ; Get and store the coords
-    LD HL,(IX+DS_PARAM_COORDS)          ; Grab the pixel coords
-    LD (.ds_coords),HL                  ; And store for later (only the Y coord gets updated)
+    LD HL,(IX+._PARAM_COORDS)           ; Grab the pixel coords
+    LD (._coords),HL                    ; And store for later (only the Y coord gets updated)
 
     ; Get and store the dimensions
-    LD HL,(IX+DS_PARAM_DIMS)            ; Grab dimension data (X in characters, Y in pixel lines)
-    LD (.ds_dims),HL                    ; And store for later
+    LD HL,(IX+._PARAM_DIMS)             ; Grab dimension data (X in characters, Y in pixel lines)
+    LD (._dims),HL                      ; And store for later
 
     ; Find the correct shifted version of the sprite data
-    LD HL,(IX+DS_PARAM_SPRITE_DATA)     ; Start of sprite lookup table
-    LD A,(.ds_x_coord)                  ; X coord
+    LD HL,(IX+._PARAM_SPRITE_DATA)      ; Start of sprite lookup table
+    LD A,(._x_coord)                    ; X coord
     AND 0b00000111                      ; Calculate the X offset withing the character cell
     SLA A                               ; Double the offset as the lookup table contains words
     LD D,0x00
     LD E,A
     ADD HL,DE                           ; Add the offset into the table to the base of the table
     LD DE, (HL)                         ; Lookup the sprite data in the table
-    LD (.ds_sprite_data_ptr), DE        ; Points to sprite data
+    LD (._sprite_data_ptr), DE          ; Points to sprite data
      
     ; Find the correct shifted version of the mask data
-    LD HL,(IX+DS_PARAM_MASK_DATA)       ; Start of mask lookup table
-    LD A,(.ds_x_coord)                  ; X coord
+    LD HL,(IX+._PARAM_MASK_DATA)        ; Start of mask lookup table
+    LD A,(._x_coord)                    ; X coord
     AND 0b00000111                      ; Calculate the X offset withing the character cell
     SLA A                               ; Double the offset as the lookup table contains words
     LD D,0x00
     LD E,A
     ADD HL,DE                           ; Add the offset into the table to the base of the table
     LD DE, (HL)                         ; Lookup the sprite data in the table
-    LD (.ds_mask_data_ptr), DE          ; Points to mask data
+    LD (._mask_data_ptr), DE            ; Points to mask data
 
-    LD A,(.ds_y_dim)                    ; Y loop counter set from y dimension
+    LD A,(._y_dim)                      ; Y loop counter set from y dimension
     LD C,A
 
 .ds_y_loop:   
-    LD HL,(.ds_coords)                  ; Current screen coords
+    LD HL,(._coords)                    ; Current screen coords
     PUSH HL 
     PUSH HL                             ; Space for the return value
     CALL coords_to_mem                  ; Get Memory location of screen byte into HL
     POP HL
-    LD (.ds_screen_mem_loc),HL          ; Store the start of the row in screen memory
+    LD (._screen_mem_loc),HL            ; Store the start of the row in screen memory
     POP HL
 
-    LD A,(.ds_x_dim)                    ; X dim loop counter - character cells
+    LD A,(._x_dim)                      ; X dim loop counter - character cells
     LD B,A
 
 .ds_x_loop:
     ; Draw mask -->
-    LD HL,(.ds_mask_data_ptr)           ; Get the mask data
+    LD HL,(._mask_data_ptr)             ; Get the mask data
     LD A,(HL)                                  
     CPL                                 ; Compliment the mask
-    LD HL,(.ds_screen_mem_loc)          ; Get screen byte
+    LD HL,(._screen_mem_loc)            ; Get screen byte
     AND (HL)                            ; And notted mask with screen byte
     LD (HL),A                           ; Write screen memory
   
     ; Done writing mask data, move pointer on for next iteration                     
-    LD HL,(.ds_mask_data_ptr)           ; Move to next byte of mask data
+    LD HL,(._mask_data_ptr)             ; Move to next byte of mask data
     INC HL
-    LD (.ds_mask_data_ptr),HL
+    LD (._mask_data_ptr),HL
     ; <-- End of draw mask
 
     ; Draw sprite -->
-    LD HL,(.ds_sprite_data_ptr)         ; Get sprite data
+    LD HL,(._sprite_data_ptr)           ; Get sprite data
     LD A,(HL)                                     
-    LD HL,(.ds_screen_mem_loc)          ; Get screen byte
+    LD HL,(._screen_mem_loc)            ; Get screen byte
     XOR (HL)                            ; Or sprite data with screen byte
     LD (HL),A                           ; Write screen memory
 
     ; Done writing sprite data, move pointer on for next iteration                                 
-    LD HL,(.ds_sprite_data_ptr)         ; Move to next byte of sprite data
+    LD HL,(._sprite_data_ptr)           ; Move to next byte of sprite data
     INC HL
-    LD (.ds_sprite_data_ptr),HL
+    LD (._sprite_data_ptr),HL
     ; <-- End of draw sprite
 
     ; Done writing current byte of current row - move to next X cell 
-    LD HL,(.ds_screen_mem_loc)          ; Move to next X cell
+    LD HL,(._screen_mem_loc)            ; Move to next X cell
     INC HL              
-    LD (.ds_screen_mem_loc), HL
+    LD (._screen_mem_loc), HL
     
     ; Are we done writing this pixel row?
     DEC B                               ; Decrease the X loop counter
     JR NZ,.ds_x_loop                    ; Next X
 
     ; Move to next pixel row   
-    LD HL,(.ds_coords)                  ; Next pixel row
+    LD HL,(._coords)                    ; Next pixel row
     INC HL                              
-    LD (.ds_coords), HL
+    LD (._coords), HL
     
     ; Is there another pixel row to write?
     DEC C                               ; Y loop counter
@@ -493,15 +498,15 @@ draw_sprite:
 
     RET
 
-.ds_coords:                              ; Sprite location (y is updated to line being drawn)
-.ds_y_coord:         BLOCK 1
-.ds_x_coord:         BLOCK 1
-.ds_dims:                                ; Sprite dimensions
-.ds_y_dim:           BLOCK 1
-.ds_x_dim:           BLOCK 1
-.ds_sprite_data_ptr  BLOCK 2             ; Pointer to current sprite data byte
-.ds_mask_data_ptr    BLOCK 2             ; Pointer to current mask data byte
-.ds_screen_mem_loc:  BLOCK 2             ; Pointer to current screen byte
+._coords:                               ; Sprite location (y is updated to line being drawn)
+._y_coord:         BLOCK 1
+._x_coord:         BLOCK 1
+._dims:                                 ; Sprite dimensions
+._y_dim:           BLOCK 1
+._x_dim:           BLOCK 1
+._sprite_data_ptr  BLOCK 2              ; Pointer to current sprite data byte
+._mask_data_ptr    BLOCK 2              ; Pointer to current mask data byte
+._screen_mem_loc:  BLOCK 2              ; Pointer to current screen byte
 
     ENDMODULE
 

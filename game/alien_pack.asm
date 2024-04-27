@@ -1,14 +1,38 @@
     MODULE alien_pack
 
+; TODO: Maybe change this to bit numbers and a mask for efficiency
+_DIRECTION_LEFT:             EQU 1   
+_DIRECTION_RIGHT:            EQU 2
+_DIRECTION_DOWN_AT_LEFT:     EQU 3
+_DIRECTION_DOWN_AT_RIGHT:    EQU 4
+
+_current_alien_ptr:          BLOCK 2
+_pack_x_reference:           BLOCK 1
+_direction:                  BLOCK 1
+
+;------------------------------------------------------------------------------
+;
+; Initialise the module
+;
+; Usage:
+;   CALL init
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
 init:
     PUSH AF
 
     ; Alien pack direction
-    LD A,DIRECTION_RIGHT
-    LD (direction),A
+    LD A,_DIRECTION_RIGHT
+    LD (_direction),A
 
     LD A,0x10
-    LD (pack_x_reference),A
+    LD (_pack_x_reference),A
 
     POP AF
 
@@ -16,8 +40,9 @@ init:
 
 reset_to_pack_start:
     PUSH HL
-    LD HL,aliens                            ; Set pointer to alien definitions to start of the pack
-    LD (current_alien_ptr),HL
+
+    LD HL,_aliens                            ; Set pointer to alien definitions to start of the pack
+    LD (_current_alien_ptr),HL
     POP HL
 
     RET
@@ -43,35 +68,36 @@ reset_to_pack_start:
 ;
 ;------------------------------------------------------------------------------
 
-SP_PARAM_DETERMINANT:   EQU 12
-SP_PARAM_VARIANT_0_PTR: EQU 10
-SP_RTN_OFFSET:          EQU 8
-
 select_sprite_variant:
+
+._PARAM_DETERMINANT:   EQU 12
+._PARAM_VARIANT_0_PTR: EQU 10
+._RTN_OFFSET:          EQU 8
+
     PUSH BC,HL,IX
 
     LD  IX,0                                    ; Point IX to the stack
     ADD IX,SP 
 
     ; Which variant of sprite to draw?
-    LD BC,(IX+SP_PARAM_DETERMINANT)
+    LD BC,(IX+._PARAM_DETERMINANT)
     BIT 0,C                             
     JR NZ,.variant_1
 
     ; Variant 0 - the supplied pointer is what we need
-    LD HL,(IX+SP_PARAM_VARIANT_0_PTR)
+    LD HL,(IX+._PARAM_VARIANT_0_PTR)
     JR .done
 
 .variant_1:  
     ; Variant 1 - the supplied pointer needs to be increased by 2
-    LD BC,(IX+SP_PARAM_VARIANT_0_PTR)  
+    LD BC,(IX+._PARAM_VARIANT_0_PTR)  
     LD H,0x0
     LD L,0x2
     ADD HL,BC
     
 .done:
     LD BC,(HL)
-    LD (IX+SP_RTN_OFFSET),BC
+    LD (IX+._RTN_OFFSET),BC
 
     POP IX,HL,BC
 
@@ -98,18 +124,19 @@ select_sprite_variant:
 ;
 ;------------------------------------------------------------------------------
 
-DA_PARAM_OLD_COORDS:    EQU 10
-DA_PARAM_NEW_COORDS:    EQU 8
-DA_PARAM_SPRITE_DATA:   EQU 6
-
 draw_alien:
+
+._PARAM_OLD_COORDS:    EQU 10
+._PARAM_NEW_COORDS:    EQU 8
+._PARAM_SPRITE_DATA:   EQU 6
+
     PUSH DE,IX
 
     LD  IX,0                                ; Point IX to the stack
     ADD IX,SP 
 
     ; Blank old sprite position
-    LD DE,(IX+DA_PARAM_OLD_COORDS)          ; Coords
+    LD DE,(IX+._PARAM_OLD_COORDS)           ; Coords
     PUSH DE     
     ; HACK
     LD DE, 0x0308                           ; Dimensions
@@ -125,12 +152,12 @@ draw_alien:
     POP DE
 
     ; Draw sprite in new position
-    LD DE,(IX+DA_PARAM_NEW_COORDS)          ; Coords
+    LD DE,(IX+._PARAM_NEW_COORDS)           ; Coords
     PUSH DE     
     ; HACK
     LD DE, 0x0308                           ; Dimensions
     PUSH DE
-    LD DE,(IX+DA_PARAM_SPRITE_DATA)         ; Sprite data
+    LD DE,(IX+._PARAM_SPRITE_DATA)          ; Sprite data
     PUSH DE
     LD DE,sprites.mask_2x16                 ; Mask
     PUSH DE
@@ -159,69 +186,70 @@ draw_alien:
 ;
 ; Note: This routing currently makes use of a shared global pack_x_reference
 ;------------------------------------------------------------------------------
+
 adjust_alien_pack_direction:
     PUSH AF,HL
 
     ; In which directin is the pack currently moving?
-    LD A,(direction)    
+    LD A,(_direction)    
 
-    CP DIRECTION_RIGHT
+    CP _DIRECTION_RIGHT
     JR Z,.currently_moving_right
 
-    CP DIRECTION_LEFT
+    CP _DIRECTION_LEFT
     JR Z,.currently_moving_left
 
     ; Pack is moving down
-    CP DIRECTION_DOWN_AT_RIGHT
+    CP _DIRECTION_DOWN_AT_RIGHT
     JR Z,.currently_moving_down_at_right
 
     ; Pack is at left of screen
-    LD A,DIRECTION_RIGHT                    ; Switch to moving right
-    LD (direction),A
+    LD A,_DIRECTION_RIGHT                    ; Switch to moving right
+    LD (_direction),A
 
     JR .done
 
 .currently_moving_down_at_right:
-    LD A,DIRECTION_LEFT                     ; Switch to moving left
-    LD (direction),A
+    LD A,_DIRECTION_LEFT                     ; Switch to moving left
+    LD (_direction),A
 
     JR .done
 
 .currently_moving_right:
     ; Pack is moving right
-    LD A,(pack_x_reference)                 ; Get the reference X coord
+    LD A,(_pack_x_reference)                 ; Get the reference X coord
     CP 96
     JR C,.carry_on_right
 
     ; Swich to moving down
-    LD A,DIRECTION_DOWN_AT_RIGHT            ; Switch to moving left
-    LD (direction),A
+    LD A,_DIRECTION_DOWN_AT_RIGHT            ; Switch to moving left
+    LD (_direction),A
     JR .done
 
 .carry_on_right:
-    LD A,(pack_x_reference)
+    LD A,(_pack_x_reference)
     INC A
     INC A
-    LD (pack_x_reference),A
+    LD (_pack_x_reference),A
 
     JR .done
 
 .currently_moving_left:
     ; Pack is moving left
-    LD A,(pack_x_reference)                 ; Get the reference X coord
+    LD A,(_pack_x_reference)                 ; Get the reference X coord
     CP 0x04
     JR NC,.carry_on_left
 
     ; Swich to moving down
-    LD A,DIRECTION_DOWN_AT_LEFT             ; Switch to moving left
-    LD (direction),A
+    LD A,_DIRECTION_DOWN_AT_LEFT             ; Switch to moving left
+    LD (_direction),A
     JR .done
 
 .carry_on_left:
-    LD A,(pack_x_reference)
+    LD A,(_pack_x_reference)
     DEC A
     DEC A
-    LD (pack_x_reference),A
+    LD (_pack_x_reference),A
     JR .done
 
 .done
@@ -233,12 +261,12 @@ move_alien:
     PUSH AF,DE,HL
 
      ; Move sprite to new position
-    LD HL,(current_alien_ptr)               ; Current alien
+    LD HL,(_current_alien_ptr)               ; Current alien
     LD DE,(HL)                              ; Coords are at start of alien definition
 
     ; Are we moving left, right or down
-    LD A,(direction)
-    CP DIRECTION_LEFT
+    LD A,(_direction)
+    CP _DIRECTION_LEFT
     JR NZ,.not_moving_left
 
     ; Moving left
@@ -249,7 +277,7 @@ move_alien:
     JR .done_moving
 
 .not_moving_left:
-    CP DIRECTION_RIGHT
+    CP _DIRECTION_RIGHT
     JR NZ,.moving_down
 
     ; Moving right
@@ -271,7 +299,7 @@ move_alien:
 
     RET
 
-aliens:         
+_aliens:         
     WORD 0x1060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0x2060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0x3060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0x4060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0x5060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1
     WORD 0x6060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0x7060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0x8060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0x9060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1, 0xA060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1
 
@@ -287,19 +315,6 @@ aliens:
     WORD 0x1020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x2020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x3020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x4020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x5020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1
     WORD 0x6020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x7020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x8020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x9020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0xA020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1
 
-ALIEN_PACK_SIZE:            EQU ($-aliens)/6
-
-current_alien_ptr:          BLOCK 2
-
-pack_x_reference:           BLOCK 1
-
-direction:                  BLOCK 1
-
-; TODO: Maybe change this to bit numbers and a mask for efficiency
-DIRECTION_LEFT:             EQU 1   
-DIRECTION_RIGHT:            EQU 2
-DIRECTION_DOWN_AT_LEFT:     EQU 3
-DIRECTION_DOWN_AT_RIGHT:    EQU 4
-
+_ALIEN_PACK_SIZE:  EQU ($-_aliens)/6
 
     ENDMODULE

@@ -13,18 +13,43 @@
 ; Registers modified:
 ;   -
 ;------------------------------------------------------------------------------
+
 init:
     RET
     
-; usage: PUSH value; PUSH start; PUSH length
+;------------------------------------------------------------------------------
+;
+; Fill an area of memory with a given value
+;
+; Usage:
+;   PUSH rr                 ; Fill value in LSB
+;   PUSH rr                 ; Start address
+;   PUSH rr                 ; Fill length
+;
+;   CALL init
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
 fill_mem:
+
+._PARAM_FILL_LENGTH:    EQU 12
+._PARAM_START_ADDRESS:  EQU 14
+._PARAM_FILL_VALUE:     EQU 16
+
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0
+    LD  IX,0                            ; Grab the stack pointer
     ADD IX,SP
-    LD BC,(IX+12)
-    LD HL,(IX+14)
-    LD A,(IX+16)
+
+    LD BC,(IX+._PARAM_FILL_LENGTH)      ; Set up LDIR
+    LD HL,(IX+._PARAM_START_ADDRESS)
+    LD A,(IX+._PARAM_FILL_VALUE)
+
     LD (HL),A
     LD E,L
     LD D,H
@@ -36,12 +61,3 @@ fill_mem:
     RET
 
 	ENDMODULE
-
-    MACRO SHIFTR_COUNT_IN_A reg
-.start  CP 0x00
-        JP Z,.end
-        DEC A
-        SRL reg
-        JP .start       
-.end
-    ENDM

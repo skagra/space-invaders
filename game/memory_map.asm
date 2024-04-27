@@ -1,20 +1,4 @@
     MODULE mmap
-
-;------------------------------------------------------------------------------
-;
-; Initialise the module
-;
-; Usage:
-;   CALL init
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;------------------------------------------------------------------------------
-init:
-    RET
     
 SCREEN_START:       EQU 0x4000
 SCREEN_SIZE:        EQU 0x1800

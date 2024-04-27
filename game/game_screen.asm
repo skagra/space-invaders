@@ -30,15 +30,6 @@ init:
 ;   -
 ;------------------------------------------------------------------------------
 
-BOTTOM_GEL_TOP_LEFT_Y:  EQU draw.SCREEN_HEIGHT_CHARS-6
-BOTTOM_GEL_HEIGHT:      EQU 5
-BASES_GEL_TOP_LEFT_X:   EQU 3
-BASES_GEL_TOP_LEFT_Y:   EQU draw.SCREEN_HEIGHT_CHARS-1
-BASES_GEL_WIDTH:        EQU 10
-BASES_GEL_HEIGHT:       EQU 1
-SPACESHIP_GEL_LEFT_Y:   EQU 2
-SPACESHIP_GEL_HEIGHT:   EQU 1
-
 init_screen:
     PUSH HL
 
@@ -52,23 +43,23 @@ init_screen:
     POP HL
 
     ; Green gel to cover active player base and defences
-    LD H,BOTTOM_GEL_TOP_LEFT_Y                                  ; Top left X
-    LD L,BOTTOM_GEL_HEIGHT                                      ; Height
+    LD H,._BOTTOM_GEL_TOP_LEFT_Y                                    ; Top left X
+    LD L,._BOTTOM_GEL_HEIGHT                                        ; Height
     PUSH HL
-    LD HL,draw.CA_FG_GREEN                                      ; Green fg attribute
+    LD HL,draw.CA_FG_GREEN                                          ; Green fg attribute
     PUSH HL
     CALL draw.fill_screen_attribute_stripe
     POP HL
     POP HL
 
     ; Gren gel covering bases showing remaining lives
-    LD H,BASES_GEL_TOP_LEFT_X                                   ; Top left X
-    LD L,BASES_GEL_TOP_LEFT_Y                                   ; Top left Y
+    LD H,._BASES_GEL_TOP_LEFT_X                                     ; Top left X
+    LD L,._BASES_GEL_TOP_LEFT_Y                                     ; Top left Y
     PUSH HL
-    LD H,BASES_GEL_WIDTH                                        ; Width
-    LD L,BASES_GEL_HEIGHT                                       ; Height
+    LD H,._BASES_GEL_WIDTH                                          ; Width
+    LD L,._BASES_GEL_HEIGHT                                         ; Height
     PUSH HL
-    LD HL,draw.CA_FG_GREEN                                      ; Green fg attribute
+    LD HL,draw.CA_FG_GREEN                                          ; Green fg attribute
     PUSH HL
     CALL draw.fill_screen_attributes_rect
     POP HL
@@ -76,17 +67,17 @@ init_screen:
     POP HL
 
     ; Red gel just below scores - for spaceship and exploding player missiles
-    LD H,SPACESHIP_GEL_LEFT_Y                                   ; Top left X
-    LD L,SPACESHIP_GEL_HEIGHT                                   ; Height
+    LD H,._SPACESHIP_GEL_LEFT_Y                                     ; Top left X
+    LD L,._SPACESHIP_GEL_HEIGHT                                     ; Height
     PUSH HL
-    LD HL,draw.CA_FG_RED                                        ; Red fg attribute
+    LD HL,draw.CA_FG_RED                                            ; Red fg attribute
     PUSH HL
     CALL draw.fill_screen_attribute_stripe
     POP HL
     POP HL
 
     ; Draw static screen labels. 
-    LD HL,score_line_0_text
+    LD HL,._SCORE_LINE_0_TEXT
     PUSH HL
     LD HL,0x0000
     PUSH HL
@@ -94,7 +85,7 @@ init_screen:
     POP HL
     POP HL
 
-    LD HL,score_line_1_text
+    LD HL,._SCORE_LINE_1_TEXT
     PUSH HL
     LD HL,0x0001
     PUSH HL
@@ -102,7 +93,7 @@ init_screen:
     POP HL
     POP HL
 
-    LD HL,lives_and_creds_text
+    LD HL,._LIVES_AND_CREDS_TEXT
     PUSH HL
     LD HL,draw.SCREEN_HEIGHT_CHARS-1
     PUSH HL
@@ -120,6 +111,19 @@ init_screen:
     CALL draw_reserve_bases
 
     RET
+
+._BOTTOM_GEL_TOP_LEFT_Y:    EQU draw.SCREEN_HEIGHT_CHARS-6
+._BOTTOM_GEL_HEIGHT:        EQU 5
+._BASES_GEL_TOP_LEFT_X:     EQU 3
+._BASES_GEL_TOP_LEFT_Y:     EQU draw.SCREEN_HEIGHT_CHARS-1
+._BASES_GEL_WIDTH:          EQU 10
+._BASES_GEL_HEIGHT:         EQU 1
+._SPACESHIP_GEL_LEFT_Y:     EQU 2
+._SPACESHIP_GEL_HEIGHT:     EQU 1
+
+._SCORE_LINE_0_TEXT:        BYTE " SCORE<1>   HI-SCORE   SCORE<2> ",0
+._SCORE_LINE_1_TEXT:        BYTE "   0000      0000        0000   ",0
+._LIVES_AND_CREDS_TEXT:     BYTE " 3                    CREDIT 00 ",0
 
 ; TODO
 draw_score_1:
@@ -145,14 +149,14 @@ draw_bases_count:
 draw_reserve_bases:
     PUSH DE
 
-    LD D,RESERVE_BASE_1_X
-    LD E,RESERVE_BASE_Y
+    LD D,._RESERVE_BASE_1_X
+    LD E,._RESERVE_BASE_Y
     PUSH DE
     CALL draw_reserve_base
     POP DE
 
-    LD D,RESERVE_BASE_2_X
-    LD E,RESERVE_BASE_Y
+    LD D,._RESERVE_BASE_2_X
+    LD E,._RESERVE_BASE_Y
     PUSH DE
     CALL draw_reserve_base
     POP DE
@@ -161,19 +165,20 @@ draw_reserve_bases:
 
     RET
 
-RESERVE_BASE_Y:     EQU draw.SCREEN_HEIGHT_PIXELS-8-1
-RESERVE_BASE_1_X:   EQU 3*8
-RESERVE_BASE_2_X:   EQU RESERVE_BASE_1_X+16
-
-DRB_PARAM_COORDS:  EQU 6
+._RESERVE_BASE_Y:     EQU draw.SCREEN_HEIGHT_PIXELS-8-1
+._RESERVE_BASE_1_X:   EQU 3*8
+._RESERVE_BASE_2_X:   EQU ._RESERVE_BASE_1_X+16
 
 draw_reserve_base:
+
+._PARAM_COORDS:  EQU 6
+
     PUSH DE,IX
 
     LD  IX,0                                ; Point IX to the stack
     ADD IX,SP  
 
-    LD DE,(IX+DRB_PARAM_COORDS)             
+    LD DE,(IX+._PARAM_COORDS)             
     PUSH DE     
     ; HACK
     LD DE, 0x0308
@@ -191,9 +196,5 @@ draw_reserve_base:
     POP IX,DE
 
     RET
-
-score_line_0_text:    BYTE " SCORE<1>   HI-SCORE   SCORE<2> ",0
-score_line_1_text:    BYTE "   0000      0000        0000   ",0
-lives_and_creds_text: BYTE " 3                    CREDIT 00 ",0
 
     ENDMODULE
