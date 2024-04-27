@@ -1,6 +1,12 @@
-﻿using System.Text;
+﻿using System.Reflection.Metadata;
+using System.Runtime.ConstrainedExecution;
+using System.Text;
 class ShiftSprites
 {
+    private const string INCLUDE_FILENAME = "all_sprites.asm";
+    private const string HEADER_MESSAGE = "; This file was automatically generated, DO NOT MODIFY";
+    private const string SPRITE_MODULE_NAME = "sprites";
+
     public static void Main(string[] args)
     {
         var inputDirectory = args[0];
@@ -17,14 +23,33 @@ class ShiftSprites
             Directory.CreateDirectory(outputDirectory);
         }
 
+        var outputFiles = new List<string>();
         foreach (var inputFilename in Directory.GetFiles(inputDirectory))
         {
-            ProcessSprite(inputFilename, outputDirectory, shiftStep);
+            var outputFilename = ProcessSprite(inputFilename, outputDirectory, shiftStep);
+            outputFiles.Add(outputFilename);
             Console.WriteLine();
         }
+
+        CreateIncludeFile(outputFiles, outputDirectory);
     }
 
-    public static void ProcessSprite(string inputFileName, string outputDirectory = "", int shiftStep = 1)
+    public static void CreateIncludeFile(List<string> outputFiles, string outputDirectory)
+    {
+        var fileOutput = new StreamWriter(Path.Combine(outputDirectory, INCLUDE_FILENAME));
+
+        fileOutput.WriteLine(HEADER_MESSAGE);
+        fileOutput.WriteLine();
+
+        outputFiles.ForEach(filename =>
+        {
+            fileOutput.WriteLine($"\tINCLUDE \"{filename.Replace('\\', '/')}\"");
+        });
+
+        fileOutput.Close();
+    }
+
+    public static string ProcessSprite(string inputFileName, string outputDirectory = "", int shiftStep = 1)
     {
         // Read the entire sprite file
         var spriteText = File.ReadAllLines(inputFileName).Select(x => x.Trim()).ToList();
@@ -43,9 +68,13 @@ class ShiftSprites
         Console.WriteLine($"Output byte width: {destByteWidth}");
         Console.WriteLine($"Output filename: '{Path.GetFileName(outputFilename)}'");
 
+        fileOutput.WriteLine(HEADER_MESSAGE);
+        fileOutput.WriteLine();
+        fileOutput.WriteLine($"\tMODULE {SPRITE_MODULE_NAME}");
+        fileOutput.WriteLine();
+
         // Lookup table for shifted sprites
         var lookupTable = new List<string>();
-
         for (var xOffset = 0; xOffset < 8; xOffset += shiftStep)
         {
             var shiftedSpriteName = $"{spriteName}_{xOffset}";
@@ -77,6 +106,11 @@ class ShiftSprites
         fileOutput.WriteLine("; Lookup table");
         fileOutput.WriteLine($"{spriteName}:\n\tWORD {String.Join(", ", lookupTable)}");
 
+        fileOutput.WriteLine();
+        fileOutput.WriteLine($"\tENDMODULE");
+
         fileOutput.Close();
+
+        return outputFilename;
     }
 }

@@ -2,6 +2,22 @@
 
 ;------------------------------------------------------------------------------
 ;
+; Initialise the module
+;
+; Usage:
+;   CALL init
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+init:
+    RET
+    
+;------------------------------------------------------------------------------
+;
 ; Scan the keyboard and return a bit map indicating which of left, right and
 ; fire was pressed.  The result is returned on the top of the stack.
 ;  

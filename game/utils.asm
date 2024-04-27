@@ -1,5 +1,21 @@
 	MODULE utils
 
+;------------------------------------------------------------------------------
+;
+; Initialise the module
+;
+; Usage:
+;   CALL init
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+init:
+    RET
+    
 ; usage: PUSH value; PUSH start; PUSH length
 fill_mem:
     PUSH AF,BC,DE,HL,IX

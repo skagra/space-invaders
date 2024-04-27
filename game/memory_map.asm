@@ -1,5 +1,21 @@
-                    MODULE mmap
+    MODULE mmap
 
+;------------------------------------------------------------------------------
+;
+; Initialise the module
+;
+; Usage:
+;   CALL init
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+init:
+    RET
+    
 SCREEN_START:       EQU 0x4000
 SCREEN_SIZE:        EQU 0x1800
 
@@ -11,4 +27,4 @@ FREE_MEMORY_SIZE:   EQU 0xA28D
 
 ROM_CHARACTER_SET:  EQU 0x3D00
 
-                    ENDMODULE
+    ENDMODULE
