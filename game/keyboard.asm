@@ -19,12 +19,10 @@ init:
 ;------------------------------------------------------------------------------
 ;
 ; Scan the keyboard and return a bit map indicating which of left, right and
-; fire was pressed.  The result is returned on the top of the stack.
+; fire was pressed.  
 ;  
 ; Usage:
-;   PUSH rr                 ; Make space for the return value
 ;   CALL get_movement_keys
-;   POP rr                  ; Grab the result is LSB
 ;   
 ; Return values:
 ;   -
@@ -42,10 +40,9 @@ LEFT_KEY_DOWN_BIT:  EQU 0
 RIGHT_KEY_DOWN_BIT: EQU 1
 FIRE_KEY_DOWN_BIT:  EQU 2
 
+keys_down:          BLOCK 1
+
 get_movement_keys:
-
-._RTN_KEYS:         EQU 12
-
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                    ; Get the stack pointer
@@ -85,8 +82,8 @@ get_movement_keys:
     LD E,A
 
 .fire_not_pressed:
-    LD D,0x00                   ; Return the result on the stack
-    LD (IX+._RTN_KEYS),E      
+    LD HL,keys_down
+    LD (HL),E      
 
     POP IX,HL,DE,BC,AF
 

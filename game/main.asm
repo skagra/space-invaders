@@ -32,9 +32,6 @@ main:
     LD SP,STACK_TOP
     EI
 
-    ; Count of animation cycles
-    LD C, 0xFF
-
     ; Initialise all modules
     CALL utils.init
     CALL draw.init
@@ -51,17 +48,29 @@ main:
     LD B,alien_pack._ALIEN_PACK_SIZE             ; Alien pack size counter for drawing aliens
    
 .draw_pack_loop:
-    CALL player.update_player                   ; Read keyboard and modify player position
-    CALL alien_pack.update_current_alien        ; Sets current_alien_new_coords
+    CALL player.update_player                   
+    CALL player.update_bullet
+    CALL alien_pack.update_current_alien     
+
+    ; Read keyboard
+    CALL keyboard.get_movement_keys
 
     ; Wait for raster sync
     HALT
+
+    ; Draw player bullet if there is one
+    CALL player.draw_bullet
 
     ; Draw the current alien
     CALL alien_pack.draw_current_alien
 
     ; Draw the player base
     CALL player.draw_player
+
+    ; Ideally we'd do all of our calculations here
+    ; Wait until the beam is off the screen
+    ; Blank sprites at old positions
+    ; And the draws then do just that - no blanking the old sprites
 
     ; Move on to next alien
     CALL alien_pack.next_alien
@@ -73,12 +82,7 @@ main:
     ; Reset to start of pack
     CALL alien_pack.next_pack_cycle
 
-    ; More animations cycles to complete?
-    DEC C                                   
-    ;JP NZ,animation_loop     
     JP .animation_loop               
-
-.forever: JP .forever
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
