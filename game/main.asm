@@ -47,13 +47,13 @@ main:
     ; Draw the initial screen
     CALL game_screen.init_screen
 
-animation_loop:
+.animation_loop:
     LD B,alien_pack._ALIEN_PACK_SIZE             ; Alien pack size counter for drawing aliens
     CALL alien_pack.reset_to_pack_start         ; New cycle of drawing aliens
     CALL alien_pack.adjust_alien_pack_direction ; Change the direction of movement of the pack if needed
 
-draw_pack_loop:
-    CALL player.process_player                  ; Read keyboard and modify player position
+.draw_pack_loop:
+    CALL player.update_player                  ; Read keyboard and modify player position
     CALL alien_pack.move_alien                  ; Sets current_alien_new_coords
     
     ; MUCH OF THIS NEEDS TO GO INTO PACK MODULE - and select varient should be part of move alien (change its name!)
@@ -103,14 +103,14 @@ draw_pack_loop:
 
     ; More aliens to draw?
     DEC B
-    JP NZ,draw_pack_loop
+    JP NZ,.draw_pack_loop
 
     ; More animations cycles to complete?
     DEC C                                   
     ;JP NZ,animation_loop     
-    JP animation_loop               
+    JP .animation_loop               
 
-forever: JP forever
+.forever: JP .forever
 
 current_alien_new_coords:   BLOCK 2
 

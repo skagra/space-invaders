@@ -1,7 +1,9 @@
     MODULE player
 
-_player_x:           BLOCK 2
 _PLAYER_Y:           EQU draw.SCREEN_HEIGHT_PIXELS-8*2-1
+
+_player_x:           BLOCK 2
+
 
 ;------------------------------------------------------------------------------
 ;
@@ -42,7 +44,7 @@ init:
 
 draw_player:
     ; Draw the player base sprite
-    LD A, (_player_x)                        ; Player base coords
+    LD A, (_player_x)                       ; Player base coords
     LD D,A
     LD E, _PLAYER_Y
     PUSH DE
@@ -79,7 +81,7 @@ draw_player:
 ;   -
 ;------------------------------------------------------------------------------
 
-process_player:
+update_player:
     PUSH AF,DE
 
     ; Read the keyboard
@@ -91,21 +93,21 @@ process_player:
     BIT keyboard.LEFT_KEY_DOWN_BIT,E        ; Left pressed?
     JR Z,.left_not_pressed                  ; No
 
-    LD A,(_player_x)                         ; Get current player base X coord
+    LD A,(_player_x)                        ; Get current player base X coord
     DEC A                                   ; Decrease it to move left
-    CP ._MIN_PLAYER_X                         ; Have we hit the left most point?
+    CP ._MIN_PLAYER_X                       ; Have we hit the left most point?
     JR Z,.done                              ; Yes so don't update
-    LD (_player_x),A                         ; Update the location of the player base
+    LD (_player_x),A                        ; Update the location of the player base
     JR .done
 
 .left_not_pressed
     BIT keyboard.RIGHT_KEY_DOWN_BIT,E       ; Right pressed?
     JR Z,.done                              ; No
-    LD A,(_player_x)                         ; Get current player base X coord
+    LD A,(_player_x)                        ; Get current player base X coord
     INC A                                   ; Increase it to move right
-    CP ._MAX_PLAYER_X                         ; Have we hit the right most point?
+    CP ._MAX_PLAYER_X                       ; Have we hit the right most point?
     JR NC,.done                             ; Yes so don't update
-    LD (_player_x),A                         ; Update the location of the player base
+    LD (_player_x),A                        ; Update the location of the player base
 
 .done:
     POP DE,AF

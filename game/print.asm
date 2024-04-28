@@ -38,7 +38,7 @@ init:
 
 print_string:
     
-._PARAM_STRING:    EQU 14
+._PARAM_STRING_PTR:    EQU 14
 ._PARAM_COORDS:    EQU 12
 
     PUSH AF,BC,DE,HL,IX
@@ -46,8 +46,8 @@ print_string:
     LD  IX,0                            ; Get the stack pointer
     ADD IX,SP
 
-    LD DE,(IX+._PARAM_STRING)        ; Pointer to current character
-    LD BC,(IX+._PARAM_COORDS)        ; Current coords X in B, Y in C
+    LD DE,(IX+._PARAM_STRING_PTR)       ; Pointer to current character
+    LD BC,(IX+._PARAM_COORDS)           ; Current coords X in B, Y in C
 
 .ps_char_loop:
     ; Get character to print
@@ -179,8 +179,8 @@ print_char:
 
 char_coords_to_mem:
 
-._PARAM_COORDS:   EQU 12             ; Coordinates
-._RTN_ADDR:       EQU 10             ; Return address
+._PARAM_COORDS:   EQU 12                ; Coordinates
+._RTN_ADDR:       EQU 10                ; Return address
 
     PUSH AF,BC,HL,IX
    
@@ -192,7 +192,7 @@ char_coords_to_mem:
     LD B, 0x00                          ; B=0x00, C=Y coord
     SLA C                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, ._Y_LOOKUP_TABLE         ; Base of lookup table in HL
+    LD HL, ._Y_LOOKUP_TABLE             ; Base of lookup table in HL
     ADD HL,BC                           ; Location of the row start in the lookup table
     LD BC,(HL)                          ; Location of row start
     LD HL,BC                            ; Move result into HL
