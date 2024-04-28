@@ -8,7 +8,8 @@ _PACK_DIRECTION_DOWN_AT_RIGHT:     EQU 4
 
 _current_alien_ptr:                BLOCK 2
 _current_pack_variant_flag:        BLOCK 1
-_current_alien_sprite_ptr          BLOCK 2
+_current_alien_sprite_ptr          BLOCK 2      ; The variant we are about to draw
+_old_alien_sprite_ptr:             BLOCK 2      ; The variant used last time - use as a mask for erasure
 _current_alien_new_coords:         BLOCK 2
 
 _pack_x_reference:                 BLOCK 1
@@ -80,17 +81,27 @@ _select_sprite_variant:
     JR NZ,.variant_1
 
     ; Variant 0 -  pointer is what we need
+    LD BC,(HL)
+    LD (_current_alien_sprite_ptr),BC
+
+    INC HL;
+    INC HL
+    LD BC,(HL)
+    LD (_old_alien_sprite_ptr),BC
+
     JR .done
 
 .variant_1:  
     ; Variant 1 - pointer needs to be increased by 2
+    LD BC,(HL)
+    LD (_old_alien_sprite_ptr),BC
+
+    INC HL;
     INC HL
-    INC HL
-    
-.done:
     LD BC,(HL)
     LD (_current_alien_sprite_ptr),BC
-
+    
+.done:
     POP HL,BC
 
     RET
@@ -112,11 +123,8 @@ _select_sprite_variant:
 ;
 ;------------------------------------------------------------------------------
 
-draw_current_alien:
+blank_current_alien:
     PUSH DE,HL
-
-    LD  IX,0                                ; Point IX to the stack
-    ADD IX,SP 
 
     ; Blank old sprite position
     LD HL,(_current_alien_ptr)              ; Coords
@@ -127,11 +135,12 @@ draw_current_alien:
     LD DE, 0x0308                           ; Dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_blank              ; Background square
+    LD DE,sprites.sprite_blank_2b_x_8px     ; Background square
     PUSH DE
 
-    LD DE,sprites.mask_2x16                 ; Mask
-    PUSH DE
+    ; LD DE,sprites.mask_2x8                  ; Mask 
+    LD HL,(_old_alien_sprite_ptr) ; Use sprite as mask here so as to not overwrite what we shouldn't
+    PUSH HL
 
     CALL draw.draw_sprite
 
@@ -139,6 +148,13 @@ draw_current_alien:
     POP DE
     POP DE
     POP DE
+
+    POP HL,DE
+
+    RET
+
+draw_current_alien:
+    PUSH DE,HL
 
     ; Draw sprite in new position
     LD DE,(_current_alien_new_coords)       ; Coords
@@ -151,7 +167,7 @@ draw_current_alien:
     LD DE,(_current_alien_sprite_ptr)       ; Sprite data
     PUSH DE
 
-    LD DE,sprites.mask_2x16                 ; Mask
+    ; LD DE,sprites.mask_2x8                  ; Mask
     PUSH DE
 
     CALL draw.draw_sprite

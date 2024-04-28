@@ -22,7 +22,7 @@
     INCLUDE "game_screen.asm"
     INCLUDE "player.asm"
     INCLUDE "alien_pack.asm"
-    INCLUDE "processed_sprites/all_sprites.asm"
+    INCLUDE "sprites/all_sprites.asm"
 
     MODULE main
 
@@ -48,13 +48,6 @@ main:
     LD B,alien_pack._ALIEN_PACK_SIZE             ; Alien pack size counter for drawing aliens
    
 .draw_pack_loop:
-    CALL player.update_player                   
-    CALL player.update_bullet
-    CALL alien_pack.update_current_alien     
-
-    ; Read keyboard
-    CALL keyboard.get_movement_keys
-
     ; Wait for raster sync
     HALT
 
@@ -67,10 +60,22 @@ main:
     ; Draw the player base
     CALL player.draw_player
 
-    ; Ideally we'd do all of our calculations here
-    ; Wait until the beam is off the screen
-    ; Blank sprites at old positions
-    ; And the draws then do just that - no blanking the old sprites
+    ; Read keyboard
+    CALL keyboard.get_movement_keys
+
+    CALL alien_pack.update_current_alien  
+    CALL player.update_player                   
+    CALL player.update_bullet
+
+    LD HL,._DRAW_DELAY
+    PUSH HL
+    CALL utils.delay
+    POP HL
+
+    CALL alien_pack.blank_current_alien
+    
+    ; Blank out the current player bullet
+    CALL player.blank_bullet
 
     ; Move on to next alien
     CALL alien_pack.next_alien
@@ -83,6 +88,8 @@ main:
     CALL alien_pack.next_pack_cycle
 
     JP .animation_loop               
+
+._DRAW_DELAY: EQU 0x480F
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    

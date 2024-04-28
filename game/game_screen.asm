@@ -185,7 +185,7 @@ draw_reserve_base:
     PUSH DE
     LD DE,sprites.sprite_base     
     PUSH DE
-    LD DE,sprites.mask_2x16
+    LD DE,sprites.mask_2x8
     PUSH DE
     CALL draw.draw_sprite
     POP DE

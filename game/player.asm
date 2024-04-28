@@ -62,7 +62,7 @@ draw_player:
     LD DE,sprites.sprite_base               ; Sprite    
     PUSH DE
 
-    LD DE,sprites.mask_2x16                 ; Sprite mask
+    LD DE,sprites.mask_2x8                  ; Sprite mask
     PUSH DE
 
     CALL draw.draw_sprite                   ; Draw the player base sprite
@@ -120,7 +120,7 @@ update_player:
 ._MIN_PLAYER_X:             EQU 0
 ._MAX_PLAYER_X:             EQU draw.SCREEN_WIDTH_PIXELS-16
 
-draw_bullet:
+blank_bullet:
     PUSH AF,DE
 
     ; Is there an active bullet to draw?
@@ -139,10 +139,10 @@ draw_bullet:
     LD DE, 0x0204                           ; Player bullet dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_blank_1_byte       ; Sprite    
+    LD DE,sprites.sprite_blank_1b_x_4px     ; Sprite    
     PUSH DE
 
-    LD DE,sprites.mask_player_bullet        ; Sprite mask 
+    LD DE,sprites.sprite_player_bullet      ; Sprite mask  
     PUSH DE
 
     CALL draw.draw_sprite                   ; Draw the player base sprite
@@ -151,6 +151,13 @@ draw_bullet:
     POP DE
     POP DE
     POP DE
+
+.done
+    POP DE,AF
+
+    RET
+draw_bullet:
+    PUSH AF,DE
 
     LD A,(_bullet_state)
     CP _BULLET_STATE_ACTIVE
@@ -170,7 +177,7 @@ draw_bullet:
     LD DE,sprites.sprite_player_bullet      ; Sprite    
     PUSH DE
 
-    LD DE,sprites.mask_player_bullet        ; Sprite mask 
+    LD DE,sprites.sprite_player_bullet       ; Sprite mask 
     PUSH DE
 
     CALL draw.draw_sprite                   ; Draw the player base sprite
@@ -255,7 +262,7 @@ update_bullet:
     LD (HL),A
 
     ; Calculate start y coord - set new and current to same values
-    LD A,draw.SCREEN_HEIGHT_PIXELS-24    
+    LD A,draw.SCREEN_HEIGHT_PIXELS-16    
     LD HL,_bullet_current_y       
     LD (HL),A
     LD HL,_bullet_new_y       
