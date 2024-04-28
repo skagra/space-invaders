@@ -129,28 +129,28 @@ draw_bullet:
     JR Z,.done
 
     ; Erase old bullet
-    ; LD A, (_bullet_x)                       ; Player bullet
-    ; LD D,A
-    ; LD A, (_bullet_current_y)
-    ; LD E,A
-    ; PUSH DE
+    LD A, (_bullet_x)                       ; Player bullet
+    LD D,A
+    LD A, (_bullet_current_y)
+    LD E,A
+    PUSH DE
 
-    ; ; HACK          
-    ; LD DE, 0x0204                           ; Player bullet dimensions
-    ; PUSH DE
+    ; HACK          
+    LD DE, 0x0204                           ; Player bullet dimensions
+    PUSH DE
 
-    ; LD DE,sprites.sprite_blank_1_byte       ; Sprite    
-    ; PUSH DE
+    LD DE,sprites.sprite_blank_1_byte       ; Sprite    
+    PUSH DE
 
-    ; LD DE,sprites.mask_player_bullet        ; Sprite mask 
-    ; PUSH DE
+    LD DE,sprites.mask_player_bullet        ; Sprite mask 
+    PUSH DE
 
-    ; CALL draw.draw_sprite                   ; Draw the player base sprite
+    CALL draw.draw_sprite                   ; Draw the player base sprite
 
-    ; POP DE
-    ; POP DE
-    ; POP DE
-    ; POP DE
+    POP DE
+    POP DE
+    POP DE
+    POP DE
 
     LD A,(_bullet_state)
     CP _BULLET_STATE_ACTIVE
