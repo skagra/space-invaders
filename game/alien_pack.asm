@@ -1,14 +1,18 @@
     MODULE alien_pack
 
-; TODO: Maybe change this to bit numbers and a mask for efficiency
-_DIRECTION_LEFT:             EQU 1   
-_DIRECTION_RIGHT:            EQU 2
-_DIRECTION_DOWN_AT_LEFT:     EQU 3
-_DIRECTION_DOWN_AT_RIGHT:    EQU 4
+; TODO: Change these to bit numbers and a mask for efficiency
+_PACK_DIRECTION_LEFT:              EQU 1   
+_PACK_DIRECTION_RIGHT:             EQU 2
+_PACK_DIRECTION_DOWN_AT_LEFT:      EQU 3
+_PACK_DIRECTION_DOWN_AT_RIGHT:     EQU 4
 
-_current_alien_ptr:          BLOCK 2
-_pack_x_reference:           BLOCK 1
-_direction:                  BLOCK 1
+_current_alien_ptr:                BLOCK 2
+_current_pack_variant_flag:        BLOCK 1
+_current_alien_sprite_ptr          BLOCK 2
+_current_alien_new_coords:         BLOCK 2
+
+_pack_x_reference:                 BLOCK 1
+_pack_direction:                   BLOCK 1
 
 ;------------------------------------------------------------------------------
 ;
@@ -25,40 +29,34 @@ _direction:                  BLOCK 1
 ;------------------------------------------------------------------------------
 
 init:
-    PUSH AF
+    PUSH AF,HL
 
     ; Alien pack direction
-    LD A,_DIRECTION_RIGHT
-    LD (_direction),A
+    LD A,_PACK_DIRECTION_RIGHT
+    LD (_pack_direction),A
 
-    LD A,0x10
+    ; Reference pack X coord
+    LD A,0x10                               ; TODO
     LD (_pack_x_reference),A
 
-    POP AF
+    ; Pack variant
+    LD A,0x01
+    LD (_current_pack_variant_flag),A
 
-    RET
-
-reset_to_pack_start:
-    PUSH HL
-
-    LD HL,_aliens                            ; Set pointer to alien definitions to start of the pack
+    ; Pointer to pack data
+    LD HL,_aliens                            
     LD (_current_alien_ptr),HL
-    POP HL
+
+    POP HL,AF
 
     RET
 
 ;------------------------------------------------------------------------------
 ;
-; Choose a varient of a sprite base on bit 0 of a supplied value
+; Choose a varient of a sprite based on 
 ; 
 ; Usage:
-;   PUSH rr  ; Determinant to select sprinte variant
-;   PUSH rr  ; Pointer to pointer to the first variant
-;   PUSH rr  ; Reserve space for return value
-;   CALL select_sprite_variant
-;   POP rr   ; Return value pointing to the variant data 
-;   POP rr   ; Ditch supplied parameter
-;   POP rr   ; Ditch supplied parameter
+;   CALL select_sprite_variant _current_pack_variant_flag
 ;
 ; Return values:
 ;   -
@@ -68,38 +66,32 @@ reset_to_pack_start:
 ;
 ;------------------------------------------------------------------------------
 
-select_sprite_variant:
+_select_sprite_variant:
+    PUSH BC,HL
 
-._PARAM_DETERMINANT:   EQU 12
-._PARAM_VARIANT_0_PTR: EQU 10
-._RTN_OFFSET:          EQU 8
-
-    PUSH BC,HL,IX
-
-    LD  IX,0                                    ; Point IX to the stack
-    ADD IX,SP 
+    ; Get a pointer to pointer to first sprite variant
+    LD HL,(_current_alien_ptr)
+    INC HL
+    INC HL
 
     ; Which variant of sprite to draw?
-    LD BC,(IX+._PARAM_DETERMINANT)
-    BIT 0,C                             
+    LD A,(_current_pack_variant_flag)
+    BIT 0,A                            
     JR NZ,.variant_1
 
-    ; Variant 0 - the supplied pointer is what we need
-    LD HL,(IX+._PARAM_VARIANT_0_PTR)
+    ; Variant 0 -  pointer is what we need
     JR .done
 
 .variant_1:  
-    ; Variant 1 - the supplied pointer needs to be increased by 2
-    LD BC,(IX+._PARAM_VARIANT_0_PTR)  
-    LD H,0x0
-    LD L,0x2
-    ADD HL,BC
+    ; Variant 1 - pointer needs to be increased by 2
+    INC HL
+    INC HL
     
 .done:
     LD BC,(HL)
-    LD (IX+._RTN_OFFSET),BC
+    LD (_current_alien_sprite_ptr),BC
 
-    POP IX,HL,BC
+    POP HL,BC
 
     RET
 
@@ -108,13 +100,9 @@ select_sprite_variant:
 ; Erase alien at old coords and draw alien at new coords
 ; 
 ; Usage:
-;   PUSH rr  ; Old coordinates, X in MSB, Y in LSB
-;   PUSH rr  ; New coordinates, Y in MSB, Y in LSB
-;   PUSH rr  ; Address of sprite data
+;
 ;   CALL draw_alien
-;   POP rr   ; Ditch supplied parameter 
-;   POP rr   ; Ditch supplied parameter
-;   POP rr   ; Ditch supplied parameter
+;
 ;
 ; Return values:
 ;   -
@@ -124,50 +112,56 @@ select_sprite_variant:
 ;
 ;------------------------------------------------------------------------------
 
-draw_alien:
-
-._PARAM_OLD_COORDS:    EQU 10
-._PARAM_NEW_COORDS:    EQU 8
-._PARAM_SPRITE_DATA:   EQU 6
-
-    PUSH DE,IX
+draw_current_alien:
+    PUSH DE,HL
 
     LD  IX,0                                ; Point IX to the stack
     ADD IX,SP 
 
     ; Blank old sprite position
-    LD DE,(IX+._PARAM_OLD_COORDS)           ; Coords
+    LD HL,(_current_alien_ptr)              ; Coords
+    LD DE,(HL)                                     
     PUSH DE     
+
     ; HACK
     LD DE, 0x0308                           ; Dimensions
     PUSH DE
+
     LD DE,sprites.sprite_blank              ; Background square
     PUSH DE
+
     LD DE,sprites.mask_2x16                 ; Mask
     PUSH DE
+
     CALL draw.draw_sprite
+
     POP DE
     POP DE
     POP DE
     POP DE
 
     ; Draw sprite in new position
-    LD DE,(IX+._PARAM_NEW_COORDS)           ; Coords
-    PUSH DE     
+    LD DE,(_current_alien_new_coords)       ; Coords
+    PUSH DE
+
     ; HACK
     LD DE, 0x0308                           ; Dimensions
     PUSH DE
-    LD DE,(IX+._PARAM_SPRITE_DATA)          ; Sprite data
+
+    LD DE,(_current_alien_sprite_ptr)       ; Sprite data
     PUSH DE
+
     LD DE,sprites.mask_2x16                 ; Mask
     PUSH DE
+
     CALL draw.draw_sprite
+
     POP DE
     POP DE
     POP DE
     POP DE
 
-    POP IX,DE
+    POP HL,DE
 
     RET
 
@@ -184,50 +178,51 @@ draw_alien:
 ; Registers modified:
 ;   -
 ;
-; Note: This routing currently makes use of a shared global pack_x_reference
 ;------------------------------------------------------------------------------
 
-adjust_alien_pack_direction:
+_adjust_alien_pack_direction:
     PUSH AF,HL
 
     ; In which directin is the pack currently moving?
-    LD A,(_direction)    
+    LD A,(_pack_direction)    
 
-    CP _DIRECTION_RIGHT
+    ; Moving right?
+    CP _PACK_DIRECTION_RIGHT
     JR Z,.currently_moving_right
 
-    CP _DIRECTION_LEFT
+    ; Moving left?
+    CP _PACK_DIRECTION_LEFT
     JR Z,.currently_moving_left
 
-    ; Pack is moving down
-    CP _DIRECTION_DOWN_AT_RIGHT
+    ; Moving down - is pack at the RHS of the screen?
+    CP _PACK_DIRECTION_DOWN_AT_RIGHT
     JR Z,.currently_moving_down_at_right
 
-    ; Pack is at left of screen
-    LD A,_DIRECTION_RIGHT                    ; Switch to moving right
-    LD (_direction),A
+    ; Movin down, pack is at LHS of the screen
+    LD A,_PACK_DIRECTION_RIGHT                      ; Switch to moving right
+    LD (_pack_direction),A
 
     JR .done
 
 .currently_moving_down_at_right:
-    LD A,_DIRECTION_LEFT                     ; Switch to moving left
-    LD (_direction),A
+    LD A,_PACK_DIRECTION_LEFT                       ; Switch to moving left
+    LD (_pack_direction),A
 
     JR .done
 
 .currently_moving_right:
     ; Pack is moving right
-    LD A,(_pack_x_reference)                 ; Get the reference X coord
-    CP 96
-    JR C,.carry_on_right
+    LD A,(_pack_x_reference)                        ; Get the reference X coord
+    CP 96                                           ; Has the pack hit the RHS of the screen?
+    JR C,.carry_on_right                            ; No, carry on in same direction
 
-    ; Swich to moving down
-    LD A,_DIRECTION_DOWN_AT_RIGHT            ; Switch to moving left
-    LD (_direction),A
+    ; Switch to moving down flagging pack is at right of screen
+    LD A,_PACK_DIRECTION_DOWN_AT_RIGHT              
+    LD (_pack_direction),A
     JR .done
 
 .carry_on_right:
-    LD A,(_pack_x_reference)
+    LD A,(_pack_x_reference)                        ; Update the reference X coord
     INC A
     INC A
     LD (_pack_x_reference),A
@@ -236,17 +231,17 @@ adjust_alien_pack_direction:
 
 .currently_moving_left:
     ; Pack is moving left
-    LD A,(_pack_x_reference)                 ; Get the reference X coord
-    CP 0x04
-    JR NC,.carry_on_left
+    LD A,(_pack_x_reference)                        ; Get the reference X coord
+    CP 0x04                                         ; Has the pack hit the LHS of the screen?
+    JR NC,.carry_on_left                            ; No, carry on in same direction
 
-    ; Swich to moving down
-    LD A,_DIRECTION_DOWN_AT_LEFT             ; Switch to moving left
-    LD (_direction),A
+    ; Switch to moving down flagging pack is at left of screen
+    LD A,_PACK_DIRECTION_DOWN_AT_LEFT             
+    LD (_pack_direction),A
     JR .done
 
 .carry_on_left:
-    LD A,(_pack_x_reference)
+    LD A,(_pack_x_reference)                        ; Update the reference X coord
     DEC A
     DEC A
     LD (_pack_x_reference),A
@@ -257,42 +252,42 @@ adjust_alien_pack_direction:
 
     RET
 
-move_alien:
+_move_alien:
     PUSH AF,DE,HL
 
-     ; Move sprite to new position
-    LD HL,(_current_alien_ptr)               ; Current alien
+     ; Current alient position
+    LD HL,(_current_alien_ptr)              ; Current alien
     LD DE,(HL)                              ; Coords are at start of alien definition
 
-    ; Are we moving left, right or down
-    LD A,(_direction)
-    CP _DIRECTION_LEFT
-    JR NZ,.not_moving_left
+    ; Is the pack moving left, right or down
+    LD A,(_pack_direction)
+    CP _PACK_DIRECTION_LEFT
+    JR NZ,.not_moving_left                  ; No
 
     ; Moving left
+    DEC D                                   ; Decrease the X coord by 2
     DEC D
-    DEC D
-    LD (main.current_alien_new_coords),DE  ; TODO: These need to be pushed
+    LD (_current_alien_new_coords),DE       ; Store new coords
 
     JR .done_moving
 
 .not_moving_left:
-    CP _DIRECTION_RIGHT
-    JR NZ,.moving_down
+    CP _PACK_DIRECTION_RIGHT                ; Is the pack moving right
+    JR NZ,.moving_down                      ; No
 
     ; Moving right
+    INC D                                   ; Increase X by 2
     INC D
-    INC D
-    LD (main.current_alien_new_coords),DE
+    LD (_current_alien_new_coords),DE       ; Store new coords
 
     JR .done_moving
 
 .moving_down:
     ; Moving down
-    LD A,8
+    LD A,8                                  ; Increase Y by 8
     ADD A,E
     LD E,A
-    LD (main.current_alien_new_coords),DE
+    LD (_current_alien_new_coords),DE       ; Store new coords
 
 .done_moving:
     POP HL,DE,AF
@@ -316,5 +311,52 @@ _aliens:
     WORD 0x6020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x7020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x8020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0x9020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1, 0xA020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1
 
 _ALIEN_PACK_SIZE:  EQU ($-_aliens)/6
+
+update_current_alien:
+    ; Calculate new coordinates of current alien
+    CALL _move_alien
+
+    ; Calculate address of sprite variant data to use
+    CALL _select_sprite_variant
+
+    RET
+
+next_alien:
+    PUSH DE,HL
+    
+    LD HL,(_current_alien_ptr)   
+
+    ; Overwrite coordinate data of current alien
+    LD DE,(_current_alien_new_coords)
+    LD (HL),DE
+
+    ; Move pointer to next alien sprite             
+    LD DE,0x06                              
+    ADD HL,DE
+    LD (_current_alien_ptr),HL
+    
+    POP HL,DE
+    
+    RET
+
+next_pack_cycle:
+    PUSH AF,HL
+    
+    ; Do we need to change direction?
+    CALL _adjust_alien_pack_direction
+
+    ; Cycle which variant we'll draw
+    LD HL,_current_pack_variant_flag
+    LD A, (HL)
+    XOR 0x01
+    LD (_current_pack_variant_flag),A
+
+    ; Reset current alien pointer to start of pack
+    LD HL,_aliens
+    LD (_current_alien_ptr),HL
+
+    POP HL,AF
+
+    RET
 
     ENDMODULE
