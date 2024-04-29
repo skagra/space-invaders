@@ -21,6 +21,7 @@
     INCLUDE "keyboard.asm"
     INCLUDE "game_screen.asm"
     INCLUDE "player.asm"
+    INCLUDE "player_bullet.asm"
     INCLUDE "alien_pack.asm"
     INCLUDE "character_set.asm"
     INCLUDE "sprites/all_sprites.asm"
@@ -40,6 +41,7 @@ main:
     CALL keyboard.init
     CALL game_screen.init
     CALL player.init
+    CALL player_bullet.init
     CALL alien_pack.init
 
     ; Draw the initial screen
@@ -53,7 +55,7 @@ main:
     HALT
 
     ; Draw player bullet if there is one
-    CALL player.draw_bullet
+    CALL player_bullet.draw_bullet
 
     ; Draw the current alien
     CALL alien_pack.draw_current_alien
@@ -66,7 +68,7 @@ main:
 
     CALL alien_pack.update_current_alien  
     CALL player.update_player                   
-    CALL player.update_bullet
+    CALL player_bullet.update_bullet
 
     LD HL,._DRAW_DELAY
     PUSH HL
@@ -76,7 +78,7 @@ main:
     CALL alien_pack.blank_current_alien
     
     ; Blank out the current player bullet
-    CALL player.blank_bullet
+    CALL player_bullet.blank_bullet
 
     ; Move on to next alien
     CALL alien_pack.next_alien
