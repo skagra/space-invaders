@@ -101,6 +101,8 @@ init_screen:
     POP HL
     POP HL
 
+    CALL draw_shields
+
     POP HL
 
     CALL draw_score_1
@@ -196,5 +198,65 @@ draw_reserve_base:
     POP IX,DE
 
     RET
+
+draw_shields:
+    PUSH DE
+
+    LD D,._SHIELD_1_X
+    LD E,._SHIELD_Y
+    PUSH DE
+    CALL draw_shield
+    POP DE
+
+    LD D,._SHIELD_2_X
+    LD E,._SHIELD_Y
+    PUSH DE
+    CALL draw_shield
+    POP DE
+
+    LD D,._SHIELD_3_X
+    LD E,._SHIELD_Y
+    PUSH DE
+    CALL draw_shield
+    POP DE
+
+    POP DE
+
+    RET
+
+._SHIELD_1_X:       EQU 50
+._SHIELD_2_X:       EQU draw.SCREEN_WIDTH_PIXELS/2-(22/2)
+._SHIELD_3_X:       EQU draw.SCREEN_WIDTH_PIXELS-50-(22/2)
+._SHIELD_Y:         EQU draw.SCREEN_HEIGHT_PIXELS-8*5
+
+draw_shield:
+
+._PARAM_COORDS:  EQU 6
+
+    PUSH DE,IX
+
+    LD  IX,0                                ; Point IX to the stack
+    ADD IX,SP  
+
+    LD DE,(IX+._PARAM_COORDS)             
+    PUSH DE     
+    ; HACK
+    LD DE, 0x0410
+    PUSH DE
+    LD DE,sprites.sprite_shield     
+    PUSH DE
+    LD DE,sprites.sprite_shield
+    PUSH DE
+    CALL draw.draw_sprite
+    POP DE
+    POP DE
+    POP DE
+    POP DE
+
+    POP IX,DE
+
+    RET
+
+
 
     ENDMODULE

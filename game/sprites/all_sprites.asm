@@ -15,3 +15,4 @@
 	INCLUDE "sprites/sprite_blank_2b_x_8px.asm"
 	INCLUDE "sprites/sprite_player_bullet.asm"
 	INCLUDE "sprites/sprite_player_bullet_explosion.asm"
+	INCLUDE "sprites/sprite_shield.asm"
