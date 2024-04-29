@@ -10,3 +10,5 @@
 * Single line player bullet does not need 16 bit shifted sprites
 * Can we use LDI to speed up the copying of the sprite data
 * Do we need to used an off screen buffering technique to get the speed - we draw off screen, take note of the addresses and then just copy the relevant address on screen on update?  We could also log the addresses for blanking too.  SP trick might be relevant here - PUT the SP at the start of the data and just POP off addresses?   Actually we could actually have a stack where we push on the data too ummm width though
+* Look for TState counter
+* Investigate use of sound chip on Spectrum 128K

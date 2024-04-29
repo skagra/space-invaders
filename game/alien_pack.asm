@@ -6,10 +6,10 @@ _PACK_DIRECTION_RIGHT:             EQU 2
 _PACK_DIRECTION_DOWN_AT_LEFT:      EQU 3
 _PACK_DIRECTION_DOWN_AT_RIGHT:     EQU 4
 
-_current_alien_ptr:                BLOCK 2
+_current_alien_ptr:                BLOCK 2      
 _current_pack_variant_flag:        BLOCK 1
-_current_alien_sprite_ptr          BLOCK 2      ; The variant we are about to draw
-_old_alien_sprite_ptr:             BLOCK 2      ; The variant used last time - use as a mask for erasure
+_current_alien_sprite_ptr          BLOCK 2      ; The variant that will be draw by draw_current_alien
+_old_alien_sprite_ptr:             BLOCK 2      ; The variant used last time for the current sprite - used by blank_current_alien (erasing old position)
 _current_alien_new_coords:         BLOCK 2
 
 _pack_x_reference:                 BLOCK 1
@@ -27,6 +27,7 @@ _pack_direction:                   BLOCK 1
 ;
 ; Registers modified:
 ;   -
+;
 ;------------------------------------------------------------------------------
 
 init:
@@ -80,10 +81,11 @@ _select_sprite_variant:
     BIT 0,A                            
     JR NZ,.variant_1
 
-    ; Variant 0 -  pointer is what we need
+    ; Variant 0 - pointer is at required current variant data
     LD BC,(HL)
     LD (_current_alien_sprite_ptr),BC
 
+    ; So the old variant is two bytes further on
     INC HL;
     INC HL
     LD BC,(HL)
@@ -92,10 +94,11 @@ _select_sprite_variant:
     JR .done
 
 .variant_1:  
-    ; Variant 1 - pointer needs to be increased by 2
+    ; Variant 1 - pointer is at old variant data
     LD BC,(HL)
     LD (_old_alien_sprite_ptr),BC
 
+    ; So the current variant is two bytes further on
     INC HL;
     INC HL
     LD BC,(HL)
@@ -138,8 +141,7 @@ blank_current_alien:
     LD DE,sprites.sprite_blank_2b_x_8px     ; Background square
     PUSH DE
 
-    ; LD DE,sprites.mask_2x8                  ; Mask 
-    LD HL,(_old_alien_sprite_ptr) ; Use sprite as mask here so as to not overwrite what we shouldn't
+    LD HL,(_old_alien_sprite_ptr)           ; Mask
     PUSH HL
 
     CALL draw.draw_sprite
@@ -166,9 +168,8 @@ draw_current_alien:
 
     LD DE,(_current_alien_sprite_ptr)       ; Sprite data
     PUSH DE
-
-    ; LD DE,sprites.mask_2x8                  ; Mask
-    PUSH DE
+                
+    PUSH DE                                 ; ; Mask - use sprit as mask
 
     CALL draw.draw_sprite
 

@@ -20,8 +20,9 @@
 * [Spectrum Machine Language for the Absolute Beginner](spectrum-machine-language-for-the-absolute-beginner.pdf)
 * [Assembly Language for Arcade Games and Other Fast Spectrum Programs](assembly-language-for-arcade-games-and-other-fast-spectrum-programs.pdf)
 * On Screen Layout [part 1](https://www.overtakenbyevents.com/lets-talk-about-the-zx-specrum-screen-layout/) [part 2](https://www.overtakenbyevents.com/lets-talk-about-the-zx-specrum-screen-layout-part-two/)
- * [L Break into Program](http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum)
+* [L Break into Program](http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum)
 * [World of Spectrum - org](https://worldofspectrum.org/)
 * [World of Spectrum - net](https://worldofspectrum.net/)
 * [ROM Disassembly](http://primrosebank.net/computers/zxspectrum/docs/CompleteSpectrumROMDisassemblyThe.pdf)
 * [Keyboard Scanning](http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum/keyboard)
+* [128K ZX Spectrum Reference](https://worldofspectrum.org/faq/reference/128kreference.htm) - Useful info on screen blank scan lines and T-states per scan line for both 128K and 48K spectrum.

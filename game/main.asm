@@ -22,6 +22,7 @@
     INCLUDE "game_screen.asm"
     INCLUDE "player.asm"
     INCLUDE "alien_pack.asm"
+    INCLUDE "character_set.asm"
     INCLUDE "sprites/all_sprites.asm"
 
     MODULE main
