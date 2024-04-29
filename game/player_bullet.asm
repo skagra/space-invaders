@@ -56,6 +56,10 @@ blank_bullet:
     CP _BULLET_STATE_DONE
     JR Z,.bullet_state_done
 
+    ; Is this a new bullet - so there is nothing to erase
+    CP _BULLET_STATE_NEW
+    JR Z,.done
+    
     ; Is there an active bullet to draw?
     LD A,(_bullet_state)
     CP _BULLET_STATE_NO_BULLET
@@ -145,13 +149,19 @@ draw_bullet:
     PUSH AF,DE
 
     LD A,(_bullet_state)
+
     CP _BULLET_STATE_EXPLODING
     JR Z,.bullet_exploding
 
-    LD A,(_bullet_state)
-    CP _BULLET_STATE_ACTIVE
-    JR NZ,.done
+    CP _BULLET_STATE_NEW
+    JR Z,.active_bullet
 
+    CP _BULLET_STATE_ACTIVE
+    JR Z,.active_bullet
+
+    JR .done
+
+.active_bullet
     ; Draw bullet
     LD A, (_bullet_x)                                   ; Player bullet
     LD D,A
@@ -211,9 +221,10 @@ draw_bullet:
 _BULLET_STEP_SIZE:          EQU 4                       ; Number of pixels to move bullet on each animation cycle
 _bullet_state:              BLOCK 1                     ; Current state of the bullet from _BULLET_STATE_*
 _BULLET_STATE_NO_BULLET:    EQU 0x00                    ; There is no currently active bullet
-_BULLET_STATE_ACTIVE:       EQU 0x01                    ; There is an active bullet travelling up the screen
-_BULLET_STATE_EXPLODING     EQU 0x02                    ; The bullet is exploding
-_BULLET_STATE_DONE:         EQU 0x03                    ; The explosion of the bullet is complete - time to allow a new bullet
+_BULLET_STATE_NEW:          EQU 0x01                    ; A new bullet - so nothing to erase
+_BULLET_STATE_ACTIVE:       EQU 0x02                    ; There is an active bullet travelling up the screen
+_BULLET_STATE_EXPLODING     EQU 0x03                    ; The bullet is exploding
+_BULLET_STATE_DONE:         EQU 0x04                    ; The explosion of the bullet is complete - time to allow a new bullet
 _bullet_current_y:          BLOCK 1                     ; Y coordination of the bullet currently - used to erase the "old" bullet in blank_bullet
 _bullet_new_y:              BLOCK 1                     ; The Y coordinate of the bullet for the next draw cycle - used in draw_bullet
 _bullet_x:                  BLOCK 1                     ; X coordinate of the bullet, this never changes once a bullet is running
@@ -246,8 +257,12 @@ _BULLET_MIN_Y:              EQU   24                    ; The top of bullet traj
 update_bullet:
     PUSH AF,BC,DE,HL
 
-    ; Is there a currently active play bullet?
+    ; Grab the current bullet state
     LD A,(_bullet_state)
+
+    ; Is there a currently active bullet?
+    CP _BULLET_STATE_NO_BULLET
+    JR Z,.no_current_bullet
 
     ; Are we already at the top of screen and exploding
     CP _BULLET_STATE_EXPLODING
@@ -257,12 +272,17 @@ update_bullet:
     CP _BULLET_STATE_DONE
     JR Z,.bullet_state_done
 
-    ; IF not done, exploding or active then there's no current bullet
+    ; Do we have an active bullet?
     CP _BULLET_STATE_ACTIVE
-    JR NZ,.no_current_bullet
+    JR Z,.bullet_state_active
 
-    ; Active bullet travelling up the screen
+    ; Must be a new bullet
+    LD HL,_bullet_state                                                 
+    LD (HL),_BULLET_STATE_ACTIVE
 
+    JR .done
+
+.bullet_state_active:
     ; Check whether the bullet has reached to top of the screen
     LD A,(_bullet_current_y)
     CP A,_BULLET_MIN_Y
@@ -311,7 +331,7 @@ update_bullet:
 
     ; Fire pressed - init a new bullet
     LD HL,_bullet_state                                 ; We now have an active bullet
-    LD (HL),_BULLET_STATE_ACTIVE
+    LD (HL),_BULLET_STATE_NEW
 
     ; Calculate start x coord for bullet
     LD A,(player.player_x)
