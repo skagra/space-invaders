@@ -51,7 +51,9 @@ mask_1x4_7:
 	BYTE 0b00000001, 0b11111110
 
 ; Dimensions x (bytes) y (pixels)
-mask_1x4_dims:	WORD 0x0204
+mask_1x4_dims:
+mask_1x4_dim_y_pixels:	BYTE 0x04
+mask_1x4_dim_x_bytes:	BYTE 0x02
 
 ; Lookup table
 mask_1x4:

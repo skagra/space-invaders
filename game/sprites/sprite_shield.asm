@@ -147,7 +147,9 @@ sprite_shield_7:
 	BYTE 0b00000001, 0b11110000, 0b00000001, 0b11111000
 
 ; Dimensions x (bytes) y (pixels)
-sprite_shield_dims:	WORD 0x0410
+sprite_shield_dims:
+sprite_shield_dim_y_pixels:	BYTE 0x10
+sprite_shield_dim_x_bytes:	BYTE 0x04
 
 ; Lookup table
 sprite_shield:

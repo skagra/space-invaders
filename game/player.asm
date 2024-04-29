@@ -1,6 +1,6 @@
     MODULE player
 
-PLAYER_Y:              EQU draw.SCREEN_HEIGHT_PIXELS-8*2-1
+PLAYER_Y:              EQU draw.SCREEN_HEIGHT_PIXELS-20
 
 player_x:              BLOCK 2
 

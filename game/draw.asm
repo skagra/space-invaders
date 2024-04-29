@@ -42,6 +42,16 @@ CA_BG_CYAN:     EQU _CA_COL_CYAN << 3
 CA_BG_YELLOW:   EQU _CA_COL_YELLOW << 3
 CA_BG_WHITE:    EQU _CA_COL_WHITE << 3
 
+; Border colours
+BORDER_BLACK:    EQU _CA_COL_BLACK 
+BORDER_BLUE:     EQU _CA_COL_BLUE
+BORDER_RED:      EQU _CA_COL_RED
+BORDER_MAGENTA:  EQU _CA_COL_MAGENTA
+BORDER_GREEN:    EQU _CA_COL_GREEN
+BORDER_CYAN:     EQU _CA_COL_CYAN
+BORDER_YELLOW:   EQU _CA_COL_YELLOW
+BORDER_WHITE:    EQU _CA_COL_WHITE
+
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -56,6 +66,41 @@ CA_BG_WHITE:    EQU _CA_COL_WHITE << 3
 ;   -
 ;------------------------------------------------------------------------------
 init:
+    RET
+
+;------------------------------------------------------------------------------
+;
+; Set the colour of the screen border
+;
+; Usage:
+;   PUSH rr                             ; Colour in LSB
+;   CALL set_border
+;   POP rr                              ; Ditch the supplied parameter
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
+set_border:
+
+._PARAM_BORDER_COLOUR:  EQU 8
+
+    PUSH AF,HL,IX
+    
+    LD  IX,0                            ; Get the stack pointer
+    ADD IX,SP
+
+    LD HL,(IX+._PARAM_BORDER_COLOUR)
+
+    LD A,L
+    OUT (0xFE),A
+    
+    POP IX,HL,AF
+    
     RET
 
 ;------------------------------------------------------------------------------

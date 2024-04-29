@@ -100,7 +100,9 @@ class ShiftSprites
             fileOutput.WriteLine();
         }
         fileOutput.WriteLine("; Dimensions x (bytes) y (pixels)");
-        fileOutput.WriteLine($"{spriteName}_dims:\tWORD 0x{destByteWidth:X2}{spriteText.Count:X2}");
+        fileOutput.WriteLine($"{spriteName}_dims:");
+        fileOutput.WriteLine($"{spriteName}_dim_y_pixels:\tBYTE 0x{spriteText.Count:X2}");
+        fileOutput.WriteLine($"{spriteName}_dim_x_bytes:\tBYTE 0x{destByteWidth:X2}");
         fileOutput.WriteLine();
 
         fileOutput.WriteLine("; Lookup table");

@@ -83,7 +83,9 @@ sprite_player_bullet_explosion_7:
 	BYTE 0b00000001, 0b00100010
 
 ; Dimensions x (bytes) y (pixels)
-sprite_player_bullet_explosion_dims:	WORD 0x0208
+sprite_player_bullet_explosion_dims:
+sprite_player_bullet_explosion_dim_y_pixels:	BYTE 0x08
+sprite_player_bullet_explosion_dim_x_bytes:	BYTE 0x02
 
 ; Lookup table
 sprite_player_bullet_explosion:

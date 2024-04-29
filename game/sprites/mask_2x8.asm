@@ -83,7 +83,9 @@ mask_2x8_7:
 	BYTE 0b00000001, 0b11111111, 0b11111110
 
 ; Dimensions x (bytes) y (pixels)
-mask_2x8_dims:	WORD 0x0308
+mask_2x8_dims:
+mask_2x8_dim_y_pixels:	BYTE 0x08
+mask_2x8_dim_x_bytes:	BYTE 0x03
 
 ; Lookup table
 mask_2x8:

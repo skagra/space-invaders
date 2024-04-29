@@ -83,7 +83,9 @@ sprite_alien_2_variant_1_7:
 	BYTE 0b00000000, 0b00000110, 0b11000000
 
 ; Dimensions x (bytes) y (pixels)
-sprite_alien_2_variant_1_dims:	WORD 0x0308
+sprite_alien_2_variant_1_dims:
+sprite_alien_2_variant_1_dim_y_pixels:	BYTE 0x08
+sprite_alien_2_variant_1_dim_x_bytes:	BYTE 0x03
 
 ; Lookup table
 sprite_alien_2_variant_1:

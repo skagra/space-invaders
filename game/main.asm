@@ -51,6 +51,9 @@ main:
     LD B,alien_pack._ALIEN_PACK_SIZE             ; Alien pack size counter for drawing aliens
    
 .draw_pack_loop:
+    ; Read keyboard
+    CALL keyboard.get_movement_keys
+
     ; Wait for raster sync
     HALT
 
@@ -63,21 +66,25 @@ main:
     ; Draw the player base
     CALL player.draw_player
 
-    ; Read keyboard
-    CALL keyboard.get_movement_keys
-
+    ; Calculate new coordinates and variant for current alien
     CALL alien_pack.update_current_alien  
-    CALL player.update_player                   
+
+    ; Calcate new coordinates for the player base
+    CALL player.update_player
+
+    ; Calculate new coordinates and handle state changes for the player bullet               
     CALL player_bullet.update_bullet
 
+    ; Tunable delay to wait until the electron beam is off the bottom of the screen
     LD HL,._DRAW_DELAY
     PUSH HL
     CALL utils.delay
     POP HL
 
+    ; Erase the current alient
     CALL alien_pack.blank_current_alien
     
-    ; Blank out the current player bullet
+    ; Erase current player bullet
     CALL player_bullet.blank_bullet
 
     ; Move on to next alien

@@ -33,6 +33,12 @@ init:
 init_screen:
     PUSH HL
 
+    ; Set the screen border
+    LD HL,draw.BORDER_BLACK
+    PUSH HL
+    CALL draw.set_border    
+    POP HL
+
     ; Clear the screen
     call draw.wipe_screen
 
@@ -101,21 +107,21 @@ init_screen:
     POP HL
     POP HL
 
-    CALL draw_shields
-
     POP HL
 
+    CALL draw_horiz_line
     CALL draw_score_1
     CALL draw_score_2
     CALL draw_high_score
     CALL draw_credit
     CALL draw_bases_count
     CALL draw_reserve_bases
+    CALL draw_shields
 
     RET
 
-._BOTTOM_GEL_TOP_LEFT_Y:    EQU draw.SCREEN_HEIGHT_CHARS-6
-._BOTTOM_GEL_HEIGHT:        EQU 5
+._BOTTOM_GEL_TOP_LEFT_Y:    EQU draw.SCREEN_HEIGHT_CHARS-5
+._BOTTOM_GEL_HEIGHT:        EQU 4
 ._BASES_GEL_TOP_LEFT_X:     EQU 3
 ._BASES_GEL_TOP_LEFT_Y:     EQU draw.SCREEN_HEIGHT_CHARS-1
 ._BASES_GEL_WIDTH:          EQU 10
@@ -123,8 +129,8 @@ init_screen:
 ._SPACESHIP_GEL_LEFT_Y:     EQU 2
 ._SPACESHIP_GEL_HEIGHT:     EQU 1
 
-._SCORE_LINE_0_TEXT:        BYTE " SCORE<1>   HI-SCORE   SCORE<2> ",0
-._SCORE_LINE_1_TEXT:        BYTE "   0000      0000        0000   ",0
+._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>   ",0
+._SCORE_LINE_1_TEXT:        BYTE "     0000    0000      0000     ",0
 ._LIVES_AND_CREDS_TEXT:     BYTE " 3                    CREDIT 00 ",0
 
 ; TODO
@@ -220,13 +226,20 @@ draw_shields:
     CALL draw_shield
     POP DE
 
+    LD D,._SHIELD_4_X
+    LD E,._SHIELD_Y
+    PUSH DE
+    CALL draw_shield
+    POP DE
+
     POP DE
 
     RET
 
-._SHIELD_1_X:       EQU 50
-._SHIELD_2_X:       EQU draw.SCREEN_WIDTH_PIXELS/2-(22/2)
-._SHIELD_3_X:       EQU draw.SCREEN_WIDTH_PIXELS-50-(22/2)
+._SHIELD_1_X:       EQU 30
+._SHIELD_2_X:       EQU draw.SCREEN_WIDTH_PIXELS/2-30-(22/2)
+._SHIELD_3_X:       EQU draw.SCREEN_WIDTH_PIXELS/2+30-(22/2)
+._SHIELD_4_X:       EQU draw.SCREEN_WIDTH_PIXELS-30-(22/2)
 ._SHIELD_Y:         EQU draw.SCREEN_HEIGHT_PIXELS-8*5
 
 draw_shield:
@@ -257,6 +270,42 @@ draw_shield:
 
     RET
 
+draw_horiz_line:
+    PUSH AF,BC,DE,HL
+    LD B,0
+    LD C,_.HORIZ_LINE_Y
+    LD L,32
+.loop       
+    PUSH BC 
 
+    ; HACK
+    LD DE, 0x0108
+    PUSH DE
+
+    LD DE,sprites.sprite_horiz_line    
+    PUSH DE
+
+    LD DE,sprites.sprite_horiz_line
+    PUSH DE
+
+    CALL draw.draw_sprite
+
+    POP DE
+    POP DE
+    POP DE
+    POP DE
+
+    LD A,0x08
+    ADD A,B
+    LD B,A
+
+    DEC L
+    JR NZ,.loop
+
+    POP HL,DE,BC,AF
+
+    RET
+
+_.HORIZ_LINE_Y: EQU draw.SCREEN_HEIGHT_PIXELS-10
 
     ENDMODULE

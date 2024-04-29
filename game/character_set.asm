@@ -24,6 +24,20 @@ CHAR_AST:   BYTE 0b00000000
             BYTE 0b01010100
             BYTE 0b00010000
 
+    ; 45/0x2D
+    ORG CHARACTER_SET_BASE+13*8
+
+CHAR_HYPHEN:
+            BYTE 0b00000000
+            BYTE 0b00000000
+            BYTE 0b00000000
+            BYTE 0b00000000
+            BYTE 0b01111100
+            BYTE 0b00000000
+            BYTE 0b00000000
+            BYTE 0b00000000
+
+
     ; 48/0x30
     ORG CHARACTER_SET_BASE+16*8
 
