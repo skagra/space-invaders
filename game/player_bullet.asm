@@ -254,6 +254,7 @@ _BULLET_MIN_Y:              EQU   24                    ; The top of bullet traj
 ;   player.player_x - X coordinate of the player base
 ;
 ;------------------------------------------------------------------------------
+
 update_bullet:
     PUSH AF,BC,DE,HL
 
@@ -340,7 +341,7 @@ update_bullet:
     LD (HL),A
 
     ; Calculate start y coord - set new and current to same values
-    LD A,draw.SCREEN_HEIGHT_PIXELS-16    
+    LD A,draw.SCREEN_HEIGHT_PIXELS-20    
     LD HL,_bullet_current_y       
     LD (HL),A
     LD HL,_bullet_new_y       

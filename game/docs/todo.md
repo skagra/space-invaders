@@ -13,3 +13,4 @@
 * Look for TState counter
 * Investigate use of sound chip on Spectrum 128K
 * All the sprite names should be upper case to fit with convention
+* When base in moving the origin of player bullets seems to lag its position - it seems that it all about getting the starting Y coord correct

@@ -47,22 +47,22 @@ init:
 
 draw_player:
     ; Draw the player base sprite
-    LD A, (player_x)                       ; Player base coords
+    LD A, (player_x)                                    ; Player base coords
     LD D,A
     LD E, PLAYER_Y
     PUSH DE
 
     ; HACK          
-    LD DE, 0x0308                           ; Player base dimensions
+    LD DE, 0x0308                                       ; Player base dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_base               ; Sprite    
+    LD DE,sprites.sprite_base                           ; Sprite    
     PUSH DE
 
-    LD DE,sprites.mask_2x8                  ; Sprite mask
+    LD DE,sprites.mask_2x8                              ; Sprite mask
     PUSH DE
 
-    CALL draw.draw_sprite                   ; Draw the player base sprite
+    CALL draw.draw_sprite                               ; Draw the player base sprite
     POP DE
     POP DE
     POP DE
@@ -90,24 +90,24 @@ update_player:
     LD DE,(keyboard.keys_down)
 
     ; Update player base position based on keys pressed
-    BIT keyboard.LEFT_KEY_DOWN_BIT,E        ; Left pressed?
-    JR Z,.left_not_pressed                  ; No
+    BIT keyboard.LEFT_KEY_DOWN_BIT,E                    ; Left pressed?
+    JR Z,.left_not_pressed                              ; No
 
-    LD A,(player_x)                        ; Get current player base X coord
-    DEC A                                   ; Decrease it to move left
-    CP ._MIN_PLAYER_X                       ; Have we hit the left most point?
-    JR Z,.done                              ; Yes so don't update
-    LD (player_x),A                        ; Update the location of the player base
+    LD A,(player_x)                                     ; Get current player base X coord
+    DEC A                                               ; Decrease it to move left
+    CP ._MIN_PLAYER_X                                   ; Have we hit the left most point?
+    JR Z,.done                                          ; Yes so don't update
+    LD (player_x),A                                     ; Update the location of the player base
     JR .done
 
 .left_not_pressed
-    BIT keyboard.RIGHT_KEY_DOWN_BIT,E       ; Right pressed?
-    JR Z,.done                              ; No
-    LD A,(player_x)                        ; Get current player base X coord
-    INC A                                   ; Increase it to move right
-    CP ._MAX_PLAYER_X                       ; Have we hit the right most point?
-    JR NC,.done                             ; Yes so don't update
-    LD (player_x),A                        ; Update the location of the player base
+    BIT keyboard.RIGHT_KEY_DOWN_BIT,E                   ; Right pressed?
+    JR Z,.done                                          ; No
+    LD A,(player_x)                                     ; Get current player base X coord
+    INC A                                               ; Increase it to move right
+    CP ._MAX_PLAYER_X                                   ; Have we hit the right most point?
+    JR NC,.done                                         ; Yes so don't update
+    LD (player_x),A                                     ; Update the location of the player base
 
 .done:
     POP DE,AF
