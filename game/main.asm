@@ -92,7 +92,7 @@ main:
 
     JP .animation_loop               
 
-._DRAW_DELAY: EQU 0x480F
+._DRAW_DELAY: EQU 0x4810
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
