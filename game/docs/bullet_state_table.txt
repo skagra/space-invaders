@@ -31,12 +31,23 @@
 ; blank: bullet
 ; draw: bullet
 ;    
-; On top of screen          -> _BULLET_STATE_AT_TOP_OF_SCREEN
+; On top of screen          -> _BULLET_STATE_REACHED_TOP_OF_SCREEN
 ;
 ; On collision              -> _BULLET_STATE_COLLIDED
 ;
 ;                           -> _BULLET_STATE_ACTIVE
 ;                              Move bullet y
+;--
+
+;--
+; _BULLET_STATE_REACHED_START_OF_SCREEN:
+;   
+; blank: bullet
+; draw:  explosion
+;
+;                           -> _BULLET_STATE_AT_TOP_OF_SCREEN
+;                               explosion animation count = 10
+;
 ;--
 
 ;--
@@ -47,7 +58,9 @@
 ; blank: bullet
 ; draw:  explosion
 ;
-;                           -> _BULLET_STATE_DONE_AT_TOP_OF_SCREEN
+; Decreased animation count, if 0 -> _BULLET_STATE_DONE_AT_TOP_OF_SCREEN
+;                           -> _BULLET_STATE_AT_TOP_OF_SCREEN                 
+;
 ;--
 
 ;--
