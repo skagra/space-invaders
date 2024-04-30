@@ -20,7 +20,7 @@
 _BULLET_START_Y:                            EQU draw.SCREEN_HEIGHT_PIXELS-20    ; Starting Y coordinate for a new bullet
 _BULLET_MIN_Y:                              EQU 18                              ; The top of bullet trajectory
 _BULLET_STEP_SIZE:                          EQU 4                               ; Number of pixels to move bullet on each animation cycle
-_BULLET_EXPLOSION_CYCLES:                   EQU 10                              ; Number of cycles to keep the bullet explosion on the screen
+_BULLET_EXPLOSION_CYCLES:                   EQU 10                              ; Number of draw cycles to keep the bullet explosion on the screen
 
 ; Bullet state masks
 _BULLET_STATE_NO_BULLET:                    EQU 0b00000001                      ; No currently active bullet
