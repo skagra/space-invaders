@@ -57,11 +57,11 @@ main:
     ; Wait for raster sync
     HALT
 
-    ; Draw player bullet if there is one
-    CALL player_bullet.draw_bullet
-
     ; Draw the current alien
     CALL alien_pack.draw_current_alien
+
+    ; Draw player bullet if there is one
+    CALL player_bullet.draw_bullet
 
     ; Draw the player base
     CALL player.draw_player

@@ -448,6 +448,10 @@ draw_sprite:
     LD  IX,0                            ; Point IX to the stack
     ADD IX,SP                           
 
+    ; Initialize the collision flag
+    LD HL,collided                    ; Flag the collision
+    LD (HL),0x00
+
     ; Get and store the coords
     LD HL,(IX+._PARAM_COORDS)           ; Grab the pixel coords
     LD (._coords),HL                    ; And store for later (only the Y coord gets updated)
@@ -494,6 +498,16 @@ draw_sprite:
     LD B,A
 
 .ds_x_loop:
+    ; Collision check
+    LD HL,(._sprite_data_ptr)           ; Get sprite data
+    LD A,(HL)                                     
+    LD HL,(._screen_mem_loc)            ; Get screen byte
+    AND (HL)                            ; And sprite data with screen byte
+    JR Z,.no_collision
+    LD HL,collided                      ; Flag the collision
+    LD (HL),0x01
+
+.no_collision
     ; Draw mask -->
     LD HL,(._mask_data_ptr)             ; Get the mask data
     LD A,(HL)                                  
@@ -552,6 +566,7 @@ draw_sprite:
 ._sprite_data_ptr  BLOCK 2              ; Pointer to current sprite data byte
 ._mask_data_ptr    BLOCK 2              ; Pointer to current mask data byte
 ._screen_mem_loc:  BLOCK 2              ; Pointer to current screen byte
+collided:          BLOCK 1              ; Flag a collision
 
     ENDMODULE
 

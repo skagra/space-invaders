@@ -15,3 +15,4 @@
 * All the sprite names should be upper case to fit with convention
 * When base in moving the origin of player bullets seems to lag its position - it seems that it all about getting the starting Y coord correct
 * There should be 55 invaders not 50!
+* ~~Add a mechanism to allow player bullet explosions to remain on the screen for a configurable period~~

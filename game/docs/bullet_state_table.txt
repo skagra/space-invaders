@@ -1,0 +1,71 @@
+;---
+; _BULLET_STATE_NO_BULLET
+;
+; There is no currently active bullet
+;                                         
+; blank: - 
+; draw: -
+;
+; On fire pressed           -> _BULLET_STATE_NEW
+;                               Set bullet_x from player x position
+;
+;                           -> _BULLET_STATE_NO_BULLET
+;---
+
+;--
+; _BULLET_STATE_NEW
+;
+; Brand new bullet just created
+;                                                                 
+; blank: - 
+; draw: bullet
+;                    
+;                           -> _BULLET_STATE_ACTIVE
+;--
+
+;--
+; _BULLET_STATE_ACTIVE 
+;
+; There is an active bullet traveling up the screen
+;                      
+; blank: bullet
+; draw: bullet
+;    
+; On top of screen          -> _BULLET_STATE_AT_TOP_OF_SCREEN
+;
+; On collision              -> _BULLET_STATE_COLLIDED
+;
+;                           -> _BULLET_STATE_ACTIVE
+;                              Move bullet y
+;--
+
+;--
+; _BULLET_STATE_AT_TOP_OF_SCREEN
+;
+; The bullet has reached the top of the screen
+;
+; blank: bullet
+; draw:  explosion
+;
+;                           -> _BULLET_STATE_DONE_AT_TOP_OF_SCREEN
+;--
+
+;--
+; _BULLET_STATE_DONE_AT_TOP_OF_SCREEN
+;
+; The explosion of the bullet at the top of the screen is complete
+; Time to allow a new bullet
+;
+; blank: explosion
+; draw: -
+;                           -> _BULLET_STATE_NO_BULLET
+;--
+
+;--
+; _BULLET_STATE_COLLIDED:
+;`
+; A collision has been detected TODO: Will be revised alien destruction is done
+;   blank: bullet
+;   draw: -
+;                           -> _BULLET_STATE_NO_BULLET
+;--        

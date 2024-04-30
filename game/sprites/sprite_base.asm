@@ -83,9 +83,9 @@ sprite_base_7:
 	BYTE 0b00000000, 0b01111111, 0b11111100
 
 ; Dimensions x (bytes) y (pixels)
-sprite_base_dims:
-sprite_base_dim_y_pixels:	BYTE 0x08
-sprite_base_dim_x_bytes:	BYTE 0x03
+sprite_base_dims:	EQU 0x0308
+sprite_base_dim_x_bytes:	EQU 0x03
+sprite_base_dim_y_pixels:	EQU 0x08
 
 ; Lookup table
 sprite_base:

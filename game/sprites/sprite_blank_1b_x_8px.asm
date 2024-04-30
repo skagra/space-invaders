@@ -83,9 +83,9 @@ sprite_blank_1b_x_8px_7:
 	BYTE 0b00000000, 0b00000000
 
 ; Dimensions x (bytes) y (pixels)
-sprite_blank_1b_x_8px_dims:
-sprite_blank_1b_x_8px_dim_y_pixels:	BYTE 0x08
-sprite_blank_1b_x_8px_dim_x_bytes:	BYTE 0x02
+sprite_blank_1b_x_8px_dims:	EQU 0x0208
+sprite_blank_1b_x_8px_dim_x_bytes:	EQU 0x02
+sprite_blank_1b_x_8px_dim_y_pixels:	EQU 0x08
 
 ; Lookup table
 sprite_blank_1b_x_8px:

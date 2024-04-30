@@ -51,9 +51,9 @@ sprite_player_bullet_7:
 	BYTE 0b00000000, 0b00010000
 
 ; Dimensions x (bytes) y (pixels)
-sprite_player_bullet_dims:
-sprite_player_bullet_dim_y_pixels:	BYTE 0x04
-sprite_player_bullet_dim_x_bytes:	BYTE 0x02
+sprite_player_bullet_dims:	EQU 0x0204
+sprite_player_bullet_dim_x_bytes:	EQU 0x02
+sprite_player_bullet_dim_y_pixels:	EQU 0x04
 
 ; Lookup table
 sprite_player_bullet:
