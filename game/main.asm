@@ -30,6 +30,7 @@
 
 main:
     ; Set up stack
+
     DI                          
     LD SP,STACK_TOP
     EI
@@ -47,9 +48,16 @@ main:
     ; Draw the initial screen
     CALL game_screen.init_screen
 
+    LD HL,alien_pack._ALIEN_LOOKUP
+    LD (alien_pack._deferred_alien_lookup),HL
+    INC HL
+    INC HL
+    LD (alien_pack._current_alien_lookup_ptr),HL
+
+
 .animation_loop:
-    LD B,alien_pack._ALIEN_PACK_SIZE             ; Alien pack size counter for drawing aliens
-   
+    LD B,alien_pack.ALIEN_PACK_SIZE - 1            ; Alien pack size counter for drawing aliens
+
 .draw_pack_loop:
     ; Read keyboard
     CALL keyboard.get_movement_keys
@@ -58,7 +66,7 @@ main:
     HALT
 
     ; Draw the current alien
-    CALL alien_pack.draw_current_alien
+    CALL alien_pack.draw_deferred_alien
 
     ; Draw player bullet if there is one
     CALL player_bullet.draw_bullet
