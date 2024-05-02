@@ -48,13 +48,6 @@ main:
     ; Draw the initial screen
     CALL game_screen.init_screen
 
-    LD HL,alien_pack._ALIEN_LOOKUP
-    LD (alien_pack._deferred_alien_lookup),HL
-    INC HL
-    INC HL
-    LD (alien_pack._current_alien_lookup_ptr),HL
-
-
 .animation_loop:
     LD B,alien_pack.ALIEN_PACK_SIZE - 1            ; Alien pack size counter for drawing aliens
 
