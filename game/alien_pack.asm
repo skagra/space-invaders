@@ -39,7 +39,7 @@ _ALIEN_VARIANT_1_BIT:                   EQU 1
 
 ; Alien pack as per _STATE_OFFSET_* constants
 _alien_state:
-    ; Bottom row - row 0
+    ; Bottom row - Row 0
     WORD 0x1060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
     WORD 0x2060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
     WORD 0x3060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
@@ -87,6 +87,7 @@ _alien_state:
     WORD 0x9030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
     WORD 0xA030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW
 
+    ; Row 4
     WORD 0x1020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
     WORD 0x2020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
     WORD 0x3020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
@@ -121,13 +122,26 @@ _ALIEN_PACK_SIZE:                       EQU ($-_ALIEN_LOOKUP)/2
 
 _current_alien_lookup_ptr:              BLOCK 2         ; Pointer to the current alien in the lookup table     
 _current_pack_variant_flag:             BLOCK 1         ; Current variant for walking animation taken from _ALIEN_VARIANT_* constants
-_pack_x_reference:                      BLOCK 1         ; Reference to bottom left hand corner of alien pack
+;_pack_x_reference:                      BLOCK 1         ; Reference to bottom left hand corner of alien pack
 _pack_direction:                        BLOCK 1         ; Current direction of alient pack taken from _PACK_DIRECTION_* constants
 _pack_loop_counter:                     BLOCK 1         ; Loop counter decremented as each alien is processed so we know when to go back to start of the pack
+
 _current_alien_new_coords:              BLOCK 2         ; Calculated new coordinates of the current alien
-_deferred_alien_state:                  WORD 2          ; Alien state used for deferred drawing
-_deferred_alien_sprite:                 WORD 2          ; Alien sprite used for deferred drawing
-_deferred_alien_coords:                 WORD 2          ; Alien coords used for deferred drawing
+
+_deferred_alien_state:                  BLOCK 2         ; Alien state used for deferred drawing
+_deferred_alien_sprite:                 BLOCK 2         ; Alien sprite used for deferred drawing
+_deferred_alien_coords:                 BLOCK 2         ; Alien coords used for deferred drawing
+
+_pack_bl_coords:
+_pack_bottom:                           BLOCK 1
+_pack_left:                             BLOCK 1
+
+_pack_tr_coords:
+_pack_top:                              BLOCK 1
+_pack_right:                            BLOCK 1
+
+_PACK_MAX_X:                            EQU 240
+_PACK_MIN_X:                            EQU 10
 
 ;------------------------------------------------------------------------------
 ;
@@ -152,8 +166,8 @@ init:
     LD (_pack_direction),A
 
     ; Reference pack X coord
-    LD A,0x10                               ; TODO
-    LD (_pack_x_reference),A
+    ; LD A,0x10                               ; TODO - proper way to determine x reference (actually this might go altogether)
+    ; LD (_pack_x_reference),A
 
     ; Pointer to pack data
     LD HL,_ALIEN_LOOKUP                            
@@ -176,6 +190,21 @@ init:
     ; Pack loop counter
     LD A,_ALIEN_PACK_SIZE
     LD (_pack_loop_counter),A
+
+    ; Pack extremeties
+    ; TODO proper way of setting initial values
+    LD A,0x20
+    LD (_pack_bottom),A  
+
+    LD A,0x10
+    LD (_pack_left),A
+    
+    LD A,0x60
+    LD (_pack_top),A
+    
+    LD A,0xA0
+    LD (_pack_right),A                      
+
 
     POP HL,DE,AF
 
@@ -264,6 +293,7 @@ blank_current_alien:
 ;   -
 ;
 ;------------------------------------------------------------------------------
+
 draw_deferred_alien:
     PUSH AF,DE,HL
     
@@ -296,21 +326,6 @@ draw_deferred_alien:
 
     RET
 
-;------------------------------------------------------------------------------
-;
-; Switch the direction of alien pack as necessary
-; 
-; Usage:
-;   CALL adjust_alien_pack_direction
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-;------------------------------------------------------------------------------
-
 _adjust_alien_pack_direction:
     PUSH AF,HL
 
@@ -333,51 +348,44 @@ _adjust_alien_pack_direction:
     LD A,_PACK_DIRECTION_RIGHT                          ; Switch to moving right
     LD (_pack_direction),A
 
+    ; Reset pack right 
+    LD A,_PACK_MIN_X
+    LD (_pack_right),A
+
     JR .done
 
 .currently_moving_down_at_right:
     LD A,_PACK_DIRECTION_LEFT                           ; Switch to moving left
     LD (_pack_direction),A
 
+    ; Reset pack left
+    LD A,_PACK_MAX_X
+    LD (_pack_left),A
+
     JR .done
 
 .currently_moving_right:
     ; Pack is moving right
-    LD A,(_pack_x_reference)                            ; Get the reference X coord
-    CP 96                                               ; Has the pack hit the RHS of the screen?
-    JR C,.carry_on_right                                ; No, carry on in same direction
+    LD A,(_pack_right)                                  ; Get the reference X coord
+    CP _PACK_MAX_X                                      ; Has the pack hit the RHS of the screen?
+    JR C,.done                                          ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at right of screen
     LD A,_PACK_DIRECTION_DOWN_AT_RIGHT              
     LD (_pack_direction),A
-    JR .done
-
-.carry_on_right:
-    LD A,(_pack_x_reference)                            ; Update the reference X coord
-    INC A
-    INC A
-    LD (_pack_x_reference),A
-
+    
     JR .done
 
 .currently_moving_left:
     ; Pack is moving left
-    LD A,(_pack_x_reference)                            ; Get the reference X coord
-    CP 0x04                                             ; Has the pack hit the LHS of the screen?
-    JR NC,.carry_on_left                                ; No, carry on in same direction
+    LD A,(_pack_left)                                   ; Get the reference X coord
+    CP _PACK_MIN_X                                      ; Has the pack hit the LHS of the screen?
+    JR NC,.done                                         ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at left of screen
     LD A,_PACK_DIRECTION_DOWN_AT_LEFT             
     LD (_pack_direction),A
-    JR .done
-
-.carry_on_left:
-    LD A,(_pack_x_reference)                            ; Update the reference X coord
-    DEC A
-    DEC A
-    LD (_pack_x_reference),A
-    JR .done
-
+    
 .done
     POP HL,AF
 
@@ -444,6 +452,65 @@ _calc_current_alien_new_coords:
 
     RET
 
+_update_pack_bounds:
+    PUSH AF,DE
+    LD DE,(_current_alien_new_coords)                   ; New x,y coords
+
+    ; What direction is the pack travelling
+    LD A,(_pack_direction)
+
+    ; Travelling left
+    BIT _PACK_DIRECTION_LEFT_BIT,A
+    JR NZ, .travelling_left
+
+    ; Travelling right
+    BIT _PACK_DIRECTION_RIGHT_BIT,A
+    JR NZ, .travelling_right
+
+    ; Travelling down
+    LD HL,_pack_bottom
+    LD A,(HL)
+    CP E
+    JR NC,.done
+
+    LD (HL),E
+    JR .done
+
+.travelling_left:
+    LD HL,_pack_left
+    LD A,(HL)
+    CP D
+    JR C,.done
+
+    LD (HL),D
+    JR .done
+
+.travelling_right:
+    LD HL,_pack_right
+    LD A,(HL)
+    CP D
+    JR NC,.done
+    LD (HL),D
+
+.done
+    POP DE,AF
+
+    RET
+;------------------------------------------------------------------------------
+;
+; Update the current alien coordinates and state
+;
+; Usage:
+;   CALL update_current_alien
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
 update_current_alien:
     PUSH AF,DE,HL,IX
 
@@ -484,6 +551,7 @@ update_current_alien:
 
 .active:
     CALL _calc_current_alien_new_coords
+    CALL _update_pack_bounds
     JR .done
 
 .dieing:
@@ -509,6 +577,7 @@ update_current_alien:
 ;   -
 ;
 ;------------------------------------------------------------------------------
+
 next_alien:
      PUSH AF,DE,HL,IX
     
@@ -537,7 +606,6 @@ next_alien:
     LD (_deferred_alien_sprite),HL
 
 .variant_done:
-
     ; Copy new coords into current alien
     LD HL,(_current_alien_new_coords)    
     LD (IX+_STATE_OFFSET_DRAW_COORDS),HL 
