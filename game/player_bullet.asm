@@ -30,6 +30,7 @@ _BULLET_STATE_REACHED_TOP_OF_SCREEN:        EQU 0b00001000                      
 _BULLET_STATE_AT_TOP_OF_SCREEN:             EQU 0b00010000                      ; Retain expoding image at top of screen
 _BULLET_STATE_DONE_AT_TOP_OF_SCREEN:        EQU 0b00100000                      ; At top of screen and bullet is done
 _BULLET_STATE_COLLIDED:                     EQU 0b01000000                      ; The bullet has collided with something
+_BULLET_STATE_HIT_A_SHIELD:                 EQU 0b10000000                      ; The bullet has collided with a shield
 
 ; Bullet state mask bit positions
 _BULLET_STATE_NO_BULLET_BIT:                EQU 0                   
@@ -39,6 +40,7 @@ _BULLET_STATE_REACHED_TOP_OF_SCREEN_BIT:    EQU 3
 _BULLET_STATE_AT_TOP_OF_SCREEN_BIT          EQU 4               
 _BULLET_STATE_DONE_AT_TOP_OF_SCREEN_BIT:    EQU 5                  
 _BULLET_STATE_COLLIDED_BIT:                 EQU 6
+_BULLET_STATE_HIT_A_SHIELD_BIT:             EQU 7
 
 _collision_detected:                        BLOCK 1                             ; Flags whether a collision was detected during the draw phase
 _bullet_state:                              BLOCK 1                             ; Current state of the bullet from _BULLET_STATE_*
@@ -106,6 +108,9 @@ blank_bullet:
     ; If bullet is done at the top of the screen then there is an explosion to erase
     LD A,(_bullet_state)
     BIT _BULLET_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
+    JR NZ,.explosion
+
+    BIT _BULLET_STATE_HIT_A_SHIELD_BIT,A
     JR NZ,.explosion
 
     ; If the bullet is active, has reach the top of the screen or has collided with something
@@ -336,16 +341,20 @@ update_bullet:
 
     ; Has the bullet collided with something?
     BIT _BULLET_STATE_COLLIDED_BIT,A
-    JR NZ,.collided
+    JP NZ,.collided
+
+    ; Hit a base?
+    BIT _BULLET_STATE_HIT_A_SHIELD_BIT,A
+    JP NZ,.bullet_state_hit_a_shield
 
     // This should never be reached!
-    JR .done    
+    JP .done    
 
 .no_bullet
     ; No current bullet - is the fire button down?
     LD DE,(keyboard.keys_down)                          ; Read the keyboard
     BIT keyboard.FIRE_KEY_DOWN_BIT,E                    ; Fire pressed?
-    JR Z,.done                                          ; No
+    JP Z,.done                                          ; No
 
     ; Fire pressed - init a new bullet
     LD HL,_bullet_state                                 
@@ -429,6 +438,26 @@ update_bullet:
     JR .done
 
 .collided:
+    LD A,draw.SCREEN_HEIGHT_PIXELS-56   ; TODO Should be based on bottom of pack - Even this does not cover cases
+    LD HL,_bullet_draw_y                ;      bottom of pack is part way through destroying shields
+    LD D,(HL)                           ;      Should be fixable once we have propper collision detection with aliens done
+    CP D
+
+    JR NC,.hit_an_alien
+
+    ; Hit a shield
+    LD HL,_bullet_state
+    LD (HL),_BULLET_STATE_HIT_A_SHIELD
+
+    JR .done
+
+.hit_an_alien
+    LD HL,_bullet_state
+    LD (HL),_BULLET_STATE_NO_BULLET
+
+    JR .done
+
+.bullet_state_hit_a_shield
     LD HL,_bullet_state
     LD (HL),_BULLET_STATE_NO_BULLET
 
