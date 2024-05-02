@@ -30,7 +30,6 @@
 
 main:
     ; Set up stack
-
     DI                          
     LD SP,STACK_TOP
     EI
@@ -49,9 +48,6 @@ main:
     CALL game_screen.init_screen
 
 .animation_loop:
-    LD B,alien_pack.ALIEN_PACK_SIZE - 1            ; Alien pack size counter for drawing aliens
-
-.draw_pack_loop:
     ; Read keyboard
     CALL keyboard.get_movement_keys
 
@@ -91,16 +87,9 @@ main:
     ; Move on to next alien
     CALL alien_pack.next_alien
 
-    ; More aliens to draw?
-    DEC B
-    JP NZ,.draw_pack_loop
+    JR .animation_loop           
 
-    ; Reset to start of pack
-    CALL alien_pack.next_pack_cycle
-
-    JP .animation_loop               
-
-._DRAW_DELAY: EQU 0x4810
+._DRAW_DELAY: EQU 0x4010
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
