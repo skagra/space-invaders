@@ -24,7 +24,7 @@ In terms of major game play elements the following remain to be implemented:
 * Full collision detection.
 * Alien destruction by player missiles.
 * Alien missiles.
-* Scoring
+* Scoring.
 * Saucer ship.
 
 The project is now hitting a hurdle in squeezing out enough performance from the ZX Spectrum to remain flicker free while completing the feature set - some optimization will be required and possibly a change in approach to rendering entirely.
