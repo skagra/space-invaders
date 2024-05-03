@@ -52,6 +52,9 @@ BORDER_CYAN:     EQU _CA_COL_CYAN
 BORDER_YELLOW:   EQU _CA_COL_YELLOW
 BORDER_WHITE:    EQU _CA_COL_WHITE
 
+; Collision detection
+collided:          BLOCK 1              ; The last draw operation detected a collision
+
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -449,7 +452,7 @@ draw_sprite:
     ADD IX,SP                           
 
     ; Initialize the collision flag
-    LD HL,collided                    ; Flag the collision
+    LD HL,collided                      ; Flag the collision
     LD (HL),0x00
 
     ; Get and store the coords
@@ -566,7 +569,6 @@ draw_sprite:
 ._sprite_data_ptr  BLOCK 2              ; Pointer to current sprite data byte
 ._mask_data_ptr    BLOCK 2              ; Pointer to current mask data byte
 ._screen_mem_loc:  BLOCK 2              ; Pointer to current screen byte
-collided:          BLOCK 1              ; Flag a collision
 
     ENDMODULE
 
