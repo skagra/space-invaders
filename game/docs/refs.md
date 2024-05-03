@@ -17,8 +17,7 @@
 
 # ZX Spectrum
 
-* [Spectrum Machine Language for the Absolute Beginner](spectrum-machine-language-for-the-absolute-beginner.pdf)
-* [Assembly Language for Arcade Games and Other Fast Spectrum Programs](assembly-language-for-arcade-games-and-other-fast-spectrum-programs.pdf)
+* [Assembly Language for Arcade Games and Other Fast Spectrum Programs](https://worldofspectrum.org/archive/books/pages/assembly-language-for-arcade-games-and-other-fast-spectrum-programs/1)
 * On Screen Layout [part 1](https://www.overtakenbyevents.com/lets-talk-about-the-zx-specrum-screen-layout/) [part 2](https://www.overtakenbyevents.com/lets-talk-about-the-zx-specrum-screen-layout-part-two/)
 * [L Break into Program](http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum)
 * [World of Spectrum - org](https://worldofspectrum.org/)

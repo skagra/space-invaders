@@ -452,7 +452,7 @@ draw_sprite:
     ADD IX,SP                           
 
     ; Initialize the collision flag
-    LD HL,collided                      ; Flag the collision
+    LD HL,collided                      
     LD (HL),0x00
 
     ; Get and store the coords
@@ -466,7 +466,7 @@ draw_sprite:
     ; Find the correct shifted version of the sprite data
     LD HL,(IX+._PARAM_SPRITE_DATA)      ; Start of sprite lookup table
     LD A,(._x_coord)                    ; X coord
-    AND 0b00000111                      ; Calculate the X offset withing the character cell
+    AND 0b00000111                      ; Calculate the X offset within the character cell
     SLA A                               ; Double the offset as the lookup table contains words
     LD D,0x00
     LD E,A
@@ -506,6 +506,7 @@ draw_sprite:
     LD A,(HL)                                     
     LD HL,(._screen_mem_loc)            ; Get screen byte
     AND (HL)                            ; And sprite data with screen byte
+    
     JR Z,.no_collision
     LD HL,collided                      ; Flag the collision
     LD (HL),0x01
