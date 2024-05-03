@@ -406,6 +406,7 @@ coords_to_mem:
 	WORD 0x40A0, 0x41A0, 0x42A0, 0x43A0, 0x44A0, 0x45A0, 0x46A0, 0x47A0
 	WORD 0x40C0, 0x41C0, 0x42C0, 0x43C0, 0x44C0, 0x45C0, 0x46C0, 0x47C0
 	WORD 0x40E0, 0x41E0, 0x42E0, 0x43E0, 0x44E0, 0x45E0, 0x46E0, 0x47E0
+
 	WORD 0x4800, 0x4900, 0x4A00, 0x4B00, 0x4C00, 0x4D00, 0x4E00, 0x4F00
 	WORD 0x4820, 0x4920, 0x4A20, 0x4B20, 0x4C20, 0x4D20, 0x4E20, 0x4F20
 	WORD 0x4840, 0x4940, 0x4A40, 0x4B40, 0x4C40, 0x4D40, 0x4E40, 0x4F40
@@ -414,6 +415,7 @@ coords_to_mem:
 	WORD 0x48A0, 0x49A0, 0x4AA0, 0x4BA0, 0x4CA0, 0x4DA0, 0x4EA0, 0x4FA0
 	WORD 0x48C0, 0x49C0, 0x4AC0, 0x4BC0, 0x4CC0, 0x4DC0, 0x4EC0, 0x4FC0
 	WORD 0x48E0, 0x49E0, 0x4AE0, 0x4BE0, 0x4CE0, 0x4DE0, 0x4EE0, 0x4FE0
+
 	WORD 0x5000, 0x5100, 0x5200, 0x5300, 0x5400, 0x5500, 0x5600, 0x5700
 	WORD 0x5020, 0x5120, 0x5220, 0x5320, 0x5420, 0x5520, 0x5620, 0x5720
 	WORD 0x5040, 0x5140, 0x5240, 0x5340, 0x5440, 0x5540, 0x5640, 0x5740
@@ -488,28 +490,29 @@ draw_sprite:
     LD A,(._y_dim)                      ; Y loop counter set from Y dimension
     LD C,A
 
-.ds_y_loop:   
+    ; Calculate screen memory location to start drawing at
     LD HL,(._coords)                    ; Current screen coords
     PUSH HL 
     PUSH HL                             ; Space for the return value
     CALL coords_to_mem                  ; Get Memory location of screen byte into HL
     POP HL
-    LD (._screen_mem_loc),HL            ; Store the start of the row in screen memory
+    LD (._screen_mem_loc_trace),HL      ; Store the start of the row in screen memory
+    LD (._row_first_mem_lock),HL
     POP HL
 
+.ds_y_loop:   
     LD A,(._x_dim)                      ; X dim loop counter - character cells
     LD B,A
 
 .ds_x_loop:
-
     ; Collision detection
     LD A,(collided)                     ; Fast check whether we've already found a collision
     CP 0x00
-    JR Z,.draw_mask
+    JR NZ,.draw_mask
 
     LD HL,(._sprite_data_ptr)           ; Get sprite data
     LD A,(HL)                                     
-    LD HL,(._screen_mem_loc)            ; Get screen byte
+    LD HL,(._screen_mem_loc_trace)      ; Get screen byte
     AND (HL)                            ; And sprite data with screen byte
     
     JR Z,.draw_mask
@@ -521,7 +524,7 @@ draw_sprite:
     LD HL,(._mask_data_ptr)             ; Get the mask data
     LD A,(HL)                                  
     CPL                                 ; Compliment the mask
-    LD HL,(._screen_mem_loc)            ; Get screen byte
+    LD HL,(._screen_mem_loc_trace)      ; Get screen byte
     AND (HL)                            ; And notted mask with screen byte
     LD (HL),A                           ; Write screen memory
   
@@ -534,7 +537,7 @@ draw_sprite:
     ; Draw sprite -->
     LD HL,(._sprite_data_ptr)           ; Get sprite data
     LD A,(HL)                                     
-    LD HL,(._screen_mem_loc)            ; Get screen byte
+    LD HL,(._screen_mem_loc_trace)      ; Get screen byte
     XOR (HL)                            ; Or sprite data with screen byte
     LD (HL),A                           ; Write screen memory
 
@@ -545,9 +548,9 @@ draw_sprite:
     ; <-- End of draw sprite
 
     ; Done writing current byte of current row - move to next X cell 
-    LD HL,(._screen_mem_loc)            ; Move to next X cell
+    LD HL,(._screen_mem_loc_trace)      ; Move to next X cell
     INC HL              
-    LD (._screen_mem_loc), HL
+    LD (._screen_mem_loc_trace), HL
     
     ; Are we done writing this pixel row?
     DEC B                               ; Decrease the X loop counter
@@ -560,21 +563,64 @@ draw_sprite:
     
     ; Is there another pixel row to write?
     DEC C                               ; Y loop counter
-    JP NZ,.ds_y_loop
+    JP Z,.done
 
+    ; Caculate subsequent mem locations based on offset,
+    ; this is faster than calling coords_to_mem each time.
+
+    ; Easy case is when we are not at end of a block of 8
+    LD A,(draw_sprite._y_coord)         ; New Y divisible by 8?
+    AND 0b00000111                      
+    JR Z,.block_8                       ; Yes
+
+    ; Not at end of block of 8 rows, next row is at + 0x0100
+    LD HL,(._row_first_mem_lock)
+    LD DE,0x0100
+    ADD HL,DE
+    LD (._row_first_mem_lock), HL
+    LD (._screen_mem_loc_trace),HL
+
+    JR .ds_y_loop
+
+.block_8:
+    LD A,(draw_sprite._y_coord)         ; New Y divisible by 64?
+    AND 0b00111111
+    JR Z,.block_64                      ; Yes
+
+    ; Not at the end of a block of 64 rows, next row is at -0x06E0
+    LD HL,(._row_first_mem_lock)
+    LD DE,0x06E0
+    SUB HL,DE
+    LD (._row_first_mem_lock), HL
+    LD (._screen_mem_loc_trace),HL
+
+    JR .ds_y_loop
+
+.block_64:
+    ; Next row is at +0x0020
+    LD HL,(._row_first_mem_lock)
+    LD DE,0x0020
+    ADD HL,DE
+    LD (._row_first_mem_lock), HL
+    LD (._screen_mem_loc_trace),HL
+
+    JP .ds_y_loop
+
+.done
     POP IX,HL,DE,BC,AF   
 
     RET
 
 ._coords:                               ; Sprite location (Y is updated to line being drawn)
-._y_coord:         BLOCK 1
-._x_coord:         BLOCK 1
+._y_coord:              BLOCK 1
+._x_coord:              BLOCK 1
 ._dims:                                 ; Sprite dimensions
-._y_dim:           BLOCK 1
-._x_dim:           BLOCK 1
-._sprite_data_ptr  BLOCK 2              ; Pointer to current sprite data byte
-._mask_data_ptr    BLOCK 2              ; Pointer to current mask data byte
-._screen_mem_loc:  BLOCK 2              ; Pointer to current screen byte
+._y_dim:                BLOCK 1
+._x_dim:                BLOCK 1
+._sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
+._mask_data_ptr         BLOCK 2         ; Pointer to current mask data byte
+._screen_mem_loc_trace: BLOCK 2         ; Pointer to current screen byte
+._row_first_mem_lock:   BLOCK 2         ; Point to screen byte first drawn on current row
 
     ENDMODULE
 
