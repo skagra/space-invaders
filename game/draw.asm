@@ -69,6 +69,13 @@ collided:          BLOCK 1              ; The last draw operation detected a col
 ;   -
 ;------------------------------------------------------------------------------
 init:
+    PUSH AF
+
+    LD A,0x00
+    LD (draw_stack_count),A
+
+    POP AF
+    
     RET
 
 ;------------------------------------------------------------------------------
@@ -441,6 +448,10 @@ coords_to_mem:
 ;   -
 ;------------------------------------------------------------------------------
 
+draw_stack_top:
+DRAW_STACK:                BLOCK 256
+draw_stack_count:          BLOCK 1
+
 draw_sprite:
 
 ._PARAM_COORDS:            EQU 18       ; Sprite coordinates
@@ -526,8 +537,10 @@ draw_sprite:
     CPL                                 ; Compliment the mask
     LD HL,(._screen_mem_loc_trace)      ; Get screen byte
     AND (HL)                            ; And notted mask with screen byte
-    LD (HL),A                           ; Write screen memory
+    LD (HL),A                           ; Write screen memory  XXXX
   
+
+
     ; Done writing mask data, move pointer on for next iteration                     
     INC DE                              ; DE still contains current (._mask_data_ptr)
     LD (._mask_data_ptr),DE
@@ -537,7 +550,7 @@ draw_sprite:
     LD DE,(._sprite_data_ptr)           ; Get sprite data
     LD A,(DE)                                     
     XOR (HL)                            ; HL still contains (._screen_mem_loc_trace) Or sprite data with screen byte
-    LD (HL),A                           ; Write screen memory
+    LD (HL),A                           ; Write screen memory XXXX
 
     ; Done writing sprite data, move pointer on for next iteration                                 
     INC DE                              ; DE still contains current (._sprite_data_ptr)

@@ -11,6 +11,9 @@
     ; Skip past contended memory
     ORG 0x8000 
 
+    ; Offscreen buffer
+SCREEN_BUFFER:  BLOCK 0x1800
+
     INCLUDE "utils.asm"
     INCLUDE "draw.asm"
     INCLUDE "print.asm"
