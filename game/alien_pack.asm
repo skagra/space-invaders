@@ -140,8 +140,8 @@ _pack_tr_coords:
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
-_PACK_MAX_X:                            EQU 240
-_PACK_MIN_X:                            EQU 10
+_PACK_MAX_RIGHT:                        EQU 240
+_PACK_MIN_LEFT:                         EQU 3
 
 ;------------------------------------------------------------------------------
 ;
@@ -349,7 +349,7 @@ _adjust_alien_pack_direction:
     LD (_pack_direction),A
 
     ; Reset pack right 
-    LD A,_PACK_MIN_X
+    LD A,_PACK_MIN_LEFT
     LD (_pack_right),A
 
     JR .done
@@ -359,7 +359,7 @@ _adjust_alien_pack_direction:
     LD (_pack_direction),A
 
     ; Reset pack left
-    LD A,_PACK_MAX_X
+    LD A,_PACK_MAX_RIGHT
     LD (_pack_left),A
 
     JR .done
@@ -367,7 +367,7 @@ _adjust_alien_pack_direction:
 .currently_moving_right:
     ; Pack is moving right
     LD A,(_pack_right)                                  ; Get the reference X coord
-    CP _PACK_MAX_X                                      ; Has the pack hit the RHS of the screen?
+    CP _PACK_MAX_RIGHT                                      ; Has the pack hit the RHS of the screen?
     JR C,.done                                          ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at right of screen
@@ -379,7 +379,7 @@ _adjust_alien_pack_direction:
 .currently_moving_left:
     ; Pack is moving left
     LD A,(_pack_left)                                   ; Get the reference X coord
-    CP _PACK_MIN_X                                      ; Has the pack hit the LHS of the screen?
+    CP _PACK_MIN_LEFT                                      ; Has the pack hit the LHS of the screen?
     JR NC,.done                                         ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at left of screen

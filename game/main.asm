@@ -58,7 +58,7 @@ main:
     CALL alien_pack.draw_deferred_alien
 
     ; Draw player bullet if there is one
-    CALL player_bullet.draw_bullet
+    CALL player_bullet.draw_deferred_bullet
 
     ; Draw the player base
     CALL player.draw_player
@@ -78,7 +78,7 @@ main:
     CALL utils.delay
     POP HL
 
-    ; Erase the current alient
+    ; Erase the current alien
     CALL alien_pack.blank_current_alien
     
     ; Erase current player bullet
@@ -89,7 +89,7 @@ main:
 
     JR .animation_loop           
 
-._DRAW_DELAY: EQU 0x4010
+._DRAW_DELAY: EQU 0x4012
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    

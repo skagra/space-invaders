@@ -45,7 +45,7 @@ _BULLET_STATE_HIT_A_SHIELD_BIT:             EQU 7
 _collision_detected:                        BLOCK 1                             ; Flags whether a collision was detected during the draw phase
 _bullet_state:                              BLOCK 1                             ; Current state of the bullet from _BULLET_STATE_*
 _bullet_blank_y:                            BLOCK 1                             ; Y coord to blank bullet
-_bullet_draw_y:                             BLOCK 1                             ; Y coord to draw bullet
+_bullet_deferred_draw_y:                             BLOCK 1                             ; Y coord to draw bullet
 _bullet_x:                                  BLOCK 1                             ; X coordinate of the bullet, this never changes once a bullet is running
 _bullet_explosion_cycle_count:              BLOCK 1                             ; Count of cycles remaining to display bullet explosion
 
@@ -199,7 +199,7 @@ blank_bullet:
 ;
 ;------------------------------------------------------------------------------
 
-draw_bullet:
+draw_deferred_bullet:
     PUSH AF,DE
 
     ; If the bullet has reached the top of the screen then draw an explosion
@@ -218,7 +218,7 @@ draw_bullet:
     ; Draw bullet
     LD A, (_bullet_x)                                   ; Coords
     LD D,A
-    LD A, (_bullet_draw_y)
+    LD A, (_bullet_deferred_draw_y)
     LD E,A
     PUSH DE
     
@@ -248,7 +248,7 @@ draw_bullet:
     ; Draw explosion
     LD A, (_bullet_x)                                   ; Coords
     LD D,A
-    LD A, (_bullet_draw_y)
+    LD A, (_bullet_deferred_draw_y)
     LD E,A
     PUSH DE
         
@@ -309,7 +309,7 @@ update_bullet:
     PUSH AF,BC,DE,HL
 
     ; Default is the bullet does not move
-    LD A,(_bullet_draw_y)                                
+    LD A,(_bullet_deferred_draw_y)                                
     LD (_bullet_blank_y),A
 
     ; Grab the current bullet state
@@ -370,7 +370,7 @@ update_bullet:
     LD A,_BULLET_START_Y 
     LD HL,_bullet_blank_y       
     LD (HL),A
-    LD HL,_bullet_draw_y       
+    LD HL,_bullet_deferred_draw_y       
     LD (HL),A
 
     JR .done
@@ -393,11 +393,11 @@ update_bullet:
     JR Z,.active_collision_detected
 
     ; Active bullet moving up the screen
-    LD A,(_bullet_draw_y)
+    LD A,(_bullet_deferred_draw_y)
     LD (_bullet_blank_y),A
     LD B,_BULLET_STEP_SIZE   
     SUB B
-    LD (_bullet_draw_y),A
+    LD (_bullet_deferred_draw_y),A
     
     JR .done
 
@@ -439,7 +439,7 @@ update_bullet:
 
 .collided:
     LD A,draw.SCREEN_HEIGHT_PIXELS-56   ; TODO Should be based on bottom of pack - Even this does not cover cases
-    LD HL,_bullet_draw_y                ;      bottom of pack is part way through destroying shields
+    LD HL,_bullet_deferred_draw_y       ;      bottom of pack is part way through destroying shields
     LD D,(HL)                           ;      Should be fixable once we have propper collision detection with aliens done
     CP D
 
