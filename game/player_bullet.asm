@@ -395,8 +395,7 @@ update_bullet:
     ; Active bullet moving up the screen
     LD A,(_bullet_deferred_draw_y)
     LD (_bullet_blank_y),A
-    LD B,_BULLET_STEP_SIZE   
-    SUB B
+    SUB _BULLET_STEP_SIZE
     LD (_bullet_deferred_draw_y),A
     
     JR .done

@@ -508,49 +508,45 @@ draw_sprite:
     ; Collision detection
     LD A,(collided)                     ; Fast check whether we've already found a collision
     CP 0x00
-    JR NZ,.draw_mask
+    JR NZ,.draw
 
     LD HL,(._sprite_data_ptr)           ; Get sprite data
     LD A,(HL)                                     
     LD HL,(._screen_mem_loc_trace)      ; Get screen byte
     AND (HL)                            ; And sprite data with screen byte
-    
-    JR Z,.draw_mask
+    JR Z,.draw
+
     LD HL,collided                      ; Flag the collision
     LD (HL),0x01
 
-.draw_mask
+.draw
     ; Draw mask -->
-    LD HL,(._mask_data_ptr)             ; Get the mask data
-    LD A,(HL)                                  
+    LD DE,(._mask_data_ptr)             ; Get the mask data
+    LD A,(DE)                                  
     CPL                                 ; Compliment the mask
     LD HL,(._screen_mem_loc_trace)      ; Get screen byte
     AND (HL)                            ; And notted mask with screen byte
     LD (HL),A                           ; Write screen memory
   
     ; Done writing mask data, move pointer on for next iteration                     
-    LD HL,(._mask_data_ptr)             ; Move to next byte of mask data
-    INC HL
-    LD (._mask_data_ptr),HL
+    INC DE                              ; DE still contains current (._mask_data_ptr)
+    LD (._mask_data_ptr),DE
     ; <-- End of draw mask
 
     ; Draw sprite -->
-    LD HL,(._sprite_data_ptr)           ; Get sprite data
-    LD A,(HL)                                     
-    LD HL,(._screen_mem_loc_trace)      ; Get screen byte
-    XOR (HL)                            ; Or sprite data with screen byte
+    LD DE,(._sprite_data_ptr)           ; Get sprite data
+    LD A,(DE)                                     
+    XOR (HL)                            ; HL still contains (._screen_mem_loc_trace) Or sprite data with screen byte
     LD (HL),A                           ; Write screen memory
 
     ; Done writing sprite data, move pointer on for next iteration                                 
-    LD HL,(._sprite_data_ptr)           ; Move to next byte of sprite data
-    INC HL
-    LD (._sprite_data_ptr),HL
+    INC DE                              ; DE still contains current (._sprite_data_ptr)
+    LD (._sprite_data_ptr),DE
     ; <-- End of draw sprite
 
-    ; Done writing current byte of current row - move to next X cell 
-    LD HL,(._screen_mem_loc_trace)      ; Move to next X cell
-    INC HL              
-    LD (._screen_mem_loc_trace), HL
+    ; Done writing current byte of current row - move to next X cell      
+    INC HL                              ; HL still contains (._screen_mem_loc_trace)
+    LD (._screen_mem_loc_trace),HL
     
     ; Are we done writing this pixel row?
     DEC B                               ; Decrease the X loop counter
@@ -569,7 +565,7 @@ draw_sprite:
     ; this is faster than calling coords_to_mem each time.
 
     ; Easy case is when we are not at end of a block of 8
-    LD A,(draw_sprite._y_coord)         ; New Y divisible by 8?
+    LD A,(._y_coord)                    ; New Y divisible by 8?
     AND 0b00000111                      
     JR Z,.block_8                       ; Yes
 
@@ -583,7 +579,7 @@ draw_sprite:
     JR .ds_y_loop
 
 .block_8:
-    LD A,(draw_sprite._y_coord)         ; New Y divisible by 64?
+    LD A,(._y_coord)                    ; New Y divisible by 64?
     AND 0b00111111
     JR Z,.block_64                      ; Yes
 
