@@ -232,7 +232,7 @@ fill_screen_attributes_rect:
     LD A,(._x)                          ; Set low order byte from x coord
     LD E,A 
     
-    LD H,0x00                           ; Take y coord
+    LD H,0x00                           ; Take Y coord
     LD A,(._y)                          ; Multiple x32
     LD L,A             
     SLA L
@@ -485,7 +485,7 @@ draw_sprite:
     LD DE, (HL)                         ; Lookup the sprite data in the table
     LD (._mask_data_ptr), DE            ; Points to mask data
 
-    LD A,(._y_dim)                      ; Y loop counter set from y dimension
+    LD A,(._y_dim)                      ; Y loop counter set from Y dimension
     LD C,A
 
 .ds_y_loop:   
@@ -501,17 +501,22 @@ draw_sprite:
     LD B,A
 
 .ds_x_loop:
-    ; Collision check
+
+    ; Collision detection
+    LD A,(collided)                     ; Fast check whether we've already found a collision
+    CP 0x00
+    JR Z,.draw_mask
+
     LD HL,(._sprite_data_ptr)           ; Get sprite data
     LD A,(HL)                                     
     LD HL,(._screen_mem_loc)            ; Get screen byte
     AND (HL)                            ; And sprite data with screen byte
     
-    JR Z,.no_collision
+    JR Z,.draw_mask
     LD HL,collided                      ; Flag the collision
     LD (HL),0x01
 
-.no_collision
+.draw_mask
     ; Draw mask -->
     LD HL,(._mask_data_ptr)             ; Get the mask data
     LD A,(HL)                                  
@@ -561,7 +566,7 @@ draw_sprite:
 
     RET
 
-._coords:                               ; Sprite location (y is updated to line being drawn)
+._coords:                               ; Sprite location (Y is updated to line being drawn)
 ._y_coord:         BLOCK 1
 ._x_coord:         BLOCK 1
 ._dims:                                 ; Sprite dimensions
