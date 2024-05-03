@@ -4,16 +4,12 @@
 
     INCLUDE "memory_map.asm"
 
-    ; Reserve space for screen memory and skip over for code start    
+    ; Reserve space for screen memory     
     ORG 0x0
     BLOCK mmap.FREE_MEMORY_START
-    
-    ;---
-    ; Skip ULA contended memory? 
-    ; https://worldofspectrum.org/faq/reference/48kreference.htm
-    ; Check this
+
+    ; Skip past contended memory
     ORG 0x8000 
-    ;---
 
     INCLUDE "utils.asm"
     INCLUDE "draw.asm"
@@ -89,7 +85,7 @@ main:
 
     JR .animation_loop           
 
-._DRAW_DELAY: EQU 0x4012
+._DRAW_DELAY: EQU 0x4008
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
