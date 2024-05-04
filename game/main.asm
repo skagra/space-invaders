@@ -12,6 +12,7 @@
     ORG 0x8000 
 
     INCLUDE "utils.asm"
+    INCLUDE "timing.asm"
     INCLUDE "draw.asm"
     INCLUDE "print.asm"
     INCLUDE "keyboard.asm"
@@ -32,6 +33,7 @@ main:
 
     ; Initialise all modules
     CALL utils.init
+    CALL timing.init
     CALL draw.init
     CALL print.init
     CALL keyboard.init
@@ -68,11 +70,8 @@ main:
     ; Calculate new coordinates and handle state changes for the player bullet               
     CALL player_bullet.update_bullet
 
-    ; Tunable delay to wait until the electron beam is off the bottom of the screen
-    LD HL,._DRAW_DELAY
-    PUSH HL
-    CALL utils.delay
-    POP HL
+    ; Wait until the electron beams hits the bottom of the screen
+    CALL timing.wait_on_end_of_screen
 
     ; Erase the current alien
     CALL alien_pack.blank_current_alien

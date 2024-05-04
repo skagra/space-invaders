@@ -58,7 +58,7 @@ init_screen:
     POP HL
     POP HL
 
-    ; Gren gel covering bases showing remaining lives
+    ; Green gel covering bases showing remaining lives
     LD H,._BASES_GEL_TOP_LEFT_X                                     ; Top left X
     LD L,._BASES_GEL_TOP_LEFT_Y                                     ; Top left Y
     PUSH HL
@@ -71,6 +71,18 @@ init_screen:
     POP HL
     POP HL
     POP HL
+
+    ; End of screen marker
+    LD H,._BASES_GEL_TOP_LEFT_X+._BASES_GEL_WIDTH                   ; Top left X
+    LD L,._BASES_GEL_TOP_LEFT_Y-1                                   ; Top left Y
+    PUSH HL
+    LD H,draw.SCREEN_WIDTH_CHARS-._BASES_GEL_WIDTH-._BASES_GEL_TOP_LEFT_X-._CREDIT_WIDTH   ; Width
+    LD L,._BASES_GEL_HEIGHT                                         ; Height
+    PUSH HL
+    CALL timing.draw_end_of_screen_barrier
+    POP HL
+    POP HL
+
 
     ; Red gel just below scores - for spaceship and exploding player missiles
     LD H,._SPACESHIP_GEL_LEFT_Y                                     ; Top left X
@@ -128,6 +140,7 @@ init_screen:
 ._BASES_GEL_HEIGHT:         EQU 1
 ._SPACESHIP_GEL_LEFT_Y:     EQU 2
 ._SPACESHIP_GEL_HEIGHT:     EQU 1
+._CREDIT_WIDTH:             EQU 10
 
 ._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>   ",0
 ._SCORE_LINE_1_TEXT:        BYTE "     0000    0000      0000     ",0

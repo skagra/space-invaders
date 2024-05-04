@@ -18,3 +18,5 @@
 * ~~Add a mechanism to allow player bullet explosions to remain on the screen for a configurable period~~
 * Remove all pseudo instruction
 * Review register usage throughout
+* The wait on screen routine - only works properly if the barrier bar is at least once line before the end of the screen else we are on go slow - I suspect this is because the existing wipe code is too slow to complete before the vertical retrace so we end up with 50 speed.
+* Look at combining the mask and sprite draw phases (and possible change the storage to Sprite Byte,Mask Byte ... then we can grab both at same time via SP) and collision can go together - also have the mask already "inverted" will save time too

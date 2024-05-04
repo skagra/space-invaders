@@ -60,31 +60,4 @@ fill_mem:
     POP  IX,HL,DE,BC,AF
     RET
 
-delay:
-
-._PARAM_LOOPS:  EQU 8
-
-    PUSH BC,DE,IX
-
-    LD  IX,0                            ; Grab the stack pointer
-    ADD IX,SP
-
-    LD DE,(IX+._PARAM_LOOPS)            ; Size of each loop
-
-    LD B,D                              ; Outer loop counter
-
-.outer_loop
-    LD C,E                              ; Inner loop counter
-
-.inner_loop
-    DEC C
-    JR NZ, .inner_loop
-
-    DEC B
-    JR NZ, .outer_loop
-
-    POP IX,DE,BC
-
-    RET
-
 	ENDMODULE
