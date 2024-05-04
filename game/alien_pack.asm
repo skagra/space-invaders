@@ -538,6 +538,8 @@ update_current_alien:
     JR NZ,.active
 
     // This should never be reached!
+    DEBUG_FLAG_ERROR error_codes.UDC_SHOULD_NOT_BE_REACHED
+
     JR .done
 
 .new:
@@ -579,7 +581,7 @@ update_current_alien:
 ;------------------------------------------------------------------------------
 
 next_alien:
-     PUSH AF,DE,HL,IX
+    PUSH AF,DE,HL,IX
     
     ; Point IX at the state structure for the current alien
     LD HL,(_current_alien_lookup_ptr)
@@ -664,6 +666,8 @@ _next_pack_cycle:
     LD (_current_alien_lookup_ptr),HL
 
     POP HL,AF
+
+    DEBUG_CYCLE_FLASH
 
     RET
 

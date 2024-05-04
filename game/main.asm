@@ -11,6 +11,8 @@
     ; Skip past contended memory
     ORG 0x8000 
 
+    INCLUDE "error_codes.asm"
+    INCLUDE "debug.asm"
     INCLUDE "utils.asm"
     INCLUDE "timing.asm"
     INCLUDE "draw.asm"
@@ -32,6 +34,8 @@ main:
     EI
 
     ; Initialise all modules
+    CALL error_codes.init
+    CALL debug.init
     CALL utils.init
     CALL timing.init
     CALL draw.init
@@ -51,6 +55,8 @@ main:
 
     ; Wait for raster sync
     HALT
+
+    DEBUG_VTRACE_FLASH
 
     ; Draw the current alien
     CALL alien_pack.draw_deferred_alien
@@ -92,6 +98,10 @@ STACK_SIZE:                 EQU 100*2
 STACK_TOP:                  EQU $-1
 
 ; Save snapshot for spectrum emulator
-    SAVESNA "space-invaders.sna",main
+    IFDEF DEBEUG
+        SAVESNA "space-invaders.sna",main
+    ELSE
+        SAVESNA "space-invaders-debug.sna",main
+    ENDIF
    
     ENDMODULE

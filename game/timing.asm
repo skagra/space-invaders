@@ -58,12 +58,18 @@ draw_end_of_screen_barrier:
     ADD IX,SP
 
     LD HL,(IX+._PARAM_TOP_LEFT)         ; Top left of rect to fill
+    DEC L
+    DEC L
     PUSH HL
 
     LD HL,(IX+._PARAM_DIM)              ; Width and hight of rect to fill
     PUSH HL
 
-    LD HL,draw._CA_COL_MAGENTA | draw.CA_BRIGHT       
+    IFDEF DEBUG == 0
+        LD HL,draw._CA_COL_MAGENTA | draw.CA_BRIGHT  
+    ELSE
+        LD HL,draw.CA_BRIGHT  
+    ENDIF     
     PUSH HL
 
     CALL draw.fill_screen_attributes_rect

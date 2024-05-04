@@ -337,7 +337,7 @@ update_bullet:
 
     ; Are we done expoding the bullet at top of screen?
     BIT _BULLET_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
-    JR NZ,.done_at_top_of_screen 
+    JP NZ,.done_at_top_of_screen 
 
     ; Has the bullet collided with something?
     BIT _BULLET_STATE_COLLIDED_BIT,A
@@ -348,6 +348,8 @@ update_bullet:
     JP NZ,.bullet_state_hit_a_shield
 
     // This should never be reached!
+    DEBUG_FLAG_ERROR error_codes.UB_SHOULD_NOT_BE_REACHED
+
     JP .done    
 
 .no_bullet

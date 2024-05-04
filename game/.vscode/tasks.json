@@ -2,7 +2,36 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "make (sjasmplus)",
+            "label": "make (debug)",
+            "type": "shell",
+            "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
+            "args": [
+                "--sld=space-invaders.sld",
+                "--fullpath",
+                "--sym=${workspaceFolder}/.tmp/symbols.txt",
+                "--lst=${workspaceFolder}/.tmp/listing.txt",
+                // "--syntax=f",
+                "-DDEBUG",
+                "main.asm"
+            ],
+            "problemMatcher": {
+                "owner": "sjasmplus",
+                "fileLocation": "autoDetect",
+                "pattern": {
+                    "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "severity": 3,
+                    "message": 4
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "make (release)",
             "type": "shell",
             "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
             "args": [

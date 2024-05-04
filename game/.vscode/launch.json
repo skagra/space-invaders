@@ -4,7 +4,40 @@
         {
             "type": "dezog",
             "request": "launch",
-            "name": "Internal Simulator",
+            "name": "Internal Simulator (debug)",
+            "remoteType": "zsim",
+            "zsim": {
+                "visualMemory": true,
+                "memoryModel": "ZX48K",
+                "ulaScreen": true,
+                "zxBorderWidth": 20,
+                "vsyncInterrupt": true,
+                "zxKeyboard": true,
+                "zxBeeper": true,
+                "loadZxRom": true
+            },
+            "sjasmplus": [
+                {
+                    "path": "space-invaders.sld"
+                }
+            ],
+            "history": {
+                "reverseDebugInstructionCount": 1000000,
+                "spotCount": 10,
+                "codeCoverageEnabled": true
+            },
+            "startAutomatically": false,
+            "commandsAfterLaunch": [],
+            "rootFolder": "${workspaceFolder}",
+            "topOfStack": "main.STACK_TOP",
+            "load": "space-invaders-debug.sna",
+            "smallValuesMaximum": 513,
+            "tmpDir": ".tmp"
+        },
+        {
+            "type": "dezog",
+            "request": "launch",
+            "name": "Internal Simulator (release)",
             "remoteType": "zsim",
             "zsim": {
                 "visualMemory": true,
@@ -37,8 +70,8 @@
         {
             "type": "dezog",
             "request": "launch",
-            "name": "ZEsarUX",
-            "remoteType": "zrcp",
+            "name": "CSpect (debug)",
+            "remoteType": "cspect",
             "sjasmplus": [
                 {
                     "path": "space-invaders.sld"
@@ -46,20 +79,20 @@
             ],
             "history": {
                 "reverseDebugInstructionCount": 1000000,
-                "spotCount": 10,
+                "spotCount": 10
             },
             "startAutomatically": false,
             "commandsAfterLaunch": [],
             "rootFolder": "${workspaceFolder}",
             "topOfStack": "main.STACK_TOP",
-            "load": "space-invaders.sna",
+            "load": "space-invaders-debug.sna",
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"
         },
         {
             "type": "dezog",
             "request": "launch",
-            "name": "CSpect",
+            "name": "CSpect (release)",
             "remoteType": "cspect",
             "sjasmplus": [
                 {
