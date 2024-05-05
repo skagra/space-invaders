@@ -90,6 +90,9 @@ _flag_error:
 
     POP IX,HL,AF
 
+.forever:   
+    JR .forever
+    
     RET
 
 _FLAG_ERROR_BYTE:       EQU _VTRACE_BYTE+2

@@ -45,7 +45,7 @@ _BULLET_STATE_HIT_A_SHIELD_BIT:             EQU 7
 _collision_detected:                        BLOCK 1                             ; Flags whether a collision was detected during the draw phase
 _bullet_state:                              BLOCK 1                             ; Current state of the bullet from _BULLET_STATE_*
 _bullet_blank_y:                            BLOCK 1                             ; Y coord to blank bullet
-_bullet_deferred_draw_y:                             BLOCK 1                             ; Y coord to draw bullet
+_bullet_deferred_draw_y:                    BLOCK 1                             ; Y coord to draw bullet
 _bullet_x:                                  BLOCK 1                             ; X coordinate of the bullet, this never changes once a bullet is running
 _bullet_explosion_cycle_count:              BLOCK 1                             ; Count of cycles remaining to display bullet explosion
 
@@ -128,18 +128,14 @@ blank_bullet:
     LD E,A
     PUSH DE
     
-    LD DE, sprites.sprite_player_bullet_dims            ; Dimensions
+    LD DE, sprites.sprite_player_bullet_blank_dims      ; Dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_blank_1b_x_4px                 ; Sprite    
-    PUSH DE
-
-    LD DE,sprites.sprite_player_bullet                  ; Sprite mask  
+    LD DE,sprites.sprite_player_bullet_blank            ; Sprite mask  
     PUSH DE
 
     CALL draw.draw_sprite                               ; Erase the player bullet 
 
-    POP DE
     POP DE
     POP DE
     POP DE
@@ -154,18 +150,14 @@ blank_bullet:
     LD E,A
     PUSH DE
          
-    LD DE, sprites.sprite_player_bullet_explosion_dims  ; Dimensioons
+    LD DE, sprites.sprite_player_bullet_explosion_blank_dims  ; Dimensioons
     PUSH DE
 
-    LD DE,sprites.sprite_blank_1b_x_8px                 ; Sprite    
-    PUSH DE
-
-    LD DE,sprites.sprite_player_bullet_explosion        ; Sprite mask  
+    LD DE,sprites.sprite_player_bullet_explosion_blank  ; Sprite mask  
     PUSH DE
 
     CALL draw.draw_sprite                               ; Erase the player bullet explosion
 
-    POP DE
     POP DE
     POP DE
     POP DE
@@ -228,12 +220,8 @@ draw_deferred_bullet:
     LD DE,sprites.sprite_player_bullet                  ; Sprite    
     PUSH DE
 
-    LD DE,sprites.sprite_player_bullet                  ; Mask
-    PUSH DE
-
     CALL draw.draw_sprite                               ; Draw the player bullet
 
-    POP DE
     POP DE
     POP DE
     POP DE
@@ -258,12 +246,8 @@ draw_deferred_bullet:
     LD DE,sprites.sprite_player_bullet_explosion        ; Sprite    
     PUSH DE
 
-    LD DE,sprites.sprite_player_bullet_explosion        ; Mask 
-    PUSH DE
-
     CALL draw.draw_sprite                               ; Draw the explosion
 
-    POP DE
     POP DE
     POP DE
     POP DE
@@ -363,7 +347,7 @@ update_bullet:
     LD (HL),_BULLET_STATE_NEW
 
     ; Calculate start x coord for bullet
-    LD A,(player.player_x)
+    LD A,(player.deferred_player_x)
     ADD A,0x04
     LD HL,_bullet_x
     LD (HL),A

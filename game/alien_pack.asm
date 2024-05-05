@@ -26,9 +26,11 @@ _ALIEN_STATE_DEAD_BIT:                  EQU 3
 _STATE_OFFSET_DRAW_COORDS:              EQU 0           ; Coords
 _STATE_OFFSET_VAR_0_SPRITE:             EQU 2           ; First variant sprite
 _STATE_OFFSET_VAR_1_SPRITE:             EQU 4           ; Second variant sprite
-_STATE_OFFSET_STATE:                    EQU 6           ; Status of sprite from _ALIEN_STATE_* values
+_STATE_OFFSET_VAR_0_BLANK:              EQU 6           ; First variant blank
+_STATE_OFFSET_VAR_1_BLANK:              EQU 8           ; Second variant blank
+_STATE_OFFSET_STATE:                    EQU 10          ; Status of sprite from _ALIEN_STATE_* values
 
-_AS_SIZE:                               EQU 8           ; Size of the alien sprite structure
+_AS_SIZE:                               EQU 12          ; Size of the alien sprite structure
 
 ; Current alien variant for walking animation
 _ALIEN_VARIANT_0:                       EQU 0b00000001
@@ -40,64 +42,64 @@ _ALIEN_VARIANT_1_BIT:                   EQU 1
 ; Alien pack as per _STATE_OFFSET_* constants
 _alien_state:
     ; Bottom row - Row 0
-    WORD 0x1060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x2060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x3060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x4060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x5060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x6060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x7060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x8060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x9060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0xA060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
+    WORD 0x1060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x2060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x3060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x4060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x5060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x6060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x7060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x8060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x9060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0xA060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
 
     ; Row 1
-    WORD 0x1050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x2050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x3050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x4050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x5050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
-    WORD 0x6050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x7050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x8050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x9050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW 
-    WORD 0xA050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,_ALIEN_STATE_NEW
+    WORD 0x1050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x2050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x3050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x4050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x5050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x6050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x7050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x8050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x9050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0xA050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
     
     ; Row 2
-    WORD 0x1040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW
-    WORD 0x2040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x3040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x4040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x5040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW
-    WORD 0x6040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x7040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x8040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x9040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0xA040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW
+    WORD 0x1040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x2040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x3040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x4040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x5040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x6040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x7040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x8040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x9040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0xA040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
 
     ; Row 3
-    WORD 0x1030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x2030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x3030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW
-    WORD 0x4030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x5030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW
-    WORD 0x6030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x7030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x8030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x9030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW 
-    WORD 0xA030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,_ALIEN_STATE_NEW
+    WORD 0x1030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x2030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x3030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x4030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x5030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x6030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x7030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x8030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x9030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0xA030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
 
     ; Row 4
-    WORD 0x1020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x2020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x3020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x4020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x5020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW
-    WORD 0x6020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x7020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x8020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0x9020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW 
-    WORD 0xA020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,_ALIEN_STATE_NEW
+    WORD 0x1020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x2020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x3020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x4020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x5020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x6020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x7020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x8020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0x9020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
+    WORD 0xA020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW
 
 ; Loopup table into _alien_state table
 _ALIEN_LOOKUP:
@@ -122,7 +124,6 @@ _ALIEN_PACK_SIZE:                       EQU ($-_ALIEN_LOOKUP)/2
 
 _current_alien_lookup_ptr:              BLOCK 2         ; Pointer to the current alien in the lookup table     
 _current_pack_variant_flag:             BLOCK 1         ; Current variant for walking animation taken from _ALIEN_VARIANT_* constants
-;_pack_x_reference:                      BLOCK 1         ; Reference to bottom left hand corner of alien pack
 _pack_direction:                        BLOCK 1         ; Current direction of alient pack taken from _PACK_DIRECTION_* constants
 _pack_loop_counter:                     BLOCK 1         ; Loop counter decremented as each alien is processed so we know when to go back to start of the pack
 
@@ -175,6 +176,8 @@ init:
 
     ; Pack variant
     LD HL,_alien_state
+    INC HL
+    INC HL
     INC HL
     INC HL
     LD DE,(HL)
@@ -248,26 +251,22 @@ blank_current_alien:
     LD DE, 0x0308                                       ; Dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_blank_2b_x_8px                 ; Background square sprite
-    PUSH DE
-
     ; Select sprite mask based on variant
     LD A,(_current_pack_variant_flag)          
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE)               ; Use sprite as mask 
+    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)               ; Use sprite as mask 
+    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
 
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
 
     CALL draw.draw_sprite
 
-    POP DE
     POP DE
     POP DE
     POP DE
@@ -311,11 +310,9 @@ draw_deferred_alien:
 
     LD HL,(_deferred_alien_sprite) 
     PUSH HL                                             ; Sprite
-    PUSH HL                                             ; Mask
 
     CALL draw.draw_sprite
 
-    POP DE
     POP DE
     POP DE
     POP DE

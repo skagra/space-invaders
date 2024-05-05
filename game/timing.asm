@@ -44,7 +44,6 @@ wait_on_end_of_screen:
     JR Z,.wait           
     
     POP BC,AF
-    
     RET
 
 draw_end_of_screen_barrier:
@@ -58,8 +57,6 @@ draw_end_of_screen_barrier:
     ADD IX,SP
 
     LD HL,(IX+._PARAM_TOP_LEFT)         ; Top left of rect to fill
-    DEC L
-    DEC L
     PUSH HL
 
     LD HL,(IX+._PARAM_DIM)              ; Width and hight of rect to fill

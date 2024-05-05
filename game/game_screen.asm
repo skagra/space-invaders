@@ -72,18 +72,6 @@ init_screen:
     POP HL
     POP HL
 
-    ; End of screen marker
-    LD H,._BASES_GEL_TOP_LEFT_X+._BASES_GEL_WIDTH                   ; Top left X
-    LD L,._BASES_GEL_TOP_LEFT_Y-1                                   ; Top left Y
-    PUSH HL
-    LD H,draw.SCREEN_WIDTH_CHARS-._BASES_GEL_WIDTH-._BASES_GEL_TOP_LEFT_X-._CREDIT_WIDTH   ; Width
-    LD L,._BASES_GEL_HEIGHT                                         ; Height
-    PUSH HL
-    CALL timing.draw_end_of_screen_barrier
-    POP HL
-    POP HL
-
-
     ; Red gel just below scores - for spaceship and exploding player missiles
     LD H,._SPACESHIP_GEL_LEFT_Y                                     ; Top left X
     LD L,._SPACESHIP_GEL_HEIGHT                                     ; Height
@@ -94,6 +82,21 @@ init_screen:
     POP HL
     POP HL
 
+    ; End of screen marker
+    ; LD H,._BASES_GEL_TOP_LEFT_X+._BASES_GEL_WIDTH                   ; Top left X
+    ; LD L,._BASES_GEL_TOP_LEFT_Y-1                                   ; Top left Y
+
+    LD H,0                   ; Top left X
+    LD L,23                                 ; Top left Y
+
+    PUSH HL
+    LD H,32   ; Width
+    LD L,1                                         ; Height
+    PUSH HL
+    CALL timing.draw_end_of_screen_barrier
+    POP HL
+    POP HL
+    
     ; Draw static screen labels. 
     LD HL,._SCORE_LINE_0_TEXT
     PUSH HL
@@ -201,15 +204,12 @@ draw_reserve_base:
 
     LD DE,(IX+._PARAM_COORDS)             
     PUSH DE     
-    ; HACK
-    LD DE, 0x0308
+
+    LD DE,sprites.sprite_base_dims
     PUSH DE
     LD DE,sprites.sprite_base     
     PUSH DE
-    LD DE,sprites.mask_2x8
-    PUSH DE
     CALL draw.draw_sprite
-    POP DE
     POP DE
     POP DE
     POP DE
@@ -267,14 +267,11 @@ draw_shield:
     LD DE,(IX+._PARAM_COORDS)             
     PUSH DE     
     ; HACK
-    LD DE, 0x0410
+    LD DE,sprites.sprite_shield_dims
     PUSH DE
     LD DE,sprites.sprite_shield     
     PUSH DE
-    LD DE,sprites.sprite_shield
-    PUSH DE
     CALL draw.draw_sprite
-    POP DE
     POP DE
     POP DE
     POP DE
@@ -291,19 +288,14 @@ draw_horiz_line:
 .loop       
     PUSH BC 
 
-    ; HACK
-    LD DE, 0x0108
+    LD DE, sprites.sprite_horiz_line_dims
     PUSH DE
 
     LD DE,sprites.sprite_horiz_line    
     PUSH DE
 
-    LD DE,sprites.sprite_horiz_line
-    PUSH DE
-
     CALL draw.draw_sprite
 
-    POP DE
     POP DE
     POP DE
     POP DE

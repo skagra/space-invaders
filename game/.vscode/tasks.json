@@ -10,7 +10,6 @@
                 "--fullpath",
                 "--sym=${workspaceFolder}/.tmp/symbols.txt",
                 "--lst=${workspaceFolder}/.tmp/listing.txt",
-                // "--syntax=f",
                 "-DDEBUG",
                 "main.asm"
             ],
@@ -39,7 +38,6 @@
                 "--fullpath",
                 "--sym=${workspaceFolder}/.tmp/symbols.txt",
                 "--lst=${workspaceFolder}/.tmp/listing.txt",
-                // "--syntax=f",
                 "main.asm"
             ],
             "problemMatcher": {

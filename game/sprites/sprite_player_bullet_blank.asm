@@ -2,60 +2,60 @@
 
 	MODULE sprites
 
-sprite_player_bullet_0:
+sprite_player_bullet_blank_0:
 	; Line 0
 	BYTE 0b11110111
-	BYTE 0b00001000
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
 	; Line 1
-	BYTE 0b11110111
-	BYTE 0b00001000
-	BYTE 0b11111111
-	BYTE 0b00000000
-
-	; Line 2
-	BYTE 0b11110111
-	BYTE 0b00001000
-	BYTE 0b11111111
-	BYTE 0b00000000
-
-	; Line 3
-	BYTE 0b11110111
-	BYTE 0b00001000
-	BYTE 0b11111111
-	BYTE 0b00000000
-
-	; Line 4
 	BYTE 0b11110111
 	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
+	; Line 2
+	BYTE 0b11110111
+	BYTE 0b00000000
+	BYTE 0b11111111
+	BYTE 0b00000000
 
-sprite_player_bullet_1:
+	; Line 3
+	BYTE 0b11110111
+	BYTE 0b00000000
+	BYTE 0b11111111
+	BYTE 0b00000000
+
+	; Line 4
+	BYTE 0b11110111
+	BYTE 0b00000000
+	BYTE 0b11111111
+	BYTE 0b00000000
+
+
+sprite_player_bullet_blank_1:
 	; Line 0
 	BYTE 0b11111011
-	BYTE 0b00000100
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
 	; Line 1
 	BYTE 0b11111011
-	BYTE 0b00000100
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
 	; Line 2
 	BYTE 0b11111011
-	BYTE 0b00000100
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
 	; Line 3
 	BYTE 0b11111011
-	BYTE 0b00000100
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
@@ -66,60 +66,60 @@ sprite_player_bullet_1:
 	BYTE 0b00000000
 
 
-sprite_player_bullet_2:
+sprite_player_bullet_blank_2:
 	; Line 0
-	BYTE 0b11111101
-	BYTE 0b00000010
-	BYTE 0b11111111
-	BYTE 0b00000000
-
-	; Line 1
-	BYTE 0b11111101
-	BYTE 0b00000010
-	BYTE 0b11111111
-	BYTE 0b00000000
-
-	; Line 2
-	BYTE 0b11111101
-	BYTE 0b00000010
-	BYTE 0b11111111
-	BYTE 0b00000000
-
-	; Line 3
-	BYTE 0b11111101
-	BYTE 0b00000010
-	BYTE 0b11111111
-	BYTE 0b00000000
-
-	; Line 4
 	BYTE 0b11111101
 	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
+	; Line 1
+	BYTE 0b11111101
+	BYTE 0b00000000
+	BYTE 0b11111111
+	BYTE 0b00000000
 
-sprite_player_bullet_3:
+	; Line 2
+	BYTE 0b11111101
+	BYTE 0b00000000
+	BYTE 0b11111111
+	BYTE 0b00000000
+
+	; Line 3
+	BYTE 0b11111101
+	BYTE 0b00000000
+	BYTE 0b11111111
+	BYTE 0b00000000
+
+	; Line 4
+	BYTE 0b11111101
+	BYTE 0b00000000
+	BYTE 0b11111111
+	BYTE 0b00000000
+
+
+sprite_player_bullet_blank_3:
 	; Line 0
 	BYTE 0b11111110
-	BYTE 0b00000001
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
 	; Line 1
 	BYTE 0b11111110
-	BYTE 0b00000001
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
 	; Line 2
 	BYTE 0b11111110
-	BYTE 0b00000001
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
 	; Line 3
 	BYTE 0b11111110
-	BYTE 0b00000001
+	BYTE 0b00000000
 	BYTE 0b11111111
 	BYTE 0b00000000
 
@@ -130,30 +130,30 @@ sprite_player_bullet_3:
 	BYTE 0b00000000
 
 
-sprite_player_bullet_4:
+sprite_player_bullet_blank_4:
 	; Line 0
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b01111111
-	BYTE 0b10000000
+	BYTE 0b00000000
 
 	; Line 1
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b01111111
-	BYTE 0b10000000
+	BYTE 0b00000000
 
 	; Line 2
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b01111111
-	BYTE 0b10000000
+	BYTE 0b00000000
 
 	; Line 3
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b01111111
-	BYTE 0b10000000
+	BYTE 0b00000000
 
 	; Line 4
 	BYTE 0b11111111
@@ -162,30 +162,30 @@ sprite_player_bullet_4:
 	BYTE 0b00000000
 
 
-sprite_player_bullet_5:
+sprite_player_bullet_blank_5:
 	; Line 0
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b10111111
-	BYTE 0b01000000
+	BYTE 0b00000000
 
 	; Line 1
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b10111111
-	BYTE 0b01000000
+	BYTE 0b00000000
 
 	; Line 2
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b10111111
-	BYTE 0b01000000
+	BYTE 0b00000000
 
 	; Line 3
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b10111111
-	BYTE 0b01000000
+	BYTE 0b00000000
 
 	; Line 4
 	BYTE 0b11111111
@@ -194,30 +194,30 @@ sprite_player_bullet_5:
 	BYTE 0b00000000
 
 
-sprite_player_bullet_6:
+sprite_player_bullet_blank_6:
 	; Line 0
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11011111
-	BYTE 0b00100000
+	BYTE 0b00000000
 
 	; Line 1
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11011111
-	BYTE 0b00100000
+	BYTE 0b00000000
 
 	; Line 2
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11011111
-	BYTE 0b00100000
+	BYTE 0b00000000
 
 	; Line 3
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11011111
-	BYTE 0b00100000
+	BYTE 0b00000000
 
 	; Line 4
 	BYTE 0b11111111
@@ -226,30 +226,30 @@ sprite_player_bullet_6:
 	BYTE 0b00000000
 
 
-sprite_player_bullet_7:
+sprite_player_bullet_blank_7:
 	; Line 0
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11101111
-	BYTE 0b00010000
+	BYTE 0b00000000
 
 	; Line 1
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11101111
-	BYTE 0b00010000
+	BYTE 0b00000000
 
 	; Line 2
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11101111
-	BYTE 0b00010000
+	BYTE 0b00000000
 
 	; Line 3
 	BYTE 0b11111111
 	BYTE 0b00000000
 	BYTE 0b11101111
-	BYTE 0b00010000
+	BYTE 0b00000000
 
 	; Line 4
 	BYTE 0b11111111
@@ -259,12 +259,12 @@ sprite_player_bullet_7:
 
 
 ; Dimensions x (bytes) y (pixels)
-sprite_player_bullet_dims:	EQU 0x0205
-sprite_player_bullet_dim_x_bytes:	EQU 0x02
-sprite_player_bullet_dim_y_pixels:	EQU 0x05
+sprite_player_bullet_blank_dims:	EQU 0x0205
+sprite_player_bullet_blank_dim_x_bytes:	EQU 0x02
+sprite_player_bullet_blank_dim_y_pixels:	EQU 0x05
 
 ; Lookup table
-sprite_player_bullet:
-	WORD sprite_player_bullet_0, sprite_player_bullet_1, sprite_player_bullet_2, sprite_player_bullet_3, sprite_player_bullet_4, sprite_player_bullet_5, sprite_player_bullet_6, sprite_player_bullet_7
+sprite_player_bullet_blank:
+	WORD sprite_player_bullet_blank_0, sprite_player_bullet_blank_1, sprite_player_bullet_blank_2, sprite_player_bullet_blank_3, sprite_player_bullet_blank_4, sprite_player_bullet_blank_5, sprite_player_bullet_blank_6, sprite_player_bullet_blank_7
 
 	ENDMODULE
