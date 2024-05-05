@@ -536,7 +536,7 @@ draw_sprite:
     ; Draw sprite -->
     LD DE,(._sprite_data_ptr)           ; Get sprite data
     LD A,(DE)                                     
-    XOR (HL)                            ; HL still contains (._screen_mem_loc_trace) Or sprite data with screen byte
+    OR (HL)                             ; HL still contains (._screen_mem_loc_trace) Or sprite data with screen byte
     LD (HL),A                           ; Write screen memory
 
     ; Done writing sprite data, move pointer on for next iteration                                 
