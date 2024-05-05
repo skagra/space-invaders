@@ -82,16 +82,11 @@ init_screen:
     POP HL
     POP HL
 
-    ; End of screen marker
-    ; LD H,._BASES_GEL_TOP_LEFT_X+._BASES_GEL_WIDTH                   ; Top left X
-    ; LD L,._BASES_GEL_TOP_LEFT_Y-1                                   ; Top left Y
-
-    LD H,0                   ; Top left X
-    LD L,23                                 ; Top left Y
-
+    LD H,1                                  ; Top left X
+    LD L,21                                 ; Top left Y
     PUSH HL
-    LD H,32   ; Width
-    LD L,1                                         ; Height
+    LD H,20                                 ; Width
+    LD L,1                                  ; Height
     PUSH HL
     CALL timing.draw_end_of_screen_barrier
     POP HL

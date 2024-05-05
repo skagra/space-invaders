@@ -53,10 +53,9 @@ main:
     ; Read keyboard
     CALL keyboard.get_movement_keys
 
-    ; Wait for raster sync
-    HALT
-
     DEBUG_VTRACE_FLASH
+
+    HALT 
 
     ; Draw the current alien
     CALL alien_pack.draw_deferred_alien
@@ -67,23 +66,20 @@ main:
     ; Calculate new coordinates and variant for current alien
     CALL alien_pack.update_current_alien  
 
+    ; Draw the player base
+    CALL player.draw_deferred_player
+
     ; Calcate new coordinates for the player base
     CALL player.update_player
 
     ; Calculate new coordinates and handle state changes for the player bullet               
-    CALL player_bullet.update_bullet
+     CALL player_bullet.update_bullet
 
-    ; Draw the player base
-    CALL player.draw_deferred_player
-
-    ; Wait until the electron beams hits the bottom of the screen
-    CALL timing.wait_on_end_of_screen
-
-    ; LD HL,._DRAW_DELAY
-    ; PUSH HL
-    ; CALL timing.delay
-    ; POP HL
-
+    LD HL,._DRAW_DELAY
+    PUSH HL
+    CALL timing.delay
+    POP HL
+    
     ; Erase the current alien
     CALL alien_pack.blank_current_alien
     

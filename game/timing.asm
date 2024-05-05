@@ -35,15 +35,25 @@ delay:
 ; From https://blog.stevewetherill.com/2022/02/odin-computer-graphics-part-two-1986.html
 ;---
 wait_on_end_of_screen:
-    PUSH AF,BC
-    LD BC,40FFh 
-.wait:                
-    LD A,R 
-    IN A,(C) 
-    BIT 6,A   
-    JR Z,.wait           
+    PUSH AF,BC,DE
+;     LD BC,40FFh 
+; .wait:                
+;     LD A,R 
+;     IN A,(C) 
+;     BIT 6,A   
+;     JR Z,.wait           
+
+            LD      BC,40FFh 
+            LD      E,40h ; bright black
+WAIT:                
+            LD      A,R 
+            IN      A,(C) 
+            CP      E 
+            JP      NZ,WAIT 
+          
+
+    POP DE,BC,AF
     
-    POP BC,AF
     RET
 
 draw_end_of_screen_barrier:
@@ -57,16 +67,19 @@ draw_end_of_screen_barrier:
     ADD IX,SP
 
     LD HL,(IX+._PARAM_TOP_LEFT)         ; Top left of rect to fill
+    DEC L
+    DEC L
     PUSH HL
 
     LD HL,(IX+._PARAM_DIM)              ; Width and hight of rect to fill
     PUSH HL
 
-    IFDEF DEBUG == 0
-        LD HL,draw._CA_COL_MAGENTA | draw.CA_BRIGHT  
-    ELSE
-        LD HL,draw.CA_BRIGHT  
-    ENDIF     
+    LD HL,40h
+    ; IFDEF DEBUG == 0
+    ;     LD HL,draw.CA_BRIGHT  
+    ; ELSE
+    ;     LD HL,draw.CA_BRIGHT  
+    ; ENDIF     
     PUSH HL
 
     CALL draw.fill_screen_attributes_rect
