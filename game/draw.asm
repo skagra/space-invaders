@@ -432,7 +432,6 @@ coords_to_mem:
 ;   PUSH coords word - X high byte, Y low byte
 ;   PUSH dimensions word - X dim high byte, Y dim low byte
 ;   PUSH address of pre-shifted sprite lookup table
-;   PUSH address of pre-shifted mask lookup table
 ;
 ; Return values:
 ;   -
@@ -443,15 +442,14 @@ coords_to_mem:
 
 draw_sprite:
 
-._PARAM_COORDS:            EQU 18       ; Sprite coordinates
-._PARAM_DIMS:              EQU 16       ; Sprite dimensions
-._PARAM_SPRITE_DATA:       EQU 14       ; Sprite pre-shifted data lookup table
-._PARAM_MASK_DATA:         EQU 12       ; Mask pre-shifted data lookup table
-
+._PARAM_COORDS:            EQU 16       ; Sprite coordinates
+._PARAM_DIMS:              EQU 14       ; Sprite dimensions
+._PARAM_SPRITE_DATA:       EQU 12       ; Sprite pre-shifted data lookup table
+    
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                            ; Point IX to the stack
-    ADD IX,SP                           
+    ADD IX,SP                                                   
 
     ; Initialize the collision flag
     LD HL,collided                      
@@ -474,19 +472,8 @@ draw_sprite:
     LD E,A
     ADD HL,DE                           ; Add the offset into the table to the base of the table
     LD DE, (HL)                         ; Lookup the sprite data in the table
-    LD (._sprite_data_ptr), DE          ; Points to sprite data
-     
-    ; Find the correct shifted version of the mask data
-    LD HL,(IX+._PARAM_MASK_DATA)        ; Start of mask lookup table
-    LD A,(._x_coord)                    ; X coord
-    AND 0b00000111                      ; Calculate the X offset withing the character cell
-    SLA A                               ; Double the offset as the lookup table contains words
-    LD D,0x00
-    LD E,A
-    ADD HL,DE                           ; Add the offset into the table to the base of the table
-    LD DE, (HL)                         ; Lookup the sprite data in the table
-    LD (._mask_data_ptr), DE            ; Points to mask data
-
+    LD (._sprite_data_ptr),DE           ; Points to sprite data
+   
     LD A,(._y_dim)                      ; Y loop counter set from Y dimension
     LD C,A
 
@@ -500,51 +487,38 @@ draw_sprite:
     LD (._row_first_mem_lock),HL
     POP HL
 
-.ds_y_loop:   
+.ds_y_loop:
     LD A,(._x_dim)                      ; X dim loop counter - character cells
     LD B,A
 
 .ds_x_loop:
+    LD HL,(._screen_mem_loc_trace)      ; Get screen byte location
+    LD DE,(._sprite_data_ptr)           ; Pointer to sprite and mask data 
+
     ; Collision detection
-    LD A,(collided)                     ; Fast check whether we've already found a collision
-    CP 0x00
-    JR NZ,.draw
+    LD A,(DE)                           ; Mask data - TODO using mask for collision detection is not ideal 
+    CPL                                 ; Invert mask
+    AND (HL)                            ; And corresponding bits on screen set?
+    JR Z,.no_collision                  ; No - so no collision
+    LD A,0x01                           ; Flag the collision
+    LD (collided),A
 
-    LD HL,(._sprite_data_ptr)           ; Get sprite data
-    LD A,(HL)                                     
-    LD HL,(._screen_mem_loc_trace)      ; Get screen byte
-    AND (HL)                            ; And sprite data with screen byte
-    JR Z,.draw
-
-    LD HL,collided                      ; Flag the collision
-    LD (HL),0x01
-
-.draw
-    ; Draw mask -->
-    LD DE,(._mask_data_ptr)             ; Get the mask data
-    LD A,(DE)                                  
-    CPL                                 ; Compliment the mask
-    LD HL,(._screen_mem_loc_trace)      ; Get screen byte
-    AND (HL)                            ; And notted mask with screen byte
-    LD (HL),A                           ; Write screen memory
-  
-    ; Done writing mask data, move pointer on for next iteration                     
-    INC DE                              ; DE still contains current (._mask_data_ptr)
-    LD (._mask_data_ptr),DE
-    ; <-- End of draw mask
-
-    ; Draw sprite -->
-    LD DE,(._sprite_data_ptr)           ; Get sprite data
-    LD A,(DE)                                     
-    OR (HL)                             ; HL still contains (._screen_mem_loc_trace) Or sprite data with screen byte
+.no_collision
+    ; Drawing
+    LD A,(DE)                           ; Get the mask data                              
+    AND (HL)                            ; And the mask with the screen byte
     LD (HL),A                           ; Write screen memory
 
-    ; Done writing sprite data, move pointer on for next iteration                                 
-    INC DE                              ; DE still contains current (._sprite_data_ptr)
+    INC DE                              ; Sprite data is next
+
+    LD A,(DE)                           ; Get the sprite data
+    OR (HL)                             ; Or the sprite data with the screen byte
+    LD (HL),A                           ; Write screen memory
+
+    INC DE                              ; Move to next byte of mask/sprite data
     LD (._sprite_data_ptr),DE
-    ; <-- End of draw sprite
 
-    ; Done writing current byte of current row - move to next X cell      
+    ; Done writing current byte of current row - move to next X cell    
     INC HL                              ; HL still contains (._screen_mem_loc_trace)
     LD (._screen_mem_loc_trace),HL
     
@@ -553,9 +527,9 @@ draw_sprite:
     JR NZ,.ds_x_loop                    ; Next X
 
     ; Move to next pixel row   
-    LD HL,(._coords)                    ; Next pixel row
-    INC HL                              
-    LD (._coords), HL
+    LD A,(._y_coord)
+    INC A
+    LD (._y_coord),A
     
     ; Is there another pixel row to write?
     DEC C                               ; Y loop counter
@@ -614,7 +588,6 @@ draw_sprite:
 ._y_dim:                BLOCK 1
 ._x_dim:                BLOCK 1
 ._sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
-._mask_data_ptr         BLOCK 2         ; Pointer to current mask data byte
 ._screen_mem_loc_trace: BLOCK 2         ; Pointer to current screen byte
 ._row_first_mem_lock:   BLOCK 2         ; Point to screen byte first drawn on current row
 

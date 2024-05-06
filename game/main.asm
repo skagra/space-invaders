@@ -23,8 +23,9 @@
     INCLUDE "player_bullet.asm"
     INCLUDE "alien_pack.asm"
     INCLUDE "character_set.asm"
+    INCLUDE "interrupts.asm"
     INCLUDE "sprites/all_sprites.asm"
-
+    
     MODULE main
 
 main:
@@ -53,19 +54,18 @@ main:
     ; Read keyboard
     CALL keyboard.get_movement_keys
 
-    ; Wait for raster sync
-    HALT
-
     DEBUG_VTRACE_FLASH
+
+    HALT 
+
+    ; Draw the player base
+    CALL player.draw_deferred_player
 
     ; Draw the current alien
     CALL alien_pack.draw_deferred_alien
 
     ; Draw player bullet if there is one
     CALL player_bullet.draw_deferred_bullet
-
-    ; Draw the player base
-    CALL player.draw_player
 
     ; Calculate new coordinates and variant for current alien
     CALL alien_pack.update_current_alien  
@@ -76,8 +76,10 @@ main:
     ; Calculate new coordinates and handle state changes for the player bullet               
     CALL player_bullet.update_bullet
 
-    ; Wait until the electron beams hits the bottom of the screen
-    CALL timing.wait_on_end_of_screen
+    LD HL,._DRAW_DELAY
+    PUSH HL
+    CALL timing.delay
+    POP HL
 
     ; Erase the current alien
     CALL alien_pack.blank_current_alien
@@ -85,12 +87,15 @@ main:
     ; Erase current player bullet
     CALL player_bullet.blank_bullet
 
+    ; Erase player base
+    CALL player.blank_player
+
     ; Move on to next alien
     CALL alien_pack.next_alien
 
     JR .animation_loop           
 
-._DRAW_DELAY: EQU 0x401A
+._DRAW_DELAY: EQU 0x401C
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
@@ -98,7 +103,7 @@ STACK_SIZE:                 EQU 100*2
 STACK_TOP:                  EQU $-1
 
 ; Save snapshot for spectrum emulator
-    IFDEF DEBEUG
+    IFNDEF DEBUG
         SAVESNA "space-invaders.sna",main
     ELSE
         SAVESNA "space-invaders-debug.sna",main

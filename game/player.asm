@@ -1,9 +1,9 @@
     MODULE player
 
-PLAYER_Y:              EQU draw.SCREEN_HEIGHT_PIXELS-20
+PLAYER_Y:               EQU draw.SCREEN_HEIGHT_PIXELS-20
 
-player_x:              BLOCK 2
-
+deferred_player_x:      BLOCK 1
+player_x:               BLOCK 1
 
 ;------------------------------------------------------------------------------
 ;
@@ -24,12 +24,13 @@ init:
 
     LD A,._START_PLAYER_X
     LD (player_x),A
+    LD (deferred_player_x),A
 
     POP AF
 
     RET
 
-._START_PLAYER_X:       EQU draw.SCREEN_WIDTH_PIXELS/2-8
+._START_PLAYER_X:       EQU draw.SCREEN_WIDTH_PIXELS/2-4
 
 ;------------------------------------------------------------------------------
 ;
@@ -45,28 +46,53 @@ init:
 ;   -
 ;------------------------------------------------------------------------------
 
-draw_player:
+draw_deferred_player:
+    PUSH AF,DE
+
     ; Draw the player base sprite
-    LD A, (player_x)                                    ; Player base coords
+    LD A, (deferred_player_x)                           ; Player base coords
     LD D,A
     LD E, PLAYER_Y
     PUSH DE
-
-    ; HACK          
-    LD DE, 0x0308                                       ; Player base dimensions
+      
+    LD DE, sprites.sprite_base_dims                     ; Player base dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_base                           ; Sprite    
-    PUSH DE
-
-    LD DE,sprites.mask_2x8                              ; Sprite mask
+    LD DE,sprites.sprite_base                          ; Sprite    
     PUSH DE
 
     CALL draw.draw_sprite                               ; Draw the player base sprite
+    
     POP DE
     POP DE
     POP DE
+
+    POP DE,AF
+
+    RET
+
+blank_player:
+    PUSH AF,DE
+
+    ; Erase the player base sprite
+    LD A, (player_x)                                    ; Coords
+    LD D,A
+    LD E, PLAYER_Y
+    PUSH DE
+         
+    LD DE, sprites.sprite_base_blank_dims               ; Dimensions
+    PUSH DE
+
+    LD DE,sprites.sprite_base_blank                     ; Sprite    
+    PUSH DE
+
+    CALL draw.draw_sprite                               ; Draw the player base sprite
+
     POP DE
+    POP DE
+    POP DE
+
+    POP DE,AF
 
     RET
 
@@ -86,6 +112,9 @@ draw_player:
 update_player:
     PUSH AF,DE
 
+    LD A,(deferred_player_x)
+    LD (player_x),A
+
     ; Read the keyboard
     LD DE,(keyboard.keys_down)
 
@@ -93,21 +122,21 @@ update_player:
     BIT keyboard.LEFT_KEY_DOWN_BIT,E                    ; Left pressed?
     JR Z,.left_not_pressed                              ; No
 
-    LD A,(player_x)                                     ; Get current player base X coord
+    LD A,(deferred_player_x)                            ; Get current player base X coord
     DEC A                                               ; Decrease it to move left
     CP ._MIN_PLAYER_X                                   ; Have we hit the left most point?
     JR Z,.done                                          ; Yes so don't update
-    LD (player_x),A                                     ; Update the location of the player base
+    LD (deferred_player_x),A                            ; Update the location of the player base
     JR .done
 
 .left_not_pressed
     BIT keyboard.RIGHT_KEY_DOWN_BIT,E                   ; Right pressed?
     JR Z,.done                                          ; No
-    LD A,(player_x)                                     ; Get current player base X coord
+    LD A,(deferred_player_x)                            ; Get current player base X coord
     INC A                                               ; Increase it to move right
     CP ._MAX_PLAYER_X                                   ; Have we hit the right most point?
     JR NC,.done                                         ; Yes so don't update
-    LD (player_x),A                                     ; Update the location of the player base
+    LD (deferred_player_x),A                            ; Update the location of the player base
 
 .done:
     POP DE,AF
