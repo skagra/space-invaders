@@ -11,7 +11,6 @@
     ; Skip past contended memory
     ORG 0x8000 
 
-    INCLUDE "sprites/all_sprites.asm"
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
     INCLUDE "utils.asm"
@@ -25,7 +24,8 @@
     INCLUDE "alien_pack.asm"
     INCLUDE "character_set.asm"
     INCLUDE "interrupts.asm"
-
+    INCLUDE "sprites/all_sprites.asm"
+    
     MODULE main
 
 main:
@@ -95,7 +95,7 @@ main:
 
     JR .animation_loop           
 
-._DRAW_DELAY: EQU 0x4020
+._DRAW_DELAY: EQU 0x401C
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    

@@ -49,7 +49,6 @@ class ShiftSprites
         fileOutput.Close();
     }
 
-
     public static string ProcessSprite(string inputFileName, string outputDirectory = "", int shiftStep = 1, bool isBlank = false)
     {
         // Read the entire sprite file
@@ -103,6 +102,13 @@ class ShiftSprites
             spriteFileOutput.WriteLine($"{shiftedSpriteName}:");
             spriteLookupTable.Add(shiftedSpriteName);
 
+            spriteFileOutput.Write("\t     ;");
+            for (var byteCount = 0; byteCount < destByteWidth; byteCount++)
+            {
+                spriteFileOutput.Write("  Mask       Sprite     ");
+            }
+            spriteFileOutput.WriteLine();
+
             // Each line in the sprite data
             for (var index = 0; index < maskText.Count(); index++)
             {
@@ -114,19 +120,28 @@ class ShiftSprites
                 var spriteBuffer = new StringBuilder(new String('0', sourceBitWidth + 8));
                 var spriteOutputLine = spriteBuffer.Insert(xOffset, spriteLine).ToString().Substring(0, sourceBitWidth + 8);
 
-                spriteFileOutput.WriteLine($"\t; Line {index}");
+                spriteFileOutput.Write("\tBYTE ");
                 for (var byteCount = 0; byteCount < destByteWidth; byteCount++)
                 {
-                    spriteFileOutput.WriteLine($"\tBYTE 0b" + maskOutputLine.Substring(byteCount * 8, 8));
+                    spriteFileOutput.Write($"0b{maskOutputLine.Substring(byteCount * 8, 8)}, ");
 
                     if (!isBlank)
                     {
-                        spriteFileOutput.WriteLine($"\tBYTE 0b" + spriteOutputLine.Substring(byteCount * 8, 8));
+                        spriteFileOutput.Write($"0b{spriteOutputLine.Substring(byteCount * 8, 8)}");
                     }
                     else
                     {
-                        spriteFileOutput.WriteLine($"\tBYTE 0b00000000");
+                        spriteFileOutput.Write($"0b00000000");
                     }
+                    if (byteCount != destByteWidth - 1)
+                    {
+                        spriteFileOutput.Write(", ");
+                    }
+                    else
+                    {
+                        spriteFileOutput.Write($" ; Row {index}");
+                    }
+
                 }
                 spriteFileOutput.WriteLine();
             }

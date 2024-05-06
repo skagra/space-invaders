@@ -495,6 +495,16 @@ draw_sprite:
     LD HL,(._screen_mem_loc_trace)      ; Get screen byte location
     LD DE,(._sprite_data_ptr)           ; Pointer to sprite and mask data 
 
+    ; Collision detection
+    LD A,(DE)                           ; Mask data - TODO using mask for collision detection is not ideal 
+    CPL                                 ; Invert mask
+    AND (HL)                            ; And corresponding bits on screen set?
+    JR Z,.no_collision                  ; No - so no collision
+    LD A,0x01                           ; Flag the collision
+    LD (collided),A
+
+.no_collision
+    ; Drawing
     LD A,(DE)                           ; Get the mask data                              
     AND (HL)                            ; And the mask with the screen byte
     LD (HL),A                           ; Write screen memory

@@ -17,7 +17,7 @@
 ;------------------------------------------------------------------------------
 
 ; Configuration constants
-_BULLET_START_Y:                            EQU draw.SCREEN_HEIGHT_PIXELS-24    ; Starting Y coordinate for a new bullet
+_BULLET_START_Y:                            EQU draw.SCREEN_HEIGHT_PIXELS-28    ; Starting Y coordinate for a new bullet
 _BULLET_MIN_Y:                              EQU 20                              ; The top of bullet trajectory
 _BULLET_STEP_SIZE:                          EQU 4                               ; Number of pixels to move bullet on each animation cycle
 _BULLET_EXPLOSION_CYCLES:                   EQU 10                              ; Number of draw cycles to keep the bullet explosion on the screen
