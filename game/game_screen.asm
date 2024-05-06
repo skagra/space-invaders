@@ -33,6 +33,12 @@ init:
 init_screen:
     PUSH HL
 
+    ; Make the screen black until we've drawn some inital content
+    LD L,draw.CA_BG_BLACK | draw.CA_FG_BLACK
+    PUSH HL
+    CALL draw.fill_screen_attributes
+    POP HL
+
     ; Set the screen border
     LD HL,draw.BORDER_BLACK
     PUSH HL
@@ -41,6 +47,42 @@ init_screen:
 
     ; Clear the screen
     call draw.wipe_screen
+
+    ; Draw static screen labels. 
+    LD HL,._SCORE_LINE_0_TEXT
+    PUSH HL
+    LD HL,0x0000
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+
+    LD HL,._SCORE_LINE_1_TEXT
+    PUSH HL
+    LD HL,0x0001
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+
+    LD HL,._LIVES_AND_CREDS_TEXT
+    PUSH HL
+    LD HL,draw.SCREEN_HEIGHT_CHARS-1
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+
+    
+
+    CALL draw_horiz_line
+    CALL draw_score_1
+    CALL draw_score_2
+    CALL draw_high_score
+    CALL draw_credit
+    CALL draw_bases_count
+    CALL draw_reserve_bases
+    CALL draw_shields
 
     ; Fill screen with black bg, white fg
     LD L,draw.CA_BG_BLACK | draw.CA_FG_WHITE
@@ -81,42 +123,8 @@ init_screen:
     CALL draw.fill_screen_attribute_stripe
     POP HL
     POP HL
-    
-    ; Draw static screen labels. 
-    LD HL,._SCORE_LINE_0_TEXT
-    PUSH HL
-    LD HL,0x0000
-    PUSH HL
-    CALL print.print_string
-    POP HL
-    POP HL
-
-    LD HL,._SCORE_LINE_1_TEXT
-    PUSH HL
-    LD HL,0x0001
-    PUSH HL
-    CALL print.print_string
-    POP HL
-    POP HL
-
-    LD HL,._LIVES_AND_CREDS_TEXT
-    PUSH HL
-    LD HL,draw.SCREEN_HEIGHT_CHARS-1
-    PUSH HL
-    CALL print.print_string
-    POP HL
-    POP HL
 
     POP HL
-
-    CALL draw_horiz_line
-    CALL draw_score_1
-    CALL draw_score_2
-    CALL draw_high_score
-    CALL draw_credit
-    CALL draw_bases_count
-    CALL draw_reserve_bases
-    CALL draw_shields
 
     RET
 
@@ -267,20 +275,19 @@ draw_shield:
 
 draw_horiz_line:
     PUSH AF,BC,DE,HL
+
     LD B,0
     LD C,_.HORIZ_LINE_Y
+
     LD L,32
+
 .loop       
     PUSH BC 
-
     LD DE, sprites.sprite_horiz_line_dims
     PUSH DE
-
     LD DE,sprites.sprite_horiz_line    
     PUSH DE
-
     CALL double_buffer.draw_sprite_and_flush_buffer
-
     POP DE
     POP DE
     POP DE

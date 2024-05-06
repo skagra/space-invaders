@@ -55,113 +55,64 @@ draw_sprite_and_flush_buffer:
 
     RET
 
-
-; TODO See if we can successfully use the SP to speed this up
-; Calculate loop counter then use LDI
-; copy_buffer_to_screen:
-;     PUSH AF,BC,DE,HL
-
-;     LD HL,(_buffer_stack_top)
-
-; .copy_loop
-;     ; Any more to do?
-;     LD DE, _BUFFER_STACK
-;     OR A          ; clear carry flag
-;     SBC HL, DE
-;     ADD HL, DE    ; and now the flags are set, you can branch
-
-;     ; * IF HL equals DE, Z=1,C=0
-;     ; * IF HL is less than DE, Z=0,C=1
-;     ; * IF HL is more than DE, Z=0,C=0
-
-;     JR C, .done  ; TODO CHECK - can we reorder the comparison todo one less check (swap HL and DE and check for NC)
-;     JR Z, .done
-
-; .more
-;     DEC HL                      ; Move to address on the stack
-;     DEC HL                      ; We do this first as the pointer is the next free address
-
-;     LD DE,(HL)                  ; Address in buffer that was written to
-
-;     LD A,(DE)                   ; Copy the byte that was written
-;     LD B,A                      ; Keep a copy in B
-
-;     LD A,D                      ; Adjust adress to point to actual screen
-;     AND 0b00111111              
-;     OR  0b01000000
-;     LD D,A
-
-;     LD A,B                      ; Copy the buffered byte to the screen
-;     LD (DE),A
-
-;     JR .copy_loop
-
-; .done
-;     LD HL,_BUFFER_STACK
-;     LD (_buffer_stack_top),HL
-
-;     POP HL,DE,BC,AF
-    
-;     RET
-
-
 copy_buffer_to_screen:
-    DI
-
-    LD (_stack_stash),SP
+    DI                                      ; Disable interrupts as we'll be messing with SP
 
     PUSH AF,BC,DE,HL
 
-    LD SP,_BUFFER_STACK
-    LD HL,(_buffer_stack_top)
+    LD (_stack_stash),SP                    ; Store current SP to restore at end
+
+    LD SP,_BUFFER_STACK                     ; Subtract start of stack area (low mem)
+    LD HL,(_buffer_stack_top)               ; from current stack pointer (first free byte)
     LD A,L
     SUB low _BUFFER_STACK
     LD L,A
     LD A,H
     SBC high _BUFFER_STACK
     LD H,A
+     
+    SRL H                                   ; Divide the result by two to give number of loops to run
+    RR L                                    ; as we are dealing with word chunks on the stack
 
 .copy_loop
-    LD A,H
+    LD A,H                                  ; Is the copy counter zero?
     OR L
-    JP Z,.done
+    JP Z,.done                              ; Yes - done
 
-    DEC HL
-    DEC HL
-    
+    DEC HL                                  ; No - decrase the counter
+
 .more
-    POP DE
+    POP DE                                  ; Get the address written to in the off screen buffer
 
-    LD A,(DE)                   ; Copy the byte that was written
-    LD B,A                      ; Keep a copy in B
+    LD A,(DE)                               ; Copy the byte that was written
+    LD B,A                                  ; Keep a copy in B
 
-    LD A,D                      ; Adjust adress to point to actual screen
+    LD A,D                                  ; Adjust address to point to actual screen
     AND 0b00111111              
     OR  0b01000000
     LD D,A
 
-    LD A,B                      ; Copy the buffered byte to the screen
+    LD A,B                                  ; Copy the buffered byte to the screen
     LD (DE),A
 
     JR .copy_loop
 
 .done
-    LD HL,_BUFFER_STACK
+    LD HL,_BUFFER_STACK                     ; Reset the stack
     LD (_buffer_stack_top),HL
+    
+    LD SP,(_stack_stash)                    ; Restore the original SP
 
     POP HL,DE,BC,AF
-    
-    LD SP,(_stack_stash)
 
     EI
 
     RET
 
-_stack_stash:       BLOCK 2
-
 _BUFFER_STACK:      BLOCK 512   
 _END_OF_STACK:
 _buffer_stack_top:  BLOCK 2             ; This points to the next free location on the stack
+_stack_stash:       BLOCK 2
 
 check_stack_overflow:
     PUSH AF,DE,HL

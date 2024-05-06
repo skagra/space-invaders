@@ -20,6 +20,7 @@ DRAW_BUFFER:    BLOCK 0x1800
     INCLUDE "draw.asm"
     INCLUDE "print.asm"
     INCLUDE "character_set.asm"
+    INCLUDE "game_screen.asm"
     INCLUDE "sprites/all_sprites.asm"
     
     MODULE main
@@ -37,6 +38,7 @@ main:
     CALL utils.init
     CALL draw.init
     CALL print.init
+    CALL game_screen.init
   
     ; Clear the screen
     call draw.wipe_screen
@@ -47,6 +49,9 @@ main:
     CALL draw.fill_screen_attributes
     POP HL
 
+    CALL game_screen.draw_horiz_line
+    CALL double_buffer.copy_buffer_to_screen
+    
     LD HL,0x0000
     PUSH HL
     LD HL,sprites.sprite_base_dims
@@ -62,9 +67,9 @@ main:
 
     LD HL,0x5263
     PUSH HL
-    LD HL,sprites.sprite_base_dims
+    LD HL,sprites.sprite_horiz_line_dims
     PUSH HL
-    LD HL,sprites.sprite_base    
+    LD HL,sprites.sprite_horiz_line    
     PUSH HL
     CALL draw.draw_sprite
     POP HL
