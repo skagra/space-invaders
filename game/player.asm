@@ -58,7 +58,7 @@ draw_deferred_player:
     LD DE, sprites.sprite_base_dims                     ; Player base dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_base                           ; Sprite    
+    LD DE,sprites.sprite_base                          ; Sprite    
     PUSH DE
 
     CALL draw.draw_sprite                               ; Draw the player base sprite

@@ -81,16 +81,6 @@ init_screen:
     CALL draw.fill_screen_attribute_stripe
     POP HL
     POP HL
-
-    LD H,1                                  ; Top left X
-    LD L,21                                 ; Top left Y
-    PUSH HL
-    LD H,20                                 ; Width
-    LD L,1                                  ; Height
-    PUSH HL
-    CALL timing.draw_end_of_screen_barrier
-    POP HL
-    POP HL
     
     ; Draw static screen labels. 
     LD HL,._SCORE_LINE_0_TEXT

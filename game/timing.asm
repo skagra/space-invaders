@@ -34,26 +34,7 @@ delay:
 ; Relies on a bright colour attribute along bottom of screen
 ; From https://blog.stevewetherill.com/2022/02/odin-computer-graphics-part-two-1986.html
 ;---
-wait_on_end_of_screen:
-    PUSH AF,BC,DE
-;     LD BC,40FFh 
-; .wait:                
-;     LD A,R 
-;     IN A,(C) 
-;     BIT 6,A   
-;     JR Z,.wait           
-
-            LD      BC,40FFh 
-            LD      E,40h ; bright black
-WAIT:                
-            LD      A,R 
-            IN      A,(C) 
-            CP      E 
-            JP      NZ,WAIT 
-          
-
-    POP DE,BC,AF
-    
+wait_on_end_of_screen:    
     RET
 
 draw_end_of_screen_barrier:

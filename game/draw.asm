@@ -445,7 +445,7 @@ draw_sprite:
 ._PARAM_COORDS:            EQU 16       ; Sprite coordinates
 ._PARAM_DIMS:              EQU 14       ; Sprite dimensions
 ._PARAM_SPRITE_DATA:       EQU 12       ; Sprite pre-shifted data lookup table
-
+    
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                            ; Point IX to the stack
@@ -473,7 +473,7 @@ draw_sprite:
     ADD HL,DE                           ; Add the offset into the table to the base of the table
     LD DE, (HL)                         ; Lookup the sprite data in the table
     LD (._sprite_data_ptr),DE           ; Points to sprite data
-
+   
     LD A,(._y_dim)                      ; Y loop counter set from Y dimension
     LD C,A
 
@@ -487,14 +487,13 @@ draw_sprite:
     LD (._row_first_mem_lock),HL
     POP HL
 
-.ds_y_loop:   
+.ds_y_loop:
     LD A,(._x_dim)                      ; X dim loop counter - character cells
     LD B,A
 
 .ds_x_loop:
-    LD HL,(._screen_mem_loc_trace)      ; Get screen byte
-
-    LD DE,(._sprite_data_ptr)           ; Pointer to sprite and mask data
+    LD HL,(._screen_mem_loc_trace)      ; Get screen byte location
+    LD DE,(._sprite_data_ptr)           ; Pointer to sprite and mask data 
 
     LD A,(DE)                           ; Get the mask data                              
     AND (HL)                            ; And the mask with the screen byte
@@ -504,7 +503,7 @@ draw_sprite:
 
     LD A,(DE)                           ; Get the sprite data
     OR (HL)                             ; Or the sprite data with the screen byte
-    LD (HL),A                           ; Wire screen memory
+    LD (HL),A                           ; Write screen memory
 
     INC DE                              ; Move to next byte of mask/sprite data
     LD (._sprite_data_ptr),DE
@@ -579,7 +578,6 @@ draw_sprite:
 ._y_dim:                BLOCK 1
 ._x_dim:                BLOCK 1
 ._sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
-._mask_data_ptr         BLOCK 2         ; Pointer to current mask data byte
 ._screen_mem_loc_trace: BLOCK 2         ; Pointer to current screen byte
 ._row_first_mem_lock:   BLOCK 2         ; Point to screen byte first drawn on current row
 

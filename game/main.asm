@@ -24,7 +24,8 @@
     INCLUDE "player_bullet.asm"
     INCLUDE "alien_pack.asm"
     INCLUDE "character_set.asm"
-    
+    INCLUDE "interrupts.asm"
+
     MODULE main
 
 main:
@@ -57,6 +58,9 @@ main:
 
     HALT 
 
+    ; Draw the player base
+    CALL player.draw_deferred_player
+
     ; Draw the current alien
     CALL alien_pack.draw_deferred_alien
 
@@ -66,20 +70,17 @@ main:
     ; Calculate new coordinates and variant for current alien
     CALL alien_pack.update_current_alien  
 
-    ; Draw the player base
-    CALL player.draw_deferred_player
-
     ; Calcate new coordinates for the player base
     CALL player.update_player
 
     ; Calculate new coordinates and handle state changes for the player bullet               
-     CALL player_bullet.update_bullet
+    CALL player_bullet.update_bullet
 
     LD HL,._DRAW_DELAY
     PUSH HL
     CALL timing.delay
     POP HL
-    
+
     ; Erase the current alien
     CALL alien_pack.blank_current_alien
     
@@ -97,7 +98,7 @@ main:
 ._DRAW_DELAY: EQU 0x4020
 
 ; Put the stack immediately after the code
-STACK_SIZE:                 EQU 200*2    
+STACK_SIZE:                 EQU 100*2    
                             BLOCK STACK_SIZE, 0
 STACK_TOP:                  EQU $-1
 
