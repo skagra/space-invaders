@@ -110,21 +110,13 @@ init_screen:
     POP HL
 
     CALL draw_horiz_line
-    CALL double_buffer.copy_buffer_to_screen
     CALL draw_score_1
-    CALL double_buffer.copy_buffer_to_screen
     CALL draw_score_2
-    CALL double_buffer.copy_buffer_to_screen
     CALL draw_high_score
-    CALL double_buffer.copy_buffer_to_screen
     CALL draw_credit
-    CALL double_buffer.copy_buffer_to_screen
     CALL draw_bases_count
-    CALL double_buffer.copy_buffer_to_screen
     CALL draw_reserve_bases
-    CALL double_buffer.copy_buffer_to_screen
     CALL draw_shields
-    CALL double_buffer.copy_buffer_to_screen
 
     RET
 
@@ -202,7 +194,7 @@ draw_reserve_base:
     PUSH DE
     LD DE,sprites.sprite_base     
     PUSH DE
-    CALL draw.draw_sprite
+    CALL double_buffer.draw_sprite_and_flush_buffer
     POP DE
     POP DE
     POP DE
@@ -264,7 +256,7 @@ draw_shield:
     PUSH DE
     LD DE,sprites.sprite_shield     
     PUSH DE
-    CALL draw.draw_sprite
+    CALL double_buffer.draw_sprite_and_flush_buffer
     POP DE
     POP DE
     POP DE
@@ -287,7 +279,7 @@ draw_horiz_line:
     LD DE,sprites.sprite_horiz_line    
     PUSH DE
 
-    CALL draw.draw_sprite
+    CALL double_buffer.draw_sprite_and_flush_buffer
 
     POP DE
     POP DE

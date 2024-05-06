@@ -531,9 +531,7 @@ draw_sprite:
     INC HL                              
     LD (._screen_mem_loc_trace),HL
     
-    IFDEF DEBUG
-        CALL double_buffer.check_stack_overflow
-    ENDIF
+    CHECK_STACK_OVERFLOW
 
     ; Are we done writing this pixel row?
     DEC B                               ; Decrease the X loop counter

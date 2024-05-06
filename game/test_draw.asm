@@ -13,9 +13,9 @@
 
 DRAW_BUFFER:    BLOCK 0x1800
 
-    INCLUDE "double_buffer.asm"
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
+    INCLUDE "double_buffer.asm"
     INCLUDE "utils.asm"
     INCLUDE "draw.asm"
     INCLUDE "print.asm"
@@ -58,6 +58,8 @@ main:
     POP HL
     POP HL
 
+    CALL double_buffer.copy_buffer_to_screen
+
     LD HL,0x5263
     PUSH HL
     LD HL,sprites.sprite_base_dims
@@ -68,7 +70,6 @@ main:
     POP HL
     POP HL
     POP HL
-
 
     CALL double_buffer.copy_buffer_to_screen
 
