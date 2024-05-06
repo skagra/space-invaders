@@ -97,7 +97,7 @@ _flag_error:
 
 _FLAG_ERROR_BYTE:       EQU _VTRACE_BYTE+2
 
-    MACRO DEBUG_FLAG_ERROR code
+    MACRO DB_FLAG_ERROR code
         IFDEF DEBUG
             PUSH HL
             LD HL,code

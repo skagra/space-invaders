@@ -11,9 +11,12 @@
     ; Skip past contended memory
     ORG 0x8000 
 
+DRAW_BUFFER:    BLOCK 0x1800
+    
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
     INCLUDE "utils.asm"
+    INCLUDE "double_buffer.asm"
     INCLUDE "timing.asm"
     INCLUDE "draw.asm"
     INCLUDE "print.asm"
@@ -35,6 +38,7 @@ main:
     EI
 
     ; Initialise all modules
+    CALL double_buffer.init
     CALL error_codes.init
     CALL debug.init
     CALL utils.init
@@ -50,14 +54,12 @@ main:
     ; Draw the initial screen
     CALL game_screen.init_screen
 
+    CALL double_buffer.copy_buffer_to_screen
+
 .animation_loop:
     ; Read keyboard
     CALL keyboard.get_movement_keys
-
-    DEBUG_VTRACE_FLASH
-
-    HALT 
-
+    
     ; Draw the player base
     CALL player.draw_deferred_player
 
@@ -76,10 +78,11 @@ main:
     ; Calculate new coordinates and handle state changes for the player bullet               
     CALL player_bullet.update_bullet
 
-    LD HL,._DRAW_DELAY
-    PUSH HL
-    CALL timing.delay
-    POP HL
+    HALT 
+    
+    CALL double_buffer.copy_buffer_to_screen
+
+    DEBUG_VTRACE_FLASH
 
     ; Erase the current alien
     CALL alien_pack.blank_current_alien

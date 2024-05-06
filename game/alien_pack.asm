@@ -535,7 +535,7 @@ update_current_alien:
     JR NZ,.active
 
     // This should never be reached!
-    DEBUG_FLAG_ERROR error_codes.UDC_SHOULD_NOT_BE_REACHED
+    DB_FLAG_ERROR error_codes.UDC_SHOULD_NOT_BE_REACHED
 
     JR .done
 

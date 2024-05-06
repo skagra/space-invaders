@@ -110,13 +110,21 @@ init_screen:
     POP HL
 
     CALL draw_horiz_line
+    CALL double_buffer.copy_buffer_to_screen
     CALL draw_score_1
+    CALL double_buffer.copy_buffer_to_screen
     CALL draw_score_2
+    CALL double_buffer.copy_buffer_to_screen
     CALL draw_high_score
+    CALL double_buffer.copy_buffer_to_screen
     CALL draw_credit
+    CALL double_buffer.copy_buffer_to_screen
     CALL draw_bases_count
+    CALL double_buffer.copy_buffer_to_screen
     CALL draw_reserve_bases
+    CALL double_buffer.copy_buffer_to_screen
     CALL draw_shields
+    CALL double_buffer.copy_buffer_to_screen
 
     RET
 

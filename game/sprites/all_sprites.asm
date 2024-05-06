@@ -22,3 +22,5 @@
 	INCLUDE "sprites/sprite_player_bullet_explosion_blank.asm"
 	INCLUDE "sprites/sprite_shield.asm"
 	INCLUDE "sprites/sprite_shield_blank.asm"
+	INCLUDE "sprites/test_square.asm"
+	INCLUDE "sprites/test_square_blank.asm"

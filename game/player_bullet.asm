@@ -332,7 +332,7 @@ update_bullet:
     JP NZ,.bullet_state_hit_a_shield
 
     // This should never be reached!
-    DEBUG_FLAG_ERROR error_codes.UB_SHOULD_NOT_BE_REACHED
+    DB_FLAG_ERROR error_codes.UB_SHOULD_NOT_BE_REACHED
 
     JP .done    
 

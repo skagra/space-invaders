@@ -111,5 +111,38 @@
             "smallValuesMaximum": 513,
             "tmpDir": ".tmp"
         },
+        {
+            "type": "dezog",
+            "request": "launch",
+            "name": "Internal Simulator (test)",
+            "remoteType": "zsim",
+            "zsim": {
+                "visualMemory": true,
+                "memoryModel": "ZX48K",
+                "ulaScreen": true,
+                "zxBorderWidth": 20,
+                "vsyncInterrupt": true,
+                "zxKeyboard": true,
+                "zxBeeper": true,
+                "loadZxRom": true
+            },
+            "sjasmplus": [
+                {
+                    "path": "test_draw.sld"
+                }
+            ],
+            "history": {
+                "reverseDebugInstructionCount": 1000000,
+                "spotCount": 10,
+                "codeCoverageEnabled": true
+            },
+            "startAutomatically": false,
+            "commandsAfterLaunch": [],
+            "rootFolder": "${workspaceFolder}",
+            "topOfStack": "main.STACK_TOP",
+            "load": "test_draw.sna",
+            "smallValuesMaximum": 513,
+            "tmpDir": ".tmp"
+        },
     ]
 }
