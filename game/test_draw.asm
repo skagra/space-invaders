@@ -11,8 +11,6 @@
     ; Skip past contended memory
     ORG 0x8000 
 
-DRAW_BUFFER:    BLOCK 0x1800
-
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
     INCLUDE "double_buffer.asm"
@@ -20,7 +18,6 @@ DRAW_BUFFER:    BLOCK 0x1800
     INCLUDE "draw.asm"
     INCLUDE "print.asm"
     INCLUDE "character_set.asm"
-    INCLUDE "game_screen.asm"
     INCLUDE "sprites/all_sprites.asm"
     
     MODULE main
@@ -38,7 +35,6 @@ main:
     CALL utils.init
     CALL draw.init
     CALL print.init
-    CALL game_screen.init
   
     ; Clear the screen
     call draw.wipe_screen
@@ -48,35 +44,26 @@ main:
     PUSH HL
     CALL draw.fill_screen_attributes
     POP HL
-
-    CALL game_screen.draw_horiz_line
-    CALL double_buffer.copy_buffer_to_screen
     
-    LD HL,0x0000
-    PUSH HL
-    LD HL,sprites.sprite_base_dims
+    LD HL,0x1200
     PUSH HL
     LD HL,sprites.sprite_base    
     PUSH HL
-    CALL draw.draw_sprite
-    POP HL
-    POP HL
-    POP HL
-
-    CALL double_buffer.copy_buffer_to_screen
-
-    LD HL,0x5263
-    PUSH HL
-    LD HL,sprites.sprite_horiz_line_dims
-    PUSH HL
-    LD HL,sprites.sprite_horiz_line    
-    PUSH HL
-    CALL draw.draw_sprite
-    POP HL
+    CALL draw.fast_draw_sprite_16x8
     POP HL
     POP HL
 
-    CALL double_buffer.copy_buffer_to_screen
+    CALL double_buffer.fast_copy_buffer_to_screen_16x8
+
+    LD HL,0x5700
+    PUSH HL
+    LD HL,sprites.sprite_base    
+    PUSH HL
+    CALL draw.fast_draw_sprite_16x8
+    POP HL
+    POP HL
+
+    CALL double_buffer.fast_copy_buffer_to_screen_16x8
 
 .animation_loop:
     DEBUG_VTRACE_FLASH
@@ -84,6 +71,9 @@ main:
     HALT 
 
     JR .animation_loop          
+
+    ORG 0xC000
+DRAW_BUFFER:    BLOCK 0x1800,0x00
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    

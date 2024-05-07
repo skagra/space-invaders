@@ -27,13 +27,13 @@ init:
 
 draw_sprite_and_flush_buffer:
 
-._PARAM_COORDS:            EQU 10       ; Sprite coordinates
-._PARAM_DIMS:              EQU 8        ; Sprite dimensions
-._PARAM_SPRITE_DATA:       EQU 6        ; Sprite pre-shifted data lookup table
+._PARAM_COORDS:            EQU 10                       ; Sprite coordinates
+._PARAM_DIMS:              EQU 8                        ; Sprite dimensions
+._PARAM_SPRITE_DATA:       EQU 6                        ; Sprite pre-shifted data lookup table
     
     PUSH HL,IX
 
-    LD  IX,0                            ; Point IX to the stack
+    LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP                                                   
 
     LD HL,(IX+._PARAM_COORDS)
@@ -52,6 +52,72 @@ draw_sprite_and_flush_buffer:
     CALL copy_buffer_to_screen
 
     POP IX,HL
+
+    RET
+
+    ; For 16 bit wide sprite => 24 bits of pre-shifted image
+    MACRO COPY_LINE_16
+        POP HL                                          ; Get the address written to in the off screen buffer
+        LD D,H                                          ; Copy address in DE - this will become the screen address                  
+        LD E,L
+        RES 7,D                                         ; Reset bit 7 to make screen address
+        LDI                                             ; LD (DE),(HL) INC HL INC DE DEC BC - 
+        LDI                                             ; LD (screen_ptr), (buffer_ptr), INC screen_ptr, INC buffer_pointer, DEC loop_counter
+        LDI 
+    ENDM
+
+fast_copy_buffer_to_screen_16x8:
+    DI                                                  ; Disable interrupts as we'll be messing with SP
+
+    PUSH AF,BC,DE,HL
+
+    LD (_stack_stash),SP                                ; Store current SP to restore at end
+
+    LD SP,_BUFFER_STACK                                 ; Subtract the start of stack area (low mem)
+    LD HL,(_buffer_stack_top)                           ; from current stack pointer (first free byte)
+    LD A,L
+    SUB low _BUFFER_STACK
+    LD C,A
+    LD A,H
+    SBC high _BUFFER_STACK
+    LD B,A
+    
+    SRL B                                               ; Divide the result by two to give number of loops to                                 
+    RR C                                                ; run as we are dealing with word chunks on the stack 
+
+    LD H,B                                              ; Tripple BC - As only the first address of each row was added to the stack
+    LD L,C
+    ADD HL,BC
+    ADD HL,BC
+    LD B,H
+    LD C,L
+
+.copy_loop
+    LD A,B                                              ; Is the copy counter zero?
+    OR C
+    JP Z,.done                                          ; Yes - done
+
+.more
+    COPY_LINE_16
+    COPY_LINE_16
+    COPY_LINE_16
+    COPY_LINE_16
+    COPY_LINE_16
+    COPY_LINE_16
+    COPY_LINE_16
+    COPY_LINE_16
+
+    JR .copy_loop
+
+.done
+    LD HL,_BUFFER_STACK                                 ; Reset the stack
+    LD (_buffer_stack_top),HL
+    
+    LD SP,(_stack_stash)                                ; Restore the original SP
+
+    POP HL,DE,BC,AF
+
+    EI
 
     RET
 
@@ -85,14 +151,7 @@ copy_buffer_to_screen:
     POP DE                                  ; Get the address written to in the off screen buffer
 
     LD A,(DE)                               ; Copy the byte that was written
-    LD B,A                                  ; Keep a copy in B
-
-    LD A,D                                  ; Adjust address to point to actual screen
-    AND 0b00111111              
-    OR  0b01000000
-    LD D,A
-
-    LD A,B                                  ; Copy the buffered byte to the screen
+    RES 7,D
     LD (DE),A
 
     JR .copy_loop
