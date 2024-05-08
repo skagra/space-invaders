@@ -63,8 +63,6 @@ main:
 
     DJNZ .test_loop
 
-    CALL double_buffer.fast_copy_buffer_to_screen_16x8
-
     LD HL, 0x7070
     PUSH HL
     LD HL,sprites.sprite_shield_dims
@@ -76,6 +74,7 @@ main:
     POP HL
     POP HL
 
+    CALL double_buffer.fast_copy_buffer_to_screen_16x8
     CALL double_buffer.copy_buffer_to_screen
 
 .animation_loop:

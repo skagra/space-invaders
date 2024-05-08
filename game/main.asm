@@ -10,8 +10,6 @@
 
     ; Skip past contended memory
     ORG 0x8000 
-
-DRAW_BUFFER:    BLOCK 0x1800
     
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
@@ -30,6 +28,15 @@ DRAW_BUFFER:    BLOCK 0x1800
     INCLUDE "sprites/all_sprites.asm"
     
     MODULE main
+
+; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!SORT OUT MEMORY MAP
+; Move double buffering into draw
+; Integrate new fast draw
+; Use tracking y table lookup trick for normal draw
+; Upper case all sprite values
+
+    ORG 0xC000
+DRAW_BUFFER:    BLOCK 0x1800,0x00
 
 main:
     ; Set up stack
@@ -97,8 +104,6 @@ main:
     CALL alien_pack.next_alien
 
     JR .animation_loop           
-
-._DRAW_DELAY: EQU 0x401C
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    

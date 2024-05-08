@@ -74,10 +74,10 @@ fast_copy_buffer_to_screen_16x8:
 
     PUSH AF,BC,DE,HL
 
-    LD (_fast_stack_stash),SP                                ; Store current SP to restore at end
+    LD (._fast_stack_stash),SP                          ; Store current SP to restore at end
 
-    LD SP,_FAST_BUFFER_STACK                                 ; Subtract the start of stack area (low mem)
-    LD HL,(_fast_buffer_stack_top)                           ; from current stack pointer (first free byte)
+    LD SP,_FAST_BUFFER_STACK                            ; Subtract the start of stack area (low mem)
+    LD HL,(_fast_buffer_stack_top)                      ; from current stack pointer (first free byte)
     LD A,L
     SUB low _FAST_BUFFER_STACK
     LD C,A
@@ -113,10 +113,10 @@ fast_copy_buffer_to_screen_16x8:
     JR .copy_loop
 
 .done
-    LD HL,_FAST_BUFFER_STACK                                 ; Reset the stack
+    LD HL,_FAST_BUFFER_STACK                            ; Reset the stack
     LD (_fast_buffer_stack_top),HL
     
-    LD SP,(_fast_stack_stash)                                ; Restore the original SP
+    LD SP,(._fast_stack_stash)                          ; Restore the original SP
 
     POP HL,DE,BC,AF
 
@@ -124,20 +124,19 @@ fast_copy_buffer_to_screen_16x8:
 
     RET
 
-_FAST_BUFFER_STACK:      BLOCK 512   
-_FAST_END_OF_STACK:
-_fast_buffer_stack_top:  BLOCK 2             ; This points to the next free location on the stack
-_fast_stack_stash:       BLOCK 2
+._fast_stack_stash:      BLOCK 2
+_fast_buffer_stack_top:  BLOCK 2                        ; This points to the next free location on the stack
+_FAST_BUFFER_STACK:      BLOCK 512  
 
 copy_buffer_to_screen:
-    DI                                      ; Disable interrupts as we'll be messing with SP
+    DI                                                  ; Disable interrupts as we'll be messing with SP
 
     PUSH AF,BC,DE,HL
 
-    LD (_stack_stash),SP                    ; Store current SP to restore at end
+    LD (._stack_stash),SP                               ; Store current SP to restore at end
 
-    LD SP,_BUFFER_STACK                     ; Subtract start of stack area (low mem)
-    LD HL,(_buffer_stack_top)               ; from current stack pointer (first free byte)
+    LD SP,_BUFFER_STACK                                 ; Subtract start of stack area (low mem)
+    LD HL,(_buffer_stack_top)                           ; from current stack pointer (first free byte)
     LD A,L
     SUB low _BUFFER_STACK
     LD L,A
@@ -145,30 +144,30 @@ copy_buffer_to_screen:
     SBC high _BUFFER_STACK
     LD H,A
      
-    SRL H                                   ; Divide the result by two to give number of loops to run
-    RR L                                    ; as we are dealing with word chunks on the stack
+    SRL H                                               ; Divide the result by two to give number of loops to run
+    RR L                                                ; as we are dealing with word chunks on the stack
 
 .copy_loop
-    LD A,H                                  ; Is the copy counter zero?
+    LD A,H                                              ; Is the copy counter zero?
     OR L
-    JP Z,.done                              ; Yes - done
+    JP Z,.done                                          ; Yes - done
 
-    DEC HL                                  ; No - decrase the counter
+    DEC HL                                              ; No - decrase the counter
 
 .more
-    POP DE                                  ; Get the address written to in the off screen buffer
+    POP DE                                              ; Get the address written to in the off screen buffer
 
-    LD A,(DE)                               ; Copy the byte that was written
+    LD A,(DE)                                           ; Copy the byte that was written
     RES 7,D
     LD (DE),A
 
     JR .copy_loop
 
 .done
-    LD HL,_BUFFER_STACK                     ; Reset the stack
+    LD HL,_BUFFER_STACK                                 ; Reset the stack
     LD (_buffer_stack_top),HL
     
-    LD SP,(_stack_stash)                    ; Restore the original SP
+    LD SP,(._stack_stash)                               ; Restore the original SP
 
     POP HL,DE,BC,AF
 
@@ -176,32 +175,8 @@ copy_buffer_to_screen:
 
     RET
 
-_BUFFER_STACK:      BLOCK 512   
-_END_OF_STACK:
-_buffer_stack_top:  BLOCK 2             ; This points to the next free location on the stack
-_stack_stash:       BLOCK 2
-
-check_stack_overflow:
-    PUSH AF,DE,HL
-
-    LD DE,_END_OF_STACK
-    LD HL,(_buffer_stack_top)
-    OR A
-    SBC HL,DE
-    ADD HL,DE
-    JR C, .ok
-
-    DB_FLAG_ERROR error_codes.UB_DOUBLE_BUFFER_STACK_OVERFLOW
-
-.ok:
-    POP HL,DE,AF
-
-    RET
-
-    MACRO CHECK_STACK_OVERFLOW
-        IFDEF DEBUG
-            CALL double_buffer.check_stack_overflow
-        ENDIF
-    ENDM
+._stack_stash: BLOCK 2
+_BUFFER_STACK: BLOCK 512   
+_buffer_stack_top:  BLOCK 2                             ; This points to the next free location on the stack
 
     ENDMODULE
