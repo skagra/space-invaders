@@ -45,15 +45,15 @@ main:
     CALL draw.fill_screen_attributes
     POP HL
     
-    LD HL,0x1200
+    LD HL,0x0001
     PUSH HL
-    LD HL,sprites.sprite_base    
+    LD HL,sprites.test_card   
     PUSH HL
     CALL draw.fast_draw_sprite_16x8
     POP HL
     POP HL
 
-    CALL double_buffer.fast_copy_buffer_to_screen_16x8
+    ; CALL double_buffer.fast_copy_buffer_to_screen_16x8
 
     LD HL,0x5700
     PUSH HL

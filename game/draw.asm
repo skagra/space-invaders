@@ -693,7 +693,7 @@ fast_draw_sprite_16x8:
     LD (._address_to_call),DE               ; Store the value for later
 
     ; Modify the draw lines code with the required return address
-    LD HL,38*8-3   ;38 bytes per macro, -3 to get to 3rd NOP from the end
+    LD HL,._RENDER_ROW_JP_OFFSET  ;38 bytes per macro, -3 to get to 3rd NOP from the end WHY DOES 7 WORK
     ADD DE,HL
     LD H,D
     LD L,E
@@ -726,7 +726,8 @@ fast_draw_sprite_16x8:
     SRL A
     LD B,A                              ; Store it
 
-    JP (._address_to_call)
+    LD HL,(._address_to_call)
+    JP HL
 
 .back:  
     ; Fix code we modified
@@ -746,6 +747,8 @@ fast_draw_sprite_16x8:
     
     RET
 
+._MACRO_SIZE:           EQU .y_001-.y_000 ; 38
+._RENDER_ROW_JP_OFFSET: EQU ._MACRO_SIZE*8-3 ;  301
 ._coords:                               ; Sprite location (Y is updated to line being drawn)
 ._y_coord:              BLOCK 1
 ._x_coord:              BLOCK 1
@@ -761,8 +764,6 @@ fast_draw_sprite_16x8:
 
 .render_rows:
 .y_000:    RENDER_ROW 0xC000, B
-   DISPLAY "Render macro size: ",$-.render_rows
-   DISPLAY "Start of render rows: ",.render_rows
 .y_001:    RENDER_ROW 0xC100, B
 .y_002:    RENDER_ROW 0xC200, B
 .y_003:    RENDER_ROW 0xC300, B
@@ -770,11 +771,34 @@ fast_draw_sprite_16x8:
 .y_005:    RENDER_ROW 0xC500, B
 .y_006:    RENDER_ROW 0xC600, B
 .y_007:    RENDER_ROW 0xC700, B
-    DISPLAY "Where we should be putting the return address: ",$-3
+.y_008:    RENDER_ROW 0xC020, B
+.y_009:    RENDER_ROW 0xC120, B
+.y_010:    RENDER_ROW 0xC220, B
+.y_011:    RENDER_ROW 0xC320, B
+.y_012:    RENDER_ROW 0xC420, B
+.y_013:    RENDER_ROW 0xC520, B
+.y_014:    RENDER_ROW 0xC620, B
+.y_015:    RENDER_ROW 0xC720, B
+
+
+    DISPLAY "Macro offset: ",.y_001-.y_000
+    DISPLAY "We should be calling: ",.y_001
+    DISPLAY "Replacement code should start at",.y_002-3
 
 ._render_rows_lookup:
     WORD    .y_000,.y_001,.y_002,.y_003,.y_004,.y_005,.y_006,.y_007
-    DISPLAY "Start of render rows lookup table: ",._render_rows_lookup
+    WORD    .y_008,.y_009,.y_010,.y_011,.y_012,.y_013,.y_014,.y_015
+    
+    DISPLAY "Render rows lookup table starts at: ",._render_rows_lookup
+    DISPLAY "Start of render rows routines start at: ",.render_rows
+    DISPLAY "With .y_0010 at: ",.y_000
+    DISPLAY "With .y_001 at: ",.y_001
+    DISPLAY "The replacment code starts (for y==1) should start at:",.y_008-3
+    DISPLAY ._RENDER_ROW_JP_OFFSET
+
+    DISPLAY "y=0 code mod offset=",.y_008-.y_000
+    DISPLAY "y=1 code mod offset=",.y_009-.y_001
+    DISPLAY "y=3 code mod offset=",.y_010-.y_002
 
     ENDMODULE
 

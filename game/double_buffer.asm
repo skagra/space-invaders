@@ -97,7 +97,7 @@ fast_copy_buffer_to_screen_16x8:
     OR C
     JP Z,.done                                          ; Yes - done
 
-.more
+.more                                     
     COPY_LINE_16
     COPY_LINE_16
     COPY_LINE_16
