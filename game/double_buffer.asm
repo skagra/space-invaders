@@ -6,6 +6,9 @@ init:
     LD HL,_BUFFER_STACK
     LD (_buffer_stack_top),HL
 
+    LD HL,_FAST_BUFFER_STACK
+    LD (_fast_buffer_stack_top),HL
+
     POP HL
 
     RET
@@ -71,15 +74,15 @@ fast_copy_buffer_to_screen_16x8:
 
     PUSH AF,BC,DE,HL
 
-    LD (_stack_stash),SP                                ; Store current SP to restore at end
+    LD (_fast_stack_stash),SP                                ; Store current SP to restore at end
 
-    LD SP,_BUFFER_STACK                                 ; Subtract the start of stack area (low mem)
-    LD HL,(_buffer_stack_top)                           ; from current stack pointer (first free byte)
+    LD SP,_FAST_BUFFER_STACK                                 ; Subtract the start of stack area (low mem)
+    LD HL,(_fast_buffer_stack_top)                           ; from current stack pointer (first free byte)
     LD A,L
-    SUB low _BUFFER_STACK
+    SUB low _FAST_BUFFER_STACK
     LD C,A
     LD A,H
-    SBC high _BUFFER_STACK
+    SBC high _FAST_BUFFER_STACK
     LD B,A
     
     SRL B                                               ; Divide the result by two to give number of loops to                                 
@@ -110,16 +113,21 @@ fast_copy_buffer_to_screen_16x8:
     JR .copy_loop
 
 .done
-    LD HL,_BUFFER_STACK                                 ; Reset the stack
-    LD (_buffer_stack_top),HL
+    LD HL,_FAST_BUFFER_STACK                                 ; Reset the stack
+    LD (_fast_buffer_stack_top),HL
     
-    LD SP,(_stack_stash)                                ; Restore the original SP
+    LD SP,(_fast_stack_stash)                                ; Restore the original SP
 
     POP HL,DE,BC,AF
 
     EI
 
     RET
+
+_FAST_BUFFER_STACK:      BLOCK 512   
+_FAST_END_OF_STACK:
+_fast_buffer_stack_top:  BLOCK 2             ; This points to the next free location on the stack
+_fast_stack_stash:       BLOCK 2
 
 copy_buffer_to_screen:
     DI                                      ; Disable interrupts as we'll be messing with SP

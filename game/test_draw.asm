@@ -44,26 +44,39 @@ main:
     PUSH HL
     CALL draw.fill_screen_attributes
     POP HL
-    
-    LD HL,0x0001
-    PUSH HL
-    LD HL,sprites.test_card   
-    PUSH HL
-    CALL draw.fast_draw_sprite_16x8
-    POP HL
-    POP HL
 
-    ; CALL double_buffer.fast_copy_buffer_to_screen_16x8
+    LD B, NUM_TEST_SPRITES
+    LD HL, TEST_SPRITES
 
-    LD HL,0x5700
-    PUSH HL
-    LD HL,sprites.sprite_base    
-    PUSH HL
+.test_loop
+    LD DE,(HL)
+    PUSH DE
+    INC HL
+    INC HL
+    LD DE,(HL)   
+    PUSH DE
     CALL draw.fast_draw_sprite_16x8
-    POP HL
-    POP HL
+    POP DE
+    POP DE
+    INC HL
+    INC HL
+
+    DJNZ .test_loop
 
     CALL double_buffer.fast_copy_buffer_to_screen_16x8
+
+    LD HL, 0x7070
+    PUSH HL
+    LD HL,sprites.sprite_shield_dims
+    PUSH HL
+    LD HL,sprites.sprite_shield
+    PUSH HL
+    CALL draw.draw_sprite
+    POP HL
+    POP HL
+    POP HL
+
+    CALL double_buffer.copy_buffer_to_screen
 
 .animation_loop:
     DEBUG_VTRACE_FLASH
@@ -75,12 +88,21 @@ main:
     ORG 0xC000
 DRAW_BUFFER:    BLOCK 0x1800,0x00
 
+TEST_SPRITES:   
+    WORD 0x1011, sprites.test_card
+    WORD 0x2217, sprites.sprite_alien_1_variant_0
+    WORD 0x1053, sprites.sprite_base
+
+NUM_TEST_SPRITES: EQU ($-TEST_SPRITES)/4
+
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
                             BLOCK STACK_SIZE, 0
 STACK_TOP:                  EQU $-1
 
     ; Save snapshot for spectrum emulator
-     SAVESNA "test_draw.sna",main
+    SAVESNA "test_draw.sna",main
 
     ENDMODULE
+
+    

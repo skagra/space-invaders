@@ -1,5 +1,7 @@
     MODULE draw
 
+    INCLUDE "y_mem_row_lookup.asm"
+
 ; Scree dimensions
 SCREEN_WIDTH_PIXELS:    EQU 256
 SCREEN_HEIGHT_PIXELS:   EQU 192
@@ -377,7 +379,7 @@ coords_to_mem:
     LD B, 0x00                          ; B=0x00, C=Y coord
     SLA C                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, ._Y_LOOKUP_TABLE             ; Base of lookup table in HL
+    LD HL, _Y_MEM_ROW_LOOKUP              ; Base of lookup table in HL
     ADD HL,BC                           ; Location of the row start in the lookup table
     LD BC,(HL)                          ; Location of row start
     LD HL,BC                            ; Move result into HL
@@ -397,33 +399,33 @@ coords_to_mem:
 
     RET
 
-._Y_LOOKUP_TABLE:
-	WORD 0xC000, 0xC100, 0xC200, 0xC300, 0xC400, 0xC500, 0xC600, 0xC700
-	WORD 0xC020, 0xC120, 0xC220, 0xC320, 0xC420, 0xC520, 0xC620, 0xC720
-	WORD 0xC040, 0xC140, 0xC240, 0xC340, 0xC440, 0xC540, 0xC640, 0xC740
-	WORD 0xC060, 0xC160, 0xC260, 0xC360, 0xC460, 0xC560, 0xC660, 0xC760
-	WORD 0xC080, 0xC180, 0xC280, 0xC380, 0xC480, 0xC580, 0xC680, 0xC780
-	WORD 0xC0A0, 0xC1A0, 0xC2A0, 0xC3A0, 0xC4A0, 0xC5A0, 0xC6A0, 0xC7A0
-	WORD 0xC0C0, 0xC1C0, 0xC2C0, 0xC3C0, 0xC4C0, 0xC5C0, 0xC6C0, 0xC7C0
-	WORD 0xC0E0, 0xC1E0, 0xC2E0, 0xC3E0, 0xC4E0, 0xC5E0, 0xC6E0, 0xC7E0
+; _Y_LOOKUP_TABLE:
+; 	WORD 0xC000, 0xC100, 0xC200, 0xC300, 0xC400, 0xC500, 0xC600, 0xC700
+; 	WORD 0xC020, 0xC120, 0xC220, 0xC320, 0xC420, 0xC520, 0xC620, 0xC720
+; 	WORD 0xC040, 0xC140, 0xC240, 0xC340, 0xC440, 0xC540, 0xC640, 0xC740
+; 	WORD 0xC060, 0xC160, 0xC260, 0xC360, 0xC460, 0xC560, 0xC660, 0xC760
+; 	WORD 0xC080, 0xC180, 0xC280, 0xC380, 0xC480, 0xC580, 0xC680, 0xC780
+; 	WORD 0xC0A0, 0xC1A0, 0xC2A0, 0xC3A0, 0xC4A0, 0xC5A0, 0xC6A0, 0xC7A0
+; 	WORD 0xC0C0, 0xC1C0, 0xC2C0, 0xC3C0, 0xC4C0, 0xC5C0, 0xC6C0, 0xC7C0
+; 	WORD 0xC0E0, 0xC1E0, 0xC2E0, 0xC3E0, 0xC4E0, 0xC5E0, 0xC6E0, 0xC7E0
 
-	WORD 0xC800, 0xC900, 0xCA00, 0xCB00, 0xCC00, 0xCD00, 0xCE00, 0xCF00
-	WORD 0xC820, 0xC920, 0xCA20, 0xCB20, 0xCC20, 0xCD20, 0xCE20, 0xCF20
-	WORD 0xC840, 0xC940, 0xCA40, 0xCB40, 0xCC40, 0xCD40, 0xCE40, 0xCF40
-	WORD 0xC860, 0xC960, 0xCA60, 0xCB60, 0xCC60, 0xCD60, 0xCE60, 0xCF60
-	WORD 0xC880, 0xC980, 0xCA80, 0xCB80, 0xCC80, 0xCD80, 0xCE80, 0xCF80
-	WORD 0xC8A0, 0xC9A0, 0xCAA0, 0xCBA0, 0xCCA0, 0xCDA0, 0xCEA0, 0xCFA0
-	WORD 0xC8C0, 0xC9C0, 0xCAC0, 0xCBC0, 0xCCC0, 0xCDC0, 0xCEC0, 0xCFC0
-	WORD 0xC8E0, 0xC9E0, 0xCAE0, 0xCBE0, 0xCCE0, 0xCDE0, 0xCEE0, 0xCFE0
+; 	WORD 0xC800, 0xC900, 0xCA00, 0xCB00, 0xCC00, 0xCD00, 0xCE00, 0xCF00
+; 	WORD 0xC820, 0xC920, 0xCA20, 0xCB20, 0xCC20, 0xCD20, 0xCE20, 0xCF20
+; 	WORD 0xC840, 0xC940, 0xCA40, 0xCB40, 0xCC40, 0xCD40, 0xCE40, 0xCF40
+; 	WORD 0xC860, 0xC960, 0xCA60, 0xCB60, 0xCC60, 0xCD60, 0xCE60, 0xCF60
+; 	WORD 0xC880, 0xC980, 0xCA80, 0xCB80, 0xCC80, 0xCD80, 0xCE80, 0xCF80
+; 	WORD 0xC8A0, 0xC9A0, 0xCAA0, 0xCBA0, 0xCCA0, 0xCDA0, 0xCEA0, 0xCFA0
+; 	WORD 0xC8C0, 0xC9C0, 0xCAC0, 0xCBC0, 0xCCC0, 0xCDC0, 0xCEC0, 0xCFC0
+; 	WORD 0xC8E0, 0xC9E0, 0xCAE0, 0xCBE0, 0xCCE0, 0xCDE0, 0xCEE0, 0xCFE0
 
-	WORD 0xD000, 0xD100, 0xD200, 0xD300, 0xD400, 0xD500, 0xD600, 0xD700
-	WORD 0xD020, 0xD120, 0xD220, 0xD320, 0xD420, 0xD520, 0xD620, 0xD720
-	WORD 0xD040, 0xD140, 0xD240, 0xD340, 0xD440, 0xD540, 0xD640, 0xD740
-	WORD 0xD060, 0xD160, 0xD260, 0xD360, 0xD460, 0xD560, 0xD660, 0xD760
-	WORD 0xD080, 0xD180, 0xD280, 0xD380, 0xD480, 0xD580, 0xD680, 0xD780
-	WORD 0xD0A0, 0xD1A0, 0xD2A0, 0xD3A0, 0xD4A0, 0xD5A0, 0xD6A0, 0xD7A0
-	WORD 0xD0C0, 0xD1C0, 0xD2C0, 0xD3C0, 0xD4C0, 0xD5C0, 0xD6C0, 0xD7C0
-	WORD 0xD0E0, 0xD1E0, 0xD2E0, 0xD3E0, 0xD4E0, 0xD5E0, 0xD6E0, 0xD7E0
+; 	WORD 0xD000, 0xD100, 0xD200, 0xD300, 0xD400, 0xD500, 0xD600, 0xD700
+; 	WORD 0xD020, 0xD120, 0xD220, 0xD320, 0xD420, 0xD520, 0xD620, 0xD720
+; 	WORD 0xD040, 0xD140, 0xD240, 0xD340, 0xD440, 0xD540, 0xD640, 0xD740
+; 	WORD 0xD060, 0xD160, 0xD260, 0xD360, 0xD460, 0xD560, 0xD660, 0xD760
+; 	WORD 0xD080, 0xD180, 0xD280, 0xD380, 0xD480, 0xD580, 0xD680, 0xD780
+; 	WORD 0xD0A0, 0xD1A0, 0xD2A0, 0xD3A0, 0xD4A0, 0xD5A0, 0xD6A0, 0xD7A0
+; 	WORD 0xD0C0, 0xD1C0, 0xD2C0, 0xD3C0, 0xD4C0, 0xD5C0, 0xD6C0, 0xD7C0
+; 	WORD 0xD0E0, 0xD1E0, 0xD2E0, 0xD3E0, 0xD4E0, 0xD5E0, 0xD6E0, 0xD7E0
 
 ;------------------------------------------------------------------------------
 ; Draw a sprite
@@ -602,22 +604,36 @@ draw_sprite:
 ._screen_mem_loc_trace: BLOCK 2         ; Pointer to current screen byte
 ._row_first_mem_lock:   BLOCK 2         ; Point to screen byte first drawn on current row
 
+;------------------------------------------------------------------------------
+; Render a single row of a 16 bit wide (24 bits pre-shifted)
+;
+; Usage:
+;   ._x_offset_stash - contains the x offset within the y row
+;   BC - contains the address in the offscreen buffer at the start of the y row
+;   SP - is set to the current location of the sprite/mask data
+; Return values:
+;   -
+;
+; Registers modified:
+;   AF, DE and HL
+;------------------------------------------------------------------------------
 
-    ; 39 bytes
-    MACRO RENDER_ROW buffer_addr,x_offset_reg
-
+    ; Modifies 
+    MACRO RENDER_ROW 
+        
         ; Calculate buffer start address -> DE
-        LD DE,buffer_addr                                   ; Buffer address
-        LD A,x_offset_reg                                   ; Merge in x offset
+        LD HL,BC                                            ; Buffer address
+        LD DE,(HL)                                          
+        LD A,(._x_offset_stash)                             ; Merge in x offset
         OR E
         LD E,A
 
         ; Record that we are writing to the double buffer
-        LD HL,(double_buffer._buffer_stack_top)             ; Top of stack address        
+        LD HL,(double_buffer._fast_buffer_stack_top)             ; Top of stack address        
         LD (HL),DE                                          ; Write screen buffer address at top of stack            
         INC HL                                              ; Increase the stack top pointer +2 as a word was written
         INC HL
-        LD (double_buffer._buffer_stack_top),HL
+        LD (double_buffer._fast_buffer_stack_top),HL
 
         ; First word of mask/data
         POP HL                                              ; Mask and sprite data
@@ -642,13 +658,15 @@ draw_sprite:
         OR H
         LD (DE),A
 
-        NOP                                                 ; Space for return
-        NOP
+        NOP                                                 ; Space self modified code
+        NOP                                                 ; JP ._back
         NOP
 
     ENDM
+
 ;------------------------------------------------------------------------------
-; Draw a sprite
+; Draw a sprite that must be 16 wide (pre-shifted, 24 bits in total)
+; and 8 tall.
 ;
 ; Usage:
 ;   PUSH coords word - X high byte, Y low byte
@@ -663,14 +681,14 @@ draw_sprite:
 
 fast_draw_sprite_16x8:
 
-._PARAM_COORDS:            EQU 14       ;    Sprite coordinates
-._PARAM_SPRITE_DATA:       EQU 12           ; Sprite pre-shifted data lookup table
+._PARAM_COORDS:            EQU 14               ; Sprite coordinates
+._PARAM_SPRITE_DATA:       EQU 12               ; Sprite pre-shifted data lookup table
     
-    DI
+    DI                                          ; Disable interrupts as we'll be messing with the SP
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                                ; Point IX to the stack
+    LD  IX,0                                    ; Point IX to the stack
     ADD IX,SP                                                   
 
     ; Initialize the collision flag
@@ -678,68 +696,79 @@ fast_draw_sprite_16x8:
     LD (HL),0x00
 
     ; Get and store the coords
-    LD HL,(IX+._PARAM_COORDS)               ; Grab the pixel coords
-    LD (._coords),HL                        ; And store for later (only the Y coord gets updated)
-
-    ; Calculate entry 
-    LD HL,._render_rows_lookup              ; Lookup table for start of draw row routines
-    LD D,0x00                               ; Add y coordinate to base to find correct ptr
-    LD A,(._y_coord)
-    LD E,A
-    SLA E                                   ; Double y as the lookup table contains words                           
-    RL D
-    ADD HL,DE                               ; HL points to the correct entry in the lookup table                     
-    LD DE,(HL)                              ; Dereference the value in the table to get the address to call
-    LD (._address_to_call),DE               ; Store the value for later
-
-    ; Modify the draw lines code with the required return address
-    LD HL,._RENDER_ROW_JP_OFFSET  ;38 bytes per macro, -3 to get to 3rd NOP from the end WHY DOES 7 WORK
-    ADD DE,HL
-    LD H,D
-    LD L,E
-    LD (._modified_code),DE
-    LD (HL),0xC3
-    INC HL
-    LD (HL), low .back
-    INC HL
-    LD (HL), high .back
+    LD HL,(IX+._PARAM_COORDS)                   ; Grab the pixel coords
+    LD (._coords),HL                            ; And store for later (only the Y coord gets updated)
 
     ; Find the correct shifted version of the sprite data
-    LD HL,(IX+._PARAM_SPRITE_DATA)      ; Start of sprite lookup table
-  
-    LD A,(._x_coord)                    ; X coord
-    AND 0b00000111                      ; Calculate the X offset within the character cell
-    SLA A                               ; Double the offset as the lookup table contains words
+    LD HL,(IX+._PARAM_SPRITE_DATA)              ; Start of sprite lookup table
+    LD A,(._x_coord)                            ; X coord
+    AND 0b00000111                              ; Calculate the X offset within the character cell
+    SLA A                                       ; Double the offset as the lookup table contains words
     LD D,0x00
     LD E,A
-    ADD HL,DE                           ; Add the offset into the table to the base of the table                 
-    LD DE, (HL)                         ; Lookup the sprite data ptr in the table
+    ADD HL,DE                                   ; Add the offset into the table to the base of the table                 
+    LD DE, (HL)                                 ; Lookup the sprite data ptr in the table
 
-    LD (._stack_stash),SP                ; Store current SP to restore at end
+    ; Calculate X7,X6,X5,X4,X3
+    LD A,(._x_coord)                            ; Grab the x coord
+    SRL A                                       ; Shift into position
+    SRL A
+    SRL A
+    LD (._x_offset_stash),A
+
+    ; Find the start of the group of entries in the Y lookup table
+    LD B, 0x00                                  ; B=0x00, C=Y coord
+    LD A,(._y_coord)
+    LD C,A
+    SLA C                                       ; Double Y to get offset in table (as table contains words)
+    RL B
+    LD HL, _Y_MEM_ROW_LOOKUP                      ; Base of lookup table in HL
+    ADD HL,BC                                   ; Location of the row start in the lookup table
+    LD BC,HL
+
+    LD (._stack_stash),SP                       ; Store current SP to restore at end
     LD HL,DE
     LD SP,HL
 
-    ; Calculate X7,X6,X5,X4,X3
-    LD A,(._x_coord)                    ; Grab the x coord
-    SRL A                               ; Shift into position
-    SRL A
-    SRL A
-    LD B,A                              ; Store it
+    ; Render row 0 (top most)
+    RENDER_ROW 
 
-    LD HL,(._address_to_call)
-    JP HL
+    ; Render row 1
+    INC BC                                      ; Next entry in Y lookup table
+    INC BC
+    RENDER_ROW 
+    
+    ; Render row 2
+    INC BC                                      ; Next entry in Y lookup table
+    INC BC
+    RENDER_ROW 
 
-.back:  
-    ; Fix code we modified
-    LD HL,(._modified_code)
-    LD A,0x00
-    LD (HL),A
-    INC HL
-    LD (HL),A
-    INC HL    
-    LD (HL),A
+    ; Render row 3
+    INC BC                                      ; Next entry in Y lookup table
+    INC BC
+    RENDER_ROW 
 
-    LD SP,(._stack_stash)                                ; Restore the original SP
+    ; Render row 4
+    INC BC                                      ; Next entry in Y lookup table  
+    INC BC
+    RENDER_ROW 
+
+    ; Render row 5
+    INC BC                                      ; Next entry in Y lookup table
+    INC BC
+    RENDER_ROW 
+
+    ; Render row 6
+    INC BC                                      ; Next entry in Y lookup table
+    INC BC
+    RENDER_ROW 
+
+    ; Render row 7 (bottom most)
+    INC BC                                      ; Next entry in Y lookup table
+    INC BC
+    RENDER_ROW 
+    
+    LD SP,(._stack_stash)                       ; Restore the original SP
 
     POP IX,HL,DE,BC,AF   
 
@@ -747,58 +776,13 @@ fast_draw_sprite_16x8:
     
     RET
 
-._MACRO_SIZE:           EQU .y_001-.y_000 ; 38
-._RENDER_ROW_JP_OFFSET: EQU ._MACRO_SIZE*8-3 ;  301
-._coords:                               ; Sprite location (Y is updated to line being drawn)
+._coords:                                       ; Sprite coords
 ._y_coord:              BLOCK 1
 ._x_coord:              BLOCK 1
-._dims:                                 ; Sprite dimensions
-._y_dim:                BLOCK 1
-._x_dim:                BLOCK 1
-._sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
-._screen_mem_loc_trace: BLOCK 2         ; Pointer to current screen byte
-._row_first_mem_lock:   BLOCK 2         ; Point to screen byte first drawn on current row
-._stack_stash:          BLOCK 2
-._address_to_call:      BLOCK 2
-._modified_code:        BLOCK 2
-
-.render_rows:
-.y_000:    RENDER_ROW 0xC000, B
-.y_001:    RENDER_ROW 0xC100, B
-.y_002:    RENDER_ROW 0xC200, B
-.y_003:    RENDER_ROW 0xC300, B
-.y_004:    RENDER_ROW 0xC400, B
-.y_005:    RENDER_ROW 0xC500, B
-.y_006:    RENDER_ROW 0xC600, B
-.y_007:    RENDER_ROW 0xC700, B
-.y_008:    RENDER_ROW 0xC020, B
-.y_009:    RENDER_ROW 0xC120, B
-.y_010:    RENDER_ROW 0xC220, B
-.y_011:    RENDER_ROW 0xC320, B
-.y_012:    RENDER_ROW 0xC420, B
-.y_013:    RENDER_ROW 0xC520, B
-.y_014:    RENDER_ROW 0xC620, B
-.y_015:    RENDER_ROW 0xC720, B
-
-
-    DISPLAY "Macro offset: ",.y_001-.y_000
-    DISPLAY "We should be calling: ",.y_001
-    DISPLAY "Replacement code should start at",.y_002-3
-
-._render_rows_lookup:
-    WORD    .y_000,.y_001,.y_002,.y_003,.y_004,.y_005,.y_006,.y_007
-    WORD    .y_008,.y_009,.y_010,.y_011,.y_012,.y_013,.y_014,.y_015
-    
-    DISPLAY "Render rows lookup table starts at: ",._render_rows_lookup
-    DISPLAY "Start of render rows routines start at: ",.render_rows
-    DISPLAY "With .y_0010 at: ",.y_000
-    DISPLAY "With .y_001 at: ",.y_001
-    DISPLAY "The replacment code starts (for y==1) should start at:",.y_008-3
-    DISPLAY ._RENDER_ROW_JP_OFFSET
-
-    DISPLAY "y=0 code mod offset=",.y_008-.y_000
-    DISPLAY "y=1 code mod offset=",.y_009-.y_001
-    DISPLAY "y=3 code mod offset=",.y_010-.y_002
+._stack_stash:          BLOCK 2                 ; Safe store for stack pointer
+._address_to_call:      BLOCK 2                 ; Address in the unrolled loop of RENDER_ROW to call
+._modified_code:        BLOCK 2                 ; Address to insider JP ._back self modifed code
+._x_offset_stash:       BLOCK 1
 
     ENDMODULE
 
