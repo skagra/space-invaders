@@ -13,9 +13,10 @@
 
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
-    INCLUDE "double_buffer.asm"
     INCLUDE "utils.asm"
+    INCLUDE "draw_common.asm"
     INCLUDE "draw.asm"
+    INCLUDE "fast_draw.asm"
     INCLUDE "print.asm"
     INCLUDE "character_set.asm"
     INCLUDE "sprites/all_sprites.asm"
@@ -29,11 +30,12 @@ main:
     EI
 
     ; Initialise all modules
-    CALL double_buffer.init
     CALL error_codes.init
     CALL debug.init
     CALL utils.init
+    CALL draw_common.init
     CALL draw.init
+    CALL fast_draw.init
     CALL print.init
   
     ; Clear the screen
@@ -55,7 +57,7 @@ main:
     INC HL
     LD DE,(HL)   
     PUSH DE
-    CALL draw.fast_draw_sprite_16x8
+    CALL fast_draw.fast_draw_sprite_16x8
     POP DE
     POP DE
     INC HL
@@ -74,8 +76,8 @@ main:
     POP HL
     POP HL
 
-    CALL double_buffer.fast_copy_buffer_to_screen_16x8
-    CALL double_buffer.copy_buffer_to_screen
+    CALL fast_draw.fast_copy_buffer_to_screen_16x8
+    CALL draw.copy_buffer_to_screen
 
 .animation_loop:
     DEBUG_VTRACE_FLASH

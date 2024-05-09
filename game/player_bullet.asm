@@ -228,7 +228,7 @@ draw_deferred_bullet:
     POP DE
     POP DE
 
-    LD A,(draw.collided)
+    LD A,(draw_common.collided)
     LD DE,_collision_detected
     LD (DE),A
 

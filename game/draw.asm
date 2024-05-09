@@ -2,8 +2,6 @@
 
 _draw_start:
 
-    INCLUDE "y_mem_row_lookup.asm"
-
 ; Scree dimensions
 SCREEN_WIDTH_PIXELS:    EQU 256
 SCREEN_HEIGHT_PIXELS:   EQU 192
@@ -56,8 +54,8 @@ BORDER_CYAN:     EQU _CA_COL_CYAN
 BORDER_YELLOW:   EQU _CA_COL_YELLOW
 BORDER_WHITE:    EQU _CA_COL_WHITE
 
-; Collision detection
-collided:          BLOCK 1              ; The last draw operation detected a collision
+_BUFFER_STACK: BLOCK 512   
+_buffer_stack_top:  BLOCK 2                             ; This points to the next free location on the stack
 
 ;------------------------------------------------------------------------------
 ;
@@ -73,7 +71,109 @@ collided:          BLOCK 1              ; The last draw operation detected a col
 ;   -
 ;------------------------------------------------------------------------------
 init:
+    PUSH HL
+
+    LD HL,_BUFFER_STACK
+    LD (_buffer_stack_top),HL
+
+    POP HL
+
     RET
+
+
+;------------------------------------------------------------------------------
+; Draw a sprite and flush the double buffer to the screen
+;
+; Usage:
+;   PUSH coords word - X high byte, Y low byte
+;   PUSH dimensions word - X dim high byte, Y dim low byte
+;   PUSH address of pre-shifted sprite lookup table
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
+
+draw_sprite_and_flush_buffer:
+
+._PARAM_COORDS:            EQU 10                       ; Sprite coordinates
+._PARAM_DIMS:              EQU 8                        ; Sprite dimensions
+._PARAM_SPRITE_DATA:       EQU 6                        ; Sprite pre-shifted data lookup table
+    
+    PUSH HL,IX
+
+    LD  IX,0                                            ; Point IX to the stack
+    ADD IX,SP                                                   
+
+    LD HL,(IX+._PARAM_COORDS)
+    PUSH HL
+    LD HL,(IX+._PARAM_DIMS)
+    PUSH HL
+    LD HL,(IX+._PARAM_SPRITE_DATA)
+    PUSH HL
+
+    CALL draw.draw_sprite
+
+    POP HL
+    POP HL
+    POP HL
+
+    CALL copy_buffer_to_screen
+
+    POP IX,HL
+
+    RET
+
+copy_buffer_to_screen:
+    DI                                                  ; Disable interrupts as we'll be messing with SP
+
+    PUSH AF,BC,DE,HL
+
+    LD (._stack_stash),SP                               ; Store current SP to restore at end
+
+    LD SP,_BUFFER_STACK                                 ; Subtract start of stack area (low mem)
+    LD HL,(_buffer_stack_top)                           ; from current stack pointer (first free byte)
+    LD A,L
+    SUB low _BUFFER_STACK
+    LD L,A
+    LD A,H
+    SBC high _BUFFER_STACK
+    LD H,A
+     
+    SRL H                                               ; Divide the result by two to give number of loops to run
+    RR L                                                ; as we are dealing with word chunks on the stack
+
+.copy_loop
+    LD A,H                                              ; Is the copy counter zero?
+    OR L
+    JP Z,.done                                          ; Yes - done
+
+    DEC HL                                              ; No - decrase the counter
+
+.more
+    POP DE                                              ; Get the address written to in the off screen buffer
+
+    LD A,(DE)                                           ; Copy the byte that was written
+    RES 7,D
+    LD (DE),A
+
+    JR .copy_loop
+
+.done
+    LD HL,_BUFFER_STACK                                 ; Reset the stack
+    LD (_buffer_stack_top),HL
+    
+    LD SP,(._stack_stash)                               ; Restore the original SP
+
+    POP HL,DE,BC,AF
+
+    EI
+
+    RET
+
+._stack_stash: BLOCK 2
 
 ;------------------------------------------------------------------------------
 ;
@@ -381,7 +481,7 @@ coords_to_mem:
     LD B, 0x00                          ; B=0x00, C=Y coord
     SLA C                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, _Y_MEM_ROW_LOOKUP              ; Base of lookup table in HL
+    LD HL, draw_common._Y_MEM_ROW_LOOKUP ; Base of lookup table in HL
     ADD HL,BC                           ; Location of the row start in the lookup table
     LD BC,(HL)                          ; Location of row start
     LD HL,BC                            ; Move result into HL
@@ -428,7 +528,7 @@ draw_sprite:
     ADD IX,SP                                                   
 
     ; Initialize the collision flag
-    LD HL,collided                      
+    LD HL,draw_common.collided                      
     LD (HL),0x00
 
     ; Get and store the coords
@@ -477,7 +577,7 @@ draw_sprite:
     AND (HL)                            ; And corresponding bits on screen set?
     JR Z,.no_collision                  ; No - so no collision
     LD A,0x01                           ; Flag the collision
-    LD (collided),A
+    LD (draw_common.collided),A
 
 .no_collision
     ; Drawing
@@ -496,11 +596,11 @@ draw_sprite:
 
     ; We have written to the offscreen buffer - so record what we have done
     LD DE,HL                                            ; Copy address written to in buffer
-    LD HL,(double_buffer._buffer_stack_top)             ; Top of stack address                                         
+    LD HL,(_buffer_stack_top)             ; Top of stack address                                         
     LD (HL),DE                                          ; Write screen buffer address at top of stack            
     INC HL                                              ; Increase the stack top pointer +2 as a word was written
     INC HL
-    LD (double_buffer._buffer_stack_top),HL
+    LD (_buffer_stack_top),HL
 
     ; Done writing current byte of current row - move to next X cell  
     LD HL,(._screen_mem_loc_trace)
@@ -575,186 +675,6 @@ draw_sprite:
 ._sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
 ._screen_mem_loc_trace: BLOCK 2         ; Pointer to current screen byte
 ._row_first_mem_lock:   BLOCK 2         ; Point to screen byte first drawn on current row
-
-;------------------------------------------------------------------------------
-; Render a single row of a 16 bit wide (24 bits pre-shifted)
-;
-; Usage:
-;   ._x_offset_stash - contains the x offset within the y row
-;   BC - contains the address in the offscreen buffer at the start of the y row
-;   SP - is set to the current location of the sprite/mask data
-; Return values:
-;   -
-;
-; Registers modified:
-;   AF, DE and HL
-;------------------------------------------------------------------------------
-
-    ; Modifies 
-    MACRO RENDER_ROW 
-        
-        ; Calculate buffer start address -> DE
-        LD HL,BC                                            ; Buffer address
-        LD DE,(HL)                                          
-        LD A,(._x_offset_stash)                             ; Merge in x offset
-        OR E
-        LD E,A
-
-        ; Record that we are writing to the double buffer
-        LD HL,(double_buffer._fast_buffer_stack_top)             ; Top of stack address        
-        LD (HL),DE                                          ; Write screen buffer address at top of stack            
-        INC HL                                              ; Increase the stack top pointer +2 as a word was written
-        INC HL
-        LD (double_buffer._fast_buffer_stack_top),HL
-
-        ; First word of mask/data
-        POP HL                                              ; Mask and sprite data
-        LD A,(DE)                                           ; Data from screen
-        AND L
-        OR H
-        LD (DE),A
-
-        ; Second word of mask/data
-        INC DE
-        POP HL                                              ; Mask and sprite data
-        LD A,(DE)                                           ; Data from screen
-        AND L
-        OR H
-        LD (DE),A
-
-        ; Third word of mask/data
-        INC DE
-        POP HL                                              ; Mask and sprite data
-        LD A,(DE)                                           ; Data from screen
-        AND L
-        OR H
-        LD (DE),A
-
-        NOP                                                 ; Space self modified code
-        NOP                                                 ; JP ._back
-        NOP
-
-    ENDM
-
-;------------------------------------------------------------------------------
-; Draw a sprite that must be 16 wide (pre-shifted, 24 bits in total)
-; and 8 tall.
-;
-; Usage:
-;   PUSH coords word - X high byte, Y low byte
-;   PUSH address of pre-shifted sprite lookup table
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;------------------------------------------------------------------------------
-
-fast_draw_sprite_16x8:
-
-._PARAM_COORDS:            EQU 14               ; Sprite coordinates
-._PARAM_SPRITE_DATA:       EQU 12               ; Sprite pre-shifted data lookup table
-    
-    DI                                          ; Disable interrupts as we'll be messing with the SP
-
-    PUSH AF,BC,DE,HL,IX
-
-    LD  IX,0                                    ; Point IX to the stack
-    ADD IX,SP                                                   
-
-    ; Initialize the collision flag
-    LD HL,collided                      
-    LD (HL),0x00
-
-    ; Get and store the coords
-    LD HL,(IX+._PARAM_COORDS)                   ; Grab the pixel coords
-    LD (._coords),HL                            ; And store for later (only the Y coord gets updated)
-
-    ; Find the correct shifted version of the sprite data
-    LD HL,(IX+._PARAM_SPRITE_DATA)              ; Start of sprite lookup table
-    LD A,(._x_coord)                            ; X coord
-    AND 0b00000111                              ; Calculate the X offset within the character cell
-    SLA A                                       ; Double the offset as the lookup table contains words
-    LD D,0x00
-    LD E,A
-    ADD HL,DE                                   ; Add the offset into the table to the base of the table                 
-    LD DE, (HL)                                 ; Lookup the sprite data ptr in the table
-
-    ; Calculate X7,X6,X5,X4,X3
-    LD A,(._x_coord)                            ; Grab the x coord
-    SRL A                                       ; Shift into position
-    SRL A
-    SRL A
-    LD (._x_offset_stash),A
-
-    ; Find the start of the group of entries in the Y lookup table
-    LD B, 0x00                                  ; B=0x00, C=Y coord
-    LD A,(._y_coord)
-    LD C,A
-    SLA C                                       ; Double Y to get offset in table (as table contains words)
-    RL B
-    LD HL, _Y_MEM_ROW_LOOKUP                      ; Base of lookup table in HL
-    ADD HL,BC                                   ; Location of the row start in the lookup table
-    LD BC,HL
-
-    LD (._stack_stash),SP                       ; Store current SP to restore at end
-    LD HL,DE
-    LD SP,HL
-
-    ; Render row 0 (top most)
-    RENDER_ROW 
-
-    ; Render row 1
-    INC BC                                      ; Next entry in Y lookup table
-    INC BC
-    RENDER_ROW 
-    
-    ; Render row 2
-    INC BC                                      ; Next entry in Y lookup table
-    INC BC
-    RENDER_ROW 
-
-    ; Render row 3
-    INC BC                                      ; Next entry in Y lookup table
-    INC BC
-    RENDER_ROW 
-
-    ; Render row 4
-    INC BC                                      ; Next entry in Y lookup table  
-    INC BC
-    RENDER_ROW 
-
-    ; Render row 5
-    INC BC                                      ; Next entry in Y lookup table
-    INC BC
-    RENDER_ROW 
-
-    ; Render row 6
-    INC BC                                      ; Next entry in Y lookup table
-    INC BC
-    RENDER_ROW 
-
-    ; Render row 7 (bottom most)
-    INC BC                                      ; Next entry in Y lookup table
-    INC BC
-    RENDER_ROW 
-    
-    LD SP,(._stack_stash)                       ; Restore the original SP
-
-    POP IX,HL,DE,BC,AF   
-
-    EI
-    
-    RET
-
-._coords:                                       ; Sprite coords
-._y_coord:              BLOCK 1
-._x_coord:              BLOCK 1
-._stack_stash:          BLOCK 2                 ; Safe store for stack pointer
-._address_to_call:      BLOCK 2                 ; Address in the unrolled loop of RENDER_ROW to call
-._modified_code:        BLOCK 2                 ; Address to insider JP ._back self modifed code
-._x_offset_stash:       BLOCK 1
 
     MEMORY_USAGE "draw",_draw_start
     

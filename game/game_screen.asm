@@ -207,7 +207,7 @@ draw_reserve_base:
     PUSH DE
     LD DE,sprites.sprite_base     
     PUSH DE
-    CALL double_buffer.draw_sprite_and_flush_buffer
+    CALL draw.draw_sprite_and_flush_buffer
     POP DE
     POP DE
     POP DE
@@ -269,7 +269,7 @@ draw_shield:
     PUSH DE
     LD DE,sprites.sprite_shield     
     PUSH DE
-    CALL double_buffer.draw_sprite_and_flush_buffer
+    CALL draw.draw_sprite_and_flush_buffer
     POP DE
     POP DE
     POP DE
@@ -292,7 +292,7 @@ draw_horiz_line:
     PUSH DE
     LD DE,sprites.sprite_horiz_line    
     PUSH DE
-    CALL double_buffer.draw_sprite_and_flush_buffer
+    CALL draw.draw_sprite_and_flush_buffer
     POP DE
     POP DE
     POP DE

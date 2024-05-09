@@ -111,7 +111,7 @@ _FLAG_ERROR_BYTE:       EQU _VTRACE_BYTE+2
 _total_memory_usage: DEFL 0
 
     MACRO MEMORY_USAGE name, label 
-		DISPLAY "MEM_USAGE: ",name," - start: ",label, ", end: ", $, ", size: ",/H,$-label,/D," (",$-label," bytes)"
+		DISPLAY "MEM_USAGE: ",name," - start: ",label, ", end: ", $-1, ", size: ",/H,$-label,/D," (",$-label," bytes)"
 debug._total_memory_usage=debug._total_memory_usage+$-label
 	ENDM
 

@@ -14,25 +14,26 @@
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
     INCLUDE "utils.asm"
-    INCLUDE "double_buffer.asm"
     INCLUDE "timing.asm"
+    INCLUDE "draw_common.asm"
     INCLUDE "draw.asm"
-    INCLUDE "print.asm"
+    INCLUDE "fast_draw.asm"
     INCLUDE "keyboard.asm"
-    INCLUDE "game_screen.asm"
     INCLUDE "player.asm"
     INCLUDE "player_bullet.asm"
     INCLUDE "alien_pack.asm"
-    INCLUDE "character_set.asm"
-    INCLUDE "interrupts.asm"
     INCLUDE "sprites/all_sprites.asm"
     
-    MODULE main
-
     ORG 0xC000
 DRAW_BUFFER:    BLOCK 0x1800,0x00
 
     MEMORY_USAGE "double buffer", DRAW_BUFFER
+
+    INCLUDE "character_set.asm"
+    INCLUDE "print.asm"
+    INCLUDE "game_screen.asm"
+
+    MODULE main
 
 main:
     ; Set up stack
@@ -41,12 +42,12 @@ main:
     EI
 
     ; Initialise all modules
-    CALL double_buffer.init
     CALL error_codes.init
     CALL debug.init
     CALL utils.init
     CALL timing.init
     CALL draw.init
+    CALL fast_draw.init
     CALL print.init
     CALL keyboard.init
     CALL game_screen.init
@@ -57,7 +58,7 @@ main:
     ; Draw the initial screen
     CALL game_screen.init_screen
 
-    CALL double_buffer.copy_buffer_to_screen
+    CALL draw.copy_buffer_to_screen
 
 .animation_loop:
     ; Read keyboard
@@ -83,7 +84,7 @@ main:
 
     HALT 
     
-    CALL double_buffer.copy_buffer_to_screen
+    CALL draw.copy_buffer_to_screen
 
     DEBUG_VTRACE_FLASH
 
