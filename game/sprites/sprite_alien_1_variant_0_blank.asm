@@ -2,6 +2,8 @@
 
 	MODULE sprites
 
+_sprite_alien_1_variant_0_blank_start:
+
 sprite_alien_1_variant_0_blank_0:
 	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111100, 0b00000000, 0b00111111, 0b00000000, 0b11111111, 0b00000000 ; Row 0
@@ -99,4 +101,5 @@ sprite_alien_1_variant_0_blank_dim_y_pixels:	EQU 0x08
 sprite_alien_1_variant_0_blank:
 	WORD sprite_alien_1_variant_0_blank_0, sprite_alien_1_variant_0_blank_1, sprite_alien_1_variant_0_blank_2, sprite_alien_1_variant_0_blank_3, sprite_alien_1_variant_0_blank_4, sprite_alien_1_variant_0_blank_5, sprite_alien_1_variant_0_blank_6, sprite_alien_1_variant_0_blank_7
 
+	DISPLAY "sprite_alien_1_variant_0_blank: ","start: ", _sprite_alien_1_variant_0_blank_start, " end: ", $, " size: ",/A,$-_sprite_alien_1_variant_0_blank_start
 	ENDMODULE
