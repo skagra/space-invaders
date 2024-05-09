@@ -518,13 +518,15 @@ coords_to_mem:
 
 draw_sprite:
 
-._PARAM_COORDS:            EQU 16       ; Sprite coordinates
-._PARAM_DIMS:              EQU 14       ; Sprite dimensions
-._PARAM_SPRITE_DATA:       EQU 12       ; Sprite pre-shifted data lookup table
+._PARAM_COORDS:            EQU 16                       ; Sprite coordinates
+._PARAM_DIMS:              EQU 14                       ; Sprite dimensions
+._PARAM_SPRITE_DATA:       EQU 12                       ; Sprite pre-shifted data lookup table
     
+    DI 
+
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                            ; Point IX to the stack
+    LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP                                                   
 
     ; Initialize the collision flag
@@ -532,149 +534,120 @@ draw_sprite:
     LD (HL),0x00
 
     ; Get and store the coords
-    LD HL,(IX+._PARAM_COORDS)           ; Grab the pixel coords
-    LD (._coords),HL                    ; And store for later (only the Y coord gets updated)
+    LD HL,(IX+._PARAM_COORDS)                           ; Grab the pixel coords
+    LD (.coords),HL                                     ; And store for later (only the Y coord gets updated)
 
     ; Get and store the dimensions
-    LD HL,(IX+._PARAM_DIMS)             ; Grab dimension data (X in characters, Y in pixel lines)
-    LD (._dims),HL                      ; And store for later
+    LD HL,(IX+._PARAM_DIMS)                             ; Grab dimension data (X in characters, Y in pixel lines)
+    LD (.dims),HL                                       ; And store for later
 
     ; Find the correct shifted version of the sprite data
-    LD HL,(IX+._PARAM_SPRITE_DATA)      ; Start of sprite lookup table
-    LD A,(._x_coord)                    ; X coord
-    AND 0b00000111                      ; Calculate the X offset within the character cell
-    SLA A                               ; Double the offset as the lookup table contains words
+    LD HL,(IX+._PARAM_SPRITE_DATA)                      ; Start of sprite lookup table
+    LD A,(.x_coord)                                     ; X coord
+    AND 0b00000111                                      ; Calculate the X offset within the character cell
+    SLA A                                               ; Double the offset as the lookup table contains words
     LD D,0x00
     LD E,A
-    ADD HL,DE                           ; Add the offset into the table to the base of the table
-    LD DE, (HL)                         ; Lookup the sprite data in the table
-    LD (._sprite_data_ptr),DE           ; Points to sprite data
-   
-    LD A,(._y_dim)                      ; Y loop counter set from Y dimension
+    ADD HL,DE                                           ; Add the offset into the table to the base of the table                 
+    LD DE, (HL)                                         ; Lookup the sprite data ptr in the table
+    LD (.sprite_data_ptr), DE
+
+    ; Calculate X7,X6,X5,X4,X3
+    LD A,(.x_coord)                                     ; Grab the x coord
+    SRL A                                               ; Shift into position
+    SRL A
+    SRL A
+    LD (.x_offset),A
+
+    ; Find the start of the group of entries in the Y lookup table
+    LD B, 0x00                                          ; B=0x00, C=Y coord
+    LD A,(.y_coord)
+    LD C,A
+    SLA C                                               ; Double Y to get offset in table (as table contains words)
+    RL B
+    LD HL, draw_common._Y_MEM_ROW_LOOKUP                ; Base of lookup table in HL
+    ADD HL,BC                                           ; Location of the row start in the lookup table
+    LD (.y_lookup_table_ptr), HL
+
+    LD (.stack_ptr),SP                                  ; Store current SP to restore at end
+    LD HL,DE
+    LD SP,HL
+
+    LD A,(.y_dim)                                       ; Y dim loop counter
     LD C,A
 
-    ; Calculate screen memory location to start drawing at
-    LD HL,(._coords)                    ; Current screen coords
-    PUSH HL 
-    PUSH HL                             ; Space for the return value
-    CALL coords_to_mem                  ; Get Memory location of screen byte into HL
-    POP HL
-    LD (._screen_mem_loc_trace),HL      ; Store the start of the row in screen memory
-    LD (._row_first_mem_lock),HL
-    POP HL
-
-.ds_y_loop:
-    LD A,(._x_dim)                      ; X dim loop counter - character cells
+.y_loop:
+    LD A,(.x_dim)                                       ; X dim loop counter - character cells
     LD B,A
 
-.ds_x_loop:
-    LD HL,(._screen_mem_loc_trace)      ; Get screen byte location
-    LD DE,(._sprite_data_ptr)           ; Pointer to sprite and mask data 
+    ; Calculate buffer start address -> DE
+    LD HL,(.y_lookup_table_ptr)                     ; Buffer address
+    LD DE,(HL)                                          
+    LD A,(.x_offset)                                ; Merge in x offset
+    OR E
+    LD E,A
+    LD (.mem_write_ptr), DE
+    
+    ; We can increase .y_lookup_table_ptr now as we won't referr to it again until next loop
+    INC HL
+    INC HL
+    LD (.y_lookup_table_ptr),HL
 
-    ; Collision detection
-    LD A,(DE)                           ; Mask data - TODO using mask for collision detection is not ideal 
-    CPL                                 ; Invert mask
-    AND (HL)                            ; And corresponding bits on screen set?
-    JR Z,.no_collision                  ; No - so no collision
-    LD A,0x01                           ; Flag the collision
-    LD (draw_common.collided),A
-
-.no_collision
-    ; Drawing
-    LD A,(DE)                           ; Get the mask data                              
-    AND (HL)                            ; And the mask with the screen byte
-    LD (HL),A                           ; Write screen memory
-
-    INC DE                              ; Sprite data is next
-
-    LD A,(DE)                           ; Get the sprite data
-    OR (HL)                             ; Or the sprite data with the screen byte
-    LD (HL),A                           ; Write to screen memory
-
-    INC DE                              ; Move to next byte of mask/sprite data
-    LD (._sprite_data_ptr),DE
-
-    ; We have written to the offscreen buffer - so record what we have done
-    LD DE,HL                            ; Copy address written to in buffer
-    LD HL,(_buffer_stack_top)           ; Top of stack address                                         
-    LD (HL),DE                          ; Write screen buffer address at top of stack            
-    INC HL                              ; Increase the stack top pointer +2 as a word was written
+.x_loop:
+    ; Record that we are writing to the double buffer
+    LD HL,(_buffer_stack_top)                       ; Top of stack address        
+    LD (HL),DE                                      ; Write screen buffer address at top of stack            
+    INC HL                                          ; Increase the stack top pointer +2 as a word was written
     INC HL
     LD (_buffer_stack_top),HL
 
-    ; Done writing current byte of current row - move to next X cell  
-    LD HL,(._screen_mem_loc_trace)
-    INC HL                              
-    LD (._screen_mem_loc_trace),HL
-
-    ; Are we done writing this pixel row?
-    DEC B                               ; Decrease the X loop counter
-    JR NZ,.ds_x_loop                    ; Next X
-
-    ; Move to next pixel row   
-    LD A,(._y_coord)
-    INC A
-    LD (._y_coord),A
+    ; First word of mask/data
+    LD DE,(.mem_write_ptr)
+    POP HL                                          ; Mask and sprite data
     
+    LD A,(DE)                                       ; Data from screen
+    AND H
+    JR Z,.no_collision
+    LD A,0x01
+    LD (draw_common.collided),A
+
+.no_collision
+    LD A,(DE)                                       ; Data from screen
+    AND L
+    OR H
+    LD (DE),A
+
+    ; Next X
+    INC DE
+    LD (.mem_write_ptr),DE
+
+    DEC B
+    JR NZ,.x_loop
+
     ; Is there another pixel row to write?
-    DEC C                               ; Y loop counter
-    JP Z,.done
-
-    ; Caculate subsequent mem locations based on offset,
-    ; this is faster than calling coords_to_mem each time.
-
-    ; Easy case is when we are not at end of a block of 8
-    LD A,(._y_coord)                    ; New Y divisible by 8?
-    AND 0b00000111                      
-    JR Z,.block_8                       ; Yes
-
-    ; Not at end of block of 8 rows, next row is at + 0x0100
-    LD HL,(._row_first_mem_lock)
-    LD DE,0x0100
-    ADD HL,DE
-    LD (._row_first_mem_lock), HL
-    LD (._screen_mem_loc_trace),HL
-
-    JR .ds_y_loop
-
-.block_8:
-    LD A,(._y_coord)                    ; New Y divisible by 64?
-    AND 0b00111111
-    JR Z,.block_64                      ; Yes
-
-    ; Not at the end of a block of 64 rows, next row is at -0x06E0
-    LD HL,(._row_first_mem_lock)
-    LD DE,0x06E0
-    SUB HL,DE
-    LD (._row_first_mem_lock), HL
-    LD (._screen_mem_loc_trace),HL
-
-    JR .ds_y_loop
-
-.block_64:
-    ; Next row is at +0x0020
-    LD HL,(._row_first_mem_lock)
-    LD DE,0x0020
-    ADD HL,DE
-    LD (._row_first_mem_lock), HL
-    LD (._screen_mem_loc_trace),HL
-
-    JP .ds_y_loop
+    DEC C                                           ; Y loop counter
+    JP NZ,.y_loop
 
 .done
+    LD SP,(.stack_ptr)                              ; Restore the original SP
+
     POP IX,HL,DE,BC,AF   
 
+    EI
+    
     RET
 
-._coords:                               ; Sprite location (Y is updated to line being drawn)
-._y_coord:              BLOCK 1
-._x_coord:              BLOCK 1
-._dims:                                 ; Sprite dimensions
-._y_dim:                BLOCK 1
-._x_dim:                BLOCK 1
-._sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
-._screen_mem_loc_trace: BLOCK 2         ; Pointer to current screen byte
-._row_first_mem_lock:   BLOCK 2         ; Point to screen byte first drawn on current row
+.coords:                               ; Sprite location (Y is updated to line being drawn)
+.y_coord:              BLOCK 1
+.x_coord:              BLOCK 1
+.dims:                                 ; Sprite dimensions
+.y_dim:                BLOCK 1
+.x_dim:                BLOCK 1
+.sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
+.x_offset:             BLOCK 1
+.stack_ptr:            BLOCK 2
+.y_lookup_table_ptr    BLOCK 2
+.mem_write_ptr         BLOCK 2
 
     MEMORY_USAGE "draw",_draw_start
     

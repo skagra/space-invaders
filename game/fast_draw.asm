@@ -137,10 +137,6 @@ fast_copy_buffer_to_screen_16x8:
         OR H
         LD (DE),A
 
-        NOP                                             ; Space self modified code
-        NOP                                             ; JP ._back
-        NOP
-
     ENDM
 
 ;------------------------------------------------------------------------------
