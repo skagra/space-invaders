@@ -1,5 +1,7 @@
     MODULE alien_pack
 
+_alien_pack_start:
+
 ; Direction of movement of alien pack
 _PACK_DIRECTION_LEFT:                   EQU 0b00000001   
 _PACK_DIRECTION_RIGHT:                  EQU 0b00000010
@@ -667,5 +669,7 @@ _next_pack_cycle:
     DEBUG_CYCLE_FLASH
 
     RET
+
+    MEMORY_USAGE "alien pack",_alien_pack_start
 
     ENDMODULE

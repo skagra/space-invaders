@@ -1,5 +1,7 @@
     MODULE draw
 
+_draw_start:
+
     INCLUDE "y_mem_row_lookup.asm"
 
 ; Scree dimensions
@@ -754,6 +756,8 @@ fast_draw_sprite_16x8:
 ._modified_code:        BLOCK 2                 ; Address to insider JP ._back self modifed code
 ._x_offset_stash:       BLOCK 1
 
+    MEMORY_USAGE "draw",_draw_start
+    
     ENDMODULE
 
    

@@ -1,5 +1,7 @@
     MODULE print
 
+_print_start:
+
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -214,5 +216,7 @@ char_coords_to_mem:
 	WORD 0x4800, 0x4820, 0x4840, 0x4860, 0x4880, 0x48A0,  0x48C0,  0x48E0
 	WORD 0x5000, 0x5020, 0x5040, 0x5060, 0x5080, 0x50A0,  0x50C0,  0x50E0
 
+    MEMORY_USAGE "print",_print_start
+    
     ENDMODULE
 

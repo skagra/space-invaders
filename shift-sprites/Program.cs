@@ -4,6 +4,7 @@ class ShiftSprites
     private const string INCLUDE_FILENAME = "all_sprites.asm";
     private const string HEADER_MESSAGE = "; This file was automatically generated, DO NOT MODIFY";
     private const string SPRITE_MODULE_NAME = "sprites";
+    private const string MEM_USAGE_LABEL = "_sprites_start";
 
     public static void Main(string[] args)
     {
@@ -41,10 +42,16 @@ class ShiftSprites
         fileOutput.WriteLine(HEADER_MESSAGE);
         fileOutput.WriteLine();
 
+        fileOutput.WriteLine($"{MEM_USAGE_LABEL}:");
+        fileOutput.WriteLine();
+
         outputFiles.ForEach(filename =>
         {
             fileOutput.WriteLine($"\tINCLUDE \"{filename.Replace('\\', '/')}\"");
         });
+
+        fileOutput.WriteLine();
+        fileOutput.WriteLine($"\tMEMORY_USAGE \"sprites\",{MEM_USAGE_LABEL}");
 
         fileOutput.Close();
     }

@@ -29,14 +29,10 @@
     
     MODULE main
 
-; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!SORT OUT MEMORY MAP
-; Move double buffering into draw
-; Integrate new fast draw
-; Use tracking y table lookup trick for normal draw
-; Upper case all sprite values
-
     ORG 0xC000
 DRAW_BUFFER:    BLOCK 0x1800,0x00
+
+    MEMORY_USAGE "double buffer", DRAW_BUFFER
 
 main:
     ; Set up stack
@@ -105,12 +101,18 @@ main:
 
     JR .animation_loop           
 
+    MEMORY_USAGE "main", main
+
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
-                            BLOCK STACK_SIZE, 0
+STACK_START:                BLOCK STACK_SIZE, 0
 STACK_TOP:                  EQU $-1
 
-; Save snapshot for spectrum emulator
+    MEMORY_USAGE "stack", STACK_START
+
+    TOTAL_MEMORY_USAGE
+
+    ; Save snapshot for spectrum emulator
     IFNDEF DEBUG
         SAVESNA "space-invaders.sna",main
     ELSE

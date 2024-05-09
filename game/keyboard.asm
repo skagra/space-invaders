@@ -1,5 +1,7 @@
     MODULE keyboard
 
+_keyboard_start:
+
 LEFT_KEY_DOWN_MASK:     EQU 0b00000001
 RIGHT_KEY_DOWN_MASK:    EQU 0b00000010
 FIRE_KEY_DOWN_MASK:     EQU 0b00000100
@@ -131,4 +133,6 @@ get_movement_keys:
 ._FIRE_PORT:        EQU 0xBFFE
 ._FIRE_KEY_BIT:     EQU 0
 
+    MEMORY_USAGE "keyboard",_keyboard_start
+    
     ENDMODULE

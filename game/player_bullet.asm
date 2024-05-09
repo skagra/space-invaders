@@ -1,5 +1,7 @@
     MODULE player_bullet
 
+_player_bullet_start:
+
 ;------------------------------------------------------------------------------
 ;
 ; Routines to implement the player bullet
@@ -452,5 +454,7 @@ update_bullet:
     POP HL,DE,BC,AF
 
     RET
+
+    MEMORY_USAGE "player bullet",_player_bullet_start
 
     ENDMODULE
