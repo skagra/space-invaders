@@ -35,4 +35,5 @@
 * .local for local values rather than ._local
 * Integrate fast draw into game
 * Consider fast draw for one byte wide sprites (this is potentially 4 sprites per refresh)
+* Uppercase sprite names
   
