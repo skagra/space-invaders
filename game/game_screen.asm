@@ -75,7 +75,7 @@ init_screen:
     POP HL
     POP HL
 
-     LD L,draw.CA_BG_BLACK | draw.CA_FG_WHITE
+    LD L,draw.CA_BG_BLACK | draw.CA_FG_WHITE
     PUSH HL
     CALL draw.fill_screen_attributes
     POP HL
