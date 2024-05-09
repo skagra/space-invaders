@@ -425,9 +425,9 @@ update_bullet:
     JR .done
 
 .collided:
-    LD A,draw.SCREEN_HEIGHT_PIXELS-56   ; TODO Should be based on bottom of pack - Even this does not cover cases
-    LD HL,_bullet_deferred_draw_y       ;      bottom of pack is part way through destroying shields
-    LD D,(HL)                           ;      Should be fixable once we have propper collision detection with aliens done
+    LD A,draw.SCREEN_HEIGHT_PIXELS-56                   ; TODO Should be based on bottom of pack - Even this does not cover cases
+    LD HL,_bullet_deferred_draw_y                       ;      bottom of pack is part way through destroying shields
+    LD D,(HL)                                           ;      Should be fixable once we have propper collision detection with aliens done
     CP D
 
     JR NC,.hit_an_alien
