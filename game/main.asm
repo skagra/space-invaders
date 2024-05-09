@@ -50,7 +50,6 @@ main:
 
     ; Draw the initial screen
     CALL game_screen.init_screen
-
     CALL draw.copy_buffer_to_screen
 
 .animation_loop:
@@ -75,8 +74,10 @@ main:
     ; Calculate new coordinates and handle state changes for the player bullet               
     CALL player_bullet.update_bullet
 
+    ; Wait for Vsync
     HALT 
     
+    ; Copy off screen double buffer to screen memory
     CALL draw.copy_buffer_to_screen
     CALL fast_draw.fast_copy_buffer_to_screen_16x8
 
