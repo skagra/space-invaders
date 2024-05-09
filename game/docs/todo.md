@@ -21,3 +21,18 @@
 * The wait on screen routine - only works properly if the barrier bar is at least once line before the end of the screen else we are on go slow - I suspect this is because the existing wipe code is too slow to complete before the vertical retrace so we end up with 50 speed.
 * Look at combining the mask and sprite draw phases (and possible change the storage to Sprite Byte,Mask Byte ... then we can grab both at same time via SP) and collision can go together - also have the mask already "inverted" will save time too
 * Figure out if any interrupt handling is being called, install my own and see if this makes using the stack manipulation a stable option.
+* Sort out memory map - look to see if assembler can help with layout
+* Add DISPLAY WARNING and DISPLAY ERROR macros if possibly
+* Add some sort of SAFE INCLUDE mechanism
+* Add DIRECT DRAW (no buffering directive)
+* Add messages showing memory usage of data and code areas
+* Half the number of generated alien sprite data using the fact they are only ever at even coord
+* Add error trap for odd alien x coord
+* Move fast draw and double buffering into own file
+* Move regular double buffering into regular draw file
+* Add slow draw directive that always uses slow draw routines
+* Use lookup table scanning in regular drawing rather that recalculation of coords for each line
+* .local for local values rather than ._local
+* Integrate fast draw into game
+* Consider fast draw for one byte wide sprites (this is potentially 4 sprites per refresh)
+  
