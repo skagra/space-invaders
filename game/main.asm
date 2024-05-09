@@ -22,11 +22,12 @@
     INCLUDE "player.asm"
     INCLUDE "player_bullet.asm"
     INCLUDE "alien_pack.asm"
-    INCLUDE "character_set.asm"
     INCLUDE "print.asm"
     INCLUDE "game_screen.asm"
 
     MODULE main
+
+testmes: BYTE "A TEST MESSAGE",0
 
 main:
     ; Set up stack
@@ -52,10 +53,11 @@ main:
     CALL game_screen.init_screen
     CALL draw.copy_buffer_to_screen
 
+
 .animation_loop:
     ; Read keyboard
     CALL keyboard.get_movement_keys
-    
+
     ; Draw the player base
     CALL player.draw_deferred_player
 
@@ -74,8 +76,10 @@ main:
     ; Calculate new coordinates and handle state changes for the player bullet               
     CALL player_bullet.update_bullet
 
-    ; Wait for Vsync
-    HALT 
+    IFNDEF IGNORE_VSYNC
+        ; Wait for Vsync
+        HALT 
+    ENDIF
     
     ; Copy off screen double buffer to screen memory
     CALL draw.copy_buffer_to_screen
@@ -95,7 +99,7 @@ main:
     ; Move on to next alien
     CALL alien_pack.next_alien
 
-    JR .animation_loop           
+    JP .animation_loop           
 
     MEMORY_USAGE "main", main
 
@@ -113,6 +117,7 @@ DRAW_BUFFER:    BLOCK 0x1800,0x00
     
     ENDMODULE
 
+    INCLUDE "character_set.asm"
     INCLUDE "sprites/all_sprites.asm"
 
     TOTAL_MEMORY_USAGE

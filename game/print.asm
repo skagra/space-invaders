@@ -228,7 +228,57 @@ char_coords_to_mem:
 	WORD 0xC800, 0xC820, 0xC840, 0xC860, 0xC880, 0xC8A0,  0xC8C0,  0xC8E0
 	WORD 0xD000, 0xD020, 0xD040, 0xD060, 0xD080, 0xD0A0,  0xD0C0,  0xD0E0
 
-    MEMORY_USAGE "print",_print_start
+inline_print:
     
+.CALLER_OFFSET EQU 8
+.COORDS_OFFSET EQU 10
+
+    PUSH AF,DE,HL,IX
+   
+    LD  IX,0                                            ; Get the stack pointer
+    ADD IX,SP
+
+    LD HL,(IX+.CALLER_OFFSET)                           ; Return address
+    PUSH HL
+    LD DE,(IX+.COORDS_OFFSET)
+    PUSH DE
+    CALL print_string
+    POP DE
+    POP DE
+
+    LD A,(HL)
+    CP 0x00
+    INC HL
+    JR Z, .done
+
+
+.done
+    LD (IX+.CALLER_OFFSET),HL
+    POP IX,HL,DE,AF
+
+    RET
+
+    MEMORY_USAGE "print",_print_start
+
+    MACRO DEBUG_PRINT text
+        IFDEF DEBUG
+            PUSH HL
+
+            ; LD HL, (0x00 shl 8)+2
+            ; PUSH HL
+            ; CALL print.inline_print
+            ; BYTE "                 ",0
+            ; POP HL
+
+            LD HL, (0x01 shl 8)+2
+            PUSH HL
+            CALL print.inline_print
+            BYTE text,0
+            POP HL
+            
+            POP HL
+        ENDIF
+    ENDM
+
     ENDMODULE
 

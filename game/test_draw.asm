@@ -47,23 +47,31 @@ main:
     CALL draw.fill_screen_attributes
     POP HL
 
+    ; LD HL,0x1010
+    ; PUSH HL
+    ; CALL print.inline_print
+    ; BYTE "TEST",0
+    ; POP HL
+
+    DEBUG_PRINT "TEST"
+
     LD B, NUM_TEST_SPRITES
     LD HL, TEST_SPRITES
 
-; .test_loop
-;     LD DE,(HL)
-;     PUSH DE
-;     INC HL
-;     INC HL
-;     LD DE,(HL)   
-;     PUSH DE
-;     CALL fast_draw.fast_draw_sprite_16x8
-;     POP DE
-;     POP DE
-;     INC HL
-;     INC HL
+.test_loop
+    LD DE,(HL)
+    PUSH DE
+    INC HL
+    INC HL
+    LD DE,(HL)   
+    PUSH DE
+    CALL fast_draw.fast_draw_sprite_16x8
+    POP DE
+    POP DE
+    INC HL
+    INC HL
 
-;     DJNZ .test_loop
+    DJNZ .test_loop
 
     LD HL, 0x7070
     PUSH HL
@@ -76,7 +84,7 @@ main:
     POP HL
     POP HL
 
-    ; CALL fast_draw.fast_copy_buffer_to_screen_16x8
+    CALL fast_draw.fast_copy_buffer_to_screen_16x8
     CALL draw.copy_buffer_to_screen
 
 .animation_loop:
