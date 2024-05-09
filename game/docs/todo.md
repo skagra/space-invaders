@@ -4,7 +4,7 @@
 * Keep track of bottom left and then we can do collision detection based on pixel hit + relative position.
 * Where we have case statements like _adjust_alien_pack_direction, could we get a speed increase via an index into a jump table?
 * Revise naming of masks and blanks
-* Consider proper masks for aliens rather than just a block
+* ~~Consider proper masks for aliens rather than just a block~~
 * Bullet drawing needs to be faster!
 * We might need to separate blanking and drawing - with blanking taking place once the raster has dropped of the bottom of the screen but before the retrace
 * Single line player bullet does not need 16 bit shifted sprites
@@ -25,15 +25,15 @@
 * Add DISPLAY WARNING and DISPLAY ERROR macros if possibly
 * Add some sort of SAFE INCLUDE mechanism
 * Add DIRECT DRAW (no buffering directive)
-* Add messages showing memory usage of data and code areas
+* ~~Add messages showing memory usage of data and code areas~~
 * ~~Half the number of generated alien sprite data using the fact they are only ever at even coord~~
 * Add error trap for odd alien x coord
 * ~~Move fast draw and double buffering into own file~~
 * ~~Move regular double buffering into regular draw file~~
 * Add slow draw directive that always uses slow draw routines
-* Use lookup table scanning in regular drawing rather that recalculation of coords for each line
+* ~~Use lookup table scanning in regular drawing rather that recalculation of coords for each line~~
 * .local for local values rather than ._local
-* Integrate fast draw into game
+* ~~Integrate fast draw into game~~
 * Consider fast draw for one byte wide sprites (this is potentially 4 sprites per refresh)
 * Uppercase sprite names
 * Add fast run options that compiles out wait for vsync
