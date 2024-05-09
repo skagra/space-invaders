@@ -1,6 +1,6 @@
     MODULE alien_pack
 
-_alien_pack_start:
+_module_start:
 
 ; Direction of movement of alien pack
 _PACK_DIRECTION_LEFT:                   EQU 0b00000001   
@@ -660,6 +660,6 @@ _next_pack_cycle:
 
     RET
 
-    MEMORY_USAGE "alien pack",_alien_pack_start
+    MEMORY_USAGE "alien pack",_module_start
 
     ENDMODULE

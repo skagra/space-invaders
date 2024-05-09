@@ -1,6 +1,6 @@
     MODULE print
 
-_print_start:
+_module_start:
 
 ;------------------------------------------------------------------------------
 ;
@@ -251,24 +251,23 @@ inline_print:
     INC HL
     JR Z, .done
 
-
 .done
     LD (IX+.CALLER_OFFSET),HL
     POP IX,HL,DE,AF
 
     RET
 
-    MEMORY_USAGE "print",_print_start
+    MEMORY_USAGE "print",_module_start
 
     MACRO DEBUG_PRINT text
         IFDEF DEBUG
             PUSH HL
 
-            ; LD HL, (0x00 shl 8)+2
-            ; PUSH HL
-            ; CALL print.inline_print
-            ; BYTE "                 ",0
-            ; POP HL
+            LD HL, (0x00 shl 8)+2
+            PUSH HL
+            CALL print.inline_print
+            BYTE "                 ",0
+            POP HL
 
             LD HL, (0x01 shl 8)+2
             PUSH HL

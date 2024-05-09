@@ -1,6 +1,6 @@
     MODULE game_screen
 
-_game_screen_start:
+_module_start:
 
 ;------------------------------------------------------------------------------
 ;
@@ -310,6 +310,6 @@ draw_horiz_line:
 
 _.HORIZ_LINE_Y: EQU draw.SCREEN_HEIGHT_PIXELS-10
 
-    MEMORY_USAGE "game screen",_game_screen_start
+    MEMORY_USAGE "game screen",_module_start
     
     ENDMODULE

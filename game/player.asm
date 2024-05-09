@@ -1,6 +1,6 @@
     MODULE player
 
-_player_start:
+_module_start:
 
 PLAYER_Y:               EQU draw.SCREEN_HEIGHT_PIXELS-20
 
@@ -140,6 +140,6 @@ update_player:
 ._MIN_PLAYER_X:             EQU 0
 ._MAX_PLAYER_X:             EQU draw.SCREEN_WIDTH_PIXELS-16
 
-    MEMORY_USAGE "player",_player_start
+    MEMORY_USAGE "player",_module_start
 
     ENDMODULE

@@ -1,5 +1,7 @@
     MODULE debug
 
+_module_start:
+
 init:
     PUSH AF
 
@@ -118,6 +120,8 @@ debug._total_memory_usage=debug._total_memory_usage+$-label
     MACRO TOTAL_MEMORY_USAGE
         DISPLAY "TOTAL_MEM_USAGE: ",debug._total_memory_usage," (",/D,debug._total_memory_usage," bytes)"
     ENDM
+
+    MEMORY_USAGE "debug",_module_start
 
     ENDMODULE
 

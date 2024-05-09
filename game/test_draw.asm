@@ -47,12 +47,6 @@ main:
     CALL draw.fill_screen_attributes
     POP HL
 
-    ; LD HL,0x1010
-    ; PUSH HL
-    ; CALL print.inline_print
-    ; BYTE "TEST",0
-    ; POP HL
-
     DEBUG_PRINT "TEST"
 
     LD B, NUM_TEST_SPRITES

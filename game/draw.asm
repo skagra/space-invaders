@@ -1,6 +1,6 @@
     MODULE draw
 
-_draw_start:
+_module_start:
 
 ; Scree dimensions
 SCREEN_WIDTH_PIXELS:    EQU 256
@@ -649,7 +649,7 @@ draw_sprite:
 .y_lookup_table_ptr    BLOCK 2
 .mem_write_ptr         BLOCK 2
 
-    MEMORY_USAGE "draw",_draw_start
+    MEMORY_USAGE "draw",_module_start
     
     ENDMODULE
 

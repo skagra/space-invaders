@@ -1,5 +1,7 @@
-    ; SLD Features
+    
     DEVICE ZXSPECTRUM48
+
+    ; SLD Features
     SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
 
     INCLUDE "memory_map.asm"
@@ -14,7 +16,6 @@
     INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
     INCLUDE "utils.asm"
-    INCLUDE "timing.asm"
     INCLUDE "draw_common.asm"
     INCLUDE "draw.asm"
     INCLUDE "fast_draw.asm"
@@ -27,8 +28,6 @@
 
     MODULE main
 
-testmes: BYTE "A TEST MESSAGE",0
-
 main:
     ; Set up stack
     DI                          
@@ -39,7 +38,6 @@ main:
     CALL error_codes.init
     CALL debug.init
     CALL utils.init
-    CALL timing.init
     CALL draw.init
     CALL fast_draw.init
     CALL print.init
@@ -52,7 +50,6 @@ main:
     ; Draw the initial screen
     CALL game_screen.init_screen
     CALL draw.copy_buffer_to_screen
-
 
 .animation_loop:
     ; Read keyboard

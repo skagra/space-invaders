@@ -1,6 +1,6 @@
     MODULE player_bullet
 
-_player_bullet_start:
+_module_start:
 
 ;------------------------------------------------------------------------------
 ;
@@ -455,6 +455,6 @@ update_bullet:
 
     RET
 
-    MEMORY_USAGE "player bullet",_player_bullet_start
+    MEMORY_USAGE "player bullet",_module_start
 
     ENDMODULE

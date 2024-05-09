@@ -1,5 +1,7 @@
 	MODULE utils
 
+_module_start:
+
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -59,5 +61,7 @@ fill_mem:
 
     POP  IX,HL,DE,BC,AF
     RET
+
+    MEMORY_USAGE "utils",_module_start
 
 	ENDMODULE
