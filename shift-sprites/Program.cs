@@ -10,11 +10,9 @@ class ShiftSprites
     {
         var inputDirectory = args[0];
         var outputDirectory = (args.Length > 1) ? args[1] : "";
-        var shiftStep = (args.Length > 2) ? int.Parse(args[2]) : 1;
 
         Console.WriteLine($"Processing sprites from: '{inputDirectory}'");
         Console.WriteLine($"Writing output to: '{outputDirectory}'");
-        Console.WriteLine($"With shift steps of size: '{shiftStep}'");
         Console.WriteLine();
 
         if (!Directory.Exists(outputDirectory))
@@ -25,8 +23,8 @@ class ShiftSprites
         var outputFiles = new List<string>();
         foreach (var inputFilename in Directory.GetFiles(inputDirectory))
         {
-            var spriteFilename = ProcessSprite(inputFilename, outputDirectory, shiftStep, false);
-            var blankFilename = ProcessSprite(inputFilename, outputDirectory, shiftStep, true);
+            var spriteFilename = ProcessSprite(inputFilename, outputDirectory, false);
+            var blankFilename = ProcessSprite(inputFilename, outputDirectory, true);
             outputFiles.Add(spriteFilename);
             outputFiles.Add(blankFilename);
             Console.WriteLine();
@@ -56,21 +54,31 @@ class ShiftSprites
         fileOutput.Close();
     }
 
-    public static string ProcessSprite(string inputFileName, string outputDirectory = "", int shiftStep = 1, bool isBlank = false)
+    public static string ProcessSprite(string inputFileName, string outputDirectory = "", bool isBlank = false)
     {
         // Read the entire sprite file
         var allText = File.ReadAllLines(inputFileName).Select(x => x.Trim()).ToList();
 
+        // Read the offset setting
+        var dataStartIndex = 0;
+        while (!allText[dataStartIndex].StartsWith("offset:"))
+        {
+            dataStartIndex++;
+        }
+        var shiftStep = int.Parse(allText[dataStartIndex].Split(':')[1]);
+
+        dataStartIndex += 2;
+
         // Swap out characters that make the text more readable for binary values
-        for (int lineIndex = 0; lineIndex < allText.Count; lineIndex++)
+        for (int lineIndex = dataStartIndex; lineIndex < allText.Count; lineIndex++)
         {
             allText[lineIndex] = allText[lineIndex].Replace('-', '0').Replace('X', '1');
         }
 
         // Slice the file into the mask text and the sprite text
-        var blankLineIndex = allText.FindIndex(x => x.Trim().Length == 0);
+        var blankLineIndex = allText.FindIndex(dataStartIndex, x => x.Trim().Length == 0);
 
-        var maskText = allText.GetRange(0, blankLineIndex);
+        var maskText = allText.GetRange(dataStartIndex, blankLineIndex - 2);
         var spriteText = allText.GetRange(blankLineIndex + 1, allText.Count() - blankLineIndex - 1);
 
         var spriteName = Path.GetFileNameWithoutExtension(inputFileName);
@@ -107,7 +115,11 @@ class ShiftSprites
         {
             var shiftedSpriteName = $"{spriteName}_{xOffset}";
             spriteFileOutput.WriteLine($"{shiftedSpriteName}:");
-            spriteLookupTable.Add(shiftedSpriteName);
+
+            for (int i = 0; i < shiftStep; i++)
+            {
+                spriteLookupTable.Add(shiftedSpriteName);
+            }
 
             spriteFileOutput.Write("\t     ;");
             for (var byteCount = 0; byteCount < destByteWidth; byteCount++)

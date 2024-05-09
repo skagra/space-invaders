@@ -22,13 +22,6 @@
     INCLUDE "player.asm"
     INCLUDE "player_bullet.asm"
     INCLUDE "alien_pack.asm"
-    INCLUDE "sprites/all_sprites.asm"
-    
-    ORG 0xC000
-DRAW_BUFFER:    BLOCK 0x1800,0x00
-
-    MEMORY_USAGE "double buffer", DRAW_BUFFER
-
     INCLUDE "character_set.asm"
     INCLUDE "print.asm"
     INCLUDE "game_screen.asm"
@@ -111,13 +104,22 @@ STACK_TOP:                  EQU $-1
 
     MEMORY_USAGE "stack", STACK_START
 
+    ORG 0xC000
+DRAW_BUFFER:    BLOCK 0x1800,0x00
+
+    MEMORY_USAGE "double buffer", DRAW_BUFFER
+    
+    ENDMODULE
+
+    INCLUDE "sprites/all_sprites.asm"
+
     TOTAL_MEMORY_USAGE
 
     ; Save snapshot for spectrum emulator
     IFNDEF DEBUG
-        SAVESNA "space-invaders.sna",main
+        SAVESNA "space-invaders.sna",main.main
     ELSE
-        SAVESNA "space-invaders-debug.sna",main
+        SAVESNA "space-invaders-debug.sna",main.main
     ENDIF
    
-    ENDMODULE
+    

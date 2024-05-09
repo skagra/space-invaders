@@ -13,17 +13,6 @@ sprite_alien_1_variant_0_blank_0:
 	BYTE 0b11110010, 0b00000000, 0b01001111, 0b00000000, 0b11111111, 0b00000000 ; Row 6
 	BYTE 0b11001111, 0b00000000, 0b11110011, 0b00000000, 0b11111111, 0b00000000 ; Row 7
 
-sprite_alien_1_variant_0_blank_1:
-	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
-	BYTE 0b11111110, 0b00000000, 0b00011111, 0b00000000, 0b11111111, 0b00000000 ; Row 0
-	BYTE 0b11110000, 0b00000000, 0b00000011, 0b00000000, 0b11111111, 0b00000000 ; Row 1
-	BYTE 0b11100000, 0b00000000, 0b00000001, 0b00000000, 0b11111111, 0b00000000 ; Row 2
-	BYTE 0b11100011, 0b00000000, 0b00110001, 0b00000000, 0b11111111, 0b00000000 ; Row 3
-	BYTE 0b11100000, 0b00000000, 0b00000001, 0b00000000, 0b11111111, 0b00000000 ; Row 4
-	BYTE 0b11111100, 0b00000000, 0b11001111, 0b00000000, 0b11111111, 0b00000000 ; Row 5
-	BYTE 0b11111001, 0b00000000, 0b00100111, 0b00000000, 0b11111111, 0b00000000 ; Row 6
-	BYTE 0b11100111, 0b00000000, 0b11111001, 0b00000000, 0b11111111, 0b00000000 ; Row 7
-
 sprite_alien_1_variant_0_blank_2:
 	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111111, 0b00000000, 0b00001111, 0b00000000, 0b11111111, 0b00000000 ; Row 0
@@ -34,17 +23,6 @@ sprite_alien_1_variant_0_blank_2:
 	BYTE 0b11111110, 0b00000000, 0b01100111, 0b00000000, 0b11111111, 0b00000000 ; Row 5
 	BYTE 0b11111100, 0b00000000, 0b10010011, 0b00000000, 0b11111111, 0b00000000 ; Row 6
 	BYTE 0b11110011, 0b00000000, 0b11111100, 0b00000000, 0b11111111, 0b00000000 ; Row 7
-
-sprite_alien_1_variant_0_blank_3:
-	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
-	BYTE 0b11111111, 0b00000000, 0b10000111, 0b00000000, 0b11111111, 0b00000000 ; Row 0
-	BYTE 0b11111100, 0b00000000, 0b00000000, 0b00000000, 0b11111111, 0b00000000 ; Row 1
-	BYTE 0b11111000, 0b00000000, 0b00000000, 0b00000000, 0b01111111, 0b00000000 ; Row 2
-	BYTE 0b11111000, 0b00000000, 0b11001100, 0b00000000, 0b01111111, 0b00000000 ; Row 3
-	BYTE 0b11111000, 0b00000000, 0b00000000, 0b00000000, 0b01111111, 0b00000000 ; Row 4
-	BYTE 0b11111111, 0b00000000, 0b00110011, 0b00000000, 0b11111111, 0b00000000 ; Row 5
-	BYTE 0b11111110, 0b00000000, 0b01001001, 0b00000000, 0b11111111, 0b00000000 ; Row 6
-	BYTE 0b11111001, 0b00000000, 0b11111110, 0b00000000, 0b01111111, 0b00000000 ; Row 7
 
 sprite_alien_1_variant_0_blank_4:
 	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
@@ -57,17 +35,6 @@ sprite_alien_1_variant_0_blank_4:
 	BYTE 0b11111111, 0b00000000, 0b00100100, 0b00000000, 0b11111111, 0b00000000 ; Row 6
 	BYTE 0b11111100, 0b00000000, 0b11111111, 0b00000000, 0b00111111, 0b00000000 ; Row 7
 
-sprite_alien_1_variant_0_blank_5:
-	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
-	BYTE 0b11111111, 0b00000000, 0b11100001, 0b00000000, 0b11111111, 0b00000000 ; Row 0
-	BYTE 0b11111111, 0b00000000, 0b00000000, 0b00000000, 0b00111111, 0b00000000 ; Row 1
-	BYTE 0b11111110, 0b00000000, 0b00000000, 0b00000000, 0b00011111, 0b00000000 ; Row 2
-	BYTE 0b11111110, 0b00000000, 0b00110011, 0b00000000, 0b00011111, 0b00000000 ; Row 3
-	BYTE 0b11111110, 0b00000000, 0b00000000, 0b00000000, 0b00011111, 0b00000000 ; Row 4
-	BYTE 0b11111111, 0b00000000, 0b11001100, 0b00000000, 0b11111111, 0b00000000 ; Row 5
-	BYTE 0b11111111, 0b00000000, 0b10010010, 0b00000000, 0b01111111, 0b00000000 ; Row 6
-	BYTE 0b11111110, 0b00000000, 0b01111111, 0b00000000, 0b10011111, 0b00000000 ; Row 7
-
 sprite_alien_1_variant_0_blank_6:
 	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111111, 0b00000000, 0b11110000, 0b00000000, 0b11111111, 0b00000000 ; Row 0
@@ -79,17 +46,6 @@ sprite_alien_1_variant_0_blank_6:
 	BYTE 0b11111111, 0b00000000, 0b11001001, 0b00000000, 0b00111111, 0b00000000 ; Row 6
 	BYTE 0b11111111, 0b00000000, 0b00111111, 0b00000000, 0b11001111, 0b00000000 ; Row 7
 
-sprite_alien_1_variant_0_blank_7:
-	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
-	BYTE 0b11111111, 0b00000000, 0b11111000, 0b00000000, 0b01111111, 0b00000000 ; Row 0
-	BYTE 0b11111111, 0b00000000, 0b11000000, 0b00000000, 0b00001111, 0b00000000 ; Row 1
-	BYTE 0b11111111, 0b00000000, 0b10000000, 0b00000000, 0b00000111, 0b00000000 ; Row 2
-	BYTE 0b11111111, 0b00000000, 0b10001100, 0b00000000, 0b11000111, 0b00000000 ; Row 3
-	BYTE 0b11111111, 0b00000000, 0b10000000, 0b00000000, 0b00000111, 0b00000000 ; Row 4
-	BYTE 0b11111111, 0b00000000, 0b11110011, 0b00000000, 0b00111111, 0b00000000 ; Row 5
-	BYTE 0b11111111, 0b00000000, 0b11100100, 0b00000000, 0b10011111, 0b00000000 ; Row 6
-	BYTE 0b11111111, 0b00000000, 0b10011111, 0b00000000, 0b11100111, 0b00000000 ; Row 7
-
 ; Dimensions x (bytes) y (pixels)
 sprite_alien_1_variant_0_blank_dims:	EQU 0x0308
 sprite_alien_1_variant_0_blank_dim_x_bytes:	EQU 0x03
@@ -97,6 +53,6 @@ sprite_alien_1_variant_0_blank_dim_y_pixels:	EQU 0x08
 
 ; Lookup table
 sprite_alien_1_variant_0_blank:
-	WORD sprite_alien_1_variant_0_blank_0, sprite_alien_1_variant_0_blank_1, sprite_alien_1_variant_0_blank_2, sprite_alien_1_variant_0_blank_3, sprite_alien_1_variant_0_blank_4, sprite_alien_1_variant_0_blank_5, sprite_alien_1_variant_0_blank_6, sprite_alien_1_variant_0_blank_7
+	WORD sprite_alien_1_variant_0_blank_0, sprite_alien_1_variant_0_blank_0, sprite_alien_1_variant_0_blank_2, sprite_alien_1_variant_0_blank_2, sprite_alien_1_variant_0_blank_4, sprite_alien_1_variant_0_blank_4, sprite_alien_1_variant_0_blank_6, sprite_alien_1_variant_0_blank_6
 
 	ENDMODULE
