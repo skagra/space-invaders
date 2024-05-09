@@ -110,7 +110,7 @@ STACK_SIZE:                 EQU 100*2
 STACK_TOP:                  EQU $-1
 
     ; Save snapshot for spectrum emulator
-    SAVESNA "test_draw.sna",main
+    SAVESNA "test/test_draw.sna",main
 
     ENDMODULE
 

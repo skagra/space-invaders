@@ -6,10 +6,10 @@
             "type": "shell",
             "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
             "args": [
-                "--sld=space-invaders.sld",
+                "--sld=bin/space-invaders.sld",
                 "--fullpath",
-                "--sym=${workspaceFolder}/.tmp/symbols.txt",
-                "--lst=${workspaceFolder}/.tmp/listing.txt",
+                "--sym=${workspaceFolder}/bin/space-invaders-symbols.txt",
+                "--lst=${workspaceFolder}/bin/space-invaders-symbols-listing.txt",
                 "-DDEBUG",
                 "main.asm"
             ],
@@ -34,10 +34,10 @@
             "type": "shell",
             "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
             "args": [
-                "--sld=space-invaders.sld",
+                "--sld=bin/space-invaders.sld",
                 "--fullpath",
-                "--sym=${workspaceFolder}/.tmp/symbols.txt",
-                "--lst=${workspaceFolder}/.tmp/listing.txt",
+                "--sym=${workspaceFolder}/bin/space-invaders-symbols-symbols.txt",
+                "--lst=${workspaceFolder}/bin/space-invaders-symbols-listing.txt",
                 "main.asm"
             ],
             "problemMatcher": {
@@ -61,10 +61,10 @@
             "type": "shell",
             "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
             "args": [
-                "--sld=test_draw.sld",
+                "--sld=bin/test_draw.sld",
                 "--fullpath",
-                "--sym=${workspaceFolder}/.tmp/symbols_test.txt",
-                "--lst=${workspaceFolder}/.tmp/listing_test.txt",
+                "--sym=${workspaceFolder}/bin/test-draw-symbols.txt",
+                "--lst=${workspaceFolder}/bin/test-draw-listing.txt",
                 "-DDEBUG",
                 "test_draw.asm"
             ],

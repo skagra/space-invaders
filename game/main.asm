@@ -124,9 +124,9 @@ DRAW_BUFFER:    BLOCK 0x1800,0x00
 
     ; Save snapshot for spectrum emulator
     IFNDEF DEBUG
-        SAVESNA "space-invaders.sna",main.main
+        SAVESNA "bin/space-invaders.sna",main.main
     ELSE
-        SAVESNA "space-invaders-debug.sna",main.main
+        SAVESNA "bin/space-invaders-debug.sna",main.main
     ENDIF
    
     

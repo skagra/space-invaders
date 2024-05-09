@@ -5,4 +5,4 @@
 *.sld
 *.sna
 processed_sprites
-
+bin/
