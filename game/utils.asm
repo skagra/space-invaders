@@ -62,6 +62,6 @@ fill_mem:
     POP  IX,HL,DE,BC,AF
     RET
 
-    MEMORY_USAGE "utils",_module_start
+    MEMORY_USAGE "utils           ",_module_start
 
 	ENDMODULE

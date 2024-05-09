@@ -6,10 +6,10 @@
             "type": "shell",
             "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
             "args": [
-                "--sld=bin/space-invaders.sld",
+                "--sld=bin/space-invaders-debug.sld",
                 "--fullpath",
-                "--sym=${workspaceFolder}/bin/space-invaders-symbols.txt",
-                "--lst=${workspaceFolder}/bin/space-invaders-symbols-listing.txt",
+                "--sym=${workspaceFolder}/bin/space-invaders-debug-symbols.txt",
+                "--lst=${workspaceFolder}/bin/space-invaders-debug-listing.txt",
                 "-DDEBUG",
                 "main.asm"
             ],
@@ -34,10 +34,10 @@
             "type": "shell",
             "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
             "args": [
-                "--sld=bin/space-invaders.sld",
+                "--sld=bin/space-invaders-release.sld",
                 "--fullpath",
-                "--sym=${workspaceFolder}/bin/space-invaders-symbols-symbols.txt",
-                "--lst=${workspaceFolder}/bin/space-invaders-symbols-listing.txt",
+                "--sym=${workspaceFolder}/bin/space-invaders-symbols-release-symbols.txt",
+                "--lst=${workspaceFolder}/bin/space-invaders-symbols-release-listing.txt",
                 "main.asm"
             ],
             "problemMatcher": {

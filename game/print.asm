@@ -246,18 +246,20 @@ inline_print:
     POP DE
     POP DE
 
+.loop
     LD A,(HL)
-    CP 0x00
     INC HL
-    JR Z, .done
+    CP 0x00
+    JR NZ, .loop
 
 .done
     LD (IX+.CALLER_OFFSET),HL
+    
     POP IX,HL,DE,AF
 
     RET
 
-    MEMORY_USAGE "print",_module_start
+    MEMORY_USAGE "print           ",_module_start
 
     MACRO DEBUG_PRINT text
         IFDEF DEBUG
@@ -266,10 +268,10 @@ inline_print:
             LD HL, (0x00 shl 8)+2
             PUSH HL
             CALL print.inline_print
-            BYTE "                 ",0
+            BYTE "                       ",0
             POP HL
 
-            LD HL, (0x01 shl 8)+2
+            LD HL, (0x00 shl 8)+2
             PUSH HL
             CALL print.inline_print
             BYTE text,0

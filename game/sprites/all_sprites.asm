@@ -29,4 +29,4 @@ _sprites_start:
 	INCLUDE "sprites/test_square.asm"
 	INCLUDE "sprites/test_square_blank.asm"
 
-	MEMORY_USAGE "sprites",_sprites_start
+	MEMORY_USAGE "sprites         ",_sprites_start

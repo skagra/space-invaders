@@ -660,6 +660,6 @@ _next_pack_cycle:
 
     RET
 
-    MEMORY_USAGE "alien pack",_module_start
+    MEMORY_USAGE "alien pack      ",_module_start
 
     ENDMODULE

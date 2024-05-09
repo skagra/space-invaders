@@ -47,12 +47,12 @@ main:
     CALL draw.fill_screen_attributes
     POP HL
 
-    DEBUG_PRINT "TEST"
-
     LD B, NUM_TEST_SPRITES
     LD HL, TEST_SPRITES
 
 .test_loop
+    DEBUG_PRINT "A TEST"
+
     LD DE,(HL)
     PUSH DE
     INC HL
@@ -78,6 +78,7 @@ main:
     POP HL
     POP HL
 
+    HALT 
     CALL fast_draw.fast_copy_buffer_to_screen_16x8
     CALL draw.copy_buffer_to_screen
 
@@ -92,7 +93,7 @@ main:
 DRAW_BUFFER:    BLOCK 0x1800,0x00
 
 TEST_SPRITES:   
-    WORD 0x1011, sprites.test_card
+    WORD 0x3050, sprites.test_card
     WORD 0x2217, sprites.sprite_alien_1_variant_0
     WORD 0x1053, sprites.sprite_base
 
@@ -104,7 +105,7 @@ STACK_SIZE:                 EQU 100*2
 STACK_TOP:                  EQU $-1
 
     ; Save snapshot for spectrum emulator
-    SAVESNA "test/test_draw.sna",main
+    SAVESNA "bin/test_draw.sna",main
 
     ENDMODULE
 

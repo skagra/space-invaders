@@ -10,6 +10,6 @@ init:
 ; Collision detection
 collided:          BLOCK 1              ; The last draw operation detected a collision
 
-    MEMORY_USAGE "draw common",_module_start
+    MEMORY_USAGE "draw common     ",_module_start
 
     ENDMODULE

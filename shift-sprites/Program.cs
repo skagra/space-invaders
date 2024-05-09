@@ -49,7 +49,7 @@ class ShiftSprites
         });
 
         fileOutput.WriteLine();
-        fileOutput.WriteLine($"\tMEMORY_USAGE \"sprites\",{MEM_USAGE_LABEL}");
+        fileOutput.WriteLine($"\tMEMORY_USAGE \"sprites         \",{MEM_USAGE_LABEL}");
 
         fileOutput.Close();
     }

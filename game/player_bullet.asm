@@ -455,6 +455,6 @@ update_bullet:
 
     RET
 
-    MEMORY_USAGE "player bullet",_module_start
+    MEMORY_USAGE "player bullet   ",_module_start
 
     ENDMODULE

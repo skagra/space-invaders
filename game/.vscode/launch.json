@@ -18,7 +18,7 @@
             },
             "sjasmplus": [
                 {
-                    "path": "bin/space-invaders.sld"
+                    "path": "bin/space-invaders-debug.sld"
                 }
             ],
             "history": {
@@ -51,7 +51,7 @@
             },
             "sjasmplus": [
                 {
-                    "path": "bin/space-invaders.sld"
+                    "path": "bin/space-invaders-release.sld"
                 }
             ],
             "history": {
@@ -63,7 +63,7 @@
             "commandsAfterLaunch": [],
             "rootFolder": "${workspaceFolder}",
             "topOfStack": "main.STACK_TOP",
-            "load": "bin/space-invaders.sna",
+            "load": "bin/space-invaders-release.sna",
             "smallValuesMaximum": 513,
             "tmpDir": "bin"
         },
@@ -74,7 +74,7 @@
             "remoteType": "cspect",
             "sjasmplus": [
                 {
-                    "path": "bin/space-invaders.sld"
+                    "path": "bin/space-invaders-debug.sld"
                 }
             ],
             "history": {
@@ -96,7 +96,7 @@
             "remoteType": "cspect",
             "sjasmplus": [
                 {
-                    "path": "bin/space-invaders.sld"
+                    "path": "bin/space-invaders-release.sld"
                 }
             ],
             "history": {
@@ -107,7 +107,7 @@
             "commandsAfterLaunch": [],
             "rootFolder": "${workspaceFolder}",
             "topOfStack": "main.STACK_TOP",
-            "load": "bin/space-invaders.sna",
+            "load": "bin/space-invaders-release.sna",
             "smallValuesMaximum": 513,
             "tmpDir": "bin"
         },

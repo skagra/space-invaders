@@ -257,6 +257,6 @@ fast_draw_sprite_16x8:
 .stack_ptr:            BLOCK 2                         ; Safe store for stack pointer
 .x_offset:             BLOCK 1
 
-    MEMORY_USAGE "fast draw",_module_start
+    MEMORY_USAGE "fast draw       ",_module_start
 
     ENDMODULE

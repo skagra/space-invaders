@@ -13,8 +13,8 @@
     ; Skip past contended memory
     ORG 0x8000 
     
-    INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
+    INCLUDE "error_codes.asm"
     INCLUDE "utils.asm"
     INCLUDE "draw_common.asm"
     INCLUDE "draw.asm"
@@ -35,8 +35,8 @@ main:
     EI
 
     ; Initialise all modules
-    CALL error_codes.init
     CALL debug.init
+    CALL error_codes.init
     CALL utils.init
     CALL draw.init
     CALL fast_draw.init
@@ -98,19 +98,19 @@ main:
 
     JP .animation_loop           
 
-    MEMORY_USAGE "main", main
+    MEMORY_USAGE "main            ", main
 
 ; Put the stack immediately after the code
 STACK_SIZE:                 EQU 100*2    
 STACK_START:                BLOCK STACK_SIZE, 0
 STACK_TOP:                  EQU $-1
 
-    MEMORY_USAGE "stack", STACK_START
+    MEMORY_USAGE "stack           ", STACK_START
 
     ORG 0xC000
 DRAW_BUFFER:    BLOCK 0x1800,0x00
 
-    MEMORY_USAGE "double buffer", DRAW_BUFFER
+    MEMORY_USAGE "double buffer   ", DRAW_BUFFER
     
     ENDMODULE
 
@@ -120,10 +120,10 @@ DRAW_BUFFER:    BLOCK 0x1800,0x00
     TOTAL_MEMORY_USAGE
 
     ; Save snapshot for spectrum emulator
-    IFNDEF DEBUG
-        SAVESNA "bin/space-invaders.sna",main.main
-    ELSE
+    IFDEF DEBUG
         SAVESNA "bin/space-invaders-debug.sna",main.main
+    ELSE
+        SAVESNA "bin/space-invaders-release.sna",main.main
     ENDIF
    
     

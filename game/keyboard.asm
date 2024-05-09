@@ -133,6 +133,6 @@ get_movement_keys:
 ._FIRE_PORT:        EQU 0xBFFE
 ._FIRE_KEY_BIT:     EQU 0
 
-    MEMORY_USAGE "keyboard",_module_start
+    MEMORY_USAGE "keyboard        ",_module_start
     
     ENDMODULE
