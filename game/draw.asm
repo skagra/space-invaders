@@ -595,10 +595,10 @@ draw_sprite:
     LD (._sprite_data_ptr),DE
 
     ; We have written to the offscreen buffer - so record what we have done
-    LD DE,HL                                            ; Copy address written to in buffer
-    LD HL,(_buffer_stack_top)             ; Top of stack address                                         
-    LD (HL),DE                                          ; Write screen buffer address at top of stack            
-    INC HL                                              ; Increase the stack top pointer +2 as a word was written
+    LD DE,HL                            ; Copy address written to in buffer
+    LD HL,(_buffer_stack_top)           ; Top of stack address                                         
+    LD (HL),DE                          ; Write screen buffer address at top of stack            
+    INC HL                              ; Increase the stack top pointer +2 as a word was written
     INC HL
     LD (_buffer_stack_top),HL
 

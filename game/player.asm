@@ -57,15 +57,11 @@ draw_deferred_player:
     LD E, PLAYER_Y
     PUSH DE
       
-    LD DE, sprites.sprite_base_dims                     ; Player base dimensions
+    LD DE,sprites.sprite_base                           ; Sprite    
     PUSH DE
 
-    LD DE,sprites.sprite_base                          ; Sprite    
-    PUSH DE
-
-    CALL draw.draw_sprite                               ; Draw the player base sprite
+    CALL fast_draw.fast_draw_sprite_16x8                ; Draw the player base sprite
     
-    POP DE
     POP DE
     POP DE
 
@@ -81,16 +77,12 @@ blank_player:
     LD D,A
     LD E, PLAYER_Y
     PUSH DE
-         
-    LD DE, sprites.sprite_base_blank_dims               ; Dimensions
-    PUSH DE
 
     LD DE,sprites.sprite_base_blank                     ; Sprite    
     PUSH DE
 
-    CALL draw.draw_sprite                               ; Draw the player base sprite
+    CALL fast_draw.fast_draw_sprite_16x8                ; Draw the player base sprite
 
-    POP DE
     POP DE
     POP DE
 

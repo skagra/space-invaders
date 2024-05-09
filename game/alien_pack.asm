@@ -249,10 +249,6 @@ blank_current_alien:
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL     
 
-    ; HACK
-    LD DE, 0x0308                                       ; Dimensions
-    PUSH DE
-
     ; Select sprite mask based on variant
     LD A,(_current_pack_variant_flag)          
     BIT _ALIEN_VARIANT_1_BIT,A
@@ -267,9 +263,8 @@ blank_current_alien:
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
 
-    CALL draw.draw_sprite
+    CALL fast_draw.fast_draw_sprite_16x8
 
-    POP DE
     POP DE
     POP DE
 
@@ -306,16 +301,11 @@ draw_deferred_alien:
     LD HL,(_deferred_alien_coords)                      ; Coords
     PUSH HL  
 
-    ; HACK
-    LD DE, 0x0308                                       ; Dimensions
-    PUSH DE
-
     LD HL,(_deferred_alien_sprite) 
     PUSH HL                                             ; Sprite
 
-    CALL draw.draw_sprite
+    CALL fast_draw.fast_draw_sprite_16x8
 
-    POP DE
     POP DE
     POP DE
 

@@ -78,6 +78,7 @@ main:
     HALT 
     
     CALL draw.copy_buffer_to_screen
+    CALL fast_draw.fast_copy_buffer_to_screen_16x8
 
     DEBUG_VTRACE_FLASH
 
