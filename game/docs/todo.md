@@ -36,5 +36,8 @@
 * ~~Integrate fast draw into game~~
 * Consider fast draw for one byte wide sprites (this is potentially 4 sprites per refresh)
 * Uppercase sprite names
-* Add fast run options that compiles out wait for vsync
+* ~~Add fast run options that compiles out wait for vsync~~
+* Add coords to inline print
+* Add print_and_flush
+
   
