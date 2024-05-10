@@ -635,6 +635,10 @@ draw_sprite:
 
     EI
     
+    IFDEF AUTO_FLUSH
+        call copy_buffer_to_screen
+    ENDIF
+
     RET
 
 .coords:                               ; Sprite location (Y is updated to line being drawn)

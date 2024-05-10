@@ -162,6 +162,10 @@ print_char:
 
     POP IX,HL,DE,BC,AF
 
+    IFDEF AUTO_FLUSH
+        call draw.copy_buffer_to_screen
+    ENDIF
+
     RET
 
 ._print_mem_ptr:  BLOCK 2

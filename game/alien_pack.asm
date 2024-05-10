@@ -41,6 +41,16 @@ _ALIEN_VARIANT_1:                       EQU 0b00000010
 _ALIEN_VARIANT_0_BIT:                   EQU 0
 _ALIEN_VARIANT_1_BIT:                   EQU 1
 
+_ALIEN_X_OFFSET:                        EQU 0x10
+_ALIEN_Y_OFFSET:                        EQU 0x10
+
+
+_ALIEN_ROWS:                            EQU 5
+_ALIEN_COLS:                            EQU 10
+_ALIEN_LEFT:                            EQU 0x10
+_ALIEN_BOTTOM:                          EQU 0x20
+
+
 ; Alien pack as per _STATE_OFFSET_* constants
 _alien_state:
     ; Bottom row - Row 0
@@ -103,7 +113,7 @@ _alien_state:
     WORD 0x9020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
     WORD 0xA020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW
 
-; Loopup table into _alien_state table
+; Lookup table into _alien_state table
 _ALIEN_LOOKUP:
     ; Row 0 (bottom of pack)
     WORD _alien_state+_AS_SIZE*0, _alien_state+_AS_SIZE*1, _alien_state+_AS_SIZE*2, _alien_state+_AS_SIZE*3, _alien_state+_AS_SIZE*4 
@@ -167,7 +177,7 @@ init:
     ; Alien pack direction
     LD A,_PACK_DIRECTION_RIGHT
     LD (_pack_direction),A
-
+  
     ; Reference pack X coord
     ; LD A,0x10                               ; TODO - proper way to determine x reference (actually this might go altogether)
     ; LD (_pack_x_reference),A
@@ -310,7 +320,6 @@ draw_deferred_alien:
     POP DE
 
 .done:
-
     POP HL,DE,AF
 
     RET
@@ -485,6 +494,7 @@ _update_pack_bounds:
     POP DE,AF
 
     RET
+
 ;------------------------------------------------------------------------------
 ;
 ; Update the current alien coordinates and state

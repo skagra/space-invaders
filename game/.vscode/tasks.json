@@ -11,6 +11,7 @@
                 "--sym=${workspaceFolder}/bin/space-invaders-debug-symbols.txt",
                 "--lst=${workspaceFolder}/bin/space-invaders-debug-listing.txt",
                 "-DDEBUG",
+                "-DAUTO_FLUSH",
                 "main.asm"
             ],
             "problemMatcher": {

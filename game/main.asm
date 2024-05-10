@@ -1,8 +1,31 @@
-    
+    ; ZX Spectrum 48K
     DEVICE ZXSPECTRUM48
 
-    ; SLD Features
+    ; Source debugging settings
     SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
+
+    DISPLAY "Build settings"
+    DISPLAY " "
+
+    IFDEF DEBUG
+        DISPLAY "DEBUG ENABLED"
+    ELSE
+        DISPLAY "DEBUG disabled"
+    ENDIF
+
+    IFDEF IGNORE_VSYNC
+        DISPLAY "IGNORE_VSYNC ENABLED"
+    ELSE
+        DISPLAY "IGNORE_VSYNC disabled"
+    ENDIF
+
+    IFDEF AUTO_FLUSH
+        DISPLAY "AUTO_FLUSH ENABLED"
+    ELSE
+        DISPLAY "AUTO_FLUSH disabled"
+    ENDIF
+
+    DISPLAY " "
 
     INCLUDE "memory_map.asm"
 
@@ -55,14 +78,14 @@ main:
     ; Read keyboard
     CALL keyboard.get_movement_keys
 
-    ; Draw the player base
-    CALL player.draw_deferred_player
+    ; Draw player bullet if there is one
+    CALL player_bullet.draw_deferred_bullet
 
     ; Draw the current alien
     CALL alien_pack.draw_deferred_alien
 
-    ; Draw player bullet if there is one
-    CALL player_bullet.draw_deferred_bullet
+    ; Draw the player base
+    CALL player.draw_deferred_player
 
     ; Calculate new coordinates and variant for current alien
     CALL alien_pack.update_current_alien  
@@ -118,7 +141,7 @@ DRAW_BUFFER:    BLOCK 0x1800,0x00
     INCLUDE "sprites/all_sprites.asm"
 
     TOTAL_MEMORY_USAGE
-
+  
     ; Save snapshot for spectrum emulator
     IFDEF DEBUG
         SAVESNA "bin/space-invaders-debug.sna",main.main

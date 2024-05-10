@@ -203,7 +203,7 @@ draw_deferred_bullet:
 
     ; If the bullet is new or active then draw a bullet 
     LD A,(_bullet_state)
-    AND _BULLET_STATE_NEW | _BULLET_STATE_ACTIVE
+    AND _BULLET_STATE_NEW | _BULLET_STATE_ACTIVE 
     JR NZ,.bullet
 
     JR .done

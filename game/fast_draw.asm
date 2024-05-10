@@ -116,25 +116,25 @@ fast_copy_buffer_to_screen_16x8:
 
         ; First word of mask/data
         POP HL                                          ; Mask and sprite data
-        LD A,(DE)                                       ; Data from screen
-        AND L
-        OR H
+        LD A,(DE)
+        AND L                                           ; Mask
+        OR H                                            ; Sprite
         LD (DE),A
 
         ; Second word of mask/data
         INC DE
         POP HL                                          ; Mask and sprite data
-        LD A,(DE)                                       ; Data from screen
-        AND L
-        OR H
+        LD A,(DE)
+        AND L                                           ; Mask
+        OR H                                            ; Sprite
         LD (DE),A
 
         ; Third word of mask/data
         INC DE
         POP HL                                          ; Mask and sprite data
-        LD A,(DE)                                       ; Data from screen
-        AND L
-        OR H
+        LD A,(DE)
+        AND L                                           ; Mask
+        OR H                                            ; Sprite
         LD (DE),A
 
     ENDM
@@ -158,14 +158,14 @@ fast_draw_sprite_16x8:
 
 ._PARAM_COORDS:            EQU 14                       ; Sprite coordinates
 ._PARAM_SPRITE_DATA:       EQU 12                       ; Sprite pre-shifted data lookup table
-    
+        
     DI                                                  ; Disable interrupts as we'll be messing with the SP
 
     PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP                                                   
-
+  
     ; Initialize the collision flag
     LD HL,draw_common.collided                      
     LD (HL),0x00
@@ -249,6 +249,10 @@ fast_draw_sprite_16x8:
 
     EI
     
+    IFDEF AUTO_FLUSH
+        call fast_copy_buffer_to_screen_16x8
+    ENDIF
+
     RET
 
 .coords:                                               ; Sprite coords
