@@ -82,19 +82,19 @@ main:
     CALL player_bullet.draw_deferred_bullet
 
     ; Draw the current alien
-    CALL alien_pack.draw_deferred_alien
+    CALL alien_pack.draw_deferred_alien ; problem is we detect the collision here - but we've moved on now to the next alien!  Can we ditch the whole deferred think now we have double buffering
 
     ; Draw the player base
     CALL player.draw_deferred_player
+
+    ; Calculate new coordinates and handle state changes for the player bullet               
+    CALL player_bullet.update_bullet
 
     ; Calculate new coordinates and variant for current alien
     CALL alien_pack.update_current_alien  
 
     ; Calcate new coordinates for the player base
     CALL player.update_player
-
-    ; Calculate new coordinates and handle state changes for the player bullet               
-    CALL player_bullet.update_bullet
 
     IFNDEF IGNORE_VSYNC
         ; Wait for Vsync

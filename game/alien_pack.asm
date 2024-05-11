@@ -26,6 +26,8 @@ _ALIEN_STATE_DEAD_BIT:                  EQU 3
 
 ; Offsets into structure representing an alien
 _STATE_OFFSET_DRAW_COORDS:              EQU 0           ; Coords
+_STATE_OFFSET_DRAW_COORDS_Y:            EQU _STATE_OFFSET_DRAW_COORDS
+_STATE_OFFSET_DRAW_COORDS_X:            EQU _STATE_OFFSET_DRAW_COORDS+1
 _STATE_OFFSET_VAR_0_SPRITE:             EQU 2           ; First variant sprite
 _STATE_OFFSET_VAR_1_SPRITE:             EQU 4           ; Second variant sprite
 _STATE_OFFSET_VAR_0_BLANK:              EQU 6           ; First variant blank
@@ -523,7 +525,7 @@ update_current_alien:
 
     ; If the alien is dead then there is nothing to do
     BIT _ALIEN_STATE_DEAD_BIT,A
-    JR NZ,.done
+    JR NZ,.dead
 
     ; Is the alien new
     BIT _ALIEN_STATE_NEW_BIT,A
@@ -558,6 +560,8 @@ update_current_alien:
 .dieing:
     LD (IX+_STATE_OFFSET_STATE),_ALIEN_STATE_DEAD
     JR .done
+
+.dead:
 
 .done
     POP IX,HL,DE,AF

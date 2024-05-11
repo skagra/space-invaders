@@ -581,9 +581,9 @@ draw_sprite:
     LD B,A
 
     ; Calculate buffer start address -> DE
-    LD HL,(.y_lookup_table_ptr)                     ; Buffer address
+    LD HL,(.y_lookup_table_ptr)                         ; Buffer address
     LD DE,(HL)                                          
-    LD A,(.x_offset)                                ; Merge in x offset
+    LD A,(.x_offset)                                    ; Merge in x offset
     OR E
     LD E,A
     LD (.mem_write_ptr), DE
@@ -595,24 +595,33 @@ draw_sprite:
 
 .x_loop:
     ; Record that we are writing to the double buffer
-    LD HL,(_buffer_stack_top)                       ; Top of stack address        
-    LD (HL),DE                                      ; Write screen buffer address at top of stack            
-    INC HL                                          ; Increase the stack top pointer +2 as a word was written
+    LD HL,(_buffer_stack_top)                           ; Top of stack address        
+    LD (HL),DE                                          ; Write screen buffer address at top of stack            
+    INC HL                                              ; Increase the stack top pointer +2 as a word was written
     INC HL
     LD (_buffer_stack_top),HL
 
     ; First word of mask/data
     LD DE,(.mem_write_ptr)
-    POP HL                                          ; Mask and sprite data
+    POP HL                                              ; Mask and sprite data
     
-    LD A,(DE)                                       ; Data from screen
+    LD A,(draw_common.collided)                         ; Has a collision already been recorded?
+    CP 0x00
+    JR NZ,.no_collision
+
+    LD A,(DE)                                           ; Data from screen
     AND H
     JR Z,.no_collision
-    LD A,0x01
+
+    LD A,0x01                                           ; Record the collision
     LD (draw_common.collided),A
+    LD A,(.y_coord)
+    LD (draw_common.collision_y),A
+    LD A,(.x_coord)
+    LD (draw_common.collision_x),A
 
 .no_collision
-    LD A,(DE)                                       ; Data from screen
+    LD A,(DE)                                           ; Data from screen
     AND L
     OR H
     LD (DE),A
@@ -625,11 +634,11 @@ draw_sprite:
     JR NZ,.x_loop
 
     ; Is there another pixel row to write?
-    DEC C                                           ; Y loop counter
+    DEC C                                               ; Y loop counter
     JP NZ,.y_loop
 
 .done
-    LD SP,(.stack_ptr)                              ; Restore the original SP
+    LD SP,(.stack_ptr)                                  ; Restore the original SP
 
     POP IX,HL,DE,BC,AF   
 
@@ -641,13 +650,13 @@ draw_sprite:
 
     RET
 
-.coords:                               ; Sprite location (Y is updated to line being drawn)
+.coords:                                                ; Sprite location (Y is updated to line being drawn)
 .y_coord:              BLOCK 1
 .x_coord:              BLOCK 1
-.dims:                                 ; Sprite dimensions
+.dims:                                                  ; Sprite dimensions
 .y_dim:                BLOCK 1
 .x_dim:                BLOCK 1
-.sprite_data_ptr       BLOCK 2         ; Pointer to current sprite data byte
+.sprite_data_ptr       BLOCK 2                          ; Pointer to current sprite data byte
 .x_offset:             BLOCK 1
 .stack_ptr:            BLOCK 2
 .y_lookup_table_ptr    BLOCK 2
