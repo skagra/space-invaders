@@ -14,6 +14,8 @@ _sprites_start:
 	INCLUDE "sprites/sprite_alien_3_variant_0_blank.asm"
 	INCLUDE "sprites/sprite_alien_3_variant_1.asm"
 	INCLUDE "sprites/sprite_alien_3_variant_1_blank.asm"
+	INCLUDE "sprites/sprite_alien_explosion.asm"
+	INCLUDE "sprites/sprite_alien_explosion_blank.asm"
 	INCLUDE "sprites/sprite_base.asm"
 	INCLUDE "sprites/sprite_base_blank.asm"
 	INCLUDE "sprites/sprite_horiz_line.asm"

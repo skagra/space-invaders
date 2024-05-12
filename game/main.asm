@@ -36,7 +36,8 @@
     ; Skip past contended memory
     ORG 0x8000 
     
-    INCLUDE "debug.asm"#
+    INCLUDE "debug.asm"
+
     INCLUDE "utils.asm"
     INCLUDE "draw_common.asm"
     INCLUDE "draw.asm"

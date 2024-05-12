@@ -261,44 +261,6 @@ init:
 
     RET
 
-_blank_alien_now:
-    PUSH AF,DE,HL,IX
-
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP
-    LD HL,(IX+10)
-
-    ; Point IX at the state structure for the current alien
-    LD IX,HL
-    
-    ; Blank old sprite position
-    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
-    PUSH HL     
-
-    ; Select sprite mask based on variant
-    LD A,(IX+_STATE_OFFSET_VARIANT)           
-    BIT _ALIEN_VARIANT_1_BIT,A
-    JR NZ,.variant_1_is_current                         
-                             
-    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
-    JR .variant_selected
-
-.variant_1_is_current:   
-    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
-
-.variant_selected:
-    PUSH HL                                             ; Mask is in HL
-
-    CALL fast_draw.fast_draw_sprite_16x8
-
-    POP DE
-    POP DE
-
-.done
-    POP IX,HL,DE,AF
-
-    RET
-
 ;------------------------------------------------------------------------------
 ;
 ; Erase current alien
@@ -324,8 +286,11 @@ blank_alien:
     LD DE,(HL)
     LD IX,DE
     
-    ; Is the current alien dead or new
     LD A,(IX+_STATE_OFFSET_STATE)
+    BIT _ALIEN_STATE_DIEING_BIT,A
+    JR NZ,.blank_explosion
+
+    ; Is the current alien dead or new
     AND _ALIEN_STATE_DEAD | _ALIEN_STATE_NEW,A
     JR NZ,.done                                         ; Dead or new so nothing to do
 
@@ -351,6 +316,20 @@ blank_alien:
 
     POP DE
     POP DE
+
+    JR .done
+
+.blank_explosion
+    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    PUSH HL 
+
+    LD HL,sprites.sprite_alien_explosion_blank
+    PUSH HL
+
+    CALL fast_draw.fast_draw_sprite_16x8
+
+    POP HL
+    POP HL
 
 .done
     POP IX,HL,DE,AF
@@ -915,8 +894,44 @@ alien_hit_by_player_missile:
     LD (IY+alien_pack._STATE_OFFSET_STATE),_ALIEN_STATE_DIEING
 
     ; Blank out the alien
+    ; PUSH HL
+    ; CALL _blank_alien_now
+    ; POP HL
+
+    ; Blank old sprite position
+    LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    PUSH HL     
+
+    ; Select sprite mask based on variant
+    LD A,(IY+_STATE_OFFSET_VARIANT)           
+    BIT _ALIEN_VARIANT_1_BIT,A
+    JR NZ,.variant_1_is_current                         
+                             
+    LD HL,(IY+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
+    JR .variant_selected
+
+.variant_1_is_current:   
+    LD HL,(IY+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
+
+.variant_selected:
+    PUSH HL                                             ; Mask is in HL
+
+    CALL fast_draw.fast_draw_sprite_16x8
+
+    POP DE
+    POP DE
+
+
+    ; Draw alien explosion
+    LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    PUSH HL  
+
+    LD HL,sprites.sprite_alien_explosion;
     PUSH HL
-    CALL _blank_alien_now
+  
+    CALL fast_draw.fast_draw_sprite_16x8
+
+    POP HL
     POP HL
 
     POP IY,IX,HL
