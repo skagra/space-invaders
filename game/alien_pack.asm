@@ -141,12 +141,6 @@ _current_pack_variant_flag:             BLOCK 1         ; Current variant for wa
 _pack_direction:                        BLOCK 1         ; Current direction of alient pack taken from _PACK_DIRECTION_* constants
 _pack_loop_counter:                     BLOCK 1         ; Loop counter decremented as each alien is processed so we know when to go back to start of the pack
 
-_current_alien_new_coords:              BLOCK 2         ; Calculated new coordinates of the current alien
-
-_deferred_alien_state:                  BLOCK 2         ; Alien state used for deferred drawing
-_deferred_alien_sprite:                 BLOCK 2         ; Alien sprite used for deferred drawing
-_deferred_alien_coords:                 BLOCK 2         ; Alien coords used for deferred drawing
-
 _pack_bl_coords:
 _pack_bottom:                           BLOCK 1
 _pack_left:                             BLOCK 1
@@ -188,21 +182,9 @@ init:
     LD HL,_ALIEN_LOOKUP                            
     LD (_current_alien_lookup_ptr),HL
 
-    ; Pack variant
-    LD HL,_alien_state
-    INC HL
-    INC HL
-    INC HL
-    INC HL
-    LD DE,(HL)
-    LD (_deferred_alien_sprite),DE
-
-    ; First state
-    LD A,_ALIEN_STATE_NEW
-    LD (_deferred_alien_state),A
-
-    LD HL, 0x1060
-    LD (_deferred_alien_coords),HL
+    ; Initial pack variant
+    LD A,_ALIEN_VARIANT_0
+    LD (_current_pack_variant_flag),A        
 
     ; Pack loop counter
     LD A,_ALIEN_PACK_SIZE
@@ -222,8 +204,45 @@ init:
     LD A,0xA0
     LD (_pack_right),A                      
 
-
     POP HL,DE,AF
+
+    RET
+
+blank_alien_now:
+    PUSH AF,DE,HL,IX
+
+    LD  IX,0                                            ; Point IX to the stack
+    ADD IX,SP
+    LD HL,(IX+10)
+
+    ; Point IX at the state structure for the current alien
+    LD IX,HL
+    
+    ; Blank old sprite position
+    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    PUSH HL     
+
+    ; Select sprite mask based on variant
+    LD A,(_current_pack_variant_flag)          
+    BIT _ALIEN_VARIANT_1_BIT,A
+    JR NZ,.variant_1_is_current                         
+                             
+    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
+    JR .variant_selected
+
+.variant_1_is_current:   
+    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
+
+.variant_selected:
+    PUSH HL                                             ; Mask is in HL
+
+    CALL fast_draw.fast_draw_sprite_16x8
+
+    POP DE
+    POP DE
+
+.done
+    POP IX,HL,DE,AF
 
     RET
 
@@ -244,7 +263,7 @@ init:
 ;
 ;------------------------------------------------------------------------------
 
-blank_current_alien:
+blank_alien:
     PUSH AF,DE,HL,IX
 
     ; Point IX at the state structure for the current alien
@@ -266,11 +285,11 @@ blank_current_alien:
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
+    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
+    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
 
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
@@ -302,19 +321,35 @@ blank_current_alien:
 ;
 ;------------------------------------------------------------------------------
 
-draw_deferred_alien:
-    PUSH AF,DE,HL
+draw_current_alien:
+    PUSH AF,DE,HL,IX
+    
+     ; Point IX at the state structure for the current alien
+    LD HL,(_current_alien_lookup_ptr)
+    LD DE,(HL)
+    LD IX,DE
     
     ; Is the deferred alien active pr new
-    LD A,(_deferred_alien_state)
+    LD A,(IX+_STATE_OFFSET_STATE)
     AND _ALIEN_STATE_ACTIVE|_ALIEN_STATE_NEW,A    
     JR Z,.done                                          ; Dead on dieing so don't draw
 
-    LD HL,(_deferred_alien_coords)                      ; Coords
+    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL  
 
-    LD HL,(_deferred_alien_sprite) 
-    PUSH HL                                             ; Sprite
+    ; Select sprite mask based on variant
+    LD A,(_current_pack_variant_flag)          
+    BIT _ALIEN_VARIANT_1_BIT,A
+    JR NZ,.variant_1_is_current                         
+                             
+    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE)               ; Use sprite as mask 
+    JR .variant_selected
+
+.variant_1_is_current:   
+    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)               ; Use sprite as mask 
+
+.variant_selected:
+    PUSH HL                                             ; Mask is in HL
 
     CALL fast_draw.fast_draw_sprite_16x8
 
@@ -322,7 +357,7 @@ draw_deferred_alien:
     POP DE
 
 .done:
-    POP HL,DE,AF
+    POP IX,HL,DE,AF
 
     RET
 
@@ -425,7 +460,7 @@ _calc_current_alien_new_coords:
     ; Moving left
     DEC D                                               ; Decrease the X coord by 2
     DEC D
-    LD (_current_alien_new_coords),DE                   ; Store new coords
+    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                   ; Store new coords
 
     JR .done_moving
 
@@ -436,7 +471,7 @@ _calc_current_alien_new_coords:
     ; Moving right
     INC D                                               ; Increase X by 2
     INC D
-    LD (_current_alien_new_coords),DE                   ; Store new coords
+    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                   ; Store new coords
 
     JR .done_moving
 
@@ -445,7 +480,7 @@ _calc_current_alien_new_coords:
     LD A,8                                              ; Increase Y by 8
     ADD A,E
     LD E,A
-    LD (_current_alien_new_coords),DE                   ; Store new coords
+    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                   ; Store new coords
 
 .done_moving:
     POP IX,HL,DE,AF
@@ -454,7 +489,7 @@ _calc_current_alien_new_coords:
 
 _update_pack_bounds:
     PUSH AF,DE
-    LD DE,(_current_alien_new_coords)                   ; New x,y coords
+    LD DE,(IX+_STATE_OFFSET_DRAW_COORDS)                   ; New x,y coords
 
     ; What direction is the pack travelling
     LD A,(_pack_direction)
@@ -545,11 +580,6 @@ update_current_alien:
 
 .new:
     LD (IX+_STATE_OFFSET_STATE),_ALIEN_STATE_ACTIVE
-    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
-
-    ; New alien - first time deferred draw so don't move
-    LD (_current_alien_new_coords),HL
-
     JR .done
 
 .active:
@@ -585,35 +615,6 @@ update_current_alien:
 
 next_alien:
     PUSH AF,DE,HL,IX
-    
-    ; Point IX at the state structure for the current alien
-    LD HL,(_current_alien_lookup_ptr)
-    LD DE,(HL)
-    LD IX,DE
-
-    ; Set up the deferred draw
-    LD HL,(_current_alien_new_coords)                   ; Coords
-    LD (_deferred_alien_coords),HL    
-
-    LD HL,(IX+_STATE_OFFSET_STATE)                      ; State
-    LD (_deferred_alien_state),HL
-
-    LD A,(_current_pack_variant_flag)                   ; Variant         
-    BIT _ALIEN_VARIANT_1_BIT,A
-    JR NZ,.variant_1   
-
-    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)               ; Sprite and mask variant 0
-    LD (_deferred_alien_sprite),HL
-    JR .variant_done
-
-.variant_1:  
-    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE)               ; Sprite and mask variant 1
-    LD (_deferred_alien_sprite),HL
-
-.variant_done:
-    ; Copy new coords into current alien
-    LD HL,(_current_alien_new_coords)    
-    LD (IX+_STATE_OFFSET_DRAW_COORDS),HL 
 
     ; Move to next alien in the lookup table
     LD HL,(_current_alien_lookup_ptr) 

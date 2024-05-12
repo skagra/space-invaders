@@ -3,8 +3,6 @@
 _module_start:
 
 PLAYER_Y:               EQU draw.SCREEN_HEIGHT_PIXELS-20
-
-deferred_player_x:      BLOCK 1
 player_x:               BLOCK 1
 
 ;------------------------------------------------------------------------------
@@ -26,7 +24,6 @@ init:
 
     LD A,._START_PLAYER_X
     LD (player_x),A
-    LD (deferred_player_x),A
 
     POP AF
 
@@ -48,11 +45,11 @@ init:
 ;   -
 ;------------------------------------------------------------------------------
 
-draw_deferred_player:
+draw_player:
     PUSH AF,DE
 
     ; Draw the player base sprite
-    LD A, (deferred_player_x)                           ; Player base coords
+    LD A, (player_x)                                    ; Player base coords
     LD D,A
     LD E, PLAYER_Y
     PUSH DE
@@ -106,9 +103,6 @@ blank_player:
 update_player:
     PUSH AF,DE
 
-    LD A,(deferred_player_x)
-    LD (player_x),A
-
     ; Read the keyboard
     LD DE,(keyboard.keys_down)
 
@@ -116,21 +110,21 @@ update_player:
     BIT keyboard.LEFT_KEY_DOWN_BIT,E                    ; Left pressed?
     JR Z,.left_not_pressed                              ; No
 
-    LD A,(deferred_player_x)                            ; Get current player base X coord
+    LD A,(player_x)                                     ; Get current player base X coord
     DEC A                                               ; Decrease it to move left
     CP ._MIN_PLAYER_X                                   ; Have we hit the left most point?
     JR Z,.done                                          ; Yes so don't update
-    LD (deferred_player_x),A                            ; Update the location of the player base
+    LD (player_x),A                                     ; Update the location of the player base
     JR .done
 
 .left_not_pressed
     BIT keyboard.RIGHT_KEY_DOWN_BIT,E                   ; Right pressed?
     JR Z,.done                                          ; No
-    LD A,(deferred_player_x)                            ; Get current player base X coord
+    LD A,(player_x)                                     ; Get current player base X coord
     INC A                                               ; Increase it to move right
     CP ._MAX_PLAYER_X                                   ; Have we hit the right most point?
     JR NC,.done                                         ; Yes so don't update
-    LD (deferred_player_x),A                            ; Update the location of the player base
+    LD (player_x),A                                     ; Update the location of the player base
 
 .done:
     POP DE,AF

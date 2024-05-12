@@ -39,6 +39,7 @@
 * ~~Add fast run options that compiles out wait for vsync~~
 * Add coords to inline print
 * Add print_and_flush
-* Seems to be a sprite drawing but - 4 deep horiz line, bottom pixel shifted left!
+* ~~Seems to be a sprite drawing but - 4 deep horiz line, bottom pixel shifted left!~~
+* Add pointer to first non-dead alien as optimization
 
   

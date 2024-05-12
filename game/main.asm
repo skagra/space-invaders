@@ -78,23 +78,38 @@ main:
     ; Read keyboard
     CALL keyboard.get_movement_keys
 
-    ; Draw player bullet if there is one
-    CALL player_bullet.draw_deferred_bullet
+    ; Erase player base
+    CALL player.blank_player
 
-    ; Draw the current alien
-    CALL alien_pack.draw_deferred_alien ; problem is we detect the collision here - but we've moved on now to the next alien!  Can we ditch the whole deferred think now we have double buffering
+    ; Calcate new coordinates for the player base
+    CALL player.update_player
 
     ; Draw the player base
-    CALL player.draw_deferred_player
+    CALL player.draw_player
+
+    ; Erase current player bullet
+    CALL player_bullet.blank_bullet
 
     ; Calculate new coordinates and handle state changes for the player bullet               
     CALL player_bullet.update_bullet
 
-    ; Calculate new coordinates and variant for current alien
+    ; Draw player bullet if there is one
+    CALL player_bullet.draw_player_bullet
+
+    ; Erase the current alien
+    CALL alien_pack.blank_alien
+
+    ; Calculate new coordinates and variant for current alien  
     CALL alien_pack.update_current_alien  
 
-    ; Calcate new coordinates for the player base
-    CALL player.update_player
+    ; DO WE NEED A SEPARATE CHECK COLLISIONS ALSO WE NEED TO BLANK DEAD ALEN NOW NOT ON ITS NEXT REDRAW!
+    ; WHERE BLANK NOW IS US BUST TOO - SHOULD BE A CALL INTO ALIEN PACK PERHAPS TO SAY "ALIEN HAS BEEN HIT" - IT DEALS WITH STATE AND BLANKING
+
+    ; Draw the current alien
+    CALL alien_pack.draw_current_alien 
+
+    ; Move on to next alien
+    CALL alien_pack.next_alien
 
     IFNDEF IGNORE_VSYNC
         ; Wait for Vsync
@@ -106,18 +121,6 @@ main:
     CALL fast_draw.fast_copy_buffer_to_screen_16x8
 
     DEBUG_VTRACE_FLASH
-
-    ; Erase the current alien
-    CALL alien_pack.blank_current_alien
-    
-    ; Erase current player bullet
-    CALL player_bullet.blank_bullet
-
-    ; Erase player base
-    CALL player.blank_player
-
-    ; Move on to next alien
-    CALL alien_pack.next_alien
 
     JP .animation_loop           
 
