@@ -33,6 +33,7 @@ _STATE_OFFSET_VAR_1_SPRITE:             EQU 4           ; Second variant sprite
 _STATE_OFFSET_VAR_0_BLANK:              EQU 6           ; First variant blank
 _STATE_OFFSET_VAR_1_BLANK:              EQU 8           ; Second variant blank
 _STATE_OFFSET_STATE:                    EQU 10          ; Status of sprite from _ALIEN_STATE_* values
+_STATE_OFFSET_VARIANT:                  EQU 11
 
 _AS_SIZE:                               EQU 12          ; Size of the alien sprite structure
 
@@ -56,64 +57,114 @@ _ALIEN_BOTTOM:                          EQU 0x20
 ; Alien pack as per _STATE_OFFSET_* constants
 _alien_state:
     ; Bottom row - Row 0
-    WORD 0x1060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x2060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x3060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x4060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x5060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x6060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x7060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x8060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x9060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0xA060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x1060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x2060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x3060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x4060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x5060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x6060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x7060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x8060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x9060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0xA060,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
 
     ; Row 1
-    WORD 0x1050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x2050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x3050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x4050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x5050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x6050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x7050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x8050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x9050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0xA050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x1050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x2050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x3050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x4050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x5050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x6050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x7050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x8050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x9050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0xA050,sprites.sprite_alien_1_variant_0,sprites.sprite_alien_1_variant_1,sprites.sprite_alien_1_variant_0_blank,sprites.sprite_alien_1_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
     
     ; Row 2
-    WORD 0x1040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x2040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x3040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x4040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x5040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x6040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x7040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x8040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x9040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0xA040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x1040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x2040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x3040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x4040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x5040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x6040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x7040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x8040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x9040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0xA040,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
 
     ; Row 3
-    WORD 0x1030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x2030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x3030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x4030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x5030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x6030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x7030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x8030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x9030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0xA030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x1030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x2030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x3030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x4030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x5030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x6030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x7030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x8030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x9030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0xA030,sprites.sprite_alien_2_variant_0,sprites.sprite_alien_2_variant_1,sprites.sprite_alien_2_variant_0_blank,sprites.sprite_alien_2_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
 
     ; Row 4
-    WORD 0x1020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x2020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x3020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x4020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x5020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW
-    WORD 0x6020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x7020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x8020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0x9020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW 
-    WORD 0xA020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank,_ALIEN_STATE_NEW
+    WORD 0x1020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x2020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x3020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x4020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x5020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x6020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x7020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x8020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0x9020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
+    WORD 0xA020,sprites.sprite_alien_3_variant_0,sprites.sprite_alien_3_variant_1,sprites.sprite_alien_3_variant_0_blank,sprites.sprite_alien_3_variant_1_blank
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0
 
 ; Lookup table into _alien_state table
 _ALIEN_LOOKUP:
@@ -132,7 +183,9 @@ _ALIEN_LOOKUP:
     ; Row 4
     WORD _alien_state+_AS_SIZE*40, _alien_state+_AS_SIZE*41, _alien_state+_AS_SIZE*42, _alien_state+_AS_SIZE*43, _alien_state+_AS_SIZE*44 
     WORD _alien_state+_AS_SIZE*45, _alien_state+_AS_SIZE*46, _alien_state+_AS_SIZE*47, _alien_state+_AS_SIZE*48, _alien_state+_AS_SIZE*49
-    
+
+_ALIEN_LOOKUP_LAST:                     EQU $-2
+
 ; Number of aliens in total in new pack
 _ALIEN_PACK_SIZE:                       EQU ($-_ALIEN_LOOKUP)/2
 
@@ -149,8 +202,8 @@ _pack_tr_coords:
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
-_PACK_MAX_RIGHT:                        EQU 240
-_PACK_MIN_LEFT:                         EQU 3
+_PACK_MAX_RIGHT:                        EQU 240-16
+_PACK_MIN_LEFT:                         EQU 16
 
 ;------------------------------------------------------------------------------
 ;
@@ -208,7 +261,7 @@ init:
 
     RET
 
-blank_alien_now:
+_blank_alien_now:
     PUSH AF,DE,HL,IX
 
     LD  IX,0                                            ; Point IX to the stack
@@ -223,7 +276,7 @@ blank_alien_now:
     PUSH HL     
 
     ; Select sprite mask based on variant
-    LD A,(_current_pack_variant_flag)          
+    LD A,(IX+_STATE_OFFSET_VARIANT)           
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
@@ -281,7 +334,7 @@ blank_alien:
     PUSH HL     
 
     ; Select sprite mask based on variant
-    LD A,(_current_pack_variant_flag)          
+    LD A,(IX+_STATE_OFFSET_VARIANT)        
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
@@ -338,19 +391,25 @@ draw_current_alien:
     PUSH HL  
 
     ; Select sprite mask based on variant
-    LD A,(_current_pack_variant_flag)          
+    LD A,(_current_pack_variant_flag)                   ; Which variant are we currently using       
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
-                             
-    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE)               ; Use sprite as mask 
+
+    ; Using variant 0                         
+    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)
+    PUSH HL 
+
+    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_0 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)               ; Use sprite as mask 
+    ; Using variant 1
+    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE) 
+    PUSH HL
+
+    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_1
 
 .variant_selected:
-    PUSH HL                                             ; Mask is in HL
-
     CALL fast_draw.fast_draw_sprite_16x8
 
     POP DE
@@ -441,6 +500,7 @@ _adjust_alien_pack_direction:
 ;   -
 ;
 ;------------------------------------------------------------------------------
+
 _calc_current_alien_new_coords:
     PUSH AF,DE,HL,IX
 
@@ -616,18 +676,26 @@ update_current_alien:
 next_alien:
     PUSH AF,DE,HL,IX
 
-    ; Move to next alien in the lookup table
     LD HL,(_current_alien_lookup_ptr) 
-    INC HL
-    INC HL
-    LD (_current_alien_lookup_ptr),HL ; TODO - Search for next non-dead alien - 
-
-    ; Are we done drawing the entire pack?
+.loop
+    ; Move to next alien in the lookup table
     LD A,(_pack_loop_counter)
     DEC A
     LD (_pack_loop_counter),A
-    JR NZ,.more_aliens_to_draw
+    JR Z,.next_pack
 
+    INC HL
+    INC HL
+    LD DE,(HL)
+    LD IX,DE
+    LD A,(IX+_STATE_OFFSET_STATE)
+    BIT _ALIEN_STATE_DEAD_BIT,A
+    JR NZ,.loop
+
+    LD (_current_alien_lookup_ptr),HL
+    JR .more_aliens_to_draw
+
+.next_pack:
     CALL _next_pack_cycle
     LD A,_ALIEN_PACK_SIZE
     LD (_pack_loop_counter),A
@@ -672,6 +740,186 @@ _next_pack_cycle:
     POP HL,AF
 
     DEBUG_CYCLE_FLASH
+
+    RET
+
+get_alien_at_coords:
+
+._PARAM_COORDS:       EQU 16                            ; Coords to look for alien
+._RTN_ALIEN_PTR       EQU 14                            ; Return value
+
+    PUSH AF,BC,DE,HL,IX,IY
+
+    ; Point IY to the stack
+    LD  IY,0                                            
+    ADD IY,SP   
+
+    ; Flag hit not found
+    LD (IY+._RTN_ALIEN_PTR), 0xFF                       
+    LD (IY+._RTN_ALIEN_PTR+1), 0xFF
+
+    ; Index of current alien
+    LD A,0x00                                           
+    LD (.alien_index),A
+
+    ; Get the target coordinates and store for later
+    LD HL,(IY+._PARAM_COORDS);
+    LD (.target_coords),HL
+
+    ; LOGPOINT [COLLISION] get_alien_at_coords: Target coords X=${H} Y=${L}
+
+    ; Initialize pointer to scan through alien lookup table
+    LD HL,_ALIEN_LOOKUP                                   
+    LD (.alien_lookup_trace), HL                        
+
+.y_loop
+    ; Get current alien state
+    LD HL,(.alien_lookup_trace)                         ; Get location in alien lookup table
+    LD DE,(HL)                                          ; Dereference to get pointer to alien state
+    LD IX,DE                                            ; Set IX to point to alien state
+
+    ; Is the alien active?
+    LD A,(IX+alien_pack._STATE_OFFSET_STATE);           ; Is alien active?
+    BIT alien_pack._ALIEN_STATE_ACTIVE_BIT,A
+    JR Z,.row_not_found                                 ; No - so skip it
+
+    IFDEF DEBUG
+        LD B,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)
+        ; LOGPOINT [COLLISION] get_alien_at_coords: Testing top at ${B}
+    ENDIF
+
+    ; Is the target Y "below" to top of the alien - Y coords increase as we go down the screen
+    LD A,(.target_y)                                    ; Y coord of collision
+    CP (IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)      ; Compare to top of alien
+    JR C,.row_not_found                                 ; Is the top of the alien coord greater than the target coord
+
+    ; Is the target Y "above" the bottom of the alien?
+    LD A,(.target_y)
+    LD B,A
+    LD A,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)
+    ADD 0x08                                            ; Bottom of alien is at +8
+
+    ; LOGPOINT [COLLISION] get_alien_at_coords: Testing bottom at ${A}
+
+    CP B
+    JR C,.row_not_found                                 ; Bottom of alien > target_y => not found
+
+    ; LOGPOINT [COLLISION] get_alien_at_coords: Row match at index ${b@(alien_pack.get_alien_at_coords.alien_index)}
+
+    JR .x_loop                                          ; We have found the correct row - now search for the correct column
+
+.row_not_found:
+    ; LOGPOINT [COLLISION] get_alien_at_coords: Not a row match
+
+    ; Have we at the end of the list of aliens?
+    LD A,(.alien_index)
+    INC A
+    CP _ALIEN_PACK_SIZE
+    JR Z, .not_found
+    LD (.alien_index),A
+
+    ; Skip to next alien 
+    LD HL,(.alien_lookup_trace)                        
+    INC HL
+    INC HL
+    LD (.alien_lookup_trace),HL
+
+    JR .y_loop                                          ; Try the next column
+
+.x_loop:
+    LD HL,(.alien_lookup_trace)                         ; Get location in alien lookup table
+    LD DE,(HL)                                          ; Dereference to get pointer to alien state
+    LD IX,DE                                            ; Point IX to alien state
+
+    ; Is the alien active?
+    LD A,(IX+alien_pack._STATE_OFFSET_STATE);           ; Is the alien active?
+    BIT alien_pack._ALIEN_STATE_ACTIVE_BIT,A
+    JR Z,.col_not_found                                 ; No - so skip it
+   
+    ; Is the target X <= alien RHS
+    LD A,(.target_x)
+    LD A,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_X)    ; Alien X coord
+    ADD 14                                              ; RHS of alien is at +16  TODO
+    LD B,A
+    LD A,(.target_x)
+    ; LOGPOINT [COLLISION] get_alien_at_coords: Testing RHS=${B}
+    CP B                                                ; Compare alien RHS with target X
+    JR NC,.col_not_found                                ; If target X is greater than alien RHS move to next
+
+    ; Is the target X >= alien LHS
+    IFDEF DEBUG
+        LD B,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_X)
+        ; LOGPOINT [COLLISION] get_alien_at_coords: Testing LHS at ${B}
+    ENDIF
+    LD A,(.target_x)
+    INC A
+    INC A
+    CP (IX+alien_pack._STATE_OFFSET_DRAW_COORDS_X)                                              
+    JR C,.col_not_found                                 ; No, so not this alien.  TODO Can we jump right to done here?
+
+    ; Alien found
+    ; LOGPOINT [COLLISION] get_alien_at_coords: Match found at index ${b@(alien_pack.get_alien_at_coords.alien_index)}
+
+    ; Set the return value
+    LD HL,(.alien_lookup_trace)                         
+    LD DE,(HL)
+    LD (IY+._RTN_ALIEN_PTR),E
+    LD (IY+._RTN_ALIEN_PTR+1),D
+
+    JR .done
+
+.col_not_found:                                         ; Target column not found
+    ; Are we at end of pack?
+    LD A,(.alien_index)
+    INC A
+    CP _ALIEN_PACK_SIZE
+    JR Z,.not_found
+    LD (.alien_index),A
+
+    LD HL,(.alien_lookup_trace)                         ; Move to next alien in lookup table
+    INC HL
+    INC HL
+    LD (.alien_lookup_trace),HL
+    JR .x_loop                                          ; Next alien
+
+.not_found:
+    ; LOGPOINT [COLLISION] get_alien_at_coords: Match NOT found
+    NOP 
+
+.done
+    POP IY,IX,HL,DE,BC,AF
+
+    RET
+
+.alien_lookup_trace:    WORD 1
+.target_coords:
+.target_y:              BYTE 1
+.target_x:              BYTE 1
+.alien_index:           BYTE 1
+
+alien_hit_by_player_missile:
+
+.PARAM_ALIEN_STATE_PTR EQU 8
+
+    PUSH HL,IX,IY
+
+    ; Point IX to the stack
+    LD  IX,0                                            
+    ADD IX,SP   
+
+    ; Pointer the the alien state of the collided alien
+    LD HL,(IX+.PARAM_ALIEN_STATE_PTR)
+
+    ; Set the alien state to be dieing
+    LD IY,HL
+    LD (IY+alien_pack._STATE_OFFSET_STATE),_ALIEN_STATE_DIEING
+
+    ; Blank out the alien
+    PUSH HL
+    CALL _blank_alien_now
+    POP HL
+
+    POP IY,IX,HL
 
     RET
 

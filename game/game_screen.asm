@@ -143,9 +143,9 @@ init_screen:
 ._SPACESHIP_GEL_HEIGHT:     EQU 1
 ._CREDIT_WIDTH:             EQU 10
 
-._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>   ",0
-._SCORE_LINE_1_TEXT:        BYTE "     0000    0000      0000     ",0
-._LIVES_AND_CREDS_TEXT:     BYTE " 3                    CREDIT 00 ",0
+._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
+._SCORE_LINE_1_TEXT:        BYTE "     0000    0000      0000  ",0
+._LIVES_AND_CREDS_TEXT:     BYTE "   3                CREDIT 00",0
 
 ; TODO
 draw_score_1:
@@ -188,7 +188,7 @@ draw_reserve_bases:
     RET
 
 ._RESERVE_BASE_Y:     EQU draw.SCREEN_HEIGHT_PIXELS-8-1
-._RESERVE_BASE_1_X:   EQU 3*8
+._RESERVE_BASE_1_X:   EQU 16+3*8
 ._RESERVE_BASE_2_X:   EQU ._RESERVE_BASE_1_X+16
 
 draw_reserve_base:
@@ -247,10 +247,10 @@ draw_shields:
 
     RET
 
-._SHIELD_1_X:       EQU 30
-._SHIELD_2_X:       EQU draw.SCREEN_WIDTH_PIXELS/2-30-(22/2)
-._SHIELD_3_X:       EQU draw.SCREEN_WIDTH_PIXELS/2+30-(22/2)
-._SHIELD_4_X:       EQU draw.SCREEN_WIDTH_PIXELS-30-(22/2)
+._SHIELD_1_X:       EQU 16+24
+._SHIELD_2_X:       EQU ._SHIELD_1_X+48
+._SHIELD_3_X:       EQU ._SHIELD_2_X+48
+._SHIELD_4_X:       EQU ._SHIELD_3_X+48
 ._SHIELD_Y:         EQU draw.SCREEN_HEIGHT_PIXELS-8*5
 
 draw_shield:
@@ -281,10 +281,10 @@ draw_shield:
 draw_horiz_line:
     PUSH AF,BC,DE,HL
 
-    LD B,0
+    LD B,16
     LD C,_.HORIZ_LINE_Y
 
-    LD L,32
+    LD L,28
 
 .loop       
     PUSH BC 

@@ -41,5 +41,7 @@
 * Add print_and_flush
 * ~~Seems to be a sprite drawing but - 4 deep horiz line, bottom pixel shifted left!~~
 * Add pointer to first non-dead alien as optimization
+* Remove all hard coded positions - replace with constants and calculation - game screen is the greatest offender here
+* Replace infinite loop errors traps with ASSERTION
 
   

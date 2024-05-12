@@ -48,6 +48,7 @@
     INCLUDE "alien_pack.asm"
     INCLUDE "print.asm"
     INCLUDE "game_screen.asm"
+    INCLUDE "collision.asm"
 
     MODULE main
 
@@ -69,6 +70,7 @@ main:
     CALL player.init
     CALL player_bullet.init
     CALL alien_pack.init
+    CALL collision.init
 
     ; Draw the initial screen
     CALL game_screen.init_screen
@@ -96,14 +98,14 @@ main:
     ; Draw player bullet if there is one
     CALL player_bullet.draw_player_bullet
 
+    ; Handle collisions with player missile 
+    CALL collision.handle_collision
+
     ; Erase the current alien
     CALL alien_pack.blank_alien
 
     ; Calculate new coordinates and variant for current alien  
     CALL alien_pack.update_current_alien  
-
-    ; DO WE NEED A SEPARATE CHECK COLLISIONS ALSO WE NEED TO BLANK DEAD ALEN NOW NOT ON ITS NEXT REDRAW!
-    ; WHERE BLANK NOW IS US BUST TOO - SHOULD BE A CALL INTO ALIEN PACK PERHAPS TO SAY "ALIEN HAS BEEN HIT" - IT DEALS WITH STATE AND BLANKING
 
     ; Draw the current alien
     CALL alien_pack.draw_current_alien 

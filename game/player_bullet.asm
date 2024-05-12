@@ -19,7 +19,7 @@ _module_start:
 ;------------------------------------------------------------------------------
 
 ; Configuration constants
-_BULLET_START_Y:                            EQU draw.SCREEN_HEIGHT_PIXELS-28    ; Starting Y coordinate for a new bullet
+_BULLET_START_Y:                            EQU draw.SCREEN_HEIGHT_PIXELS-24    ; Starting Y coordinate for a new bullet
 _BULLET_MIN_Y:                              EQU 20                              ; The top of bullet trajectory
 _BULLET_STEP_SIZE:                          EQU 4                               ; Number of pixels to move bullet on each animation cycle
 _BULLET_EXPLOSION_CYCLES:                   EQU 10                              ; Number of draw cycles to keep the bullet explosion on the screen
@@ -148,8 +148,16 @@ blank_bullet:
     ; Erase explosion
     LD A,(_bullet_x)                                    ; Coords
     LD D,A
+
+    LD A,(_bullet_state)
+    BIT _BULLET_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
     LD A,(_bullet_y)
-    LD E,A
+    JR NZ,.explosion_at_top_of_screen
+    DEC A                                               ; XXX Hack to get shield descruction working!
+    DEC A                                               ; But breaks top of screen erasure - Must be a better solution
+
+.explosion_at_top_of_screen:
+    LD E,A                                              ; than branching on state here?
     PUSH DE
          
     LD DE, sprites.sprite_player_bullet_explosion_blank_dims  ; Dimensioons
@@ -370,9 +378,9 @@ update_bullet:
     JR C,.active_reached_top_of_screen
 
     ; Check whether a collision has been flagged
-    LD A,(_collision_detected)
-    CP 0x01
-    JR Z,.active_collision_detected
+    ; LD A,(_collision_detected)
+    ; CP 0x01
+    ; JR Z,.active_collision_detected
 
     ; Active bullet moving up the screen
     LD A,(_bullet_y)
@@ -389,8 +397,6 @@ update_bullet:
 
 .active_collision_detected:
     ; LOGPOINT [COLLISION] Player bullet collision detected x=${b@(draw_common.collision_x)} y=${b@(draw_common.collision_y)}
-
-    CALL _find_what_bullet_hit
 
     LD HL,_bullet_state                                                 
     LD (HL),_BULLET_STATE_COLLIDED
@@ -421,18 +427,23 @@ update_bullet:
 
     JR .done
 
+; .collided:
+;     LD A,draw.SCREEN_HEIGHT_PIXELS-56                   ; TODO Should be based on bottom of pack - Even this does not cover cases
+;     LD HL,_bullet_y                                     ;      bottom of pack is part way through destroying shields
+;     LD D,(HL)                                           ;      Should be fixable once we have propper collision detection with aliens done
+;     CP D
+
+;  ;   JR NC,.hit_an_alien
+
+;     ; Hit a shield
+;     LD HL,_bullet_state
+;     LD (HL),_BULLET_STATE_HIT_A_SHIELD
+
+;     JR .done
+
 .collided:
-    LD A,draw.SCREEN_HEIGHT_PIXELS-56                   ; TODO Should be based on bottom of pack - Even this does not cover cases
-    LD HL,_bullet_y                                     ;      bottom of pack is part way through destroying shields
-    LD D,(HL)                                           ;      Should be fixable once we have propper collision detection with aliens done
-    CP D
-
-    JR NC,.hit_an_alien
-
-    ; Hit a shield
     LD HL,_bullet_state
-    LD (HL),_BULLET_STATE_HIT_A_SHIELD
-
+    LD (HL),_BULLET_STATE_NO_BULLET
     JR .done
 
 .hit_an_alien
@@ -452,121 +463,25 @@ update_bullet:
 
     RET
 
-; NOTES - not accounted for part moved pack
-;       - check state of hit alient
-;       - perhaps this is the central location for collision
-;       - it could decide that a base has been hit or an alien bullet
-;       - no protection currently to running off the loop!
+bullet_hit_alien:
+    PUSH HL
 
-_find_what_bullet_hit:
-    PUSH AF,BC,DE,IX
+    LD HL,_bullet_state
+    LD (HL),_BULLET_STATE_COLLIDED
 
-    LD HL,alien_pack._ALIEN_LOOKUP                      ; Alien lookup table  
-    LD (.alien_lookup_trace), HL                        ; Initialize pointer to current alien
-
-    ; Top of the alien is at y coord 8 lower than its top (top then is at y+8)
-    ; Alien (in our scan order) may be at y coord 8 higher than it's right hand neighbour
-    ; if pack is moving down and current alien has moved but right hand neighbour has not
-    LD A,(draw_common.collision_y)                      ; Top of the alien 8 pixels
-    ; SUB A,0x08                                        ; lower than its coord
-    LD (.adjusted_collision_y),A                        ; Adjust the collision point appropriately
-
-.y_loop
-    LD HL,(.alien_lookup_trace)                         ; Get location in lookup table
-    LD DE,(HL)                                          ; Dereference to find alien state
-    LD IX,DE                                            ; Point IX at the current alien
-
-    LD A,(IX+alien_pack._STATE_OFFSET_STATE);
-    BIT alien_pack._ALIEN_STATE_ACTIVE_BIT,A
-    JR NZ,.eligable 
-
-    LD HL,(.alien_lookup_trace)
-    INC HL
-    INC HL
-    LD (.alien_lookup_trace),HL
-    JR .y_loop
-
-
-.eligable:
-    LD A,(.adjusted_collision_y)                        ; Y coord of collision
-    CP (IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)      ; Top of current alien
-
-    LD B,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)
-    ; LOGPOINT [COLLISION] _find_what_bullet_hit: 1 Test collision bullet_y=${(player_bullet._find_what_bullet_hit.adjusted_collision_y)} alien_y=${B}
-
-    JR C,.row_not_found
-
-    ; LOGPOINT [COLLISION] _find_what_bullet_hit: 2 Bullet collided with alien row lookup starting ${w@(player_bullet._find_what_bullet_hit.alien_lookup_trace):hex}
-
-    JR .x_loop
-
-.row_not_found:
-    ; LOGPOINT [COLLISION] _find_what_bullet_hit: 22 Row not found, trying next row up
-
-    LD HL,(.alien_lookup_trace)
-    LD D,0x00
-    LD E,20                                             ; Add twenty - 10 aliens per row, 2 byte pointers
-    ADD HL,DE                                           ; Skip to next row of aliens
-    LD (.alien_lookup_trace),HL
-
-    JR .y_loop
-
-.x_loop:
-    LD HL,(.alien_lookup_trace)                         ; Get location in lookup table
-    LD DE,(HL)                                          ; Dereference to find alien state
-    LD IX,DE                                            ; Point IX at the current alien
-
-    LD A,(IX+alien_pack._STATE_OFFSET_STATE);
-    BIT alien_pack._ALIEN_STATE_ACTIVE_BIT,A
-    JR Z,.col_not_found
-
-    ; Scan X coord
-    LD A,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_X)
-    ADD 0x08
-    LD HL, draw_common.collision_x
-    LD B,(HL)
-    CP B
-
-    ; LOGPOINT [COLLISION] 3 _find_what_bullet_hit: Test collision bullet_x=${B} alien_x=${A}
- 
-    JR C,.col_not_found
-
-    LD A,alien_pack._ALIEN_STATE_DIEING
-    LD (IX+alien_pack._STATE_OFFSET_STATE),A
-
-    JR .done
-
-.col_not_found:
-    LD HL,(.alien_lookup_trace)
-    INC HL
-    INC HL
-    LD (.alien_lookup_trace),HL
-    JR .x_loop
-
-.done
-    ; LOGPOINT [COLLISION] _find_what_bullet_hit: Bullet collided with x matched ${w@(player_bullet._find_what_bullet_hit.alien_lookup_trace):hex} 
-
-    IFDEF DEBUG
-        LD HL,(.alien_lookup_trace)
-        LD DE,alien_pack._ALIEN_LOOKUP
-        SUB HL,DE
-        SRA H
-        RR L
-        ; LOGPOINT [COLLISION] _find_what_bullet_hit: Index of matched alien ${HL}
-    ENDIF
-    
-    LD HL,(.alien_lookup_trace)
-    LD DE,(HL)
-    PUSH DE
-    CALL alien_pack.blank_alien_now
     POP HL
+    
+    RET 
+bullet_hit_a_shield:
+    PUSH HL
 
-    POP IX,DE,BC,AF
+    LD HL,_bullet_state
+    LD (HL),_BULLET_STATE_HIT_A_SHIELD
 
-    RET
+    POP HL
+    
+    RET 
 
-.alien_lookup_trace:    WORD 2
-.adjusted_collision_y:  WORD 1
 
     MEMORY_USAGE "player bullet   ",_module_start
 
