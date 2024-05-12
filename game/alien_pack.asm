@@ -633,8 +633,8 @@ update_current_alien:
     BIT _ALIEN_STATE_ACTIVE_BIT,A
     JR NZ,.active
 
-    // This should never be reached!
-    DB_FLAG_ERROR error_codes.UDC_SHOULD_NOT_BE_REACHED
+    ; This should never be reached!
+    ; ASSERTION This code should never be reached
 
     JR .done
 

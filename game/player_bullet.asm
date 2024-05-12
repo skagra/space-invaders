@@ -337,8 +337,8 @@ update_bullet:
     BIT _BULLET_STATE_HIT_A_SHIELD_BIT,A
     JP NZ,.bullet_state_hit_a_shield
 
-    // This should never be reached!
-    DB_FLAG_ERROR error_codes.UB_SHOULD_NOT_BE_REACHED
+    ; This should never be reached!
+    ; ASSERTION This code should never be reached
 
     JP .done    
 

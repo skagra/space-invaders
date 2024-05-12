@@ -36,8 +36,7 @@
     ; Skip past contended memory
     ORG 0x8000 
     
-    INCLUDE "debug.asm"
-    INCLUDE "error_codes.asm"
+    INCLUDE "debug.asm"#
     INCLUDE "utils.asm"
     INCLUDE "draw_common.asm"
     INCLUDE "draw.asm"
@@ -60,7 +59,6 @@ main:
 
     ; Initialise all modules
     CALL debug.init
-    CALL error_codes.init
     CALL utils.init
     CALL draw.init
     CALL fast_draw.init
