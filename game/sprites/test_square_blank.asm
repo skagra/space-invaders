@@ -2,7 +2,7 @@
 
 	MODULE sprites
 
-test_square_blank_0:
+TEST_SQUARE_BLANK_0:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b00000000, 0b00000000, 0b11111111, 0b00000000 ; Row 0
 	BYTE 0b00000000, 0b00000000, 0b11111111, 0b00000000 ; Row 1
@@ -13,7 +13,7 @@ test_square_blank_0:
 	BYTE 0b00000000, 0b00000000, 0b11111111, 0b00000000 ; Row 6
 	BYTE 0b00000000, 0b00000000, 0b11111111, 0b00000000 ; Row 7
 
-test_square_blank_1:
+TEST_SQUARE_BLANK_1:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b10000000, 0b00000000, 0b01111111, 0b00000000 ; Row 0
 	BYTE 0b10000000, 0b00000000, 0b01111111, 0b00000000 ; Row 1
@@ -24,7 +24,7 @@ test_square_blank_1:
 	BYTE 0b10000000, 0b00000000, 0b01111111, 0b00000000 ; Row 6
 	BYTE 0b10000000, 0b00000000, 0b01111111, 0b00000000 ; Row 7
 
-test_square_blank_2:
+TEST_SQUARE_BLANK_2:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11000000, 0b00000000, 0b00111111, 0b00000000 ; Row 0
 	BYTE 0b11000000, 0b00000000, 0b00111111, 0b00000000 ; Row 1
@@ -35,7 +35,7 @@ test_square_blank_2:
 	BYTE 0b11000000, 0b00000000, 0b00111111, 0b00000000 ; Row 6
 	BYTE 0b11000000, 0b00000000, 0b00111111, 0b00000000 ; Row 7
 
-test_square_blank_3:
+TEST_SQUARE_BLANK_3:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11100000, 0b00000000, 0b00011111, 0b00000000 ; Row 0
 	BYTE 0b11100000, 0b00000000, 0b00011111, 0b00000000 ; Row 1
@@ -46,7 +46,7 @@ test_square_blank_3:
 	BYTE 0b11100000, 0b00000000, 0b00011111, 0b00000000 ; Row 6
 	BYTE 0b11100000, 0b00000000, 0b00011111, 0b00000000 ; Row 7
 
-test_square_blank_4:
+TEST_SQUARE_BLANK_4:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11110000, 0b00000000, 0b00001111, 0b00000000 ; Row 0
 	BYTE 0b11110000, 0b00000000, 0b00001111, 0b00000000 ; Row 1
@@ -57,7 +57,7 @@ test_square_blank_4:
 	BYTE 0b11110000, 0b00000000, 0b00001111, 0b00000000 ; Row 6
 	BYTE 0b11110000, 0b00000000, 0b00001111, 0b00000000 ; Row 7
 
-test_square_blank_5:
+TEST_SQUARE_BLANK_5:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111000, 0b00000000, 0b00000111, 0b00000000 ; Row 0
 	BYTE 0b11111000, 0b00000000, 0b00000111, 0b00000000 ; Row 1
@@ -68,7 +68,7 @@ test_square_blank_5:
 	BYTE 0b11111000, 0b00000000, 0b00000111, 0b00000000 ; Row 6
 	BYTE 0b11111000, 0b00000000, 0b00000111, 0b00000000 ; Row 7
 
-test_square_blank_6:
+TEST_SQUARE_BLANK_6:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111100, 0b00000000, 0b00000011, 0b00000000 ; Row 0
 	BYTE 0b11111100, 0b00000000, 0b00000011, 0b00000000 ; Row 1
@@ -79,7 +79,7 @@ test_square_blank_6:
 	BYTE 0b11111100, 0b00000000, 0b00000011, 0b00000000 ; Row 6
 	BYTE 0b11111100, 0b00000000, 0b00000011, 0b00000000 ; Row 7
 
-test_square_blank_7:
+TEST_SQUARE_BLANK_7:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111110, 0b00000000, 0b00000001, 0b00000000 ; Row 0
 	BYTE 0b11111110, 0b00000000, 0b00000001, 0b00000000 ; Row 1
@@ -91,12 +91,12 @@ test_square_blank_7:
 	BYTE 0b11111110, 0b00000000, 0b00000001, 0b00000000 ; Row 7
 
 ; Dimensions x (bytes) y (pixels)
-test_square_blank_dims:	EQU 0x0208
-test_square_blank_dim_x_bytes:	EQU 0x02
-test_square_blank_dim_y_pixels:	EQU 0x08
+TEST_SQUARE_BLANK_DIMS:	EQU 0x0208
+TEST_SQUARE_BLANK_DIM_X_BYTES:	EQU 0x02
+TEST_SQUARE_BLANK_DIM_Y_PIXELS:	EQU 0x08
 
 ; Lookup table
-test_square_blank:
-	WORD test_square_blank_0, test_square_blank_1, test_square_blank_2, test_square_blank_3, test_square_blank_4, test_square_blank_5, test_square_blank_6, test_square_blank_7
+TEST_SQUARE_BLANK:
+	WORD TEST_SQUARE_BLANK_0, TEST_SQUARE_BLANK_1, TEST_SQUARE_BLANK_2, TEST_SQUARE_BLANK_3, TEST_SQUARE_BLANK_4, TEST_SQUARE_BLANK_5, TEST_SQUARE_BLANK_6, TEST_SQUARE_BLANK_7
 
 	ENDMODULE

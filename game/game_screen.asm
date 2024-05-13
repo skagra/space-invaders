@@ -188,7 +188,7 @@ draw_reserve_bases:
 
 ._RESERVE_BASE_Y:     EQU draw_common.SCREEN_HEIGHT_PIXELS-8-1
 ._RESERVE_BASE_1_X:   EQU layout.INSET_X_PIXELS+3*8
-._RESERVE_BASE_2_X:   EQU ._RESERVE_BASE_1_X+((sprites.sprite_base_dim_x_bytes-1)*8)
+._RESERVE_BASE_2_X:   EQU ._RESERVE_BASE_1_X+((sprites.PLAYER_BASE_DIM_X_BYTES-1)*8)
 
 draw_reserve_base:
 
@@ -202,9 +202,9 @@ draw_reserve_base:
     LD DE,(IX+._PARAM_COORDS)             
     PUSH DE     
 
-    LD DE,sprites.sprite_base_dims
+    LD DE,sprites.PLAYER_BASE_DIMS
     PUSH DE
-    LD DE,sprites.sprite_base     
+    LD DE,sprites.PLAYER_BASE     
     PUSH DE
     CALL draw.draw_sprite_and_flush_buffer
     POP DE
@@ -246,7 +246,7 @@ draw_shields:
 
     RET
 
-._SHIELD_WIDTH_PIXELS:  EQU (sprites.sprite_shield_dim_x_bytes-1)*8
+._SHIELD_WIDTH_PIXELS:  EQU (sprites.SHIELD_DIM_X_BYTES-1)*8
 ._SCREEN_X_MIDDLE:      EQU (layout.INSET_SCREEN_WIDTH_PIXELS/2)+layout.INSET_X_PIXELS;
 
 ._SHIELD_1_X:           EQU ._SCREEN_X_MIDDLE-3*._SHIELD_WIDTH_PIXELS-._SHIELD_WIDTH_PIXELS/2
@@ -266,9 +266,9 @@ draw_shield:
 
     LD DE,(IX+._PARAM_COORDS)             
     PUSH DE     
-    LD DE,sprites.sprite_shield_dims
+    LD DE,sprites.SHIELD_DIMS
     PUSH DE
-    LD DE,sprites.sprite_shield     
+    LD DE,sprites.SHIELD     
     PUSH DE
     CALL draw.draw_sprite_and_flush_buffer
     POP DE
@@ -289,9 +289,9 @@ draw_horiz_line:
 
 .loop       
     PUSH BC 
-    LD DE,sprites.sprite_horiz_line_dims
+    LD DE,sprites.HORIZ_LINE_DIMS
     PUSH DE
-    LD DE,sprites.sprite_horiz_line    
+    LD DE,sprites.HORIZ_LINE    
     PUSH DE
     CALL draw.draw_sprite_and_flush_buffer
     POP DE

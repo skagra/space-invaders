@@ -29,7 +29,7 @@ init:
 
     RET
 
-._START_PLAYER_X:       EQU (draw_common.SCREEN_WIDTH_PIXELS/2)-((sprites.sprite_base_dim_x_bytes-1)*8)/2 ; Middle of screen offset by half the width of the base
+._START_PLAYER_X:       EQU (draw_common.SCREEN_WIDTH_PIXELS/2)-((sprites.PLAYER_BASE_DIM_X_BYTES-1)*8)/2 ; Middle of screen offset by half the width of the base
 
 ;------------------------------------------------------------------------------
 ;
@@ -54,7 +54,7 @@ draw_player:
     LD E, PLAYER_Y
     PUSH DE
       
-    LD DE,sprites.sprite_base                           ; Sprite    
+    LD DE,sprites.PLAYER_BASE                           ; Sprite    
     PUSH DE
 
     CALL fast_draw.fast_draw_sprite_16x8                ; Draw the player base sprite
@@ -75,7 +75,7 @@ blank_player:
     LD E, PLAYER_Y
     PUSH DE
 
-    LD DE,sprites.sprite_base_blank                     ; Sprite    
+    LD DE,sprites.PLAYER_BASE_BLANK                     ; Sprite    
     PUSH DE
 
     CALL fast_draw.fast_draw_sprite_16x8                ; Draw the player base sprite
@@ -132,7 +132,7 @@ update_player:
     RET
 
 ._MIN_PLAYER_X:             EQU layout.INSET_X_PIXELS
-._MAX_PLAYER_X:             EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-(sprites.sprite_base_dim_x_bytes-1)*8
+._MAX_PLAYER_X:             EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_BASE_DIM_X_BYTES-1)*8
 
     MEMORY_USAGE "player          ",_module_start
 

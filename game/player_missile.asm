@@ -130,10 +130,10 @@ blank_missile:
     LD E,A
     PUSH DE
     
-    LD DE, sprites.sprite_player_missile_blank_dims      ; Dimensions
+    LD DE, sprites.PLAYER_MISSILE_BLANK_DIMS            ; Dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_player_missile_blank            ; Sprite mask  
+    LD DE,sprites.PLAYER_MISSILE_BLANK                  ; Sprite mask  
     PUSH DE
 
     CALL draw.draw_sprite                               ; Erase the player missile 
@@ -160,10 +160,10 @@ blank_missile:
     LD E,A                                              ; than branching on state here?
     PUSH DE
          
-    LD DE, sprites.sprite_player_missile_explosion_blank_dims  ; Dimensioons
+    LD DE, sprites.PLAYER_MISSILE_EXPLOSION_BLANK_DIMS  ; Dimensioons
     PUSH DE
 
-    LD DE,sprites.sprite_player_missile_explosion_blank  ; Sprite mask  
+    LD DE,sprites.PLAYER_MISSILE_EXPLOSION_BLANK        ; Sprite mask  
     PUSH DE
 
     CALL draw.draw_sprite                               ; Erase the player missile explosion
@@ -224,10 +224,10 @@ draw_player_missile:
     LD E,A
     PUSH DE
     
-    LD DE, sprites.sprite_player_missile_dims            ; Dimensions
+    LD DE, sprites.PLAYER_MISSILE_DIMS                  ; Dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_player_missile                  ; Sprite    
+    LD DE,sprites.PLAYER_MISSILE                        ; Sprite    
     PUSH DE
 
     CALL draw.draw_sprite                               ; Draw the player missile
@@ -250,10 +250,10 @@ draw_player_missile:
     LD E,A
     PUSH DE
         
-    LD DE, sprites.sprite_player_missile_explosion_dims  ; Dimensions
+    LD DE, sprites.PLAYER_MISSILE_EXPLOSION_DIMS        ; Dimensions
     PUSH DE
 
-    LD DE,sprites.sprite_player_missile_explosion        ; Sprite    
+    LD DE,sprites.PLAYER_MISSILE_EXPLOSION              ; Sprite    
     PUSH DE
 
     CALL draw.draw_sprite                               ; Draw the explosion
@@ -466,6 +466,6 @@ missile_hit_a_shield:
     
     RET 
 
-    MEMORY_USAGE "player missile   ",_module_start
+    MEMORY_USAGE "player missile  ",_module_start
 
     ENDMODULE

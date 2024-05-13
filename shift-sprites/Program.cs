@@ -4,7 +4,7 @@ class ShiftSprites
     private const string INCLUDE_FILENAME = "all_sprites.asm";
     private const string HEADER_MESSAGE = "; This file was automatically generated, DO NOT MODIFY";
     private const string SPRITE_MODULE_NAME = "sprites";
-    private const string MEM_USAGE_LABEL = "_sprites_start";
+    private const string MEM_USAGE_LABEL = "_module_start";
 
     public static void Main(string[] args)
     {
@@ -91,6 +91,9 @@ class ShiftSprites
         var spriteOutputFilename = Path.Combine(outputDirectory, $"{spriteName}.asm");
         var spriteFileOutput = new StreamWriter(spriteOutputFilename);
 
+        // All labels should be uppercase
+        spriteName = spriteName.ToUpper();
+
         // How wide is the sprite (assumes all lines are consistent)
         var sourceBitWidth = spriteText.First().Length;
         var destByteWidth = sourceBitWidth / 8 + 1;
@@ -167,9 +170,9 @@ class ShiftSprites
             spriteFileOutput.WriteLine();
         }
         spriteFileOutput.WriteLine("; Dimensions x (bytes) y (pixels)");
-        spriteFileOutput.WriteLine($"{spriteName}_dims:\tEQU 0x{destByteWidth:X2}{spriteText.Count:X2}");
-        spriteFileOutput.WriteLine($"{spriteName}_dim_x_bytes:\tEQU 0x{destByteWidth:X2}");
-        spriteFileOutput.WriteLine($"{spriteName}_dim_y_pixels:\tEQU 0x{spriteText.Count:X2}");
+        spriteFileOutput.WriteLine($"{spriteName}_DIMS:\tEQU 0x{destByteWidth:X2}{spriteText.Count:X2}");
+        spriteFileOutput.WriteLine($"{spriteName}_DIM_X_BYTES:\tEQU 0x{destByteWidth:X2}");
+        spriteFileOutput.WriteLine($"{spriteName}_DIM_Y_PIXELS:\tEQU 0x{spriteText.Count:X2}");
 
         spriteFileOutput.WriteLine();
 
