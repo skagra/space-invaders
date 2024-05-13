@@ -2,51 +2,83 @@
 
 _module_start:
 
-_buffer_stack_top:  BLOCK 2                             ; This points to the next free location on the stack
-_BUFFER_STACK:      BLOCK 512  
+; The draw buffer stack holds the addresses in the screen buffer that have been written to
+; since it was last flushed.
+_draw_buffer_stack_top: BLOCK 2                         ; Points to the next free location on the draw stack
+_DRAW_BUFFER_STACK:     BLOCK 512                       ; Size of the draw stack
 
 init:
     PUSH HL
     
-    LD HL,_BUFFER_STACK
-    LD (_buffer_stack_top),HL
+    LD HL,_DRAW_BUFFER_STACK
+    LD (_draw_buffer_stack_top),HL
     
     POP HL
 
     RET
 
-    ; For 16 bit wide sprite => 24 bits of pre-shifted image
+;------------------------------------------------------------------------------
+;
+; Copies a single row of 24 bits from the off-screen buffer to screen memory
+;
+; Usage:
+;   SP - Address in the draw stack which points to screen memory written
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   HL,DE
+;
+;------------------------------------------------------------------------------
+
     MACRO COPY_LINE_16
-        POP HL                                          ; Get the address written to in the off screen buffer
-        LD D,H                                          ; Copy address in DE - this will become the screen address                  
+        POP HL                                          ; Get the address written to in the off-screen buffer
+        LD D,H                                          ; Copy address in DE - this will become the screen memory address                  
         LD E,L
-        RES 7,D                                         ; Reset bit 7 to make screen address
-        LDI                                             ; LD (DE),(HL) INC HL INC DE DEC BC - 
+        RES 7,D                                         ; Reset bit 7 to calculate the screen memory address
+        LDI                                             ; LD (DE),(HL) INC HL INC DE DEC BC =>
         LDI                                             ; LD (screen_ptr), (buffer_ptr), INC screen_ptr, INC buffer_pointer, DEC loop_counter
         LDI 
     ENDM
-    
-fast_copy_buffer_to_screen_16x8:
+
+;------------------------------------------------------------------------------
+;
+; Copies the off-screen buffer to screen memory
+;
+; Usage:
+;   CALL fast_copy_buffer_to_screen_16x8
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
+flush_buffer_to_screen_16x8:
     DI                                                  ; Disable interrupts as we'll be messing with SP
 
     PUSH AF,BC,DE,HL
 
-    LD (.stack_ptr),SP                                  ; Store current SP to restore at end
+    LD (.stack_ptr),SP                                  ; Store current SP to restore later
 
-    LD SP,_BUFFER_STACK                                 ; Subtract the start of stack area (low mem)
-    LD HL,(_buffer_stack_top)                           ; from current stack pointer (first free byte)
+    ; Calculate number of iterations needed to flush the draw stack
+    LD SP,_DRAW_BUFFER_STACK                            ; Subtract the start of stack area (low mem)
+    LD HL,(_draw_buffer_stack_top)                      ; from current stack pointer (first free byte)
     LD A,L
-    SUB low _BUFFER_STACK
+    SUB low _DRAW_BUFFER_STACK
     LD C,A
     LD A,H
-    SBC high _BUFFER_STACK
+    SBC high _DRAW_BUFFER_STACK
     LD B,A
     
     SRL B                                               ; Divide the result by two to give number of loops to                                 
     RR C                                                ; run as we are dealing with word chunks on the stack 
 
-    LD H,B                                              ; Tripple BC - As only the first address of each row was added to the stack
-    LD L,C
+    LD H,B                                              ; Tripple BC - As only the first address of each 3 byte
+    LD L,C                                              ; row was added to the draw stack
     ADD HL,BC
     ADD HL,BC
     LD B,H
@@ -55,11 +87,10 @@ fast_copy_buffer_to_screen_16x8:
 .copy_loop
     LD A,B                                              ; Is the copy counter zero?
     OR C
-    JP Z,.done                                          ; Yes - done
-
+    JP Z,.done                                          ; Yes - done  
 .more                                     
-    COPY_LINE_16
-    COPY_LINE_16
+    COPY_LINE_16                                        ; Copy each of the 8 lines of 16 bits (24 pre-shifted)
+    COPY_LINE_16                                        ; from the off-screen buffer to screen memory
     COPY_LINE_16
     COPY_LINE_16
     COPY_LINE_16
@@ -70,8 +101,8 @@ fast_copy_buffer_to_screen_16x8:
     JR .copy_loop
 
 .done
-    LD HL,_BUFFER_STACK                                 ; Reset the stack
-    LD (_buffer_stack_top),HL
+    LD HL,_DRAW_BUFFER_STACK                            ; Reset the stack
+    LD (_draw_buffer_stack_top),HL
     
     LD SP,(.stack_ptr)                                  ; Restore the original SP
 
@@ -81,26 +112,30 @@ fast_copy_buffer_to_screen_16x8:
 
     RET
 
-.stack_ptr:        BLOCK 2
+.stack_ptr: BLOCK 2
 
 ;------------------------------------------------------------------------------
-; Render a single row of a 16 bit wide (24 bits pre-shifted)
+;
+; Render a single row of a 16 bit wide (24 bits pre-shifted) sprite to the
+; off-screen buffer
 ;
 ; Usage:
-;   ._x_offset_stash - contains the x offset within the y row
-;   BC - contains the address in the offscreen buffer at the start of the y row
-;   SP - is set to the current location of the sprite/mask data
+;   ._x_offset - X offset within the Y row
+;   BC - Address in the off-screen buffer at the start of the Y row
+;   SP - Location of the sprite/mask data
+;
 ; Return values:
 ;   -
 ;
 ; Registers modified:
 ;   AF, DE and HL
+;
 ;------------------------------------------------------------------------------
 
     ; Modifies 
     MACRO RENDER_ROW 
         
-        ; Calculate buffer start address -> DE
+        ; Adjust the off-screen buffer address to account for the X offset
         LD HL,BC                                        ; Buffer address
         LD DE,(HL)                                          
         LD A,(.x_offset)                                ; Merge in x offset
@@ -108,31 +143,31 @@ fast_copy_buffer_to_screen_16x8:
         LD E,A
 
         ; Record that we are writing to the double buffer
-        LD HL,(_buffer_stack_top)                       ; Top of stack address        
+        LD HL,(_draw_buffer_stack_top)                  ; Top of draw stack address        
         LD (HL),DE                                      ; Write screen buffer address at top of stack            
         INC HL                                          ; Increase the stack top pointer +2 as a word was written
         INC HL
-        LD (_buffer_stack_top),HL
+        LD (_draw_buffer_stack_top),HL
 
         ; First word of mask/data
         POP HL                                          ; Mask and sprite data
-        LD A,(DE)
+        LD A,(DE)                                       ; Existing off-screen buffer data
         AND L                                           ; Mask
         OR H                                            ; Sprite
         LD (DE),A
 
         ; Second word of mask/data
-        INC DE
+        INC DE                                          ; Next address in off-screen buffer
         POP HL                                          ; Mask and sprite data
-        LD A,(DE)
+        LD A,(DE)                                       ; Existing off-screen buffer data
         AND L                                           ; Mask
         OR H                                            ; Sprite
         LD (DE),A
 
         ; Third word of mask/data
-        INC DE
+        INC DE                                          ; Next address in off-screen buffer
         POP HL                                          ; Mask and sprite data
-        LD A,(DE)
+        LD A,(DE)                                       ; Existing off-screen buffer data
         AND L                                           ; Mask
         OR H                                            ; Sprite
         LD (DE),A
@@ -140,24 +175,29 @@ fast_copy_buffer_to_screen_16x8:
     ENDM
 
 ;------------------------------------------------------------------------------
-; Draw a sprite that must be 16 wide (pre-shifted, 24 bits in total)
-; and 8 tall.
+;
+; Render a sprite that must be 16 wide (pre-shifted, 24 bits in total)
+; and 8 tall into the off-screen buffer.
 ;
 ; Usage:
 ;   PUSH coords word - X high byte, Y low byte
 ;   PUSH address of pre-shifted sprite lookup table
+;   CALL fast_draw_sprite_16x8
+;   POP xx
+;   POP xx
 ;
 ; Return values:
 ;   -
 ;
 ; Registers modified:
 ;   -
+;
 ;------------------------------------------------------------------------------
 
 fast_draw_sprite_16x8:
 
-._PARAM_COORDS:            EQU 14                       ; Sprite coordinates
-._PARAM_SPRITE_DATA:       EQU 12                       ; Sprite pre-shifted data lookup table
+.PARAM_COORDS:            EQU 14                        ; Sprite coordinates
+.PARAM_SPRITE_DATA:       EQU 12                        ; Sprite pre-shifted data lookup table
         
     DI                                                  ; Disable interrupts as we'll be messing with the SP
 
@@ -170,12 +210,12 @@ fast_draw_sprite_16x8:
     LD HL,draw_common.collided                      
     LD (HL),0x00
 
-    ; Get and store the coords
-    LD HL,(IX+._PARAM_COORDS)                           ; Grab the pixel coords
+    ; Get and store coords
+    LD HL,(IX+.PARAM_COORDS)                            ; Grab the pixel coords
     LD (.coords),HL                                     ; And store for later 
 
     ; Find the correct shifted version of the sprite data
-    LD HL,(IX+._PARAM_SPRITE_DATA)                      ; Start of sprite lookup table
+    LD HL,(IX+.PARAM_SPRITE_DATA)                       ; Start of sprite lookup table
     LD A,(.x_coord)                                     ; X coord
     AND 0b00000111                                      ; Calculate the X offset within the character cell
     SLA A                                               ; Double the offset as the lookup table contains words
@@ -201,7 +241,7 @@ fast_draw_sprite_16x8:
     ADD HL,BC                                           ; Location of the row start in the lookup table
     LD BC,HL
 
-    LD (.stack_ptr),SP                                  ; Store current SP to restore at end
+    LD (.stack_ptr),SP                                  ; Store current SP to restore later
     LD HL,DE
     LD SP,HL
 
@@ -243,23 +283,23 @@ fast_draw_sprite_16x8:
     INC BC
     RENDER_ROW 
     
-    LD SP,(.stack_ptr)                                 ; Restore the original SP
+    LD SP,(.stack_ptr)                                  ; Restore the original SP
 
     POP IX,HL,DE,BC,AF   
 
     EI
     
     IFDEF AUTO_FLUSH
-        call fast_copy_buffer_to_screen_16x8
+        call flush_buffer_to_screen_16x8
     ENDIF
 
     RET
 
-.coords:                                               ; Sprite coords
+.coords:                                                ; Sprite coords
 .y_coord:              BLOCK 1
 .x_coord:              BLOCK 1
-.stack_ptr:            BLOCK 2                         ; Safe store for stack pointer
-.x_offset:             BLOCK 1
+.stack_ptr:            BLOCK 2                          ; Safe store for stack pointer
+.x_offset:             BLOCK 1                          ; Byte offset into row for X coordinate
 
     MEMORY_USAGE "fast draw       ",_module_start
 

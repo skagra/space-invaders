@@ -37,14 +37,14 @@
     ORG 0x8000 
     
     INCLUDE "debug.asm"
-
     INCLUDE "utils.asm"
+    INCLUDE "layout.asm"
     INCLUDE "draw_common.asm"
     INCLUDE "draw.asm"
     INCLUDE "fast_draw.asm"
     INCLUDE "keyboard.asm"
     INCLUDE "player.asm"
-    INCLUDE "player_bullet.asm"
+    INCLUDE "player_missile.asm"
     INCLUDE "alien_pack.asm"
     INCLUDE "print.asm"
     INCLUDE "game_screen.asm"
@@ -61,13 +61,14 @@ main:
     ; Initialise all modules
     CALL debug.init
     CALL utils.init
+    CALL layout.init
     CALL draw.init
     CALL fast_draw.init
     CALL print.init
     CALL keyboard.init
     CALL game_screen.init
     CALL player.init
-    CALL player_bullet.init
+    CALL player_missile.init
     CALL alien_pack.init
     CALL collision.init
 
@@ -88,14 +89,14 @@ main:
     ; Draw the player base
     CALL player.draw_player
 
-    ; Erase current player bullet
-    CALL player_bullet.blank_bullet
+    ; Erase current player missile
+    CALL player_missile.blank_missile
 
-    ; Calculate new coordinates and handle state changes for the player bullet               
-    CALL player_bullet.update_bullet
+    ; Calculate new coordinates and handle state changes for the player missile               
+    CALL player_missile.update_missile
 
-    ; Draw player bullet if there is one
-    CALL player_bullet.draw_player_bullet
+    ; Draw player missile if there is one
+    CALL player_missile.draw_player_missile
 
     ; Handle collisions with player missile 
     CALL collision.handle_collision
@@ -117,9 +118,9 @@ main:
         HALT 
     ENDIF
     
-    ; Copy off screen double buffer to screen memory
+    ; Copy off screen buffers to screen memory
     CALL draw.copy_buffer_to_screen
-    CALL fast_draw.fast_copy_buffer_to_screen_16x8
+    CALL fast_draw.flush_buffer_to_screen_16x8
 
     DEBUG_VTRACE_FLASH
 
@@ -128,9 +129,9 @@ main:
     MEMORY_USAGE "main            ", main
 
 ; Put the stack immediately after the code
-STACK_SIZE:                 EQU 100*2    
-STACK_START:                BLOCK STACK_SIZE, 0
-STACK_TOP:                  EQU $-1
+STACK_SIZE: EQU 100*2    
+STACK_START: BLOCK STACK_SIZE, 0
+STACK_TOP: EQU $-1
 
     MEMORY_USAGE "stack           ", STACK_START
 

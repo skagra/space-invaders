@@ -79,7 +79,7 @@ main:
     POP HL
 
     HALT 
-    CALL fast_draw.fast_copy_buffer_to_screen_16x8
+    CALL fast_draw.flush_buffer_to_screen_16x8
     CALL draw.copy_buffer_to_screen
 
 .animation_loop:

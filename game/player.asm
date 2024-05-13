@@ -2,7 +2,7 @@
 
 _module_start:
 
-PLAYER_Y:               EQU draw.SCREEN_HEIGHT_PIXELS-20
+PLAYER_Y:               EQU draw_common.SCREEN_HEIGHT_PIXELS-20
 player_x:               BLOCK 1
 
 ;------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ init:
 
     RET
 
-._START_PLAYER_X:       EQU draw.SCREEN_WIDTH_PIXELS/2-4
+._START_PLAYER_X:       EQU (draw_common.SCREEN_WIDTH_PIXELS/2)-((sprites.sprite_base_dim_x_bytes-1)*8)/2 ; Middle of screen offset by half the width of the base
 
 ;------------------------------------------------------------------------------
 ;
@@ -122,7 +122,7 @@ update_player:
     JR Z,.done                                          ; No
     LD A,(player_x)                                     ; Get current player base X coord
     INC A                                               ; Increase it to move right
-    CP ._MAX_PLAYER_X                                   ; Have we hit the right most point?
+    CP ._MAX_PLAYER_X                                   ; Have we hit the right most point?a
     JR NC,.done                                         ; Yes so don't update
     LD (player_x),A                                     ; Update the location of the player base
 
@@ -131,8 +131,8 @@ update_player:
 
     RET
 
-._MIN_PLAYER_X:             EQU 0
-._MAX_PLAYER_X:             EQU draw.SCREEN_WIDTH_PIXELS-16
+._MIN_PLAYER_X:             EQU layout.INSET_X_PIXELS
+._MAX_PLAYER_X:             EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-(sprites.sprite_base_dim_x_bytes-1)*8
 
     MEMORY_USAGE "player          ",_module_start
 

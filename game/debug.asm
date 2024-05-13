@@ -30,7 +30,7 @@ _vtrace_flash:
 
     LD HL,_VTRACE_BYTE
     LD A,(HL)
-    XOR draw.CA_BG_WHITE
+    XOR draw_common.CA_BG_WHITE
     LD (HL),A
 
 .done:
@@ -39,7 +39,7 @@ _vtrace_flash:
     RET
 
 _vtrace_count:      BLOCK 1
-_VTRACE_BYTE:       EQU mmap.SCREEN_ATTR_START+(draw.SCREEN_HEIGHT_CHARS-1)*draw.SCREEN_WIDTH_CHARS
+_VTRACE_BYTE:       EQU mmap.SCREEN_ATTR_START+(draw_common.SCREEN_HEIGHT_CHARS-1)*draw_common.SCREEN_WIDTH_CHARS
 _VTRACE_INTERVAL:   EQU 5
 
     MACRO DEBUG_VTRACE_FLASH
@@ -53,7 +53,7 @@ _cycle_flash:
 
     LD HL,_CYCLE_BYTE
     LD A,(HL)
-    XOR draw.CA_BG_MAGENTA
+    XOR draw_common.CA_BG_MAGENTA
     LD (HL),A
 
     POP AF,HL
@@ -79,7 +79,7 @@ _flag_error:
 
     ; Set colour attribute
     LD HL,_FLAG_ERROR_BYTE                              
-    LD (HL),draw.CA_BG_RED|draw.CA_FG_WHITE
+    LD (HL),draw_common.CA_BG_RED|draw_common.CA_FG_WHITE
 
     ; Draw the error indicator character
     LD HL,(IX+._PARAM_CHAR)

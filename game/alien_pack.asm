@@ -202,8 +202,8 @@ _pack_tr_coords:
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
-_PACK_MAX_RIGHT:                        EQU 240-16
-_PACK_MIN_LEFT:                         EQU 16
+_PACK_MAX_RIGHT:                        EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-((sprites.sprite_alien_1_variant_0_blank_dim_x_bytes-1)*8)
+_PACK_MIN_LEFT:                         EQU layout.INSET_X_PIXELS
 
 ;------------------------------------------------------------------------------
 ;
@@ -303,11 +303,11 @@ blank_alien:
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
+    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)                ; Use sprite as mask 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
+    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)                ; Use sprite as mask 
 
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
@@ -440,7 +440,7 @@ _adjust_alien_pack_direction:
 .currently_moving_right:
     ; Pack is moving right
     LD A,(_pack_right)                                  ; Get the reference X coord
-    CP _PACK_MAX_RIGHT                                      ; Has the pack hit the RHS of the screen?
+    CP _PACK_MAX_RIGHT                                  ; Has the pack hit the RHS of the screen?
     JR C,.done                                          ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at right of screen
@@ -452,7 +452,7 @@ _adjust_alien_pack_direction:
 .currently_moving_left:
     ; Pack is moving left
     LD A,(_pack_left)                                   ; Get the reference X coord
-    CP _PACK_MIN_LEFT                                      ; Has the pack hit the LHS of the screen?
+    CP _PACK_MIN_LEFT                                   ; Has the pack hit the LHS of the screen?
     JR NC,.done                                         ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at left of screen
@@ -499,7 +499,7 @@ _calc_current_alien_new_coords:
     ; Moving left
     DEC D                                               ; Decrease the X coord by 2
     DEC D
-    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                   ; Store new coords
+    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
 
     JR .done_moving
 
@@ -510,7 +510,7 @@ _calc_current_alien_new_coords:
     ; Moving right
     INC D                                               ; Increase X by 2
     INC D
-    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                   ; Store new coords
+    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
 
     JR .done_moving
 
@@ -519,7 +519,7 @@ _calc_current_alien_new_coords:
     LD A,8                                              ; Increase Y by 8
     ADD A,E
     LD E,A
-    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                   ; Store new coords
+    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
 
 .done_moving:
     POP IX,HL,DE,AF
@@ -528,7 +528,7 @@ _calc_current_alien_new_coords:
 
 _update_pack_bounds:
     PUSH AF,DE
-    LD DE,(IX+_STATE_OFFSET_DRAW_COORDS)                   ; New x,y coords
+    LD DE,(IX+_STATE_OFFSET_DRAW_COORDS)                ; New x,y coords
 
     ; What direction is the pack travelling
     LD A,(_pack_direction)
@@ -894,24 +894,19 @@ alien_hit_by_player_missile:
     LD (IY+alien_pack._STATE_OFFSET_STATE),_ALIEN_STATE_DIEING
 
     ; Blank out the alien
-    ; PUSH HL
-    ; CALL _blank_alien_now
-    ; POP HL
-
-    ; Blank old sprite position
     LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL     
 
     ; Select sprite mask based on variant
-    LD A,(IY+_STATE_OFFSET_VARIANT)           
+    LD A,(IY+_STATE_OFFSET_VARIANT)                     
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IY+_STATE_OFFSET_VAR_0_BLANK)               ; Use sprite as mask 
+    LD HL,(IY+_STATE_OFFSET_VAR_0_BLANK)                ; Use sprite as mask 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IY+_STATE_OFFSET_VAR_1_BLANK)               ; Use sprite as mask 
+    LD HL,(IY+_STATE_OFFSET_VAR_1_BLANK)                ; Use sprite as mask 
 
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
@@ -920,7 +915,6 @@ alien_hit_by_player_missile:
 
     POP DE
     POP DE
-
 
     ; Draw alien explosion
     LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords

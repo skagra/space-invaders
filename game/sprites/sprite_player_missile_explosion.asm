@@ -2,7 +2,7 @@
 
 	MODULE sprites
 
-sprite_player_bullet_explosion_0:
+sprite_player_missile_explosion_0:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b01110110, 0b10001001, 0b11111111, 0b00000000 ; Row 0
 	BYTE 0b11011101, 0b00100010, 0b11111111, 0b00000000 ; Row 1
@@ -13,7 +13,7 @@ sprite_player_bullet_explosion_0:
 	BYTE 0b11011011, 0b00100100, 0b11111111, 0b00000000 ; Row 6
 	BYTE 0b01101110, 0b10010001, 0b11111111, 0b00000000 ; Row 7
 
-sprite_player_bullet_explosion_1:
+sprite_player_missile_explosion_1:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b10111011, 0b01000100, 0b01111111, 0b10000000 ; Row 0
 	BYTE 0b11101110, 0b00010001, 0b11111111, 0b00000000 ; Row 1
@@ -24,7 +24,7 @@ sprite_player_bullet_explosion_1:
 	BYTE 0b11101101, 0b00010010, 0b11111111, 0b00000000 ; Row 6
 	BYTE 0b10110111, 0b01001000, 0b01111111, 0b10000000 ; Row 7
 
-sprite_player_bullet_explosion_2:
+sprite_player_missile_explosion_2:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11011101, 0b00100010, 0b10111111, 0b01000000 ; Row 0
 	BYTE 0b11110111, 0b00001000, 0b01111111, 0b10000000 ; Row 1
@@ -35,7 +35,7 @@ sprite_player_bullet_explosion_2:
 	BYTE 0b11110110, 0b00001001, 0b11111111, 0b00000000 ; Row 6
 	BYTE 0b11011011, 0b00100100, 0b10111111, 0b01000000 ; Row 7
 
-sprite_player_bullet_explosion_3:
+sprite_player_missile_explosion_3:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11101110, 0b00010001, 0b11011111, 0b00100000 ; Row 0
 	BYTE 0b11111011, 0b00000100, 0b10111111, 0b01000000 ; Row 1
@@ -46,7 +46,7 @@ sprite_player_bullet_explosion_3:
 	BYTE 0b11111011, 0b00000100, 0b01111111, 0b10000000 ; Row 6
 	BYTE 0b11101101, 0b00010010, 0b11011111, 0b00100000 ; Row 7
 
-sprite_player_bullet_explosion_4:
+sprite_player_missile_explosion_4:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11110111, 0b00001000, 0b01101111, 0b10010000 ; Row 0
 	BYTE 0b11111101, 0b00000010, 0b11011111, 0b00100000 ; Row 1
@@ -57,7 +57,7 @@ sprite_player_bullet_explosion_4:
 	BYTE 0b11111101, 0b00000010, 0b10111111, 0b01000000 ; Row 6
 	BYTE 0b11110110, 0b00001001, 0b11101111, 0b00010000 ; Row 7
 
-sprite_player_bullet_explosion_5:
+sprite_player_missile_explosion_5:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111011, 0b00000100, 0b10110111, 0b01001000 ; Row 0
 	BYTE 0b11111110, 0b00000001, 0b11101111, 0b00010000 ; Row 1
@@ -68,7 +68,7 @@ sprite_player_bullet_explosion_5:
 	BYTE 0b11111110, 0b00000001, 0b11011111, 0b00100000 ; Row 6
 	BYTE 0b11111011, 0b00000100, 0b01110111, 0b10001000 ; Row 7
 
-sprite_player_bullet_explosion_6:
+sprite_player_missile_explosion_6:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111101, 0b00000010, 0b11011011, 0b00100100 ; Row 0
 	BYTE 0b11111111, 0b00000000, 0b01110111, 0b10001000 ; Row 1
@@ -79,7 +79,7 @@ sprite_player_bullet_explosion_6:
 	BYTE 0b11111111, 0b00000000, 0b01101111, 0b10010000 ; Row 6
 	BYTE 0b11111101, 0b00000010, 0b10111011, 0b01000100 ; Row 7
 
-sprite_player_bullet_explosion_7:
+sprite_player_missile_explosion_7:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111110, 0b00000001, 0b11101101, 0b00010010 ; Row 0
 	BYTE 0b11111111, 0b00000000, 0b10111011, 0b01000100 ; Row 1
@@ -91,12 +91,12 @@ sprite_player_bullet_explosion_7:
 	BYTE 0b11111110, 0b00000001, 0b11011101, 0b00100010 ; Row 7
 
 ; Dimensions x (bytes) y (pixels)
-sprite_player_bullet_explosion_dims:	EQU 0x0208
-sprite_player_bullet_explosion_dim_x_bytes:	EQU 0x02
-sprite_player_bullet_explosion_dim_y_pixels:	EQU 0x08
+sprite_player_missile_explosion_dims:	EQU 0x0208
+sprite_player_missile_explosion_dim_x_bytes:	EQU 0x02
+sprite_player_missile_explosion_dim_y_pixels:	EQU 0x08
 
 ; Lookup table
-sprite_player_bullet_explosion:
-	WORD sprite_player_bullet_explosion_0, sprite_player_bullet_explosion_1, sprite_player_bullet_explosion_2, sprite_player_bullet_explosion_3, sprite_player_bullet_explosion_4, sprite_player_bullet_explosion_5, sprite_player_bullet_explosion_6, sprite_player_bullet_explosion_7
+sprite_player_missile_explosion:
+	WORD sprite_player_missile_explosion_0, sprite_player_missile_explosion_1, sprite_player_missile_explosion_2, sprite_player_missile_explosion_3, sprite_player_missile_explosion_4, sprite_player_missile_explosion_5, sprite_player_missile_explosion_6, sprite_player_missile_explosion_7
 
 	ENDMODULE

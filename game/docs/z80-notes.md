@@ -21,3 +21,10 @@
     OR E
     JP NZ,.loop
 ```
+
+# Double a 16 Bit Value
+
+```
+    SLA L                                              
+    RL H
+```

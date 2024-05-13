@@ -7,15 +7,15 @@
 * ~~Consider proper masks for aliens rather than just a block~~
 * Bullet drawing needs to be faster!
 * We might need to separate blanking and drawing - with blanking taking place once the raster has dropped of the bottom of the screen but before the retrace
-* Single line player bullet does not need 16 bit shifted sprites
+* Single line player missile does not need 16 bit shifted sprites
 * Can we use LDI to speed up the copying of the sprite data
 * Do we need to used an off screen buffering technique to get the speed - we draw off screen, take note of the addresses and then just copy the relevant address on screen on update?  We could also log the addresses for blanking too.  SP trick might be relevant here - PUT the SP at the start of the data and just POP off addresses?   Actually we could actually have a stack where we push on the data too ummm width though
 * Look for TState counter
 * Investigate use of sound chip on Spectrum 128K
 * All the sprite names should be upper case to fit with convention
-* When base in moving the origin of player bullets seems to lag its position - it seems that it all about getting the starting Y coord correct
+* When base in moving the origin of player missiles seems to lag its position - it seems that it all about getting the starting Y coord correct
 * There should be 55 invaders not 50!
-* ~~Add a mechanism to allow player bullet explosions to remain on the screen for a configurable period~~
+* ~~Add a mechanism to allow player missile explosions to remain on the screen for a configurable period~~
 * Remove all pseudo instruction
 * Review register usage throughout
 * ~~The wait on screen routine - only works properly if the barrier bar is at least once line before the end of the screen else we are on go slow - I suspect this is because the existing wipe code is too slow to complete before the vertical retrace so we end up with 50 speed.~~ ABANDONED

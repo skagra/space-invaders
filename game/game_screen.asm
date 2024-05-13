@@ -36,19 +36,19 @@ init_screen:
     PUSH HL
 
     ; Make the screen black until we've drawn some inital content
-    LD L,draw.CA_BG_BLACK | draw.CA_FG_BLACK
+    LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_BLACK
     PUSH HL
-    CALL draw.fill_screen_attributes
+    CALL draw_common.fill_screen_attributes
     POP HL
 
     ; Set the screen border
-    LD HL,draw.BORDER_BLACK
+    LD HL,draw_common.BORDER_BLACK
     PUSH HL
-    CALL draw.set_border    
+    CALL draw_common.set_border    
     POP HL
 
     ; Clear the screen
-    call draw.wipe_screen
+    call draw_common.wipe_screen
 
     ; Draw static screen labels. 
     LD HL,._SCORE_LINE_0_TEXT
@@ -69,15 +69,15 @@ init_screen:
 
     LD HL,._LIVES_AND_CREDS_TEXT
     PUSH HL
-    LD HL,draw.SCREEN_HEIGHT_CHARS-1
+    LD HL,draw_common.SCREEN_HEIGHT_CHARS-1
     PUSH HL
     CALL print.print_string
     POP HL
     POP HL
 
-    LD L,draw.CA_BG_BLACK | draw.CA_FG_WHITE
+    LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_WHITE
     PUSH HL
-    CALL draw.fill_screen_attributes
+    CALL draw_common.fill_screen_attributes
     POP HL
 
     CALL draw_horiz_line
@@ -90,18 +90,18 @@ init_screen:
     CALL draw_shields
 
     ; Fill screen with black bg, white fg
-    LD L,draw.CA_BG_BLACK | draw.CA_FG_WHITE
+    LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_WHITE
     PUSH HL
-    CALL draw.fill_screen_attributes
+    CALL draw_common.fill_screen_attributes
     POP HL
 
     ; Green gel to cover active player base and defences
     LD H,._BOTTOM_GEL_TOP_LEFT_Y                                    ; Top left X
     LD L,._BOTTOM_GEL_HEIGHT                                        ; Height
     PUSH HL
-    LD HL,draw.CA_FG_GREEN                                          ; Green fg attribute
+    LD HL,draw_common.CA_FG_GREEN                                          ; Green fg attribute
     PUSH HL
-    CALL draw.fill_screen_attribute_stripe
+    CALL draw_common.fill_screen_attribute_stripe
     POP HL
     POP HL
 
@@ -112,9 +112,9 @@ init_screen:
     LD H,._BASES_GEL_WIDTH                                          ; Width
     LD L,._BASES_GEL_HEIGHT                                         ; Height
     PUSH HL
-    LD HL,draw.CA_FG_GREEN                                          ; Green fg attribute
+    LD HL,draw_common.CA_FG_GREEN                                          ; Green fg attribute
     PUSH HL
-    CALL draw.fill_screen_attributes_rect
+    CALL draw_common.fill_screen_attributes_rect
     POP HL
     POP HL
     POP HL
@@ -123,9 +123,9 @@ init_screen:
     LD H,._SPACESHIP_GEL_LEFT_Y                                     ; Top left X
     LD L,._SPACESHIP_GEL_HEIGHT                                     ; Height
     PUSH HL
-    LD HL,draw.CA_FG_RED                                            ; Red fg attribute
+    LD HL,draw_common.CA_FG_RED                                            ; Red fg attribute
     PUSH HL
-    CALL draw.fill_screen_attribute_stripe
+    CALL draw_common.fill_screen_attribute_stripe
     POP HL
     POP HL
 
@@ -133,15 +133,14 @@ init_screen:
 
     RET
 
-._BOTTOM_GEL_TOP_LEFT_Y:    EQU draw.SCREEN_HEIGHT_CHARS-5
+._BOTTOM_GEL_TOP_LEFT_Y:    EQU draw_common.SCREEN_HEIGHT_CHARS-5
 ._BOTTOM_GEL_HEIGHT:        EQU 4
 ._BASES_GEL_TOP_LEFT_X:     EQU 3
-._BASES_GEL_TOP_LEFT_Y:     EQU draw.SCREEN_HEIGHT_CHARS-1
+._BASES_GEL_TOP_LEFT_Y:     EQU draw_common.SCREEN_HEIGHT_CHARS-1
 ._BASES_GEL_WIDTH:          EQU 10
 ._BASES_GEL_HEIGHT:         EQU 1
 ._SPACESHIP_GEL_LEFT_Y:     EQU 2
 ._SPACESHIP_GEL_HEIGHT:     EQU 1
-._CREDIT_WIDTH:             EQU 10
 
 ._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
 ._SCORE_LINE_1_TEXT:        BYTE "     0000    0000      0000  ",0
@@ -187,9 +186,9 @@ draw_reserve_bases:
 
     RET
 
-._RESERVE_BASE_Y:     EQU draw.SCREEN_HEIGHT_PIXELS-8-1
-._RESERVE_BASE_1_X:   EQU 16+3*8
-._RESERVE_BASE_2_X:   EQU ._RESERVE_BASE_1_X+16
+._RESERVE_BASE_Y:     EQU draw_common.SCREEN_HEIGHT_PIXELS-8-1
+._RESERVE_BASE_1_X:   EQU layout.INSET_X_PIXELS+3*8
+._RESERVE_BASE_2_X:   EQU ._RESERVE_BASE_1_X+((sprites.sprite_base_dim_x_bytes-1)*8)
 
 draw_reserve_base:
 
@@ -247,11 +246,14 @@ draw_shields:
 
     RET
 
-._SHIELD_1_X:       EQU 16+24
-._SHIELD_2_X:       EQU ._SHIELD_1_X+48
-._SHIELD_3_X:       EQU ._SHIELD_2_X+48
-._SHIELD_4_X:       EQU ._SHIELD_3_X+48
-._SHIELD_Y:         EQU draw.SCREEN_HEIGHT_PIXELS-8*5
+._SHIELD_WIDTH_PIXELS:  EQU (sprites.sprite_shield_dim_x_bytes-1)*8
+._SCREEN_X_MIDDLE:      EQU (layout.INSET_SCREEN_WIDTH_PIXELS/2)+layout.INSET_X_PIXELS;
+
+._SHIELD_1_X:           EQU ._SCREEN_X_MIDDLE-3*._SHIELD_WIDTH_PIXELS-._SHIELD_WIDTH_PIXELS/2
+._SHIELD_2_X:           EQU ._SCREEN_X_MIDDLE-1*._SHIELD_WIDTH_PIXELS-._SHIELD_WIDTH_PIXELS/2
+._SHIELD_3_X:           EQU ._SCREEN_X_MIDDLE+1*._SHIELD_WIDTH_PIXELS-._SHIELD_WIDTH_PIXELS/2
+._SHIELD_4_X:           EQU ._SCREEN_X_MIDDLE+3*._SHIELD_WIDTH_PIXELS-._SHIELD_WIDTH_PIXELS/2
+._SHIELD_Y:             EQU draw_common.SCREEN_HEIGHT_PIXELS-8*5
 
 draw_shield:
 
@@ -264,7 +266,6 @@ draw_shield:
 
     LD DE,(IX+._PARAM_COORDS)             
     PUSH DE     
-    ; HACK
     LD DE,sprites.sprite_shield_dims
     PUSH DE
     LD DE,sprites.sprite_shield     
@@ -281,14 +282,14 @@ draw_shield:
 draw_horiz_line:
     PUSH AF,BC,DE,HL
 
-    LD B,16
+    LD B,layout.INSET_X_PIXELS
     LD C,_.HORIZ_LINE_Y
 
-    LD L,28
+    LD L,layout.INSET_SCREEN_WIDTH_CHARS
 
 .loop       
     PUSH BC 
-    LD DE, sprites.sprite_horiz_line_dims
+    LD DE,sprites.sprite_horiz_line_dims
     PUSH DE
     LD DE,sprites.sprite_horiz_line    
     PUSH DE
@@ -308,7 +309,7 @@ draw_horiz_line:
 
     RET
 
-_.HORIZ_LINE_Y: EQU draw.SCREEN_HEIGHT_PIXELS-10
+_.HORIZ_LINE_Y: EQU draw_common.SCREEN_HEIGHT_PIXELS-10
 
     MEMORY_USAGE "game screen     ",_module_start
     
