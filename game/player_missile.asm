@@ -124,7 +124,7 @@ blank_missile:
 
 .missile:
     ; Erase the missile
-    LD A,(_missile_x)                                    ; Coords
+    LD A,(_missile_x)                                   ; Coords
     LD D,A
     LD A,(_missile_y)
     LD E,A
@@ -244,7 +244,7 @@ draw_player_missile:
 
 .explosion:
     ; Draw explosion
-    LD A, (_missile_x)                                   ; Coords
+    LD A, (_missile_x)                                  ; Coords
     LD D,A
     LD A, (_missile_y)
     LD E,A

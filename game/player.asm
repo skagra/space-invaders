@@ -112,7 +112,7 @@ update_player:
 
     LD A,(player_x)                                     ; Get current player base X coord
     DEC A                                               ; Decrease it to move left
-    CP ._MIN_PLAYER_X                                   ; Have we hit the left most point?
+    CP .MIN_PLAYER_X                                   ; Have we hit the left most point?
     JR Z,.done                                          ; Yes so don't update
     LD (player_x),A                                     ; Update the location of the player base
     JR .done
@@ -122,7 +122,7 @@ update_player:
     JR Z,.done                                          ; No
     LD A,(player_x)                                     ; Get current player base X coord
     INC A                                               ; Increase it to move right
-    CP ._MAX_PLAYER_X                                   ; Have we hit the right most point?a
+    CP .MAX_PLAYER_X                                   ; Have we hit the right most point?a
     JR NC,.done                                         ; Yes so don't update
     LD (player_x),A                                     ; Update the location of the player base
 
@@ -131,8 +131,8 @@ update_player:
 
     RET
 
-._MIN_PLAYER_X:             EQU layout.INSET_X_PIXELS
-._MAX_PLAYER_X:             EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_BASE_DIM_X_BYTES-1)*8
+.MIN_PLAYER_X:             EQU layout.INSET_X_PIXELS
+.MAX_PLAYER_X:             EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_BASE_DIM_X_BYTES-1)*8
 
     MEMORY_USAGE "player          ",_module_start
 

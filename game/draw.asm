@@ -30,7 +30,8 @@ init:
     RET
 
 ;------------------------------------------------------------------------------
-; Draw a sprite and flush the double buffer to the screen
+;
+; Draw a sprite and flush the off-screen buffer to the screen
 ;
 ; Usage:
 ;   PUSH coords word - X high byte, Y low byte
@@ -42,24 +43,25 @@ init:
 ;
 ; Registers modified:
 ;   -
+;
 ;------------------------------------------------------------------------------
 
 draw_sprite_and_flush_buffer:
 
-._PARAM_COORDS:            EQU 10                       ; Sprite coordinates
-._PARAM_DIMS:              EQU 8                        ; Sprite dimensions
-._PARAM_SPRITE_DATA:       EQU 6                        ; Sprite pre-shifted data lookup table
+.PARAM_COORDS:            EQU 10                        ; Sprite coordinates
+.PARAM_DIMS:              EQU 8                         ; Sprite dimensions
+.PARAM_SPRITE_DATA:       EQU 6                         ; Sprite pre-shifted data lookup table
     
     PUSH HL,IX
 
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP                                                   
 
-    LD HL,(IX+._PARAM_COORDS)
+    LD HL,(IX+.PARAM_COORDS)
     PUSH HL
-    LD HL,(IX+._PARAM_DIMS)
+    LD HL,(IX+.PARAM_DIMS)
     PUSH HL
-    LD HL,(IX+._PARAM_SPRITE_DATA)
+    LD HL,(IX+.PARAM_SPRITE_DATA)
     PUSH HL
 
     CALL draw.draw_sprite
@@ -68,18 +70,18 @@ draw_sprite_and_flush_buffer:
     POP HL
     POP HL
 
-    CALL copy_buffer_to_screen
+    CALL flush_buffer_to_screen
 
     POP IX,HL
 
     RET
 
-copy_buffer_to_screen:
+flush_buffer_to_screen:
     DI                                                  ; Disable interrupts as we'll be messing with SP
 
     PUSH AF,BC,DE,HL
 
-    LD (._stack_stash),SP                               ; Store current SP to restore at end
+    LD (.stack_stash),SP                                ; Store current SP to restore at end
 
     LD SP,_BUFFER_STACK                                 ; Subtract start of stack area (low mem)
     LD HL,(_buffer_stack_top)                           ; from current stack pointer (first free byte)
@@ -113,7 +115,7 @@ copy_buffer_to_screen:
     LD HL,_BUFFER_STACK                                 ; Reset the stack
     LD (_buffer_stack_top),HL
     
-    LD SP,(._stack_stash)                               ; Restore the original SP
+    LD SP,(.stack_stash)                                ; Restore the original SP
 
     POP HL,DE,BC,AF
 
@@ -121,7 +123,7 @@ copy_buffer_to_screen:
 
     RET
 
-._stack_stash: BLOCK 2
+.stack_stash: BLOCK 2
 
 ;------------------------------------------------------------------------------
 ; Draw a sprite
@@ -140,9 +142,9 @@ copy_buffer_to_screen:
 
 draw_sprite:
 
-._PARAM_COORDS:            EQU 16                       ; Sprite coordinates
-._PARAM_DIMS:              EQU 14                       ; Sprite dimensions
-._PARAM_SPRITE_DATA:       EQU 12                       ; Sprite pre-shifted data lookup table
+.PARAM_COORDS:            EQU 16                        ; Sprite coordinates
+.PARAM_DIMS:              EQU 14                        ; Sprite dimensions
+.PARAM_SPRITE_DATA:       EQU 12                        ; Sprite pre-shifted data lookup table
     
     DI 
 
@@ -156,15 +158,15 @@ draw_sprite:
     LD (HL),0x00
 
     ; Get and store the coords
-    LD HL,(IX+._PARAM_COORDS)                           ; Grab the pixel coords
+    LD HL,(IX+.PARAM_COORDS)                            ; Grab the pixel coords
     LD (.coords),HL                                     ; And store for later (only the Y coord gets updated)
 
     ; Get and store the dimensions
-    LD HL,(IX+._PARAM_DIMS)                             ; Grab dimension data (X in characters, Y in pixel lines)
+    LD HL,(IX+.PARAM_DIMS)                              ; Grab dimension data (X in characters, Y in pixel lines)
     LD (.dims),HL                                       ; And store for later
 
     ; Find the correct shifted version of the sprite data
-    LD HL,(IX+._PARAM_SPRITE_DATA)                      ; Start of sprite lookup table
+    LD HL,(IX+.PARAM_SPRITE_DATA)                       ; Start of sprite lookup table
     LD A,(.x_coord)                                     ; X coord
     AND 0b00000111                                      ; Calculate the X offset within the character cell
     SLA A                                               ; Double the offset as the lookup table contains words
@@ -267,7 +269,7 @@ draw_sprite:
     EI
     
     IFDEF AUTO_FLUSH
-        call copy_buffer_to_screen
+        call flush_buffer_to_screen
     ENDIF
 
     RET

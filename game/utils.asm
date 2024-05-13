@@ -45,10 +45,10 @@ fill_mem:
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                            ; Grab the stack pointer
+    LD  IX,0                                            ; Grab the stack pointer
     ADD IX,SP
 
-    LD BC,(IX+._PARAM_FILL_LENGTH)      ; Set up LDIR
+    LD BC,(IX+._PARAM_FILL_LENGTH)                      ; Set up LDIR
     LD HL,(IX+._PARAM_START_ADDRESS)
     LD A,(IX+._PARAM_FILL_VALUE)
 

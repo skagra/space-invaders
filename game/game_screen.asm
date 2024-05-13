@@ -96,23 +96,23 @@ init_screen:
     POP HL
 
     ; Green gel to cover active player base and defences
-    LD H,._BOTTOM_GEL_TOP_LEFT_Y                                    ; Top left X
-    LD L,._BOTTOM_GEL_HEIGHT                                        ; Height
+    LD H,._BOTTOM_GEL_TOP_LEFT_Y                        ; Top left X
+    LD L,._BOTTOM_GEL_HEIGHT                            ; Height
     PUSH HL
-    LD HL,draw_common.CA_FG_GREEN                                          ; Green fg attribute
+    LD HL,draw_common.CA_FG_GREEN                       ; Green fg attribute
     PUSH HL
     CALL draw_common.fill_screen_attribute_stripe
     POP HL
     POP HL
 
     ; Green gel covering bases showing remaining lives
-    LD H,._BASES_GEL_TOP_LEFT_X                                     ; Top left X
-    LD L,._BASES_GEL_TOP_LEFT_Y                                     ; Top left Y
+    LD H,._BASES_GEL_TOP_LEFT_X                         ; Top left X
+    LD L,._BASES_GEL_TOP_LEFT_Y                         ; Top left Y
     PUSH HL
-    LD H,._BASES_GEL_WIDTH                                          ; Width
-    LD L,._BASES_GEL_HEIGHT                                         ; Height
+    LD H,._BASES_GEL_WIDTH                              ; Width
+    LD L,._BASES_GEL_HEIGHT                             ; Height
     PUSH HL
-    LD HL,draw_common.CA_FG_GREEN                                          ; Green fg attribute
+    LD HL,draw_common.CA_FG_GREEN                       ; Green fg attribute
     PUSH HL
     CALL draw_common.fill_screen_attributes_rect
     POP HL
@@ -120,10 +120,10 @@ init_screen:
     POP HL
 
     ; Red gel just below scores - for spaceship and exploding player missiles
-    LD H,._SPACESHIP_GEL_LEFT_Y                                     ; Top left X
-    LD L,._SPACESHIP_GEL_HEIGHT                                     ; Height
+    LD H,._SPACESHIP_GEL_LEFT_Y                         ; Top left X
+    LD L,._SPACESHIP_GEL_HEIGHT                         ; Height
     PUSH HL
-    LD HL,draw_common.CA_FG_RED                                            ; Red fg attribute
+    LD HL,draw_common.CA_FG_RED                         ; Red fg attribute
     PUSH HL
     CALL draw_common.fill_screen_attribute_stripe
     POP HL
@@ -192,14 +192,14 @@ draw_reserve_bases:
 
 draw_reserve_base:
 
-._PARAM_COORDS:  EQU 6
+.PARAM_COORDS:  EQU 6
 
     PUSH DE,IX
 
-    LD  IX,0                                ; Point IX to the stack
+    LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP  
 
-    LD DE,(IX+._PARAM_COORDS)             
+    LD DE,(IX+.PARAM_COORDS)             
     PUSH DE     
 
     LD DE,sprites.PLAYER_BASE_DIMS
@@ -257,14 +257,14 @@ draw_shields:
 
 draw_shield:
 
-._PARAM_COORDS:  EQU 6
+.PARAM_COORDS:  EQU 6
 
     PUSH DE,IX
 
-    LD  IX,0                                ; Point IX to the stack
+    LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP  
 
-    LD DE,(IX+._PARAM_COORDS)             
+    LD DE,(IX+.PARAM_COORDS)             
     PUSH DE     
     LD DE,sprites.SHIELD_DIMS
     PUSH DE
@@ -283,7 +283,7 @@ draw_horiz_line:
     PUSH AF,BC,DE,HL
 
     LD B,layout.INSET_X_PIXELS
-    LD C,_.HORIZ_LINE_Y
+    LD C,.HORIZ_LINE_Y
 
     LD L,layout.INSET_SCREEN_WIDTH_CHARS
 
@@ -309,7 +309,7 @@ draw_horiz_line:
 
     RET
 
-_.HORIZ_LINE_Y: EQU draw_common.SCREEN_HEIGHT_PIXELS-10
+.HORIZ_LINE_Y: EQU draw_common.SCREEN_HEIGHT_PIXELS-10
 
     MEMORY_USAGE "game screen     ",_module_start
     

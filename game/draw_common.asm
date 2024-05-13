@@ -60,7 +60,7 @@ init:
     RET
 
 ; Collision detection
-collided:           BLOCK 1              ; The last draw operation detected a collision
+collided:           BLOCK 1                             ; The last draw operation detected a collision
 collision_coords:
 collision_y:        BLOCK 1
 collision_x:        BLOCK 1
@@ -70,9 +70,9 @@ collision_x:        BLOCK 1
 ; Set the colour of the screen border
 ;
 ; Usage:
-;   PUSH rr                             ; Colour in LSB
+;   PUSH rr          ; Colour in LSB
 ;   CALL set_border
-;   POP rr                              ; Ditch the supplied parameter
+;   POP rr           ; Ditch the supplied parameter
 ;
 ; Return values:
 ;   -
@@ -84,14 +84,14 @@ collision_x:        BLOCK 1
 
 set_border:
 
-._PARAM_BORDER_COLOUR:  EQU 8
+.PARAM_BORDER_COLOUR:  EQU 8
 
     PUSH AF,HL,IX
     
-    LD  IX,0                            ; Get the stack pointer
+    LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL,(IX+._PARAM_BORDER_COLOUR)
+    LD HL,(IX+.PARAM_BORDER_COLOUR)
 
     LD A,L
     OUT (0xFE),A
@@ -118,14 +118,14 @@ wipe_screen:
     PUSH HL,IX    
 
     ; Set up call to utils.fill_mem
-    LD HL,0x0000                        ; Fill with zero values (blank)
+    LD HL,0x0000                                        ; Fill with zero values (blank)
     PUSH HL
-    LD HL,mmap.SCREEN_START             ; Start of screen area
+    LD HL,mmap.SCREEN_START                             ; Start of screen area
     PUSH HL
-    LD HL, mmap.SCREEN_SIZE             ; Length of screen area
+    LD HL, mmap.SCREEN_SIZE                             ; Length of screen area
     PUSH HL
-    CALL utils.fill_mem                 ; Erase the screen
-    POP HL                              ; Ditch the supplied parameters
+    CALL utils.fill_mem                                 ; Erase the screen
+    POP HL                                              ; Ditch the supplied parameters
     POP HL
     POP HL
 
@@ -152,22 +152,22 @@ wipe_screen:
 
 fill_screen_attributes:
 
-._PARAM_ATTRIBUTE: EQU 6                ; Colour attributes
+.PARAM_ATTRIBUTE: EQU 6                                 ; Colour attributes
 
     PUSH HL,IX   
 
-    LD  IX,0                            ; Get the stack pointer
+    LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
     ; Set up call to utils.fill_mem
-    LD HL, (ix+._PARAM_ATTRIBUTE)       ; Get the colour attribute
+    LD HL, (ix+.PARAM_ATTRIBUTE)                        ; Get the colour attribute
     PUSH HL                             
-    LD HL,mmap.SCREEN_ATTR_START        ; Start of the screen attribute area
+    LD HL,mmap.SCREEN_ATTR_START                        ; Start of the screen attribute area
     PUSH HL
-    LD HL,mmap.SCREEN_ATTR_SIZE         ; Length of the screen attribute area
+    LD HL,mmap.SCREEN_ATTR_SIZE                         ; Length of the screen attribute area
     PUSH HL
-    CALL utils.fill_mem                 ; Fill the screen attribute area
-    POP HL                              ; Ditch the supplied parameters
+    CALL utils.fill_mem                                 ; Fill the screen attribute area
+    POP HL                                              ; Ditch the supplied parameters
     POP HL
     POP HL 
 
@@ -202,32 +202,32 @@ fill_screen_attributes:
 
 fill_screen_attributes_rect:
 
-._PARAM_TOP_LEFT:          EQU 16
-._PARAM_DIM:               EQU 14
-._PARAM_ATTRIBUTE:         EQU 12
+.PARAM_TOP_LEFT:          EQU 16
+.PARAM_DIM:               EQU 14
+.PARAM_ATTRIBUTE:         EQU 12
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                            ; Get the stack pointer
+    LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL,(IX+._PARAM_ATTRIBUTE)        ; Get the colour attribute
+    LD HL,(IX+.PARAM_ATTRIBUTE)                         ; Get the colour attribute
     LD A,L
-    LD (._attribute),A
+    LD (.attribute),A
 
-    LD HL,(IX+._PARAM_TOP_LEFT)         ; Top left of rect to fill
-    LD (._top_left),HL
+    LD HL,(IX+.PARAM_TOP_LEFT)                          ; Top left of rect to fill
+    LD (.top_left),HL
 
-    LD HL,(IX+._PARAM_DIM)              ; Width and hight of rect to fill
-    LD (._dim),HL
+    LD HL,(IX+.PARAM_DIM)                               ; Width and hight of rect to fill
+    LD (.dim),HL
 
     ; Calculate the starting address
-    LD DE, mmap.SCREEN_ATTR_START       ; Base address of attribute map
-    LD A,(._x)                          ; Set low order byte from x coord
+    LD DE, mmap.SCREEN_ATTR_START                       ; Base address of attribute map
+    LD A,(.x)                                          ; Set low order byte from x coord
     LD E,A 
     
-    LD H,0x00                           ; Take Y coord
-    LD A,(._y)                          ; Multiple x32
+    LD H,0x00                                           ; Take Y coord
+    LD A,(.y)                                          ; Multiple x32
     LD L,A             
     SLA L
     RL H
@@ -239,50 +239,50 @@ fill_screen_attributes_rect:
     RL H
     SLA L
     RL H
-    ADD DE,HL                           ; DE will track memory to write                       
+    ADD DE,HL                                           ; DE will track memory to write                       
 
     ; Calculate line step bytes
-    LD A,(._dim_width)                  ; Subtract the width of the block 
-    LD B,A                              ; from bytes in a line
+    LD A,(.dim_width)                                  ; Subtract the width of the block 
+    LD B,A                                              ; from bytes in a line
     LD A, SCREEN_WIDTH_CHARS
     SUB B
-    LD (._line_step_bytes),A            ; Store away line step update
+    LD (.line_step_bytes),A                            ; Store away line step update
     
-    LD A,(._dim_height)                 ; Set y loop counter (B) from height
+    LD A,(.dim_height)                                 ; Set y loop counter (B) from height
     LD B,A
 
 .y_loop:
-    LD A,(._dim_width)                  ; Set x loop counter (C) from width
+    LD A,(.dim_width)                                  ; Set x loop counter (C) from width
     LD C,A
 
 ._x_loop:
-    LD A, (._attribute)                 ; Get the screen attribute
-    LD (DE),A                           ; Store at current screen map location
-    INC DE                              ; Move to next screen map location
+    LD A, (.attribute)                                 ; Get the screen attribute
+    LD (DE),A                                           ; Store at current screen map location
+    INC DE                                              ; Move to next screen map location
 
-    DEC C                               ; Any more to do in this line?
+    DEC C                                               ; Any more to do in this line?
     JR NZ,._x_loop                   
 
-    LD H,0x00                           ; Move to next line
-    LD A,(._line_step_bytes)
+    LD H,0x00                                           ; Move to next line
+    LD A,(.line_step_bytes)
     LD L,A
     ADD DE,HL
 
-    DEC B                               ; Any more lines to do?
+    DEC B                                               ; Any more lines to do?
     JR NZ,.y_loop
 
     POP IX,HL,DE,BC,AF
 
     RET
 
-._top_left:  
-._y:                 BLOCK 1
-._x:                 BLOCK 1
-._dim:
-._dim_height:        BLOCK 1
-._dim_width:         BLOCK 1
-._attribute:         BLOCK 1
-._line_step_bytes:   BLOCK 1
+.top_left:  
+.y:                 BLOCK 1
+.x:                 BLOCK 1
+.dim:
+.dim_height:        BLOCK 1
+.dim_width:         BLOCK 1
+.attribute:         BLOCK 1
+.line_step_bytes:   BLOCK 1
 
 ;------------------------------------------------------------------------------
 ;
@@ -301,28 +301,28 @@ fill_screen_attributes_rect:
 
 fill_screen_attribute_stripe:
 
-._PARAM_Y:      EQU 12
-._PARAM_ATTR:   EQU 10
+.PARAM_Y:      EQU 12
+.PARAM_ATTR:   EQU 10
 
     PUSH BC,DE,HL,IX
 
-    LD  IX,0                            ; Get the stack pointer
+    LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL, (IX+._PARAM_Y)               ; H = Y coord, L = height
-    LD BC, (IX+._PARAM_ATTR)            ; C = Attribute   
+    LD HL, (IX+.PARAM_Y)                                ; H = Y coord, L = height
+    LD BC, (IX+.PARAM_ATTR)                             ; C = Attribute   
 
     ; XY Coords
-    LD D,0x00;                          ; X=0
-    LD E,H                              ; Y as supplied
+    LD D,0x00;                                          ; X=0
+    LD E,H                                              ; Y as supplied
     PUSH DE
 
     ; XY Dimensions
-    LD D,SCREEN_WIDTH_CHARS             ; X dimension full screen width
-    LD E,L                              ; Y dimension as supplied
+    LD D,SCREEN_WIDTH_CHARS                             ; X dimension full screen width
+    LD E,L                                              ; Y dimension as supplied
     PUSH DE
 
-    PUSH BC                             ; Colour attribute
+    PUSH BC                                             ; Colour attribute
 
     call fill_screen_attributes_rect
 
@@ -356,35 +356,36 @@ fill_screen_attribute_stripe:
 ;   -
 ;
 ;------------------------------------------------------------------------------
+
 coords_to_mem:
 
-._PARAM_COORDS:   EQU 12                ; Coordinates
-._RTN_MEM:        EQU 10                ; Memory location return value
+.PARAM_COORDS:   EQU 12                                 ; Coordinates
+.RTN_MEM:        EQU 10                                 ; Memory location return value
 
     PUSH AF,BC,HL,IX
    
-    LD  IX,0                            ; Get the stack pointer
+    LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD BC, (IX+._PARAM_COORDS)          ; Get coords from the stack
-    LD B, 0x00                          ; B=0x00, C=Y coord
-    SLA C                               ; Double Y to get offset in table (as table contains words)
+    LD BC, (IX+.PARAM_COORDS)                           ; Get coords from the stack
+    LD B, 0x00                                          ; B=0x00, C=Y coord
+    SLA C                                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, draw_common._Y_MEM_ROW_LOOKUP ; Base of lookup table in HL
-    ADD HL,BC                           ; Location of the row start in the lookup table
-    LD BC,(HL)                          ; Location of row start
-    LD HL,BC                            ; Move result into HL
+    LD HL, draw_common._Y_MEM_ROW_LOOKUP                ; Base of lookup table in HL
+    ADD HL,BC                                           ; Location of the row start in the lookup table
+    LD BC,(HL)                                          ; Location of row start
+    LD HL,BC                                            ; Move result into HL
 
     ; Calculate X7,X6,X5,X4,X3
-    LD BC, (IX+._PARAM_COORDS)          ; Get coords from the stack
-    LD A,B                              ; Grab the x coord
-    SRL A                               ; Shift into position
+    LD BC, (IX+.PARAM_COORDS)                           ; Get coords from the stack
+    LD A,B                                              ; Grab the x coord
+    SRL A                                               ; Shift into position
     SRL A
     SRL A
-    OR L                                ; OR with Y5,Y4,Y3
-    LD L,A                              ; Store in L
+    OR L                                                ; OR with Y5,Y4,Y3
+    LD L,A                                              ; Store in L
   
-    LD (IX+._RTN_MEM),HL                ; Put the return value on the stack
+    LD (IX+.RTN_MEM),HL                                 ; Put the return value on the stack
 
     POP IX,HL,BC,AF
 

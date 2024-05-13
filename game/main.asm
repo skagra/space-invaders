@@ -74,7 +74,7 @@ main:
 
     ; Draw the initial screen
     CALL game_screen.init_screen
-    CALL draw.copy_buffer_to_screen
+    CALL draw.flush_buffer_to_screen
 
 .animation_loop:
     ; Read keyboard
@@ -119,7 +119,7 @@ main:
     ENDIF
     
     ; Copy off screen buffers to screen memory
-    CALL draw.copy_buffer_to_screen
+    CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
 
     DEBUG_VTRACE_FLASH

@@ -11,7 +11,6 @@
     ; Skip past contended memory
     ORG 0x8000 
 
-    INCLUDE "error_codes.asm"
     INCLUDE "debug.asm"
     INCLUDE "utils.asm"
     INCLUDE "draw_common.asm"
@@ -30,7 +29,6 @@ main:
     EI
 
     ; Initialise all modules
-    CALL error_codes.init
     CALL debug.init
     CALL utils.init
     CALL draw_common.init
@@ -39,12 +37,12 @@ main:
     CALL print.init
   
     ; Clear the screen
-    call draw.wipe_screen
+    call draw_common.wipe_screen
 
     ; Fill screen with black bg, white fg
-    LD L,draw.CA_BG_RED | draw.CA_FG_WHITE
+    LD L,draw_common.CA_BG_RED | draw_common.CA_FG_WHITE
     PUSH HL
-    CALL draw.fill_screen_attributes
+    CALL draw_common.fill_screen_attributes
     POP HL
 
     LD B, NUM_TEST_SPRITES
@@ -69,9 +67,9 @@ main:
 
     LD HL, 0x7070
     PUSH HL
-    LD HL,sprites.sprite_shield_dims
+    LD HL,sprites.SHIELD_DIMS
     PUSH HL
-    LD HL,sprites.sprite_shield
+    LD HL,sprites.SHIELD
     PUSH HL
     CALL draw.draw_sprite
     POP HL
@@ -80,7 +78,7 @@ main:
 
     HALT 
     CALL fast_draw.flush_buffer_to_screen_16x8
-    CALL draw.copy_buffer_to_screen
+    CALL draw.flush_buffer_to_screen
 
 .animation_loop:
     DEBUG_VTRACE_FLASH
@@ -93,9 +91,9 @@ main:
 DRAW_BUFFER:    BLOCK 0x1800,0x00
 
 TEST_SPRITES:   
-    WORD 0x3050, sprites.test_card
-    WORD 0x2217, sprites.sprite_alien_1_variant_0
-    WORD 0x1053, sprites.sprite_base
+    WORD 0x3050, sprites.TEST_CARD
+    WORD 0x2217, sprites.ALIEN_1_VARIANT_0
+    WORD 0x1053, sprites.PLAYER_BASE
 
 NUM_TEST_SPRITES: EQU ($-TEST_SPRITES)/4
 

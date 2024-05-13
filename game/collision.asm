@@ -54,7 +54,7 @@ handle_collision:
     JR .done
 
 .not_hit_an_alien:
-    CALL player_missile.missile_hit_a_shield              ; Collision was not with an alien - so assume a shield
+    CALL player_missile.missile_hit_a_shield            ; Collision was not with an alien - so assume a shield
 
 .done
     POP   HL,DE,AF
