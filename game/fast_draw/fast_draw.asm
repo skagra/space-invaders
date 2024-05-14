@@ -201,10 +201,6 @@ draw_sprite_16x8:
 
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP                                                   
-  
-    ; Initialize the collision flag
-    LD HL,draw_common.collided                      
-    LD (HL),0x00
 
     ; Get and store coords
     LD HL,(IX+.PARAM_COORDS)                            ; Grab the pixel coords
