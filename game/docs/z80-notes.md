@@ -28,3 +28,16 @@
     SLA L                                              
     RL H
 ```
+
+# Compare A to Zero with Modifying
+
+```
+    AND A
+```
+
+# Copy SP into an Index Register
+
+```
+    LD  IX,0
+    ADD IX,SP   
+```

@@ -16,12 +16,12 @@ _PACK_DIRECTION_DOWN_AT_RIGHT_BIT:      EQU 3
 ; Status of an alien
 _ALIEN_STATE_NEW:                       EQU 0b00000001  ; Just created
 _ALIEN_STATE_ACTIVE:                    EQU 0b00000010  ; Normally active alien
-_ALIEN_STATE_DIEING:                    EQU 0b00000100  ; In the process of dieing
+; _ALIEN_STATE_DIEING:                    EQU 0b00000100  ; In the process of dieing
 _ALIEN_STATE_DEAD:                      EQU 0b00001000  ; Dead alien
 
 _ALIEN_STATE_NEW_BIT:                   EQU 0
 _ALIEN_STATE_ACTIVE_BIT:                EQU 1
-_ALIEN_STATE_DIEING_BIT:                EQU 2
+; _ALIEN_STATE_DIEING_BIT:                EQU 2
 _ALIEN_STATE_DEAD_BIT:                  EQU 3
 
 ; Offsets into structure representing an alien
@@ -236,6 +236,9 @@ init:
     LD A,_ALIEN_PACK_SIZE
     LD (_pack_loop_counter),A
 
+    LD A,0x00
+    LD (_pack_halted),A
+
     ; Pack extremeties
     ; TODO proper way of setting initial values
     LD A,0x20
@@ -280,8 +283,8 @@ blank_alien:
     LD IX,DE
     
     LD A,(IX+_STATE_OFFSET_STATE)
-    BIT _ALIEN_STATE_DIEING_BIT,A
-    JR NZ,.blank_explosion
+    ; BIT _ALIEN_STATE_DIEING_BIT,A
+    ; JR NZ,.blank_explosion
 
     ; Is the current alien dead or new
     AND _ALIEN_STATE_DEAD | _ALIEN_STATE_NEW,A
@@ -310,21 +313,8 @@ blank_alien:
     POP DE
     POP DE
 
-    JR .done
-
-.blank_explosion
-    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
-    PUSH HL 
-
-    LD HL,sprites.ALIEN_EXPLOSION_BLANK                 ; Sprite and mask
-    PUSH HL
-
-    CALL fast_draw.fast_draw_sprite_16x8
-
-    POP HL
-    POP HL
-
 .done
+
     POP IX,HL,DE,AF
 
     RET
@@ -357,7 +347,7 @@ draw_current_alien:
     ; Is the deferred alien active pr new
     LD A,(IX+_STATE_OFFSET_STATE)
     AND _ALIEN_STATE_ACTIVE|_ALIEN_STATE_NEW,A    
-    JR Z,.done                                          ; Dead on dieing so don't draw
+    JR Z,.done                                          ; Dead 
 
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL  
@@ -563,6 +553,43 @@ _update_pack_bounds:
 
     RET
 
+update_halted_pack:
+    PUSH AF
+
+    ; Is the pack halted
+    LD A,(_pack_halted)
+    AND A
+    JR Z,.done
+
+    ; Is there an alien that is currently exploding?
+    LD A,(_exploding_cycles)  
+    AND A                                               ; CP 0x00
+    JR Z,.done                                          ; No - normal update cycle
+    DEC A                                               ; Yes - decrease the number of cycles left to wait
+    LD (_exploding_cycles),A                            ; Has the counter now dropped to zero?
+    AND A                                               ; CP 0x00
+    JR NZ,.done                                         ; No - done.
+
+    ; Done exploding - erase the explosion
+    LD HL,(_exploding_alien)                            ; Yes - blank the explosion
+    LD IX,HL
+    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
+    PUSH HL
+    LD HL, sprites.ALIEN_EXPLOSION_BLANK
+    PUSH HL
+    call fast_draw.fast_draw_sprite_16x8
+    POP HL
+    POP HL 
+
+    ; Start the pack moving again
+    LD A,0x00
+    LD (_pack_halted),A
+
+.done
+    POP AF
+    
+    RET
+
 ;------------------------------------------------------------------------------
 ;
 ; Update the current alien coordinates and state
@@ -581,6 +608,16 @@ _update_pack_bounds:
 update_current_alien:
     PUSH AF,DE,HL,IX
 
+    ; Update if the pack is halted 
+    CALL update_halted_pack
+
+    ; Is the pack still globally halted?
+    LD A,(_pack_halted)
+    AND A
+    JR NZ,.done
+
+.not_exploding
+
     ; Point IX at the state structure for the current alien
     LD HL,(_current_alien_lookup_ptr)
     LD DE,(HL)
@@ -596,10 +633,6 @@ update_current_alien:
     ; Is the alien new
     BIT _ALIEN_STATE_NEW_BIT,A
     JR NZ,.new
-
-    ; Is the alien dieing?
-    BIT _ALIEN_STATE_DIEING_BIT,A
-    JR NZ,.dieing
 
     BIT _ALIEN_STATE_ACTIVE_BIT,A
     JR NZ,.active
@@ -646,6 +679,10 @@ update_current_alien:
 
 next_alien:
     PUSH AF,DE,HL,IX
+
+    LD A,(_pack_halted)
+    AND A
+    JR NZ,.more_aliens_to_draw
 
     LD HL,(_current_alien_lookup_ptr) 
 .loop
@@ -870,7 +907,7 @@ get_alien_at_coords:
 
 alien_hit_by_player_missile:
 
-.PARAM_ALIEN_STATE_PTR EQU 8
+.PARAM_ALIEN_STATE_PTR EQU 8 
 
     PUSH HL,IX,IY
 
@@ -878,12 +915,19 @@ alien_hit_by_player_missile:
     LD  IX,0                                            
     ADD IX,SP   
 
-    ; Pointer the the alien state of the collided alien
+    ; Pointer to the collided alien
     LD HL,(IX+.PARAM_ALIEN_STATE_PTR)
 
-    ; Set the alien state to be dieing
+    ; Store it
+    LD (_exploding_alien),HL
+
+    ; Halt the pack during the explosion
+    LD A,0x01
+    LD (_pack_halted),A
+
+    ; Set the alien state to be dead
     LD IY,HL
-    LD (IY+alien_pack._STATE_OFFSET_STATE),_ALIEN_STATE_DIEING
+    LD (IY+alien_pack._STATE_OFFSET_STATE),_ALIEN_STATE_DEAD 
 
     ; Blank out the alien
     LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
@@ -904,25 +948,31 @@ alien_hit_by_player_missile:
     PUSH HL                                             ; Mask is in HL
 
     CALL fast_draw.fast_draw_sprite_16x8
-
     POP DE
     POP DE
 
     ; Draw alien explosion
     LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL  
-
+  ;  LD (_exploding_alien),HL
     LD HL,sprites.ALIEN_EXPLOSION;
     PUSH HL
-  
     CALL fast_draw.fast_draw_sprite_16x8
+    POP HL
+    POP HL
 
-    POP HL
-    POP HL
+    ; Set a count down to pause the movement of the pack
+    LD A,.EXPLODING_ALIEN_DELAY
+    LD (_exploding_cycles),A
 
     POP IY,IX,HL
 
     RET
+
+.EXPLODING_ALIEN_DELAY EQU  15
+_exploding_cycles: BYTE 1
+_exploding_alien: WORD 1
+_pack_halted: BYTE 1
 
     MEMORY_USAGE "alien pack      ",_module_start
 

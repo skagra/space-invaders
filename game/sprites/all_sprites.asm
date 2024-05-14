@@ -16,6 +16,8 @@ _module_start:
 	INCLUDE "sprites/alien_3_variant_1_blank.asm"
 	INCLUDE "sprites/alien_explosion.asm"
 	INCLUDE "sprites/alien_explosion_blank.asm"
+	INCLUDE "sprites/alien_missile_1_variant_0.asm"
+	INCLUDE "sprites/alien_missile_1_variant_0_blank.asm"
 	INCLUDE "sprites/horiz_line.asm"
 	INCLUDE "sprites/horiz_line_blank.asm"
 	INCLUDE "sprites/player_base.asm"
