@@ -44,7 +44,7 @@ get_alien_at_coords:
     ENDIF
 
     ; Is the target Y "below" to top of the alien - Y coords increase as we go down the screen
-    LD A,(.target_y)                                    ; Y coord of collision
+    LD A,(.target_y)                                    ; target Y coordinate
     CP (IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)      ; Compare to top of alien
     JR C,.row_not_found                                 ; Is the top of the alien coord greater than the target coord
 
