@@ -18,26 +18,18 @@ add_to_score:
     LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL,(IX+.PARAM_INCREMENT)
+    LD HL,(IX+.PARAM_INCREMENT)                         ; Grab the value to add to the score
+    OR A                                                ; Ensure the half carry is reset
 
-    ; LOGPOINT [SCORING] Increment=${HL}, score_lsb=${(scoring.score_lsb):hex}, score_msb=${(scoring.score_msb):hex}
+    LD A,(score_lsb)                                    ; Get the current score low byte
+    ADD L                                               ; Add the increment low byte
+    DAA                                                 ; Adjust for BCD
+    LD (score_lsb),A                                    ; Store the new low byte of the score
 
-    OR A
-    LD A,(score_lsb)
-    ADD L
-    ; LOGPOINT [SCORING] Pre DAA A=${A:hex}
-    DAA
-    ; LOGPOINT [SCORING] Post DAA A=${A:hex}
-    LD (score_lsb),A
-
-    ; LOGPOINT [SCORING] Added LSB score_lsb=${(scoring.score_lsb):hex}, score_msb=${(scoring.score_msb):hex}
-
-    LD A,(score_msb)
-    ADC H
-    DAA
-    LD (score_msb),A
-
-    ; LOGPOINT [SCORING] Added MSB score_lsb=${(scoring.score_lsb):hex}, score_msb=${(scoring.score_msb):hex}
+    LD A,(score_msb)                                    ; Grab the current score high byte
+    ADC H                                               ; Add the increment high byte with any carry  
+    DAA                                                 ; Adjust for BCD
+    LD (score_msb),A                                    ; Store the new high byte of the score
 
     POP IX,AF
 
@@ -52,13 +44,13 @@ add_alien_value_to_score:
     LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL,ALIEN_SCORE_VALUES                                  ; Alien score lookup table
+    LD HL,ALIEN_SCORE_VALUES                            ; Alien score lookup table
     LD B,0x00                                               
     LD C,(IX+.PARAM_ALIEN_TYPE)                         ; Alien type gives index into table
-    ADD HL,BC                                           ; Index to base
-    LD C,(HL)                                           ; Grab the alien value
+    ADD HL,BC                                           ; Add the index to the base
+    LD C,(HL)                                           ; Grab the alien score value
     
-    PUSH BC                                             ; Add the alien value to the current score
+    PUSH BC                                             ; Add the alien score value to the current score
     CALL add_to_score
     POP BC
 
@@ -66,28 +58,9 @@ add_alien_value_to_score:
 
     RET
 
+; TODO - These alien types should live elsewhere, but don't want dependency on alien_pack
 ALIEN_TYPE_0:       EQU 0
 ALIEN_TYPE_1:       EQU 1
 ALIEN_TYPE_2:       EQU 2
 
 ALIEN_SCORE_VALUES: BYTE 0x10,0x20,0x30
-
-SCORE_CHAR_X:       EQU 5
-SCORE_CHAR_Y:       EQU 1
-
-SCORE_CHAR_COORDS:  EQU (SCORE_CHAR_X<<8) + SCORE_CHAR_Y
-
-print_score:
-    PUSH HL
-
-    LD HL,(score)
-    PUSH HL
-    LD HL,SCORE_CHAR_COORDS
-    PUSH HL
-    CALL print.print_bcd_word
-    POP HL
-    POP HL
-    
-    POP HL
-
-    RET

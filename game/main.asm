@@ -114,7 +114,7 @@ main:
     CALL alien_pack.next_alien
 
     ; Draw the player's score
-    CALL scoring.print_score
+    CALL game_screen.print_score
 
     IFNDEF IGNORE_VSYNC
         ; Wait for Vsync

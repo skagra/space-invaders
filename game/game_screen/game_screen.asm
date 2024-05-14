@@ -81,9 +81,6 @@ init_screen:
     POP HL
 
     CALL draw_horiz_line
-    CALL draw_score_1
-    CALL draw_score_2
-    CALL draw_high_score
     CALL draw_credit
     CALL draw_bases_count
     CALL draw_reserve_bases
@@ -145,18 +142,6 @@ init_screen:
 ._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
 ._SCORE_LINE_1_TEXT:        BYTE "             0000      0000  ",0
 ._LIVES_AND_CREDS_TEXT:     BYTE "   3                CREDIT 00",0
-
-; TODO
-draw_score_1:
-    RET
-
-; TODO
-draw_score_2:
-    RET
-
-; TODO
-draw_high_score:
-    RET
 
 ; TODO
 draw_credit:
