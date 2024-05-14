@@ -1,7 +1,7 @@
 ﻿using System.Text;
 class ShiftSprites
 {
-    private const string INCLUDE_FILENAME = "all_sprites.asm";
+    private const string INCLUDE_FILENAME = "module.asm";
     private const string HEADER_MESSAGE = "; This file was automatically generated, DO NOT MODIFY";
     private const string SPRITE_MODULE_NAME = "sprites";
     private const string MEM_USAGE_LABEL = "_module_start";
@@ -40,6 +40,9 @@ class ShiftSprites
         fileOutput.WriteLine(HEADER_MESSAGE);
         fileOutput.WriteLine();
 
+        fileOutput.WriteLine($"\tMODULE {SPRITE_MODULE_NAME}");
+        fileOutput.WriteLine();
+
         fileOutput.WriteLine($"{MEM_USAGE_LABEL}:");
         fileOutput.WriteLine();
 
@@ -50,6 +53,9 @@ class ShiftSprites
 
         fileOutput.WriteLine();
         fileOutput.WriteLine($"\tMEMORY_USAGE \"sprites         \",{MEM_USAGE_LABEL}");
+
+        fileOutput.WriteLine();
+        fileOutput.WriteLine($"\tENDMODULE");
 
         fileOutput.Close();
     }
@@ -105,8 +111,6 @@ class ShiftSprites
         Console.WriteLine($"Output filename: '{Path.GetFileName(spriteOutputFilename)}'");
 
         spriteFileOutput.WriteLine(HEADER_MESSAGE);
-        spriteFileOutput.WriteLine();
-        spriteFileOutput.WriteLine($"\tMODULE {SPRITE_MODULE_NAME}");
         spriteFileOutput.WriteLine();
 
         // Lookup table for shifted sprites
@@ -178,9 +182,6 @@ class ShiftSprites
 
         spriteFileOutput.WriteLine("; Lookup table");
         spriteFileOutput.WriteLine($"{spriteName}:\n\tWORD {String.Join(", ", spriteLookupTable)}");
-
-        spriteFileOutput.WriteLine();
-        spriteFileOutput.WriteLine($"\tENDMODULE");
 
         spriteFileOutput.Close();
 

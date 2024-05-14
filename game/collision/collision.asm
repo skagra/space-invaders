@@ -1,7 +1,3 @@
-    MODULE collision
-
-_module_start:
-
 init:
     RET
 
@@ -60,7 +56,3 @@ handle_collision:
     POP   HL,DE,AF
     
     RET
-
-    MEMORY_USAGE "collision       ",_module_start
-
-    ENDMODULE

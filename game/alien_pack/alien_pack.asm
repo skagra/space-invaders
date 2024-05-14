@@ -1,7 +1,3 @@
-    MODULE alien_pack
-
-_module_start:
-
 ; Direction of movement of alien pack
 _PACK_DIRECTION_LEFT:                   EQU 0b00000001   
 _PACK_DIRECTION_RIGHT:                  EQU 0b00000010
@@ -199,8 +195,8 @@ _pack_tr_coords:
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
-_PACK_MAX_RIGHT:                        EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-((sprites.ALIEN_1_VARIANT_0_BLANK_DIM_X_BYTES-1)*8)
-_PACK_MIN_LEFT:                         EQU layout.INSET_X_PIXELS
+_PACK_MAX_RIGHT:                        EQU draw_common.INSET_X_PIXELS+draw_common.INSET_SCREEN_WIDTH_PIXELS-((sprites.ALIEN_1_VARIANT_0_BLANK_DIM_X_BYTES-1)*8)
+_PACK_MIN_LEFT:                         EQU draw_common.INSET_X_PIXELS
 
 ;------------------------------------------------------------------------------
 ;
@@ -974,6 +970,4 @@ _exploding_cycles: BYTE 1
 _exploding_alien: WORD 1
 _pack_halted: BYTE 1
 
-    MEMORY_USAGE "alien pack      ",_module_start
 
-    ENDMODULE

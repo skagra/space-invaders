@@ -1,7 +1,3 @@
-    MODULE draw
-
-_module_start:
-
 _BUFFER_STACK: BLOCK 512   
 _buffer_stack_top: BLOCK 2                              ; This points to the next free location on the stack
 
@@ -285,11 +281,3 @@ draw_sprite:
 .stack_ptr:            BLOCK 2
 .y_lookup_table_ptr    BLOCK 2
 .mem_write_ptr         BLOCK 2
-
-    MEMORY_USAGE "draw            ",_module_start
-    
-    ENDMODULE
-
-   
-
-    

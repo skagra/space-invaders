@@ -1,5 +1,7 @@
 ; This file was automatically generated, DO NOT MODIFY
 
+	MODULE sprites
+
 _module_start:
 
 	INCLUDE "sprites/alien_1_variant_0.asm"
@@ -34,3 +36,5 @@ _module_start:
 	INCLUDE "sprites/test_square_blank.asm"
 
 	MEMORY_USAGE "sprites         ",_module_start
+
+	ENDMODULE

@@ -1,7 +1,3 @@
-    MODULE game_screen
-
-_module_start:
-
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -187,7 +183,7 @@ draw_reserve_bases:
     RET
 
 ._RESERVE_BASE_Y:     EQU draw_common.SCREEN_HEIGHT_PIXELS-8-1
-._RESERVE_BASE_1_X:   EQU layout.INSET_X_PIXELS+3*8
+._RESERVE_BASE_1_X:   EQU draw_common.INSET_X_PIXELS+3*8
 ._RESERVE_BASE_2_X:   EQU ._RESERVE_BASE_1_X+((sprites.PLAYER_BASE_DIM_X_BYTES-1)*8)
 
 draw_reserve_base:
@@ -247,7 +243,7 @@ draw_shields:
     RET
 
 ._SHIELD_WIDTH_PIXELS:  EQU (sprites.SHIELD_DIM_X_BYTES-1)*8
-._SCREEN_X_MIDDLE:      EQU (layout.INSET_SCREEN_WIDTH_PIXELS/2)+layout.INSET_X_PIXELS;
+._SCREEN_X_MIDDLE:      EQU (draw_common.INSET_SCREEN_WIDTH_PIXELS/2)+draw_common.INSET_X_PIXELS;
 
 ._SHIELD_1_X:           EQU ._SCREEN_X_MIDDLE-3*._SHIELD_WIDTH_PIXELS-._SHIELD_WIDTH_PIXELS/2
 ._SHIELD_2_X:           EQU ._SCREEN_X_MIDDLE-1*._SHIELD_WIDTH_PIXELS-._SHIELD_WIDTH_PIXELS/2
@@ -282,10 +278,10 @@ draw_shield:
 draw_horiz_line:
     PUSH AF,BC,DE,HL
 
-    LD B,layout.INSET_X_PIXELS
+    LD B,draw_common.INSET_X_PIXELS
     LD C,.HORIZ_LINE_Y
 
-    LD L,layout.INSET_SCREEN_WIDTH_CHARS
+    LD L,draw_common.INSET_SCREEN_WIDTH_CHARS
 
 .loop       
     PUSH BC 
@@ -310,7 +306,3 @@ draw_horiz_line:
     RET
 
 .HORIZ_LINE_Y: EQU draw_common.SCREEN_HEIGHT_PIXELS-10
-
-    MEMORY_USAGE "game screen     ",_module_start
-    
-    ENDMODULE

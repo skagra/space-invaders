@@ -1,7 +1,3 @@
-    MODULE player
-
-_module_start:
-
 PLAYER_Y:               EQU draw_common.SCREEN_HEIGHT_PIXELS-20
 player_x:               BLOCK 1
 
@@ -131,9 +127,6 @@ update_player:
 
     RET
 
-.MIN_PLAYER_X:             EQU layout.INSET_X_PIXELS
-.MAX_PLAYER_X:             EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_BASE_DIM_X_BYTES-1)*8
+.MIN_PLAYER_X:             EQU draw_common.INSET_X_PIXELS
+.MAX_PLAYER_X:             EQU draw_common.INSET_X_PIXELS+draw_common.INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_BASE_DIM_X_BYTES-1)*8
 
-    MEMORY_USAGE "player          ",_module_start
-
-    ENDMODULE

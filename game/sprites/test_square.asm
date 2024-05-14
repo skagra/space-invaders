@@ -1,7 +1,5 @@
 ; This file was automatically generated, DO NOT MODIFY
 
-	MODULE sprites
-
 TEST_SQUARE_0:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b00000000, 0b11111111, 0b11111111, 0b00000000 ; Row 0
@@ -98,5 +96,3 @@ TEST_SQUARE_DIM_Y_PIXELS:	EQU 0x08
 ; Lookup table
 TEST_SQUARE:
 	WORD TEST_SQUARE_0, TEST_SQUARE_1, TEST_SQUARE_2, TEST_SQUARE_3, TEST_SQUARE_4, TEST_SQUARE_5, TEST_SQUARE_6, TEST_SQUARE_7
-
-	ENDMODULE

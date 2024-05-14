@@ -2,23 +2,23 @@
     DEVICE ZXSPECTRUM48
     SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
 
-    INCLUDE "memory_map.asm"
+    INCLUDE "memory_map/module.asm"
 
     ; Reserve space for screen memory     
     ORG 0x0
-    BLOCK mmap.FREE_MEMORY_START
+    BLOCK memory_map.FREE_MEMORY_START
 
     ; Skip past contended memory
     ORG 0x8000 
 
-    INCLUDE "debug.asm"
-    INCLUDE "utils.asm"
-    INCLUDE "draw_common.asm"
-    INCLUDE "draw.asm"
-    INCLUDE "fast_draw.asm"
-    INCLUDE "print.asm"
-    INCLUDE "character_set.asm"
-    INCLUDE "sprites/all_sprites.asm"
+    INCLUDE "debug/module.asm"
+    INCLUDE "utils/module.asm"
+    INCLUDE "draw_common/module.asm"
+    INCLUDE "draw/module.asm"
+    INCLUDE "fast_draw/module.asm"
+    INCLUDE "print/module.asm"
+    INCLUDE "character_set/module.asm"
+    INCLUDE "sprites/module.asm"
     
     MODULE main
 
@@ -92,7 +92,7 @@ DRAW_BUFFER:    BLOCK 0x1800,0x00
 
 TEST_SPRITES:   
     WORD 0x3050, sprites.TEST_CARD
-    WORD 0x2217, sprites.ALIEN_1_VARIANT_0
+    WORD 0x4088, sprites.ALIEN_1_VARIANT_0
     WORD 0x1053, sprites.PLAYER_BASE
 
 NUM_TEST_SPRITES: EQU ($-TEST_SPRITES)/4

@@ -1,6 +1,9 @@
-    MODULE debug
 
-_module_start:
+_VTRACE_INTERVAL:   EQU 5
+_vtrace_count:      BLOCK 1
+_VTRACE_BYTE:       EQU memory_map.SCREEN_ATTR_START+(draw_common.SCREEN_HEIGHT_CHARS-1)*draw_common.SCREEN_WIDTH_CHARS
+
+_CYCLE_BYTE: EQU _VTRACE_BYTE+1
 
 init:
     PUSH AF
@@ -38,10 +41,6 @@ _vtrace_flash:
 
     RET
 
-_vtrace_count:      BLOCK 1
-_VTRACE_BYTE:       EQU mmap.SCREEN_ATTR_START+(draw_common.SCREEN_HEIGHT_CHARS-1)*draw_common.SCREEN_WIDTH_CHARS
-_VTRACE_INTERVAL:   EQU 5
-
     MACRO DEBUG_VTRACE_FLASH
         IFDEF DEBUG
             CALL debug._vtrace_flash
@@ -59,8 +58,6 @@ _cycle_flash:
     POP AF,HL
 
     RET
-
-_CYCLE_BYTE: EQU _VTRACE_BYTE+1
 
     MACRO DEBUG_CYCLE_FLASH
         IFDEF DEBUG
@@ -97,7 +94,7 @@ _flag_error:
     
     RET
 
-_FLAG_ERROR_BYTE:       EQU _VTRACE_BYTE+2
+_FLAG_ERROR_BYTE:       EQU _CYCLE_BYTE+1
 
     MACRO DB_FLAG_ERROR code
         IFDEF DEBUG
@@ -110,30 +107,9 @@ _FLAG_ERROR_BYTE:       EQU _VTRACE_BYTE+2
         ENDIF
     ENDM 
 
-@_total_memory_usage: DEFL 0
-@_total_memory_available: DEFL 0
-@_previous_memory_end: DEFL 0
 
-    MACRO MEMORY_USAGE name, label 
-        IF @_previous_memory_end != label && @_previous_memory_end != 0
-            DISPLAY "MEM_USAGE: ~~~~~~~~~~~~~~  available: ", label-@_previous_memory_end+1," (",/D,label-@_previous_memory_end+1," bytes)"
-@_total_memory_available = @_total_memory_available + label-@_previous_memory_end+1
-        ENDIF
-		DISPLAY "MEM_USAGE: ",name,"start: ",label, ", end: ", $-1, ", size: ",/H,$-label,/D," (",$-label," bytes)"   
-@_previous_memory_end = $
-@_total_memory_usage=@_total_memory_usage+($-label)
-	ENDM
 
-    MACRO TOTAL_MEMORY_USAGE
-        DISPLAY "MEM_USAGE: ~~~~~~~~~~~~~~  available: ", 0xFFFF-@_previous_memory_end+1," (",/D,0xFFFF-@_previous_memory_end+1," bytes)"
-@_total_memory_available = @_total_memory_available + 0xFFFF-@_previous_memory_end+1
-        DISPLAY "TOTAL_MEM_USAGE: ",@_total_memory_usage," (",/D,@_total_memory_usage," bytes)"
-        DISPLAY "TOTAL_MEM_AVAILABLE: ",@_total_memory_available," (",/D,@_total_memory_available," bytes)"
-    ENDM
 
-    MEMORY_USAGE "debug           ",_module_start
-
-    ENDMODULE
 
 
 

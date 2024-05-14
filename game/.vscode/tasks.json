@@ -66,7 +66,7 @@
                 "--sym=${workspaceFolder}/bin/test-draw-symbols.txt",
                 "--lst=${workspaceFolder}/bin/test-draw-listing.txt",
                 "-DDEBUG",
-                "test_draw.asm"
+                "tests/test_draw.asm"
             ],
             "problemMatcher": {
                 "owner": "sjasmplus",

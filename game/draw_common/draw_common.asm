@@ -1,61 +1,3 @@
-    MODULE draw_common
-
-_module_start:
-
-    INCLUDE "y_mem_row_lookup.asm"
-
-; Screen dimensions
-SCREEN_WIDTH_PIXELS:    EQU 256
-SCREEN_HEIGHT_PIXELS:   EQU 192
-SCREEN_WIDTH_CHARS:     EQU 32
-SCREEN_HEIGHT_CHARS:    EQU 24
-
-; Flash attribute
-CA_FLASH:           EQU 0b10000000
-
-; Bright attribute
-CA_BRIGHT:          EQU 0b01000000
-
-; Colour definitions
-_CA_COL_BLACK:       EQU 0b000
-_CA_COL_BLUE:        EQU 0b001
-_CA_COL_RED:         EQU 0b010
-_CA_COL_MAGENTA:     EQU 0b011
-_CA_COL_GREEN:       EQU 0b100
-_CA_COL_CYAN:        EQU 0b101
-_CA_COL_YELLOW:      EQU 0b110
-_CA_COL_WHITE:       EQU 0b111
-
-; Foreground colours
-CA_FG_BLACK:    EQU _CA_COL_BLACK 
-CA_FG_BLUE:     EQU _CA_COL_BLUE
-CA_FG_RED:      EQU _CA_COL_RED
-CA_FG_MAGENTA:  EQU _CA_COL_MAGENTA
-CA_FG_GREEN:    EQU _CA_COL_GREEN
-CA_FG_CYAN:     EQU _CA_COL_CYAN
-CA_FG_YELLOW:   EQU _CA_COL_YELLOW
-CA_FG_WHITE:    EQU _CA_COL_WHITE
-
-; Background colours
-CA_BG_BLACK:    EQU _CA_COL_BLACK << 3
-CA_BG_BLUE:     EQU _CA_COL_BLUE << 3
-CA_BG_RED:      EQU _CA_COL_RED << 3
-CA_BG_MAGENTA:  EQU _CA_COL_MAGENTA << 3
-CA_BG_GREEN:    EQU _CA_COL_GREEN << 3
-CA_BG_CYAN:     EQU _CA_COL_CYAN << 3
-CA_BG_YELLOW:   EQU _CA_COL_YELLOW << 3
-CA_BG_WHITE:    EQU _CA_COL_WHITE << 3
-
-; Border colours
-BORDER_BLACK:    EQU _CA_COL_BLACK 
-BORDER_BLUE:     EQU _CA_COL_BLUE
-BORDER_RED:      EQU _CA_COL_RED
-BORDER_MAGENTA:  EQU _CA_COL_MAGENTA
-BORDER_GREEN:    EQU _CA_COL_GREEN
-BORDER_CYAN:     EQU _CA_COL_CYAN
-BORDER_YELLOW:   EQU _CA_COL_YELLOW
-BORDER_WHITE:    EQU _CA_COL_WHITE
-
 init:
     RET
 
@@ -120,9 +62,9 @@ wipe_screen:
     ; Set up call to utils.fill_mem
     LD HL,0x0000                                        ; Fill with zero values (blank)
     PUSH HL
-    LD HL,mmap.SCREEN_START                             ; Start of screen area
+    LD HL,memory_map.SCREEN_START                             ; Start of screen area
     PUSH HL
-    LD HL, mmap.SCREEN_SIZE                             ; Length of screen area
+    LD HL, memory_map.SCREEN_SIZE                             ; Length of screen area
     PUSH HL
     CALL utils.fill_mem                                 ; Erase the screen
     POP HL                                              ; Ditch the supplied parameters
@@ -162,9 +104,9 @@ fill_screen_attributes:
     ; Set up call to utils.fill_mem
     LD HL, (ix+.PARAM_ATTRIBUTE)                        ; Get the colour attribute
     PUSH HL                             
-    LD HL,mmap.SCREEN_ATTR_START                        ; Start of the screen attribute area
+    LD HL,memory_map.SCREEN_ATTR_START                        ; Start of the screen attribute area
     PUSH HL
-    LD HL,mmap.SCREEN_ATTR_SIZE                         ; Length of the screen attribute area
+    LD HL,memory_map.SCREEN_ATTR_SIZE                         ; Length of the screen attribute area
     PUSH HL
     CALL utils.fill_mem                                 ; Fill the screen attribute area
     POP HL                                              ; Ditch the supplied parameters
@@ -222,11 +164,11 @@ fill_screen_attributes_rect:
     LD (.dim),HL
 
     ; Calculate the starting address
-    LD DE, mmap.SCREEN_ATTR_START                       ; Base address of attribute map
+    LD DE, memory_map.SCREEN_ATTR_START                ; Base address of attribute map
     LD A,(.x)                                          ; Set low order byte from x coord
     LD E,A 
     
-    LD H,0x00                                           ; Take Y coord
+    LD H,0x00                                          ; Take Y coord
     LD A,(.y)                                          ; Multiple x32
     LD L,A             
     SLA L
@@ -390,7 +332,3 @@ coords_to_mem:
     POP IX,HL,BC,AF
 
     RET
-    
-    MEMORY_USAGE "draw common     ",_module_start
-
-    ENDMODULE

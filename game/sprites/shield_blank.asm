@@ -1,7 +1,5 @@
 ; This file was automatically generated, DO NOT MODIFY
 
-	MODULE sprites
-
 SHIELD_BLANK_0:
 	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite       Mask       Sprite     
 	BYTE 0b11110000, 0b00000000, 0b00000000, 0b00000000, 0b00111111, 0b00000000, 0b11111111, 0b00000000 ; Row 0
@@ -86,5 +84,3 @@ SHIELD_BLANK_DIM_Y_PIXELS:	EQU 0x10
 ; Lookup table
 SHIELD_BLANK:
 	WORD SHIELD_BLANK_0, SHIELD_BLANK_0, SHIELD_BLANK_2, SHIELD_BLANK_2, SHIELD_BLANK_4, SHIELD_BLANK_4, SHIELD_BLANK_6, SHIELD_BLANK_6
-
-	ENDMODULE

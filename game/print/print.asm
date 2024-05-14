@@ -1,7 +1,3 @@
-    MODULE print
-
-_module_start:
-
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -263,8 +259,6 @@ inline_print:
 
     RET
 
-    MEMORY_USAGE "print           ",_module_start
-
     MACRO DEBUG_PRINT text
         IFDEF DEBUG
             PUSH HL
@@ -285,5 +279,5 @@ inline_print:
         ENDIF
     ENDM
 
-    ENDMODULE
+
 

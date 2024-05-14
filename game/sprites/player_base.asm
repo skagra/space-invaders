@@ -1,7 +1,5 @@
 ; This file was automatically generated, DO NOT MODIFY
 
-	MODULE sprites
-
 PLAYER_BASE_0:
 	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
 	BYTE 0b11111111, 0b00000000, 0b01111111, 0b10000000, 0b11111111, 0b00000000 ; Row 0
@@ -98,5 +96,3 @@ PLAYER_BASE_DIM_Y_PIXELS:	EQU 0x08
 ; Lookup table
 PLAYER_BASE:
 	WORD PLAYER_BASE_0, PLAYER_BASE_1, PLAYER_BASE_2, PLAYER_BASE_3, PLAYER_BASE_4, PLAYER_BASE_5, PLAYER_BASE_6, PLAYER_BASE_7
-
-	ENDMODULE

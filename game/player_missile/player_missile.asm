@@ -1,20 +1,6 @@
-    MODULE player_missile
-
-_module_start:
-
 ;------------------------------------------------------------------------------
 ;
 ; Routines to implement the player missile
-;
-; Usage:
-;   CALL init
-; .loop
-;   CALL keyboard.get_movement_keys
-;   HALT - Wait for raster retrace
-;   CALL draw_missile
-;   CALL update_missile
-;   delay - tuned to wait for raster scan to leave bottom of visible screen
-;   CALL erase_missile
 ;
 ;------------------------------------------------------------------------------
 
@@ -465,7 +451,3 @@ missile_hit_a_shield:
     POP HL
     
     RET 
-
-    MEMORY_USAGE "player missile  ",_module_start
-
-    ENDMODULE

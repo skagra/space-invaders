@@ -1,7 +1,3 @@
-    MODULE fast_draw
-
-_module_start:
-
 ; The draw buffer stack holds the addresses in the screen buffer that have been written to
 ; since it was last flushed.
 _draw_buffer_stack_top: BLOCK 2                         ; Points to the next free location on the draw stack
@@ -300,7 +296,3 @@ fast_draw_sprite_16x8:
 .x_coord:              BLOCK 1
 .stack_ptr:            BLOCK 2                          ; Safe store for stack pointer
 .x_offset:             BLOCK 1                          ; Byte offset into row for X coordinate
-
-    MEMORY_USAGE "fast draw       ",_module_start
-
-    ENDMODULE

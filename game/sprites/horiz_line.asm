@@ -1,7 +1,5 @@
 ; This file was automatically generated, DO NOT MODIFY
 
-	MODULE sprites
-
 HORIZ_LINE_0:
 	     ;  Mask       Sprite       Mask       Sprite     
 	BYTE 0b00000000, 0b11111111, 0b11111111, 0b00000000 ; Row 0
@@ -98,5 +96,3 @@ HORIZ_LINE_DIM_Y_PIXELS:	EQU 0x08
 ; Lookup table
 HORIZ_LINE:
 	WORD HORIZ_LINE_0, HORIZ_LINE_1, HORIZ_LINE_2, HORIZ_LINE_3, HORIZ_LINE_4, HORIZ_LINE_5, HORIZ_LINE_6, HORIZ_LINE_7
-
-	ENDMODULE

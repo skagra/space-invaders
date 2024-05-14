@@ -1,7 +1,5 @@
 ; This file was automatically generated, DO NOT MODIFY
 
-	MODULE sprites
-
 TEST_CARD_0:
 	     ;  Mask       Sprite       Mask       Sprite       Mask       Sprite     
 	BYTE 0b00000000, 0b11111111, 0b00000000, 0b11111111, 0b11111111, 0b00000000 ; Row 0
@@ -98,5 +96,3 @@ TEST_CARD_DIM_Y_PIXELS:	EQU 0x08
 ; Lookup table
 TEST_CARD:
 	WORD TEST_CARD_0, TEST_CARD_1, TEST_CARD_2, TEST_CARD_3, TEST_CARD_4, TEST_CARD_5, TEST_CARD_6, TEST_CARD_7
-
-	ENDMODULE

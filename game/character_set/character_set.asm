@@ -1,7 +1,3 @@
-    MODULE character_set
-
-_module_start:
-
 CHARACTER_SET_BASE:
 
 ; 32/0x20
@@ -407,7 +403,4 @@ CHAR_IY:    BYTE 0b00000000
             BYTE 0b01000100
             BYTE 0b01000100
 
-    MEMORY_USAGE "character set   ",_module_start
-
-    ENDMODULE
 

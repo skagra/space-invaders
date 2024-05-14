@@ -27,28 +27,27 @@
 
     DISPLAY " "
 
-    INCLUDE "memory_map.asm"
+    INCLUDE "memory_map/module.asm"
 
     ; Reserve space for screen memory     
     ORG 0x0
-    BLOCK mmap.FREE_MEMORY_START
+    BLOCK memory_map.FREE_MEMORY_START
 
     ; Skip past contended memory
     ORG 0x8000 
     
-    INCLUDE "debug.asm"
-    INCLUDE "utils.asm"
-    INCLUDE "layout.asm"
-    INCLUDE "draw_common.asm"
-    INCLUDE "draw.asm"
-    INCLUDE "fast_draw.asm"
-    INCLUDE "keyboard.asm"
-    INCLUDE "player.asm"
-    INCLUDE "player_missile.asm"
-    INCLUDE "alien_pack.asm"
-    INCLUDE "print.asm"
-    INCLUDE "game_screen.asm"
-    INCLUDE "collision.asm"
+    INCLUDE "debug/module.asm"
+    INCLUDE "utils/module.asm"
+    INCLUDE "draw_common/module.asm"
+    INCLUDE "draw/module.asm"
+    INCLUDE "fast_draw/module.asm"
+    INCLUDE "keyboard/module.asm"
+    INCLUDE "player_base/module.asm"
+    INCLUDE "player_missile/module.asm"
+    INCLUDE "alien_pack/module.asm"
+    INCLUDE "print/module.asm"
+    INCLUDE "game_screen/module.asm"
+    INCLUDE "collision/module.asm"
 
     MODULE main
 
@@ -61,7 +60,6 @@ main:
     ; Initialise all modules
     CALL debug.init
     CALL utils.init
-    CALL layout.init
     CALL draw.init
     CALL fast_draw.init
     CALL print.init
@@ -142,8 +140,8 @@ DRAW_BUFFER:    BLOCK 0x1800,0x00
     
     ENDMODULE
 
-    INCLUDE "character_set.asm"
-    INCLUDE "sprites/all_sprites.asm"
+    INCLUDE "character_set/module.asm"
+    INCLUDE "sprites/module.asm"
 
     TOTAL_MEMORY_USAGE
   
