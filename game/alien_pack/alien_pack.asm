@@ -315,7 +315,7 @@ _update_halted_pack:
     PUSH HL
     LD HL, sprites.ALIEN_EXPLOSION_BLANK
     PUSH HL
-    call fast_draw.fast_draw_sprite_16x8
+    call fast_draw.draw_sprite_16x8
     POP HL
     POP HL 
 
@@ -527,7 +527,7 @@ alien_hit_by_player_missile:
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
 
-    CALL fast_draw.fast_draw_sprite_16x8
+    CALL fast_draw.draw_sprite_16x8
     POP DE
     POP DE
 
@@ -536,7 +536,7 @@ alien_hit_by_player_missile:
     PUSH HL  
     LD HL,sprites.ALIEN_EXPLOSION;
     PUSH HL
-    CALL fast_draw.fast_draw_sprite_16x8
+    CALL fast_draw.draw_sprite_16x8
     POP HL
     POP HL
 

@@ -190,7 +190,7 @@ flush_buffer_to_screen_16x8:
 ;
 ;------------------------------------------------------------------------------
 
-fast_draw_sprite_16x8:
+draw_sprite_16x8:
 
 .PARAM_COORDS:            EQU 14                        ; Sprite coordinates
 .PARAM_SPRITE_DATA:       EQU 12                        ; Sprite pre-shifted data lookup table

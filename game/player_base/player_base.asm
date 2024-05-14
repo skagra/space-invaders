@@ -53,7 +53,7 @@ draw_player:
     LD DE,sprites.PLAYER_BASE                           ; Sprite    
     PUSH DE
 
-    CALL fast_draw.fast_draw_sprite_16x8                ; Draw the player base sprite
+    CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite
     
     POP DE
     POP DE
@@ -74,7 +74,7 @@ blank_player:
     LD DE,sprites.PLAYER_BASE_BLANK                     ; Sprite    
     PUSH DE
 
-    CALL fast_draw.fast_draw_sprite_16x8                ; Draw the player base sprite
+    CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite
 
     POP DE
     POP DE

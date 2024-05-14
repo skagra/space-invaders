@@ -49,7 +49,7 @@ blank_alien:
 .variant_selected:
     PUSH HL                                             ; Sprite/mask is in HL
 
-    CALL fast_draw.fast_draw_sprite_16x8
+    CALL fast_draw.draw_sprite_16x8
 
     POP DE
     POP DE
@@ -113,7 +113,7 @@ draw_current_alien:
     LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_1
 
 .variant_selected:
-    CALL fast_draw.fast_draw_sprite_16x8
+    CALL fast_draw.draw_sprite_16x8
 
     POP DE
     POP DE
