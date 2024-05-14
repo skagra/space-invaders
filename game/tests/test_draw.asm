@@ -19,6 +19,7 @@
     INCLUDE "print/module.asm"
     INCLUDE "character_set/module.asm"
     INCLUDE "sprites/module.asm"
+    INCLUDE "scoring/module.asm"
     
     MODULE main
 
@@ -35,6 +36,7 @@ main:
     CALL draw.init
     CALL fast_draw.init
     CALL print.init
+    CALL scoring.init
   
     ; Clear the screen
     call draw_common.wipe_screen
@@ -57,7 +59,7 @@ main:
     INC HL
     LD DE,(HL)   
     PUSH DE
-    CALL fast_draw.fast_draw_sprite_16x8
+    CALL fast_draw.draw_sprite_16x8
     POP DE
     POP DE
     INC HL
@@ -76,7 +78,33 @@ main:
     POP HL
     POP HL
 
+    LD HL,0x0000
+    PUSH HL
+    LD HL,0x1010
+    PUSH HL
+    CALL print.print_bcd_word
+    POP HL
+    POP HL
+
+    ; LD HL,0x1234
+    ; LD (scoring.score),HL
+    ; LD HL,0x1182
+    ; PUSH HL
+    ; CALL scoring.add_to_score
+    ; POP HL
+
+    ; LD HL,(scoring.score)
+    ; PUSH HL
+    ; LD HL,0x100A
+    ; PUSH HL
+    ; CALL print.print_bcd_word
+    ; POP HL
+    ; POP HL
+
+    CALL scoring.print_score
+
     HALT 
+
     CALL fast_draw.flush_buffer_to_screen_16x8
     CALL draw.flush_buffer_to_screen
 

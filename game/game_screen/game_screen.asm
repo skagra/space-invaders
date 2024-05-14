@@ -38,7 +38,11 @@ init_screen:
     POP HL
 
     ; Set the screen border
-    LD HL,draw_common.BORDER_BLACK
+    IFNDEF DEBUG
+        LD HL,draw_common.BORDER_BLACK
+    ELSE
+        LD HL,draw_common.BORDER_BLUE
+    ENDIF
     PUSH HL
     CALL draw_common.set_border    
     POP HL
@@ -139,7 +143,7 @@ init_screen:
 ._SPACESHIP_GEL_HEIGHT:     EQU 1
 
 ._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
-._SCORE_LINE_1_TEXT:        BYTE "     0000    0000      0000  ",0
+._SCORE_LINE_1_TEXT:        BYTE "             0000      0000  ",0
 ._LIVES_AND_CREDS_TEXT:     BYTE "   3                CREDIT 00",0
 
 ; TODO

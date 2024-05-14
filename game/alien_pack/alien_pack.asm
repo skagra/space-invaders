@@ -18,19 +18,6 @@ _ALIEN_STATE_NEW_BIT:                   EQU 0
 _ALIEN_STATE_ACTIVE_BIT:                EQU 1
 _ALIEN_STATE_DEAD_BIT:                  EQU 2
 
-; Offsets into structure representing an alien
-_STATE_OFFSET_DRAW_COORDS:              EQU 0           ; Coords
-_STATE_OFFSET_DRAW_COORDS_Y:            EQU _STATE_OFFSET_DRAW_COORDS
-_STATE_OFFSET_DRAW_COORDS_X:            EQU _STATE_OFFSET_DRAW_COORDS+1
-_STATE_OFFSET_VAR_0_SPRITE:             EQU 2           ; First variant sprite
-_STATE_OFFSET_VAR_1_SPRITE:             EQU 4           ; Second variant sprite
-_STATE_OFFSET_VAR_0_BLANK:              EQU 6           ; First variant blank
-_STATE_OFFSET_VAR_1_BLANK:              EQU 8           ; Second variant blank
-_STATE_OFFSET_STATE:                    EQU 10          ; Status of sprite from _ALIEN_STATE_* values
-_STATE_OFFSET_VARIANT:                  EQU 11
-
-_AS_SIZE:                               EQU 12          ; Size of the alien sprite structure
-
 ; Current alien variant for walking animation
 _ALIEN_VARIANT_0:                       EQU 0b00000001
 _ALIEN_VARIANT_1:                       EQU 0b00000010
@@ -543,6 +530,12 @@ alien_hit_by_player_missile:
     ; Set a count down to pause the movement of the pack
     LD A,.EXPLODING_ALIEN_DELAY
     LD (_exploding_cycles),A
+
+    ; Increment the player score 
+    LD HL,(IY+_STATE_OFFSET_TYPE)                                      
+    PUSH HL
+    CALL scoring.add_alien_value_to_score
+    POP HL
 
     POP IY,IX,HL
 

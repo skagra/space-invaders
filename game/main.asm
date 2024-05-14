@@ -48,6 +48,7 @@
     INCLUDE "print/module.asm"
     INCLUDE "game_screen/module.asm"
     INCLUDE "collision/module.asm"
+    INCLUDE "scoring/module.asm"
 
     MODULE main
 
@@ -69,6 +70,7 @@ main:
     CALL player_missile.init
     CALL alien_pack.init
     CALL collision.init
+    CALL scoring.init
 
     ; Draw the initial screen
     CALL game_screen.init_screen
@@ -110,6 +112,9 @@ main:
 
     ; Move on to next alien
     CALL alien_pack.next_alien
+
+    ; Draw the player's score
+    CALL scoring.print_score
 
     IFNDEF IGNORE_VSYNC
         ; Wait for Vsync

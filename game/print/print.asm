@@ -14,7 +14,82 @@
 
 init:
     RET
+
+print_bcd_word:
+
+.PARAM_COORDS EQU 10
+.PARAM_NUMBER_MS EQU 13
+.PARAM_NUMBER_LS EQU 12
+
+    PUSH AF,BC,DE,IX
+
+    LD  IX,0                                            ; Get the stack pointer
+    ADD IX,SP
+
+    LD DE,(IX+.PARAM_COORDS)
+
+    ; First (most significant) digit
+    LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significat 2 digits
+    SRL A                                               ; Shift down the top 4 bits
+    SRL A
+    SRL A
+    SRL A
+    ADD '0'                                             ; Numberic characters are based at '0'
+    LD C,A
+    LD B,0x00
+    PUSH BC                                             ; Character to draw
     
+    PUSH DE                                             ; Coordinates
+    CALL print_char                                     ; Draw the numbner
+    POP BC
+    POP BC
+
+    ; Second digit
+    INC D                                               ; Move forward one X character cell
+    LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significat 2 digits
+    AND 0x0F                                            ; AND out the top 4 bits
+    ADD '0'                                             ; Numberic characters are based at '0'
+    LD C,A
+    LD B,0x00
+    PUSH BC                                             ; Character to draw
+    PUSH DE                                             ; Coordinates
+    CALL print_char                                     ; Draw the numbner
+    POP BC
+    POP BC
+
+    ; 3rd digit
+    INC D                                               ; Move forward one X character cell
+    LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the least significat 2 digits
+    SRL A                                               ; Shift down the top 4 bits
+    SRL A
+    SRL A
+    SRL A
+    ADD '0'                                             ; Numberic characters are based at '0'
+    LD C,A
+    LD B,0x00
+    PUSH BC                                             ; Character to draw
+    PUSH DE                                             ; Coordinates
+    CALL print_char                                     ; Draw the numbner
+    POP BC
+    POP BC
+
+    ; 4th
+    INC D                                               ; Move forward one X character cell
+    LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the most significat 2 digits
+    AND 0x0F                                            ; AND out the top 4 bits
+    ADD '0'                                             ; Numberic characters are based at '0'
+    LD C,A
+    LD B,0x00
+    PUSH BC                                             ; Character to draw
+    PUSH DE                                             ; Coordinates
+    CALL print_char                                     ; Draw the numbner
+    POP BC
+    POP BC
+
+    POP IX,DE,BC,AF
+
+    RET
+
 ;------------------------------------------------------------------------------
 ;
 ; Print a null terminated string of characters
@@ -190,7 +265,6 @@ print_char:
 ;   -
 ;
 ;------------------------------------------------------------------------------
-
 char_coords_to_mem:
 
 .PARAM_COORDS:   EQU 12                                 ; Coordinates
