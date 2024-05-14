@@ -4,6 +4,10 @@
 
 _module_start:
 
+	INCLUDE "sprites/alien_0_variant_0.asm"
+	INCLUDE "sprites/alien_0_variant_0_blank.asm"
+	INCLUDE "sprites/alien_0_variant_1.asm"
+	INCLUDE "sprites/alien_0_variant_1_blank.asm"
 	INCLUDE "sprites/alien_1_variant_0.asm"
 	INCLUDE "sprites/alien_1_variant_0_blank.asm"
 	INCLUDE "sprites/alien_1_variant_1.asm"
@@ -12,10 +16,6 @@ _module_start:
 	INCLUDE "sprites/alien_2_variant_0_blank.asm"
 	INCLUDE "sprites/alien_2_variant_1.asm"
 	INCLUDE "sprites/alien_2_variant_1_blank.asm"
-	INCLUDE "sprites/alien_3_variant_0.asm"
-	INCLUDE "sprites/alien_3_variant_0_blank.asm"
-	INCLUDE "sprites/alien_3_variant_1.asm"
-	INCLUDE "sprites/alien_3_variant_1_blank.asm"
 	INCLUDE "sprites/alien_explosion.asm"
 	INCLUDE "sprites/alien_explosion_blank.asm"
 	INCLUDE "sprites/alien_missile_1_variant_0.asm"

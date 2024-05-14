@@ -9,22 +9,6 @@ _PACK_DIRECTION_RIGHT_BIT:              EQU 1
 _PACK_DIRECTION_DOWN_AT_LEFT_BIT:       EQU 2
 _PACK_DIRECTION_DOWN_AT_RIGHT_BIT:      EQU 3
 
-; Status of an alien
-_ALIEN_STATE_NEW:                       EQU 0b00000001  ; Just created
-_ALIEN_STATE_ACTIVE:                    EQU 0b00000010  ; Normally active alien
-_ALIEN_STATE_DEAD:                      EQU 0b00000100  ; Dead alien
-
-_ALIEN_STATE_NEW_BIT:                   EQU 0
-_ALIEN_STATE_ACTIVE_BIT:                EQU 1
-_ALIEN_STATE_DEAD_BIT:                  EQU 2
-
-; Current alien variant for walking animation
-_ALIEN_VARIANT_0:                       EQU 0b00000001
-_ALIEN_VARIANT_1:                       EQU 0b00000010
-
-_ALIEN_VARIANT_0_BIT:                   EQU 0
-_ALIEN_VARIANT_1_BIT:                   EQU 1
-
 ; Gap between aliens (top left to top left)
 _ALIEN_X_OFFSET:                        EQU 0x10
 _ALIEN_Y_OFFSET:                        EQU 0x10

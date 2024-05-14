@@ -52,7 +52,7 @@ add_alien_value_to_score:
     LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL,ALIEN_VALUES                                  ; Alien score lookup table
+    LD HL,ALIEN_SCORE_VALUES                                  ; Alien score lookup table
     LD B,0x00                                               
     LD C,(IX+.PARAM_ALIEN_TYPE)                         ; Alien type gives index into table
     ADD HL,BC                                           ; Index to base
@@ -66,14 +66,14 @@ add_alien_value_to_score:
 
     RET
 
-ALIEN_TYPE_0: EQU 0
-ALIEN_TYPE_1: EQU 1
-ALIEN_TYPE_2: EQU 2
+ALIEN_TYPE_0:       EQU 0
+ALIEN_TYPE_1:       EQU 1
+ALIEN_TYPE_2:       EQU 2
 
-ALIEN_VALUES:   BYTE 0x10,0x20,0x30
+ALIEN_SCORE_VALUES: BYTE 0x10,0x20,0x30
 
-SCORE_CHAR_X: EQU 5
-SCORE_CHAR_Y: EQU 1
+SCORE_CHAR_X:       EQU 5
+SCORE_CHAR_Y:       EQU 1
 
 SCORE_CHAR_COORDS:  EQU (SCORE_CHAR_X<<8) + SCORE_CHAR_Y
 
