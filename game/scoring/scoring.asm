@@ -1,12 +1,31 @@
-score: 
-score_lsb: BLOCK 1
-score_msb: BLOCK 1
+score_player_1: 
+score_lsb_player_1: BLOCK 1
+score_msb_player_1: BLOCK 1
+
+score_player_2: 
+score_lsb_player_2: BLOCK 1
+score_msb_player_2: BLOCK 1
+
+score_high: 
+score_lsb_high:     BLOCK 1
+score_msb_high:     BLOCK 1
 
 init:
-    LD HL,score
+    PUSH DE,HL
+
     LD DE,0x0000
+
+    LD HL,score_player_1
     LD (HL),DE
 
+    LD HL,score_player_2
+    LD (HL),DE
+
+    LD HL,score_high
+    LD (HL),DE
+
+    POP DE,HL
+    
     RET
 
 add_to_score:
@@ -21,15 +40,15 @@ add_to_score:
     LD HL,(IX+.PARAM_INCREMENT)                         ; Grab the value to add to the score
     OR A                                                ; Ensure the half carry is reset
 
-    LD A,(score_lsb)                                    ; Get the current score low byte
+    LD A,(score_lsb_player_1)                                    ; Get the current score low byte
     ADD L                                               ; Add the increment low byte
     DAA                                                 ; Adjust for BCD
-    LD (score_lsb),A                                    ; Store the new low byte of the score
+    LD (score_lsb_player_1),A                                    ; Store the new low byte of the score
 
-    LD A,(score_msb)                                    ; Grab the current score high byte
+    LD A,(score_msb_player_1)                                    ; Grab the current score high byte
     ADC H                                               ; Add the increment high byte with any carry  
     DAA                                                 ; Adjust for BCD
-    LD (score_msb),A                                    ; Store the new high byte of the score
+    LD (score_msb_player_1),A                                    ; Store the new high byte of the score
 
     POP IX,AF
 

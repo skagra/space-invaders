@@ -1,4 +1,3 @@
-PLAYER_Y:               EQU draw_common.SCREEN_HEIGHT_PIXELS-20
 player_x:               BLOCK 1
 
 ;------------------------------------------------------------------------------
@@ -18,14 +17,12 @@ player_x:               BLOCK 1
 init:
     PUSH AF
 
-    LD A,._START_PLAYER_X
+    LD A,layout.PLAYER_BASE_START_X
     LD (player_x),A
 
     POP AF
 
     RET
-
-._START_PLAYER_X:       EQU (draw_common.SCREEN_WIDTH_PIXELS/2)-(((sprites.PLAYER_BASE_DIM_X_BYTES-1)*8)/2) ; Middle of screen offset by half the width of the base
 
 ;------------------------------------------------------------------------------
 ;
@@ -47,7 +44,7 @@ draw:
     ; Draw the player base sprite
     LD A, (player_x)                                    ; Player base coords
     LD D,A
-    LD E, PLAYER_Y
+    LD E, layout.PLAYER_BASE_Y
     PUSH DE
       
     LD DE,sprites.PLAYER_BASE                           ; Sprite    
@@ -68,7 +65,7 @@ blank:
     ; Erase the player base sprite
     LD A, (player_x)                                    ; Coords
     LD D,A
-    LD E, PLAYER_Y
+    LD E, layout.PLAYER_BASE_Y
     PUSH DE
 
     LD DE,sprites.PLAYER_BASE_BLANK                     ; Sprite    
@@ -108,7 +105,7 @@ update:
 
     LD A,(player_x)                                     ; Get current player base X coord
     DEC A                                               ; Decrease it to move left
-    CP .MIN_PLAYER_X                                    ; Have we hit the left most point?
+    CP layout.PLAYER_BASE_MIN_X                         ; Have we hit the left most point?
     JR Z,.done                                          ; Yes so don't update
     LD (player_x),A                                     ; Update the location of the player base
     JR .done
@@ -118,7 +115,7 @@ update:
     JR Z,.done                                          ; No
     LD A,(player_x)                                     ; Get current player base X coord
     INC A                                               ; Increase it to move right
-    CP .MAX_PLAYER_X                                    ; Have we hit the right most point?a
+    CP layout.PLAYER_BASE_MAX_X                         ; Have we hit the right most point?a
     JR NC,.done                                         ; Yes so don't update
     LD (player_x),A                                     ; Update the location of the player base
 
@@ -127,6 +124,4 @@ update:
 
     RET
 
-.MIN_PLAYER_X:             EQU draw_common.INSET_X_PIXELS
-.MAX_PLAYER_X:             EQU draw_common.INSET_X_PIXELS+draw_common.INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_BASE_DIM_X_BYTES-1)*8
 

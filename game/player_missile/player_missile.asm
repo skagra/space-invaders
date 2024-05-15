@@ -5,8 +5,6 @@
 ;------------------------------------------------------------------------------
 
 ; Configuration constants
-_MISSILE_START_Y:                            EQU draw_common.SCREEN_HEIGHT_PIXELS-24 ; Starting Y coordinate for a new missile
-_MISSILE_MIN_Y:                              EQU 20                              ; The top of missile trajectory
 _MISSILE_STEP_SIZE:                          EQU 4                               ; Number of pixels to move missile on each animation cycle
 _MISSILE_EXPLOSION_CYCLES:                   EQU 10                              ; Number of draw cycles to keep the missile explosion on the screen
 
@@ -21,7 +19,7 @@ _MISSILE_STATE_COLLIDED:                     EQU 0b01000000                     
 _MISSILE_STATE_HIT_A_SHIELD:                 EQU 0b10000000                      ; The missile has collided with a shield
 
 ; Bullet state mask bit positions
-_MISSILE_STATE_NO_MISSILE_BIT:                EQU 0                   
+_MISSILE_STATE_NO_MISSILE_BIT:               EQU 0                   
 _MISSILE_STATE_NEW_BIT:                      EQU 1                   
 _MISSILE_STATE_ACTIVE_BIT:                   EQU 2                   
 _MISSILE_STATE_REACHED_TOP_OF_SCREEN_BIT:    EQU 3   
@@ -354,7 +352,7 @@ update:
     LD (HL),A
 
     ; Calculate start y coord - set new and current to same values
-    LD A,_MISSILE_START_Y 
+    LD A,layout.PLAYER_MISSILE_START_Y 
     LD HL,_missile_y       
     LD (HL),A
 
@@ -369,7 +367,7 @@ update:
 .active:
     ; Check whether the missile has reached to top of the screen
     LD A,(_missile_y)
-    CP A,_MISSILE_MIN_Y
+    CP A,layout.PLAYER_MISSILE_MIN_Y
     JR C,.active_reached_top_of_screen
 
     ; Active missile moving up the screen

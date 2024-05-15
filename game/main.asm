@@ -38,6 +38,7 @@
     
     INCLUDE "debug/module.asm"
     INCLUDE "utils/module.asm"
+    INCLUDE "layout/module.asm"
     INCLUDE "global_state/module.asm"
     INCLUDE "draw_common/module.asm"
     INCLUDE "draw/module.asm"
@@ -63,6 +64,7 @@ main:
     CALL debug.init
     CALL global_state.init
     CALL utils.init
+    CALL layout.init
     CALL draw.init
     CALL fast_draw.init
     CALL print.init
@@ -75,7 +77,7 @@ main:
     CALL scoring.init
 
     ; Draw the initial screen
-    CALL game_screen.init_screen
+    CALL game_screen.draw
     CALL draw.flush_buffer_to_screen
 
 .animation_loop:
@@ -119,7 +121,7 @@ main:
     CALL alien_pack.next_alien
 
     ; Draw the player's score
-    CALL game_screen.print_score
+    CALL game_screen.print_score_player_1 
 
     IFNDEF IGNORE_VSYNC
         ; Wait for Vsync

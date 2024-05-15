@@ -152,8 +152,8 @@ _adjust_alien_pack_direction:
     RET
 
 ; Limits of pack movement left and right before switching direction
-.PACK_MAX_RIGHT:                        EQU draw_common.INSET_X_PIXELS+draw_common.INSET_SCREEN_WIDTH_PIXELS-((sprites.ALIEN_1_VARIANT_0_BLANK_DIM_X_BYTES-1)*8)
-.PACK_MIN_LEFT:                         EQU draw_common.INSET_X_PIXELS
+.PACK_MAX_RIGHT:                        EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-((sprites.ALIEN_1_VARIANT_0_BLANK_DIM_X_BYTES-1)*8)
+.PACK_MIN_LEFT:                         EQU layout.INSET_X_PIXELS
 
 ;------------------------------------------------------------------------------
 ;

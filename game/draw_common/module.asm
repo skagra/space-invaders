@@ -6,7 +6,6 @@ _module_start:
     INCLUDE "screen_dimensions.asm"
     INCLUDE "attributes.asm"
     INCLUDE "draw_common.asm"
-    INCLUDE "layout.asm"
     
     MEMORY_USAGE "draw common     ",_module_start
 
