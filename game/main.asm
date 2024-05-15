@@ -38,6 +38,7 @@
     
     INCLUDE "debug/module.asm"
     INCLUDE "utils/module.asm"
+    INCLUDE "global_state/module.asm"
     INCLUDE "draw_common/module.asm"
     INCLUDE "draw/module.asm"
     INCLUDE "fast_draw/module.asm"
@@ -60,6 +61,7 @@ main:
 
     ; Initialise all modules
     CALL debug.init
+    CALL global_state.init
     CALL utils.init
     CALL draw.init
     CALL fast_draw.init
@@ -100,6 +102,9 @@ main:
 
     ; Handle collisions with player missile 
     CALL collision.handle_collision
+
+    ; Update global state information
+    CALL global_state.update_global_state
 
     ; Erase the current alien
     CALL alien_pack.blank_alien

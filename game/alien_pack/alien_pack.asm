@@ -28,7 +28,7 @@ _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
 ; Global state governing pack when an alien is exploding
-_exploding_cycles:                      BYTE 1
+; _exploding_cycles:                      BYTE 1
 _exploding_alien:                       WORD 1
 _pack_halted:                           BYTE 1
 
@@ -262,25 +262,11 @@ _update_pack_bounds:
 
     RET
 
-_update_halted_pack:
-    PUSH AF
-
-    ; Is the pack halted
-    LD A,(_pack_halted)
-    AND A
-    JR Z,.done
-
-    ; Is there an alien that is currently exploding?
-    LD A,(_exploding_cycles)  
-    AND A                                               ; CP 0x00
-    JR Z,.done                                          ; No - normal update cycle
-    DEC A                                               ; Yes - decrease the number of cycles left to wait
-    LD (_exploding_cycles),A                            ; Has the counter now dropped to zero?
-    AND A                                               ; CP 0x00
-    JR NZ,.done                                         ; No - done.
+event_alien_explosion_done:
+    PUSH AF,HL
 
     ; Done exploding - erase the explosion
-    LD HL,(_exploding_alien)                            ; Yes - blank the explosion
+    LD HL,(_exploding_alien)                           
     LD IX,HL
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
     PUSH HL
@@ -294,9 +280,8 @@ _update_halted_pack:
     LD A,0x00
     LD (_pack_halted),A
 
-.done
-    POP AF
-    
+    POP HL,AF
+
     RET
 
 ;------------------------------------------------------------------------------
@@ -316,9 +301,6 @@ _update_halted_pack:
 
 update_current_alien:
     PUSH AF,DE,HL,IX
-
-    ; Update if the pack is halted 
-    CALL _update_halted_pack
 
     ; Is the pack still globally halted?
     LD A,(_pack_halted)
@@ -456,7 +438,7 @@ _next_pack_cycle:
 
     RET
 
-alien_hit_by_player_missile:
+event_alien_hit_by_player_missile:
 
 .PARAM_ALIEN_STATE_PTR EQU 8 
 
@@ -511,15 +493,15 @@ alien_hit_by_player_missile:
     POP HL
     POP HL
 
-    ; Set a count down to pause the movement of the pack
-    LD A,.EXPLODING_ALIEN_DELAY
-    LD (_exploding_cycles),A
+    ; ; Set a count down to pause the movement of the pack
+    ; LD A,.EXPLODING_ALIEN_DELAY
+    ; LD (_exploding_cycles),A
 
     ; Increment the player score 
-    LD HL,(IY+_STATE_OFFSET_TYPE)                                      
-    PUSH HL
-    CALL scoring.add_alien_value_to_score
-    POP HL
+    ; LD HL,(IY+_STATE_OFFSET_TYPE)                                      
+    ; PUSH HL
+    ; CALL scoring.add_alien_value_to_score
+    ; POP HL
 
     POP IY,IX,HL
 

@@ -35,7 +35,7 @@ add_to_score:
 
     RET
 
-add_alien_value_to_score:
+event_alien_hit_by_player_missile:
 
 .PARAM_ALIEN_TYPE EQU 10
 

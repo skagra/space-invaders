@@ -43,6 +43,6 @@
 * Add pointer to first non-dead alien as optimization
 * Remove all hard coded positions - replace with constants and calculation - game screen is the greatest offender here
 * Replace infinite loop errors traps with ASSERTION
-* BUG Explosions when rapid fire hits multiple aliens close to bottom of screen alien explosions are not handled properly - what does the arcade machine do?  Can't I fire until after explosion perhaps.
+* ~~BUG Explosions when rapid fire hits multiple aliens close to bottom of screen alien explosions are not handled properly - what does the arcade machine do?  Can't I fire until after explosion perhaps.~~
 
   

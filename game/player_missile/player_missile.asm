@@ -36,6 +36,7 @@ _missile_coords:
 _missile_y:                                 BLOCK 1     ; Y coord to blank missile
 _missile_x:                                 BLOCK 1     ; X coordinate of the missile, this never changes once a missile is running
 _missile_explosion_cycle_count:             BLOCK 1     ; Count of cycles remaining to display missile explosion
+_can_fire:                                  BYTE 1
 
 ;------------------------------------------------------------------------------
 ;
@@ -61,6 +62,9 @@ init:
     ; Bullet has not collided with anything yet
     LD HL,_collision_detected
     LD (HL),0x00
+
+    LD HL,_can_fire
+    LD (HL),0x01
 
     POP HL
 
@@ -334,6 +338,10 @@ update_missile:
     BIT keyboard.FIRE_KEY_DOWN_BIT,E                    ; Fire pressed?
     JP Z,.done                                          ; No
 
+    LD A,(_can_fire)
+    AND A
+    JR Z,.done
+
     ; Fire pressed - init a new missile
     LD HL,_missile_state                                 
     LD (HL),_BULLET_STATE_NEW
@@ -430,19 +438,32 @@ update_missile:
 
     RET
 
-missile_hit_alien:
-    PUSH HL
+event_player_missile_hit_alien:
+    PUSH AF,HL
 
     CALL blank_missile
 
     LD HL,_missile_state
     LD (HL),_BULLET_STATE_NO_BULLET
 
-    POP HL
+    LD A,0x00
+    LD (_can_fire),A
+
+    POP HL,AF
     
     RET 
 
-missile_hit_a_shield:
+event_alien_explosion_done:
+    PUSH AF
+
+    LD A,0x01
+    LD (_can_fire),A
+
+    POP AF
+
+    RET
+
+event_player_missile_hit_shield:
     PUSH HL
     
     LD HL,_missile_state

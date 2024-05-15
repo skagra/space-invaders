@@ -26,7 +26,7 @@ handle_collision:
     ; Has there been a collision with the player missle?
     LD A,(draw_common.collided)
     BIT 0,A
-    JR Z,.done
+    JR Z,.done                                          ; No collision so done
 
     ; Did player missile hit an alien?
     LD HL,(draw_common.collision_coords)
@@ -38,21 +38,20 @@ handle_collision:
 
     LD A,0xFF                                           ; Did we find a collision with an alien?
     CP H
-    JR Z,.not_hit_an_alien                              ; No so done here.
+    JR Z,.not_hit_an_alien                              ; No, so done here.
 
-    CALL player_missile.missile_hit_alien
-
-    ; Flag to the alien pack that an alien has been hit by the player missile
+    ; Inform the global state engine that the player missile has hit an alien
     PUSH HL
-    CALL alien_pack.alien_hit_by_player_missile
+    CALL global_state.event_player_missile_hit_alien
     POP HL
-
+    
     JR .done
 
 .not_hit_an_alien:
-    CALL player_missile.missile_hit_a_shield            ; Collision was not with an alien - so assume a shield
+    ; Collision was not with an alien - so assume a shield
+    CALL global_state.event_player_missile_hit_shield           
 
 .done
-    POP   HL,DE,AF
+    POP HL,DE,AF
     
     RET
