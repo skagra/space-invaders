@@ -60,6 +60,12 @@ flush_buffer_to_screen_16x8:
 
     LD (.stack_ptr),SP                                  ; Store current SP to restore later
 
+    ; Check whether there is any work to do
+    LD DE,_DRAW_BUFFER_STACK
+    LD HL,(_draw_buffer_stack_top)
+    SUB HL,DE
+    JP Z,.done
+
     ; Calculate number of iterations needed to flush the draw stack
     LD SP,_DRAW_BUFFER_STACK                            ; Subtract the start of stack area (low mem)
     LD HL,(_draw_buffer_stack_top)                      ; from current stack pointer (first free byte)
@@ -79,11 +85,7 @@ flush_buffer_to_screen_16x8:
     ADD HL,BC
     LD B,H
     LD C,L
-
-.copy_loop
-    LD A,B                                              ; Is the copy counter zero?
-    OR C
-    JP Z,.done                                          ; Yes - done  
+    
 .more                                     
     COPY_LINE_16                                        ; Copy each of the 8 lines of 16 bits (24 pre-shifted)
     COPY_LINE_16                                        ; from the off-screen buffer to screen memory
@@ -94,7 +96,7 @@ flush_buffer_to_screen_16x8:
     COPY_LINE_16
     COPY_LINE_16
 
-    JR .copy_loop
+    JP PE,.more
 
 .done
     LD HL,_DRAW_BUFFER_STACK                            ; Reset the stack
