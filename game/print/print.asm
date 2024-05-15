@@ -280,7 +280,7 @@ char_coords_to_mem:
     LD B, 0x00                                          ; B=0x00, C=Y coord
     SLA C                                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, .Y_LOOKUP_TABLE                             ; Base of lookup table in HL
+    LD HL, .Y_LOOKUP_TABLE                              ; Base of lookup table in HL
     ADD HL,BC                                           ; Location of the row start in the lookup table
     LD BC,(HL)                                          ; Location of row start
     LD HL,BC                                            ; Move result into HL
