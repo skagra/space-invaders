@@ -3,35 +3,37 @@ init:
     LD (_game_state),A
     RET
 
-_game_state: BYTE 1
+; Global game state taken from GAME_STATE_* values
+_game_state: BLOCK 1
 
-GAME_STATE_RUNNING:                 EQU 0b00000001
-GAME_STATE_ALIEN_EXPLODING:         EQU 0b00000010
+GAME_STATE_RUNNING:                 EQU 0b00000001      ; Normal game running state
+GAME_STATE_ALIEN_EXPLODING:         EQU 0b00000010      ; An alien has been hit by player missile and is exploding
 
 GAME_STATE_RUNNING_BIT:             EQU 0
 GAME_STATE_ALIEN_EXPLODING_BIT:     EQU 1
 
-_alien_exploding_count_down:        BYTE 1
+_alien_exploding_count_down:        BLOCK 1             ; Cycles left to pause while alien explodes
 
-update_global_state:
+update:
     PUSH AF
 
-    LD A,(_game_state)
-    BIT GAME_STATE_ALIEN_EXPLODING_BIT,A
-    JR NZ,.state_alien_exploding
+    LD A,(_game_state)                                  ; Grab the current game state
+    BIT GAME_STATE_ALIEN_EXPLODING_BIT,A                ; Is an alien exploding?
+    JR NZ,.state_alien_exploding                        ; Y - handle it
     
-    JR .done
+    JR .done                                            ; N - all done
 
-.state_alien_exploding
-    LD A,(_alien_exploding_count_down)
+.state_alien_exploding                                  ; An alien is exploding
+    LD A,(_alien_exploding_count_down)                  ; Reduce cycles left to pause while alien explodes
     DEC A
-    LD (_alien_exploding_count_down),A
-    JR NZ,.done
+    LD (_alien_exploding_count_down),A                  
+    JR NZ,.done                                         ; Done exploding? N then done.
     
-    CALL alien_pack.event_alien_explosion_done
-    CALL player_missile.event_alien_explosion_done
+    ; Alien done exploding
+    CALL alien_pack.event_alien_explosion_done          ; Inform the alien pack  
+    CALL player_missile.event_alien_explosion_done      ; Inform the player missile
     
-    LD A,GAME_STATE_RUNNING
+    LD A,GAME_STATE_RUNNING                             ; Update global state to nominal running
     LD (_game_state),A
 
 .done
@@ -67,12 +69,14 @@ event_player_missile_hit_alien:
     ; Set global state to indicate an alien is exploding
     LD A,GAME_STATE_ALIEN_EXPLODING
     LD (_game_state),A
-    LD A,15                                             ;TODO
+    LD A,.ALIEN_EPLOSION_PERSISTENCE
     LD (_alien_exploding_count_down),A
 
     POP IY,IX,HL,AF
 
     RET
+
+.ALIEN_EPLOSION_PERSISTENCE:    EQU 15
 
 event_player_missile_hit_shield:
 

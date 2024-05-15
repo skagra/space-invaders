@@ -27,10 +27,9 @@ _pack_tr_coords:
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
-; Global state governing pack when an alien is exploding
-; _exploding_cycles:                      BYTE 1
-_exploding_alien:                       WORD 1
-_pack_halted:                           BYTE 1
+; State governing pack when an alien is exploding
+_exploding_alien:                       BLOCK 2
+_pack_halted:                           BLOCK 1
 
 ;------------------------------------------------------------------------------
 ;
@@ -299,7 +298,7 @@ event_alien_explosion_done:
 ;
 ;------------------------------------------------------------------------------
 
-update_current_alien:
+update:
     PUSH AF,DE,HL,IX
 
     ; Is the pack still globally halted?
@@ -492,16 +491,6 @@ event_alien_hit_by_player_missile:
     CALL fast_draw.draw_sprite_16x8
     POP HL
     POP HL
-
-    ; ; Set a count down to pause the movement of the pack
-    ; LD A,.EXPLODING_ALIEN_DELAY
-    ; LD (_exploding_cycles),A
-
-    ; Increment the player score 
-    ; LD HL,(IY+_STATE_OFFSET_TYPE)                                      
-    ; PUSH HL
-    ; CALL scoring.add_alien_value_to_score
-    ; POP HL
 
     POP IY,IX,HL
 

@@ -146,8 +146,8 @@ get_alien_at_coords:
 
     RET
 
-.alien_lookup_trace:    WORD 1
+.alien_lookup_trace:    BLOCK 2
 .target_coords:
-.target_y:              BYTE 1
-.target_x:              BYTE 1
-.alien_index:           BYTE 1
+.target_y:              BLOCK 1
+.target_x:              BLOCK 1
+.alien_index:           BLOCK 1

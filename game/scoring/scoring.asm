@@ -1,6 +1,6 @@
 score: 
-score_lsb: BYTE 1
-score_msb: BYTE 1
+score_lsb: BLOCK 1
+score_msb: BLOCK 1
 
 init:
     LD HL,score
@@ -58,9 +58,6 @@ event_alien_hit_by_player_missile:
 
     RET
 
-; TODO - These alien types should live elsewhere, but don't want dependency on alien_pack
-ALIEN_TYPE_0:       EQU 0
-ALIEN_TYPE_1:       EQU 1
-ALIEN_TYPE_2:       EQU 2
 
+; Alien scores index by the alien type
 ALIEN_SCORE_VALUES: BYTE 0x10,0x20,0x30

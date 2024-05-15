@@ -15,7 +15,7 @@
 ;
 ;------------------------------------------------------------------------------
 
-blank_alien:
+blank:
     PUSH AF,DE,HL,IX
 
     ; Point IX at the state structure for the current alien
@@ -23,9 +23,7 @@ blank_alien:
     LD DE,(HL)
     LD IX,DE
     
-    LD A,(IX+_STATE_OFFSET_STATE)
-    ; BIT _ALIEN_STATE_DIEING_BIT,A
-    ; JR NZ,.blank_explosion
+    LD A,(IX+_STATE_OFFSET_STATE)                       ; State of current alien
 
     ; Is the current alien dead or new
     AND _ALIEN_STATE_DEAD | _ALIEN_STATE_NEW,A
@@ -77,7 +75,7 @@ blank_alien:
 ;
 ;------------------------------------------------------------------------------
 
-draw_current_alien:
+draw:
     PUSH AF,DE,HL,IX
     
      ; Point IX at the state structure for the current alien

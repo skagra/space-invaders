@@ -83,37 +83,37 @@ main:
     CALL keyboard.get_movement_keys
 
     ; Erase player base
-    CALL player.blank_player
+    CALL player.blank
 
     ; Calcate new coordinates for the player base
-    CALL player.update_player
+    CALL player.update
 
     ; Draw the player base
-    CALL player.draw_player
+    CALL player.draw
 
     ; Erase current player missile
-    CALL player_missile.blank_missile
+    CALL player_missile.blank
 
     ; Calculate new coordinates and handle state changes for the player missile               
-    CALL player_missile.update_missile
+    CALL player_missile.update
 
     ; Draw player missile if there is one
-    CALL player_missile.draw_player_missile
+    CALL player_missile.draw
 
     ; Handle collisions with player missile 
     CALL collision.handle_collision
 
     ; Update global state information
-    CALL global_state.update_global_state
+    CALL global_state.update
 
     ; Erase the current alien
-    CALL alien_pack.blank_alien
+    CALL alien_pack.blank
 
     ; Calculate new coordinates and variant for current alien  
-    CALL alien_pack.update_current_alien  
+    CALL alien_pack.update  
 
     ; Draw the current alien
-    CALL alien_pack.draw_current_alien 
+    CALL alien_pack.draw
 
     ; Move on to next alien
     CALL alien_pack.next_alien

@@ -25,7 +25,7 @@ init:
 
     RET
 
-._START_PLAYER_X:       EQU (draw_common.SCREEN_WIDTH_PIXELS/2)-((sprites.PLAYER_BASE_DIM_X_BYTES-1)*8)/2 ; Middle of screen offset by half the width of the base
+._START_PLAYER_X:       EQU (draw_common.SCREEN_WIDTH_PIXELS/2)-(((sprites.PLAYER_BASE_DIM_X_BYTES-1)*8)/2) ; Middle of screen offset by half the width of the base
 
 ;------------------------------------------------------------------------------
 ;
@@ -41,7 +41,7 @@ init:
 ;   -
 ;------------------------------------------------------------------------------
 
-draw_player:
+draw:
     PUSH AF,DE
 
     ; Draw the player base sprite
@@ -62,7 +62,7 @@ draw_player:
 
     RET
 
-blank_player:
+blank:
     PUSH AF,DE
 
     ; Erase the player base sprite
@@ -74,7 +74,7 @@ blank_player:
     LD DE,sprites.PLAYER_BASE_BLANK                     ; Sprite    
     PUSH DE
 
-    CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite
+    CALL fast_draw.draw_sprite_16x8                     ; Erase the player base sprite
 
     POP DE
     POP DE
@@ -96,7 +96,7 @@ blank_player:
 ; Registers modified:
 ;   -
 ;------------------------------------------------------------------------------
-update_player:
+update:
     PUSH AF,DE
 
     ; Read the keyboard
@@ -108,7 +108,7 @@ update_player:
 
     LD A,(player_x)                                     ; Get current player base X coord
     DEC A                                               ; Decrease it to move left
-    CP .MIN_PLAYER_X                                   ; Have we hit the left most point?
+    CP .MIN_PLAYER_X                                    ; Have we hit the left most point?
     JR Z,.done                                          ; Yes so don't update
     LD (player_x),A                                     ; Update the location of the player base
     JR .done
@@ -118,7 +118,7 @@ update_player:
     JR Z,.done                                          ; No
     LD A,(player_x)                                     ; Get current player base X coord
     INC A                                               ; Increase it to move right
-    CP .MAX_PLAYER_X                                   ; Have we hit the right most point?a
+    CP .MAX_PLAYER_X                                    ; Have we hit the right most point?a
     JR NC,.done                                         ; Yes so don't update
     LD (player_x),A                                     ; Update the location of the player base
 
