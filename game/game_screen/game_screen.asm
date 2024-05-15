@@ -152,7 +152,6 @@ init_screen:
         POP HL
         POP HL
         POP HL
-
     ENDIF
 
     POP HL
