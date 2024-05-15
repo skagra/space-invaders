@@ -126,6 +126,35 @@ init_screen:
     POP HL
     POP HL
 
+    ; For debugging indicate the border section of the screen that is out of bounds
+    IFDEF DEBUG
+        LD HL,0x0000
+        PUSH HL
+        LD H,draw_common.INSET_X_CHARS
+        LD L,draw_common.SCREEN_HEIGHT_CHARS
+        PUSH HL
+        LD HL,draw_common.CA_BG_BLUE
+        PUSH HL
+        CALL draw_common.fill_screen_attributes_rect
+        POP HL
+        POP HL
+        POP HL
+
+        LD H,draw_common.SCREEN_WIDTH_CHARS-draw_common.INSET_X_CHARS
+        LD L,0x00
+        PUSH HL
+        LD H,draw_common.INSET_X_CHARS
+        LD L,draw_common.SCREEN_HEIGHT_CHARS
+        PUSH HL
+        LD HL,draw_common.CA_BG_BLUE
+        PUSH HL
+        CALL draw_common.fill_screen_attributes_rect
+        POP HL
+        POP HL
+        POP HL
+
+    ENDIF
+
     POP HL
 
     RET
