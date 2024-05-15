@@ -1,5 +1,6 @@
 init:
     LD A,GAME_STATE_RUNNING
+    LD (_game_state),A
     RET
 
 _game_state: BYTE 1
@@ -18,6 +19,8 @@ update_global_state:
     LD A,(_game_state)
     BIT GAME_STATE_ALIEN_EXPLODING_BIT,A
     JR NZ,.state_alien_exploding
+    
+    JR .done
 
 .state_alien_exploding
     LD A,(_alien_exploding_count_down)
