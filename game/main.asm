@@ -41,8 +41,15 @@
 
     ; Skip past contended memory
     ORG 0x8000 
-    
     INCLUDE "debug/module.asm"
+    INCLUDE "sprites/module.asm"
+    
+    ORG draw_common.OFF_SCREEN_BUFFER_START
+DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
+
+    MEMORY_USAGE "double buffer   ", DRAW_BUFFER
+
+    ; Most of the code is after the screen buffer - to allow space for sprites
     INCLUDE "utils/module.asm"
     INCLUDE "layout/module.asm"
     INCLUDE "global_state/module.asm"
@@ -58,7 +65,7 @@
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
     INCLUDE "character_set/module.asm"
-    
+
     MODULE main
 
 main:
@@ -155,15 +162,8 @@ STACK_START: BLOCK STACK_SIZE, 0
 STACK_TOP: EQU $-1
 
     MEMORY_USAGE "stack           ", STACK_START
-
-    ORG draw_common.OFF_SCREEN_BUFFER_START
-DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
-
-    MEMORY_USAGE "double buffer   ", DRAW_BUFFER
     
     ENDMODULE
-
-    INCLUDE "sprites/module.asm"
 
     TOTAL_MEMORY_USAGE
   
