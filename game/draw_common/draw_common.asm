@@ -56,15 +56,16 @@ set_border:
 ;   -
 ;------------------------------------------------------------------------------
 
+; TODO This should be using the double buffer
 wipe_screen:
     PUSH HL,IX    
 
     ; Set up call to utils.fill_mem
     LD HL,0x0000                                        ; Fill with zero values (blank)
     PUSH HL
-    LD HL,memory_map.SCREEN_START                             ; Start of screen area
+    LD HL,memory_map.SCREEN_START                       ; Start of screen area
     PUSH HL
-    LD HL, memory_map.SCREEN_SIZE                             ; Length of screen area
+    LD HL, memory_map.SCREEN_SIZE                       ; Length of screen area
     PUSH HL
     CALL utils.fill_mem                                 ; Erase the screen
     POP HL                                              ; Ditch the supplied parameters
@@ -327,6 +328,9 @@ coords_to_mem:
     OR L                                                ; OR with Y5,Y4,Y3
     LD L,A                                              ; Store in L
   
+    IFDEF DIRECT_DRAW
+        RES 7,H
+    ENDIF
     LD (IX+.RTN_MEM),HL                                 ; Put the return value on the stack
 
     POP IX,HL,BC,AF

@@ -146,8 +146,7 @@ print_string:
     JR .ps_char_loop                                    ; Next character
 
 .ps_done:
-
-    CALL draw.flush_buffer_to_screen
+    CALL draw.flush_buffer_to_screen                    ; TODO - Should be under control of the caller!
 
     POP IX,HL,DE,BC,AF
 
@@ -215,13 +214,15 @@ print_char:
     LD HL,(.print_mem_ptr)                             ; Write character bits into screen memory
     LD (HL), A
 
-    ; Record that we are writing to the double buffer
-    LD HL,(draw._buffer_stack_top)                      ; Top of stack address
-    LD DE,(.print_mem_ptr)       
-    LD (HL),DE                                          ; Write screen buffer address at top of stack            
-    INC HL                                              ; Increase the stack top pointer +2 as a word was written
-    INC HL
-    LD (draw._buffer_stack_top),HL
+    IFNDEF DIRECT_DRAW
+        ; Record that we are writing to the double buffer
+        LD HL,(draw._buffer_stack_top)                      ; Top of stack address
+        LD DE,(.print_mem_ptr)       
+        LD (HL),DE                                          ; Write screen buffer address at top of stack            
+        INC HL                                              ; Increase the stack top pointer +2 as a word was written
+        INC HL
+        LD (draw._buffer_stack_top),HL
+    ENDIF
 
     LD HL,(.print_mem_ptr)
     LD DE,0x0100                                        ; Move pointer to screen memory down a line
@@ -298,9 +299,15 @@ char_coords_to_mem:
     RET
 
 .Y_LOOKUP_TABLE:
-	WORD 0xC000, 0xC020, 0xC040, 0xC060, 0xC080, 0xC0A0,  0xC0C0,  0xC0E0
-	WORD 0xC800, 0xC820, 0xC840, 0xC860, 0xC880, 0xC8A0,  0xC8C0,  0xC8E0
-	WORD 0xD000, 0xD020, 0xD040, 0xD060, 0xD080, 0xD0A0,  0xD0C0,  0xD0E0
+    IFDEF DIRECT_DRAW
+        WORD 0x4000, 0x4020, 0x4040, 0x4060, 0x4080, 0x40A0,  0x40C0,  0x40E0
+        WORD 0x4800, 0x4820, 0x4840, 0x4860, 0x4880, 0x48A0,  0x48C0,  0x48E0
+        WORD 0x5000, 0x5020, 0x5040, 0x5060, 0x5080, 0x50A0,  0x50C0,  0x50E0
+    ELSE
+        WORD 0xC000, 0xC020, 0xC040, 0xC060, 0xC080, 0xC0A0,  0xC0C0,  0xC0E0
+        WORD 0xC800, 0xC820, 0xC840, 0xC860, 0xC880, 0xC8A0,  0xC8C0,  0xC8E0
+	    WORD 0xD000, 0xD020, 0xD040, 0xD060, 0xD080, 0xD0A0,  0xD0C0,  0xD0E0   
+    ENDIF
 
 inline_print:
     

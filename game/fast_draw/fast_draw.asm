@@ -54,6 +54,10 @@ init:
 ;------------------------------------------------------------------------------
 
 flush_buffer_to_screen_16x8:
+    IFDEF DIRECT_DRAW
+        RET
+    ENDIF
+
     DI                                                  ; Disable interrupts as we'll be messing with SP
 
     PUSH AF,BC,DE,HL
@@ -135,17 +139,22 @@ flush_buffer_to_screen_16x8:
         
         ; Adjust the off-screen buffer address to account for the X offset
         LD HL,BC                                        ; Buffer address
-        LD DE,(HL)                                          
+        LD DE,(HL)  
+        IFDEF DIRECT_DRAW
+            RES 7,D
+        ENDIF                                  
         LD A,(.x_offset)                                ; Merge in x offset
         OR E
         LD E,A
 
-        ; Record that we are writing to the double buffer
-        LD HL,(_draw_buffer_stack_top)                  ; Top of draw stack address        
-        LD (HL),DE                                      ; Write screen buffer address at top of stack            
-        INC HL                                          ; Increase the stack top pointer +2 as a word was written
-        INC HL
-        LD (_draw_buffer_stack_top),HL
+        IFNDEF DIRECT_DRAW
+            ; Record that we are writing to the double buffer
+            LD HL,(_draw_buffer_stack_top)                  ; Top of draw stack address        
+            LD (HL),DE                                      ; Write screen buffer address at top of stack            
+            INC HL                                          ; Increase the stack top pointer +2 as a word was written
+            INC HL
+            LD (_draw_buffer_stack_top),HL
+        ENDIF
 
         ; First word of mask/data
         POP HL                                          ; Mask and sprite data

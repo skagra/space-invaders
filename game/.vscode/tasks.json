@@ -11,6 +11,9 @@
                 "--sym=${workspaceFolder}/bin/space-invaders-debug-symbols.txt",
                 "--lst=${workspaceFolder}/bin/space-invaders-debug-listing.txt",
                 "-DDEBUG",
+                //"-DDIRECT_DRAW",
+                //"-DIGNORE_VSYNC",
+                //"-DAUTO_FLUSH",
                 "main.asm"
             ],
             "problemMatcher": {
@@ -66,6 +69,7 @@
                 "--sym=${workspaceFolder}/bin/test-draw-symbols.txt",
                 "--lst=${workspaceFolder}/bin/test-draw-listing.txt",
                 "-DDEBUG",
+                "-DDIRECT_DRAW",
                 "tests/test_draw.asm"
             ],
             "problemMatcher": {

@@ -51,7 +51,7 @@ main:
     LD HL, TEST_SPRITES
 
 .test_loop
-    DEBUG_PRINT "A TEST"
+   ; DEBUG_PRINT "A TEST"
 
     LD DE,(HL)
     PUSH DE
@@ -101,7 +101,7 @@ main:
     ; POP HL
     ; POP HL
 
-    CALL scoring.print_score
+    ; CALL scoring.print_score
 
     HALT 
 

@@ -73,6 +73,10 @@ draw_sprite_and_flush_buffer:
     RET
 
 flush_buffer_to_screen:
+    IFDEF DIRECT_DRAW
+        RET
+    ENDIF
+
     DI                                                  ; Disable interrupts as we'll be messing with SP
 
     PUSH AF,BC,DE,HL
@@ -202,7 +206,10 @@ draw_sprite:
 
     ; Calculate buffer start address -> DE
     LD HL,(.y_lookup_table_ptr)                         ; Buffer address
-    LD DE,(HL)                                          
+    LD DE,(HL)    
+    IFDEF DIRECT_DRAW
+        RES 7,D
+    ENDIF                                      
     LD A,(.x_offset)                                    ; Merge in x offset
     OR E
     LD E,A
@@ -214,12 +221,14 @@ draw_sprite:
     LD (.y_lookup_table_ptr),HL
 
 .x_loop:
-    ; Record that we are writing to the double buffer
-    LD HL,(_buffer_stack_top)                           ; Top of stack address        
-    LD (HL),DE                                          ; Write screen buffer address at top of stack            
-    INC HL                                              ; Increase the stack top pointer +2 as a word was written
-    INC HL
-    LD (_buffer_stack_top),HL
+    IFNDEF DIRECT_DRAW
+        ; Record that we are writing to the double buffer
+        LD HL,(_buffer_stack_top)                           ; Top of stack address        
+        LD (HL),DE                                          ; Write screen buffer address at top of stack            
+        INC HL                                              ; Increase the stack top pointer +2 as a word was written
+        INC HL
+        LD (_buffer_stack_top),HL
+    ENDIF
 
     ; First word of mask/data
     LD DE,(.mem_write_ptr)

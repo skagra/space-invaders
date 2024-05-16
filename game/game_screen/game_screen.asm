@@ -32,7 +32,11 @@ draw:
     PUSH HL
 
     ; Make the screen black until we've drawn some inital content
-    LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_BLACK
+    IFNDEF DEBUG
+        LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_BLACK
+    ELSE
+        LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_WHITE
+    ENDIF
     PUSH HL
     CALL draw_common.fill_screen_attributes
     POP HL
