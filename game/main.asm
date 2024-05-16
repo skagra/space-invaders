@@ -44,6 +44,7 @@
     INCLUDE "debug/module.asm"
     INCLUDE "sprites/module.asm"
     
+    ; Off-screen buffer
     ORG draw_common.OFF_SCREEN_BUFFER_START
 DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
