@@ -31,6 +31,9 @@ _pack_right:                            BLOCK 1
 _exploding_alien:                       BLOCK 2
 _pack_halted:                           BLOCK 1
 
+; Current number of aliens
+_alien_count:                           BLOCK 1
+
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -81,6 +84,9 @@ init:
     
     LD A,0xA0
     LD (_pack_right),A                      
+
+    LD A,_ALIEN_PACK_SIZE
+    LD (_alien_count),A
 
     POP HL,DE,AF
 
@@ -200,6 +206,15 @@ _move_current_alien:
     ; Moving right
     INC D                                               ; Increase X by 2
     INC D
+
+    ; If there is just one alien left then it moves more quickly when travelling right
+    LD A,(_alien_count)
+    CP 0x01
+    JR NZ,.more_than_one_alien
+
+    INC D
+
+.more_than_one_alien
     LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
 
     JR .done_moving
@@ -493,6 +508,13 @@ event_alien_hit_by_player_missile:
     POP HL
 
     POP IY,IX,HL
+
+    ; Decrease the count of aliens
+    LD A,(_alien_count)
+    DEC A
+    LD (_alien_count),A
+
+    ; Are we down to the last alien?
 
     RET
 

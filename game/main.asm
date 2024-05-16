@@ -57,7 +57,8 @@
     INCLUDE "game_screen/module.asm"
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
-
+    INCLUDE "character_set/module.asm"
+    
     MODULE main
 
 main:
@@ -162,7 +163,6 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     
     ENDMODULE
 
-    INCLUDE "character_set/module.asm"
     INCLUDE "sprites/module.asm"
 
     TOTAL_MEMORY_USAGE
