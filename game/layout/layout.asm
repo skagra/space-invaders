@@ -73,3 +73,9 @@ RESERVE_BASE_OFFSET_X:          EQU ((sprites.PLAYER_BASE_DIM_X_BYTES-1)*8)
 
 ; Horizonal line towards the bottom of the screen
 HORIZONTAL_LINE_Y:              EQU draw_common.SCREEN_HEIGHT_PIXELS-10
+
+; PLAY PLAYER <x> message
+PLAY_PLAYER_Y:                  EQU 10
+PLAY_PLAYER_X:                  EQU 0
+PLAY_PLAYER_COORDS:             EQU (PLAY_PLAYER_X<<8) + PLAY_PLAYER_Y
+

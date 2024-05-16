@@ -83,8 +83,12 @@ main:
     CALL scoring.init
 
     ; Draw the initial screen
-    CALL game_screen.draw
+    CALL game_screen.draw_pre_play
     CALL draw.flush_buffer_to_screen
+    CALL fast_draw.flush_buffer_to_screen_16x8
+    CALL game_screen.draw_play
+    CALL draw.flush_buffer_to_screen
+    CALL fast_draw.flush_buffer_to_screen_16x8
 
 .animation_loop:
     ; Read keyboard
@@ -151,8 +155,8 @@ STACK_TOP: EQU $-1
 
     MEMORY_USAGE "stack           ", STACK_START
 
-    ORG 0xC000
-DRAW_BUFFER:    BLOCK 0x1800,0x00
+    ORG draw_common.OFF_SCREEN_BUFFER_START
+DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
     MEMORY_USAGE "double buffer   ", DRAW_BUFFER
     

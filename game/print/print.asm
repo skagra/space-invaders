@@ -146,7 +146,7 @@ print_string:
     JR .ps_char_loop                                    ; Next character
 
 .ps_done:
-    CALL draw.flush_buffer_to_screen                    ; TODO - Should be under control of the caller!
+ ;   CALL draw.flush_buffer_to_screen                    ; TODO - Should be under control of the caller!
 
     POP IX,HL,DE,BC,AF
 

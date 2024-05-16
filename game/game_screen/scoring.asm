@@ -13,6 +13,47 @@ print_score_player_1:
 
     RET
 
+flash_score_player_1:
+    PUSH BC,HL
+
+    LD B,.FLASH_PLAYER_SCORE_CYCLES
+
+.flash_loop
+    CALL print_score_player_1
+
+    HALT
+    HALT
+    HALT
+    HALT
+    HALT
+    CALL draw.flush_buffer_to_screen
+
+    LD HL,.SCORE_BLANK_STRING
+    PUSH HL
+    LD HL,layout.SCORE_PLAYER_1_CHAR_COORDS
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+
+    HALT
+    HALT
+    HALT
+    HALT
+    HALT
+    CALL draw.flush_buffer_to_screen
+
+    DJNZ .flash_loop
+
+    POP HL,BC
+
+    RET
+
+; Arcade machine flashes ~22 times over a peroid of  ~4 seconds
+.SCORE_BLANK_STRING:        BYTE "    ",0
+.FLASH_PLAYER_SCORE_CYCLES: EQU 22
+
+
 print_score_player_2:
     PUSH HL
 

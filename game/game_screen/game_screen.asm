@@ -28,7 +28,7 @@ init:
 ;   -
 ;------------------------------------------------------------------------------
 
-draw:
+draw_pre_play:
     PUSH HL
 
     ; Make the screen black until we've drawn some inital content
@@ -55,30 +55,40 @@ draw:
     call draw_common.wipe_screen
 
     ; Draw static screen labels
-    LD HL,._SCORE_LINE_0_TEXT
+    LD HL,.SCORE_LINE_0_TEXT
     PUSH HL
     LD HL,0x0000
     PUSH HL
     CALL print.print_string
     POP HL
     POP HL
+    CALL draw.flush_buffer_to_screen
 
-    LD HL,._LIVES_AND_CREDS_TEXT
+    LD HL,.PLAY_PLAYER_1_TEXT
+    PUSH HL
+    LD HL,10 ; TODO
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+    CALL draw.flush_buffer_to_screen
+
+    LD HL,.LIVES_AND_CREDS_TEXT
     PUSH HL
     LD HL,draw_common.SCREEN_HEIGHT_CHARS-1
     PUSH HL
     CALL print.print_string
     POP HL
     POP HL
+    CALL draw.flush_buffer_to_screen
 
-    CALL draw_horizontal_line                           ; Line towards the bottom of the screen
     CALL draw_reserve_bases                             ; Reserved bases
     CALL game_screen.print_score_high                   ; High score
-    CALL game_screen.print_score_player_1               ; Player 1 score
-    CALL game_screen.print_score_player_2               ; Player 2 score
     CALL game_screen.print_credits                      ; Credits
     CALL game_screen.print_player_bases_count           ; Count of remanining bases
-    CALL game_screen.draw_shields                       ; Shields
+   
+    CALL draw.flush_buffer_to_screen
+    CALL fast_draw.flush_buffer_to_screen_16x8
 
     ; Most of the screen is white on black
     LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_WHITE
@@ -117,10 +127,33 @@ draw:
         POP HL
     ENDIF
 
+    CALL flash_score_player_1
+
+    LD HL,.PLAY_PLAYER_1_BLANK
+    PUSH HL
+    LD HL,layout.PLAY_PLAYER_COORDS
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+
+    CALL draw.flush_buffer_to_screen
+
     POP HL
 
     RET
 
-._SCORE_LINE_0_TEXT:        BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
-._LIVES_AND_CREDS_TEXT:     BYTE "                    CREDIT   ",0
+.SCORE_LINE_0_TEXT:         BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
+.LIVES_AND_CREDS_TEXT:      BYTE "                    CREDIT   ",0
+.PLAY_PLAYER_1_TEXT:        BYTE "         PLAY PLAYER<1>      ",0
+.PLAY_PLAYER_1_BLANK        BYTE "                             ",0
+
+draw_play:
+
+    CALL draw_horizontal_line                           ; Line towards the bottom of the screen
+    CALL draw.flush_buffer_to_screen
+    CALL game_screen.draw_shields                       ; Shields
+    CALL draw.flush_buffer_to_screen
+
+    RET
 
