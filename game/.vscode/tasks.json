@@ -14,6 +14,7 @@
                 //"-DDIRECT_DRAW",
                 //"-DIGNORE_VSYNC",
                 //"-DAUTO_FLUSH",
+                //"-DPAUSEABLE",
                 "main.asm"
             ],
             "problemMatcher": {

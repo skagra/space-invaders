@@ -31,6 +31,12 @@
         DISPLAY "DIRECT_DRAW disabled"
     ENDIF
 
+    IFDEF PAUSEABLE
+        DISPLAY "PAUSEABLE **ENABLED**"
+    ELSE
+        DISPLAY "PAUSEABLE disabled"
+    ENDIF
+
     DISPLAY " "
 
     INCLUDE "memory_map/module.asm"
@@ -101,7 +107,7 @@ main:
 
 .animation_loop:
     ; Read keyboard
-    CALL keyboard.get_movement_keys
+    CALL keyboard.get_keys
 
     ; Erase player base
     CALL player.blank
@@ -150,6 +156,24 @@ main:
     ; Copy off screen buffers to screen memory
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
+
+    IFDEF PAUSEABLE
+.pause_key_down:
+        LD A, (keyboard.keys_down)
+        BIT keyboard.PAUSE_KEY_DOWN_BIT,A
+        JR Z,.pause_key_not_down
+.await_pause_key_up:
+        CALL keyboard.get_keys
+        LD A, (keyboard.keys_down)
+        BIT keyboard.PAUSE_KEY_DOWN_BIT,A
+        JR NZ,.await_pause_key_up
+.await_pause_key_down:
+        CALL keyboard.get_keys
+        LD A, (keyboard.keys_down)
+        BIT keyboard.PAUSE_KEY_DOWN_BIT,A
+        JR Z,.await_pause_key_down
+.pause_key_not_down:
+    ENDIF
 
     DEBUG_VTRACE_FLASH
 

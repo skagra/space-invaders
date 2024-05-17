@@ -10,6 +10,12 @@ keys_down:              BLOCK 1
 
 _fire_already_pressed:  BLOCK 1
 
+    IFDEF PAUSEABLE
+PAUSE_KEY_DOWN_MASK:    EQU 0b00001000
+PAUSE_KEY_DOWN_BIT:     EQU 3
+_pause_already_pressed: BLOCK 1
+    ENDIF
+
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module
@@ -28,6 +34,11 @@ init:
 
     LD HL,_fire_already_pressed
     LD (HL),0x00
+
+    IFDEF PAUSEABLE
+        LD HL,_pause_already_pressed
+        LD (HL),0x00
+    ENDIF
 
     POP HL
 
@@ -49,11 +60,8 @@ init:
 ;
 ;------------------------------------------------------------------------------
 
-get_movement_keys:
-    PUSH AF,BC,DE,HL,IX
-
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+get_keys:
+    PUSH AF,BC,DE,HL
 
     LD E,0x00                                           ; Initialize result
 
@@ -115,10 +123,39 @@ get_movement_keys:
 
 .done:
 
+    IFDEF PAUSEABLE
+        LD BC,.PAUSE_PORT                                 
+        IN A,(C)                                            
+
+        BIT .PAUSE_KEY_BIT,A                                
+        JR NZ,.pauseable_not_pressed                             
+
+        LD HL,_pause_already_pressed             
+        LD A,(HL)
+        CP A,0x01
+        JR Z,.pause_done
+
+        LD A,E                                             
+        OR PAUSE_KEY_DOWN_MASK
+        LD E,A
+
+        LD HL,_pause_already_pressed  
+        LD (HL),0x01                                        
+
+        JR .pause_done
+
+.pauseable_not_pressed:
+        LD HL,_pause_already_pressed  
+        LD (HL),0x00      
+
+.pause_done
+
+    ENDIF
+
     LD HL,keys_down
     LD (HL),E      
 
-    POP IX,HL,DE,BC,AF
+    POP HL,DE,BC,AF
 
     RET
 
@@ -129,3 +166,7 @@ get_movement_keys:
 .FIRE_PORT:        EQU 0xBFFE
 .FIRE_KEY_BIT:     EQU 0
 
+    IFDEF PAUSEABLE
+.PAUSE_PORT:     EQU 0x7FFE
+.PAUSE_KEY_BIT:  EQU 0
+    ENDIF
