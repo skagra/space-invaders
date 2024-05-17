@@ -4,7 +4,12 @@
 
     MACRO MEMORY_USAGE name, label 
         IF @_previous_memory_end != label && @_previous_memory_end != 0
-            DISPLAY "MEM_USAGE: ~~~~~~~~~~~~~~  available: ", label-@_previous_memory_end+1," (",/D,label-@_previous_memory_end+1," bytes)"
+            
+            IF (label-@_previous_memory_end+1)>0
+                DISPLAY "MEM_USAGE: ~~~~~~~~~~~~~~  available: ", label-@_previous_memory_end+1," (",/D,label-@_previous_memory_end+1," bytes)"
+            ELSE
+                DISPLAY "MEM_USAGE: ERROR!          overlap: ",-1*(label-@_previous_memory_end+1)," (",/D,-1*(label-@_previous_memory_end+1)," bytes)"
+            ENDIF
 @_total_memory_available = @_total_memory_available + label-@_previous_memory_end+1
         ENDIF
 		DISPLAY "MEM_USAGE: ",name,"start: ",label, ", end: ", $-1, ", size: ",/H,$-label,/D," (",$-label," bytes)"   
