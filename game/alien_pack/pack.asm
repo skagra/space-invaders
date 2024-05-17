@@ -56,6 +56,8 @@ _alien_state:
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_0
     WORD 0xA060,sprites.ALIEN_0_VARIANT_0,sprites.ALIEN_0_VARIANT_1,sprites.ALIEN_0_VARIANT_0_BLANK,sprites.ALIEN_0_VARIANT_1_BLANK
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_0
+    WORD 0xB060,sprites.ALIEN_0_VARIANT_0,sprites.ALIEN_0_VARIANT_1,sprites.ALIEN_0_VARIANT_0_BLANK,sprites.ALIEN_0_VARIANT_1_BLANK
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_0
 
     ; Row 1
     WORD 0x1050,sprites.ALIEN_0_VARIANT_0,sprites.ALIEN_0_VARIANT_1,sprites.ALIEN_0_VARIANT_0_BLANK,sprites.ALIEN_0_VARIANT_1_BLANK
@@ -77,6 +79,8 @@ _alien_state:
     WORD 0x9050,sprites.ALIEN_0_VARIANT_0,sprites.ALIEN_0_VARIANT_1,sprites.ALIEN_0_VARIANT_0_BLANK,sprites.ALIEN_0_VARIANT_1_BLANK
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_0
     WORD 0xA050,sprites.ALIEN_0_VARIANT_0,sprites.ALIEN_0_VARIANT_1,sprites.ALIEN_0_VARIANT_0_BLANK,sprites.ALIEN_0_VARIANT_1_BLANK
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_0
+    WORD 0xB050,sprites.ALIEN_0_VARIANT_0,sprites.ALIEN_0_VARIANT_1,sprites.ALIEN_0_VARIANT_0_BLANK,sprites.ALIEN_0_VARIANT_1_BLANK
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_0
     
     ; Row 2
@@ -100,6 +104,8 @@ _alien_state:
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_1
     WORD 0xA040,sprites.ALIEN_1_VARIANT_0,sprites.ALIEN_1_VARIANT_1,sprites.ALIEN_1_VARIANT_0_BLANK,sprites.ALIEN_1_VARIANT_1_BLANK
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_1
+    WORD 0xB040,sprites.ALIEN_1_VARIANT_0,sprites.ALIEN_1_VARIANT_1,sprites.ALIEN_1_VARIANT_0_BLANK,sprites.ALIEN_1_VARIANT_1_BLANK
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_1
 
     ; Row 3
     WORD 0x1030,sprites.ALIEN_1_VARIANT_0,sprites.ALIEN_1_VARIANT_1,sprites.ALIEN_1_VARIANT_0_BLANK,sprites.ALIEN_1_VARIANT_1_BLANK
@@ -121,6 +127,8 @@ _alien_state:
     WORD 0x9030,sprites.ALIEN_1_VARIANT_0,sprites.ALIEN_1_VARIANT_1,sprites.ALIEN_1_VARIANT_0_BLANK,sprites.ALIEN_1_VARIANT_1_BLANK
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_1
     WORD 0xA030,sprites.ALIEN_1_VARIANT_0,sprites.ALIEN_1_VARIANT_1,sprites.ALIEN_1_VARIANT_0_BLANK,sprites.ALIEN_1_VARIANT_1_BLANK
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_1
+    WORD 0xB030,sprites.ALIEN_1_VARIANT_0,sprites.ALIEN_1_VARIANT_1,sprites.ALIEN_1_VARIANT_0_BLANK,sprites.ALIEN_1_VARIANT_1_BLANK
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_1
 
     ; Row 4
@@ -144,24 +152,26 @@ _alien_state:
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_2
     WORD 0xA020,sprites.ALIEN_2_VARIANT_0,sprites.ALIEN_2_VARIANT_1,sprites.ALIEN_2_VARIANT_0_BLANK,sprites.ALIEN_2_VARIANT_1_BLANK
     BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_2
+    WORD 0xB020,sprites.ALIEN_2_VARIANT_0,sprites.ALIEN_2_VARIANT_1,sprites.ALIEN_2_VARIANT_0_BLANK,sprites.ALIEN_2_VARIANT_1_BLANK
+    BYTE _ALIEN_STATE_NEW,_ALIEN_VARIANT_0,ALIEN_TYPE_2
 
 ; Lookup table into _alien_state table
 _ALIEN_LOOKUP:
     ; Row 0 (bottom of pack)
     WORD _alien_state+_AS_SIZE*0, _alien_state+_AS_SIZE*1, _alien_state+_AS_SIZE*2, _alien_state+_AS_SIZE*3, _alien_state+_AS_SIZE*4 
-    WORD _alien_state+_AS_SIZE*5, _alien_state+_AS_SIZE*6, _alien_state+_AS_SIZE*7, _alien_state+_AS_SIZE*8, _alien_state+_AS_SIZE*9
+    WORD _alien_state+_AS_SIZE*5, _alien_state+_AS_SIZE*6, _alien_state+_AS_SIZE*7, _alien_state+_AS_SIZE*8, _alien_state+_AS_SIZE*9, _alien_state+_AS_SIZE*10
     ; Row 1
-    WORD _alien_state+_AS_SIZE*10, _alien_state+_AS_SIZE*11, _alien_state+_AS_SIZE*12, _alien_state+_AS_SIZE*13, _alien_state+_AS_SIZE*14 
-    WORD _alien_state+_AS_SIZE*15, _alien_state+_AS_SIZE*16, _alien_state+_AS_SIZE*17, _alien_state+_AS_SIZE*18, _alien_state+_AS_SIZE*19
+    WORD _alien_state+_AS_SIZE*11, _alien_state+_AS_SIZE*12, _alien_state+_AS_SIZE*13, _alien_state+_AS_SIZE*14, _alien_state+_AS_SIZE*15
+    WORD _alien_state+_AS_SIZE*16, _alien_state+_AS_SIZE*17, _alien_state+_AS_SIZE*18, _alien_state+_AS_SIZE*19, _alien_state+_AS_SIZE*20,_alien_state+_AS_SIZE*21
     ; Row 2
-    WORD _alien_state+_AS_SIZE*20, _alien_state+_AS_SIZE*21, _alien_state+_AS_SIZE*22, _alien_state+_AS_SIZE*23, _alien_state+_AS_SIZE*24 
-    WORD _alien_state+_AS_SIZE*25, _alien_state+_AS_SIZE*26, _alien_state+_AS_SIZE*27, _alien_state+_AS_SIZE*28, _alien_state+_AS_SIZE*29
+    WORD _alien_state+_AS_SIZE*22, _alien_state+_AS_SIZE*23, _alien_state+_AS_SIZE*24, _alien_state+_AS_SIZE*25, _alien_state+_AS_SIZE*26 
+    WORD _alien_state+_AS_SIZE*27, _alien_state+_AS_SIZE*28, _alien_state+_AS_SIZE*29, _alien_state+_AS_SIZE*30, _alien_state+_AS_SIZE*31, _alien_state+_AS_SIZE*32
     ; Row 3
-    WORD _alien_state+_AS_SIZE*30, _alien_state+_AS_SIZE*31, _alien_state+_AS_SIZE*32, _alien_state+_AS_SIZE*33, _alien_state+_AS_SIZE*34 
-    WORD _alien_state+_AS_SIZE*35, _alien_state+_AS_SIZE*36, _alien_state+_AS_SIZE*37, _alien_state+_AS_SIZE*38, _alien_state+_AS_SIZE*39  
+    WORD _alien_state+_AS_SIZE*33, _alien_state+_AS_SIZE*34, _alien_state+_AS_SIZE*35, _alien_state+_AS_SIZE*36, _alien_state+_AS_SIZE*37 
+    WORD _alien_state+_AS_SIZE*38, _alien_state+_AS_SIZE*39, _alien_state+_AS_SIZE*40, _alien_state+_AS_SIZE*41, _alien_state+_AS_SIZE*42, _alien_state+_AS_SIZE*43  
     ; Row 4
-    WORD _alien_state+_AS_SIZE*40, _alien_state+_AS_SIZE*41, _alien_state+_AS_SIZE*42, _alien_state+_AS_SIZE*43, _alien_state+_AS_SIZE*44 
-    WORD _alien_state+_AS_SIZE*45, _alien_state+_AS_SIZE*46, _alien_state+_AS_SIZE*47, _alien_state+_AS_SIZE*48, _alien_state+_AS_SIZE*49
+    WORD _alien_state+_AS_SIZE*44, _alien_state+_AS_SIZE*45, _alien_state+_AS_SIZE*46, _alien_state+_AS_SIZE*47, _alien_state+_AS_SIZE*48 
+    WORD _alien_state+_AS_SIZE*49, _alien_state+_AS_SIZE*50, _alien_state+_AS_SIZE*51, _alien_state+_AS_SIZE*52, _alien_state+_AS_SIZE*53, _alien_state+_AS_SIZE*54
 
 ; Number of aliens in total in new pack
 _ALIEN_PACK_SIZE:                       EQU ($-_ALIEN_LOOKUP)/2

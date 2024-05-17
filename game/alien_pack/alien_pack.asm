@@ -82,7 +82,7 @@ init:
     LD A,0x60
     LD (_pack_top),A
     
-    LD A,0xA0
+    LD A,0xB0
     LD (_pack_right),A                      
 
     LD A,_ALIEN_PACK_SIZE
