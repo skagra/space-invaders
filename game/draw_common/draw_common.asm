@@ -1,4 +1,6 @@
 init:
+    LD A,utils.FALSE
+    LD (collided),A
     RET
 
 ; Collision detection

@@ -156,7 +156,7 @@ draw_sprite:
 
     ; Initialize the collision flag
     LD HL,draw_common.collided                      
-    LD (HL),0x00
+    LD (HL),utils.FALSE
 
     ; Get and store the coords
     LD HL,(IX+.PARAM_COORDS)                            ; Grab the pixel coords
@@ -224,9 +224,9 @@ draw_sprite:
 .x_loop:
     IFNDEF DIRECT_DRAW
         ; Record that we are writing to the double buffer
-        LD HL,(_buffer_stack_top)                           ; Top of stack address        
-        LD (HL),DE                                          ; Write screen buffer address at top of stack            
-        INC HL                                              ; Increase the stack top pointer +2 as a word was written
+        LD HL,(_buffer_stack_top)                       ; Top of stack address        
+        LD (HL),DE                                      ; Write screen buffer address at top of stack            
+        INC HL                                          ; Increase the stack top pointer +2 as a word was written
         INC HL
         LD (_buffer_stack_top),HL
     ENDIF
@@ -236,14 +236,14 @@ draw_sprite:
     POP HL                                              ; Mask and sprite data
     
     LD A,(draw_common.collided)                         ; Has a collision already been recorded?
-    CP 0x00
+    BIT utils.TRUE_BIT,A
     JR NZ,.no_collision
 
     LD A,(DE)                                           ; Data from screen
     AND H
     JR Z,.no_collision
 
-    LD A,0x01                                           ; Record the collision
+    LD A,utils.TRUE                                     ; Record the collision
     LD (draw_common.collided),A
     LD A,(.y_coord)
     LD (draw_common.collision_y),A

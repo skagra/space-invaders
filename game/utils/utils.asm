@@ -1,3 +1,9 @@
+TRUE:   EQU 0x00000001
+FALSE:  EQU 0x00000010
+
+TRUE_BIT:   EQU 0
+FALSE_BIT:  EQU 1
+
 ;------------------------------------------------------------------------------
 ;
 ; Initialise the module

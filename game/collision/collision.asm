@@ -25,7 +25,7 @@ handle_collision:
 
     ; Has there been a collision with the player missle?
     LD A,(draw_common.collided)
-    BIT 0,A
+    BIT utils.TRUE_BIT,A
     JR Z,.done                                          ; No collision so done
 
     ; Did player missile hit an alien?

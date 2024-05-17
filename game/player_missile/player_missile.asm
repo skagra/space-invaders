@@ -5,30 +5,29 @@
 ;------------------------------------------------------------------------------
 
 ; Configuration constants
-_MISSILE_STEP_SIZE:                          EQU 4                               ; Number of pixels to move missile on each animation cycle
-_MISSILE_EXPLOSION_CYCLES:                   EQU 10                              ; Number of draw cycles to keep the missile explosion on the screen
+_MISSILE_STEP_SIZE:                         EQU 4                               ; Number of pixels to move missile on each animation cycle
+_MISSILE_EXPLOSION_CYCLES:                  EQU 10                              ; Number of draw cycles to keep the missile explosion on the screen
 
 ; Bullet state masks
-_MISSILE_STATE_NO_MISSILE:                    EQU 0b00000001                      ; No currently active missile
-_MISSILE_STATE_NEW:                          EQU 0b00000010                      ; A new missile 
-_MISSILE_STATE_ACTIVE:                       EQU 0b00000100                      ; Active missile travelling up the screen
-_MISSILE_STATE_REACHED_TOP_OF_SCREEN:        EQU 0b00001000                      ; Bullet has reached the top of the screen
-_MISSILE_STATE_AT_TOP_OF_SCREEN:             EQU 0b00010000                      ; Retain expoding image at top of screen
-_MISSILE_STATE_DONE_AT_TOP_OF_SCREEN:        EQU 0b00100000                      ; At top of screen and missile is done
-_MISSILE_STATE_COLLIDED:                     EQU 0b01000000                      ; The missile has collided with something
-_MISSILE_STATE_HIT_A_SHIELD:                 EQU 0b10000000                      ; The missile has collided with a shield
+_MISSILE_STATE_NO_MISSILE:                  EQU 0b00000001                      ; No currently active missile
+_MISSILE_STATE_NEW:                         EQU 0b00000010                      ; A new missile 
+_MISSILE_STATE_ACTIVE:                      EQU 0b00000100                      ; Active missile travelling up the screen
+_MISSILE_STATE_REACHED_TOP_OF_SCREEN:       EQU 0b00001000                      ; Bullet has reached the top of the screen
+_MISSILE_STATE_AT_TOP_OF_SCREEN:            EQU 0b00010000                      ; Retain expoding image at top of screen
+_MISSILE_STATE_DONE_AT_TOP_OF_SCREEN:       EQU 0b00100000                      ; At top of screen and missile is done
+_MISSILE_STATE_COLLIDED:                    EQU 0b01000000                      ; The missile has collided with something
+_MISSILE_STATE_HIT_A_SHIELD:                EQU 0b10000000                      ; The missile has collided with a shield
 
 ; Bullet state mask bit positions
-_MISSILE_STATE_NO_MISSILE_BIT:               EQU 0                   
-_MISSILE_STATE_NEW_BIT:                      EQU 1                   
-_MISSILE_STATE_ACTIVE_BIT:                   EQU 2                   
-_MISSILE_STATE_REACHED_TOP_OF_SCREEN_BIT:    EQU 3   
-_MISSILE_STATE_AT_TOP_OF_SCREEN_BIT          EQU 4               
-_MISSILE_STATE_DONE_AT_TOP_OF_SCREEN_BIT:    EQU 5                  
-_MISSILE_STATE_COLLIDED_BIT:                 EQU 6
-_MISSILE_STATE_HIT_A_SHIELD_BIT:             EQU 7
+_MISSILE_STATE_NO_MISSILE_BIT:              EQU 0                   
+_MISSILE_STATE_NEW_BIT:                     EQU 1                   
+_MISSILE_STATE_ACTIVE_BIT:                  EQU 2                   
+_MISSILE_STATE_REACHED_TOP_OF_SCREEN_BIT:   EQU 3   
+_MISSILE_STATE_AT_TOP_OF_SCREEN_BIT         EQU 4               
+_MISSILE_STATE_DONE_AT_TOP_OF_SCREEN_BIT:   EQU 5                  
+_MISSILE_STATE_COLLIDED_BIT:                EQU 6
+_MISSILE_STATE_HIT_A_SHIELD_BIT:            EQU 7
 
-_collision_detected:                        BLOCK 1     ; Flags whether a collision was detected during the draw phase
 _missile_state:                             BLOCK 1     ; Current state of the missile from _MISSILE_STATE_*
 _missile_coords:
 _missile_y:                                 BLOCK 1     ; Y coord to blank missile
@@ -57,13 +56,9 @@ init:
     LD HL,_missile_state                         
     LD (HL),_MISSILE_STATE_NO_MISSILE
 
-    ; Bullet has not collided with anything yet
-    LD HL,_collision_detected
-    LD (HL),0x00
-
     ; OK to fire (no alien exploding)
     LD HL,_can_fire
-    LD (HL),0x01
+    LD (HL),utils.TRUE
 
     POP HL
 
@@ -142,7 +137,7 @@ blank:
     BIT _MISSILE_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
     LD A,(_missile_y)
     JR NZ,.explosion_at_top_of_screen
-    DEC A                                               ; XXX Hack to get shield descruction working!
+    DEC A                                               ; TODO XXX Hack to get shield descruction working!
     DEC A                                               ; But breaks top of screen erasure - Must be a better solution
 
 .explosion_at_top_of_screen:
@@ -225,10 +220,6 @@ draw:
     POP DE
     POP DE
 
-    LD A,(draw_common.collided)                         
-    LD DE,_collision_detected
-    LD (DE),A
-
     JR .done
 
 .explosion:
@@ -250,10 +241,6 @@ draw:
     POP DE
     POP DE
     POP DE
-
-    LD A,0x00
-    LD DE,_collision_detected
-    LD (DE),A
 
 .done:
     POP DE,AF
@@ -338,7 +325,7 @@ update:
     JP Z,.done                                          ; No
 
     LD A,(_can_fire)
-    AND A
+    BIT utils.TRUE_BIT,A
     JR Z,.done
 
     ; Fire pressed - init a new missile
@@ -445,7 +432,7 @@ event_player_missile_hit_alien:
     LD HL,_missile_state                                ; Set state to indicate we have no current missile
     LD (HL),_MISSILE_STATE_NO_MISSILE
 
-    LD A,0x00                                           ; Can't fire another missile while an alien is exploding
+    LD A,utils.FALSE                                    ; Can't fire another missile while an alien is exploding
     LD (_can_fire),A
 
     POP HL,AF
@@ -455,7 +442,7 @@ event_player_missile_hit_alien:
 event_alien_explosion_done:
     PUSH AF
 
-    LD A,0x01                                           ; Alien done exploding, so allow player to fire missiles 
+    LD A,utils.TRUE                                     ; Alien done exploding, so allow player to fire missiles 
     LD (_can_fire),A
 
     POP AF
