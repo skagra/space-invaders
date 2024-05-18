@@ -157,7 +157,7 @@ draw_sprite:
 .PARAM_COORDS:            EQU 18                        ; Sprite coordinates
 .PARAM_DIMS:              EQU 16                        ; Sprite dimensions
 .PARAM_SPRITE_DATA:       EQU 14                        ; Sprite pre-shifted data lookup table
-.PARAM_BLANKING:          EQU 12                       
+.PARAM_BLANKING:          EQU 12                        ; Drawing or blanking?                   
 
     DI 
 

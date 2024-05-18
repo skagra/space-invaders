@@ -47,13 +47,12 @@ blank:
 .variant_selected:
     PUSH HL                                             ; Sprite/mask is in HL
 
-    LD L,utils.TRUE_VALUE
-    PUSH HL ; xxx
+    LD L,utils.TRUE_VALUE                               ; Blanking
+    PUSH HL 
     
     CALL fast_draw.draw_sprite_16x8
     
-    POP HL ; xxx
-
+    POP HL 
     POP DE
     POP DE
 
@@ -117,13 +116,12 @@ draw:
 
 .variant_selected:
 
-    LD L,utils.FALSE_VALUE
-    PUSH HL ; xxx
+    LD L,utils.FALSE_VALUE                              ; Drawing
+    PUSH HL 
     
     CALL fast_draw.draw_sprite_16x8
     
-    POP HL ; xxxx
-
+    POP HL 
     POP DE
     POP DE
 

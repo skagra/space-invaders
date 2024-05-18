@@ -23,10 +23,8 @@ class ShiftSprites
         var outputFiles = new List<string>();
         foreach (var inputFilename in Directory.GetFiles(inputDirectory))
         {
-            var spriteFilename = ProcessSprite(inputFilename, outputDirectory); // , false);
-            // var blankFilename = ProcessSprite(inputFilename, outputDirectory, true);
+            var spriteFilename = ProcessSprite(inputFilename, outputDirectory);
             outputFiles.Add(spriteFilename);
-            //    outputFiles.Add(blankFilename);
             Console.WriteLine();
         }
 
@@ -60,7 +58,7 @@ class ShiftSprites
         fileOutput.Close();
     }
 
-    public static string ProcessSprite(string inputFileName, string outputDirectory = "") //, bool isBlank = false)
+    public static string ProcessSprite(string inputFileName, string outputDirectory = "")
     {
         // Read the entire sprite file
         var allText = File.ReadAllLines(inputFileName).Select(x => x.Trim()).ToList();
@@ -86,12 +84,7 @@ class ShiftSprites
 
         var maskText = allText.GetRange(dataStartIndex, blankLineIndex - 2);
         var spriteText = allText.GetRange(blankLineIndex + 1, allText.Count() - blankLineIndex - 1);
-
         var spriteName = Path.GetFileNameWithoutExtension(inputFileName);
-        // if (isBlank)
-        // {
-        //     spriteName = $"{spriteName}_blank";
-        // }
 
         // Output
         var spriteOutputFilename = Path.Combine(outputDirectory, $"{spriteName}.asm");
@@ -115,7 +108,6 @@ class ShiftSprites
 
         // Lookup table for shifted sprites
         var spriteLookupTable = new List<string>();
-        //var blankLookupTable = new List<string>();
 
         // One block of data for each shifted position
         for (var xOffset = 0; xOffset < 8; xOffset += shiftStep)
@@ -150,15 +142,8 @@ class ShiftSprites
                 for (var byteCount = 0; byteCount < destByteWidth; byteCount++)
                 {
                     spriteFileOutput.Write($"0b{maskOutputLine.Substring(byteCount * 8, 8)}, ");
-
-                    // if (!isBlank)
-                    // {
                     spriteFileOutput.Write($"0b{spriteOutputLine.Substring(byteCount * 8, 8)}");
-                    // }
-                    // else
-                    // {
-                    //     spriteFileOutput.Write($"0b00000000");
-                    // }
+
                     if (byteCount != destByteWidth - 1)
                     {
                         spriteFileOutput.Write(", ");

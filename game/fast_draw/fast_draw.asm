@@ -2,7 +2,7 @@
 ; since it was last flushed.
 _draw_buffer_stack_top: BLOCK 2                         ; Points to the next free location on the draw stack
 _DRAW_BUFFER_STACK:     BLOCK 512                       ; Size of the draw stack
-_BUFFER_STACK_FENCE:    BLOCK 2                            ; WPMEM,2   
+_BUFFER_STACK_FENCE:    BLOCK 2                         ; WPMEM,2   
 
 init:
     PUSH HL
@@ -117,8 +117,26 @@ flush_buffer_to_screen_16x8:
 
 .stack_ptr: BLOCK 2
 
+;------------------------------------------------------------------------------
+;
+; Blank a single row of a 16 bit wide (24 bits pre-shifted) sprite to the
+; off-screen buffer
+;
+; Usage:
+;   ._x_offset - X offset within the Y row
+;   BC - Address in the off-screen buffer at the start of the Y row
+;   SP - Location of the sprite/mask data (only the mask is used)
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   AF, DE and HL
+;
+;------------------------------------------------------------------------------
+
     ; Modifies 
-    MACRO RENDER_BLANK_ROW 
+    MACRO BLANK_ROW 
         
         ; Adjust the off-screen buffer address to account for the X offset
         LD HL,BC                                        ; Buffer address
@@ -156,7 +174,7 @@ flush_buffer_to_screen_16x8:
         INC DE                                          ; Next address in off-screen buffer
         POP HL                                          ; Mask and sprite data
         LD A,(DE)                                       ; Existing off-screen buffer data
-        AND L                                           ; Mask]
+        AND L                                           ; Mask
         LD (DE),A
 
     ENDM
@@ -345,43 +363,43 @@ draw_sprite_16x8:
 .blanking
     ; Blanking (as opposed to drawing)
 
-    ; Render row 0 (top most)
-    RENDER_BLANK_ROW 
+    ; Blank row 0 (top most)
+    BLANK_ROW 
 
-    ; Render row 1
+    ; Blank row 1
     INC BC                                              ; Next entry in Y lookup table
     INC BC
-    RENDER_BLANK_ROW 
+    BLANK_ROW 
     
-    ; Render row 2
+    ; Blank row 2
     INC BC                                              ; Next entry in Y lookup table
     INC BC
-    RENDER_BLANK_ROW 
+    BLANK_ROW 
 
-    ; Render row 3
+    ; Blank row 3
     INC BC                                              ; Next entry in Y lookup table
     INC BC
-    RENDER_BLANK_ROW 
+    BLANK_ROW 
 
-    ; Render row 4
+    ; Blank row 4
     INC BC                                              ; Next entry in Y lookup table  
     INC BC
-    RENDER_BLANK_ROW 
+    BLANK_ROW 
 
-    ; Render row 5
+    ; Blank row 5
     INC BC                                              ; Next entry in Y lookup table
     INC BC
-    RENDER_BLANK_ROW 
+    BLANK_ROW 
 
-    ; Render row 6
+    ; Blank row 6
     INC BC                                              ; Next entry in Y lookup table
     INC BC
-    RENDER_BLANK_ROW 
+    BLANK_ROW 
 
-    ; Render row 7 (bottom most)
+    ; Blank row 7 (bottom most)
     INC BC                                              ; Next entry in Y lookup table
     INC BC
-    RENDER_BLANK_ROW 
+    BLANK_ROW 
 
 .done
     LD SP,(.stack_ptr)                                  ; Restore the original SP

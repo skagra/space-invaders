@@ -51,7 +51,7 @@ main:
     LD HL, TEST_SPRITES
 
 .test_loop
-   ; DEBUG_PRINT "A TEST"
+    DEBUG_PRINT "A TEST"
 
     LD DE,(HL)
     PUSH DE
@@ -61,10 +61,11 @@ main:
     PUSH DE
 
     LD E,utils.FALSE_VALUE
-    PUSH DE ; xxx
+    PUSH DE 
+
     CALL fast_draw.draw_sprite_16x8
-    POP DE ; xxx
     
+    POP DE 
     POP DE
     POP DE
     INC HL
@@ -74,13 +75,19 @@ main:
 
     LD HL, 0x7070
     PUSH HL
+    
     LD HL,sprites.SHIELD_DIMS
     PUSH HL
+    
     LD HL,sprites.SHIELD
     PUSH HL
-    PUSH HL ; xxx
+
+    LD L, utils.FALSE_VALUE
+    PUSH HL
+    
     CALL draw.draw_sprite
-    POP HL ; xxx 
+    
+    POP HL 
     POP HL
     POP HL
     POP HL
@@ -92,23 +99,6 @@ main:
     CALL print.print_bcd_word
     POP HL
     POP HL
-
-    ; LD HL,0x1234
-    ; LD (scoring.score),HL
-    ; LD HL,0x1182
-    ; PUSH HL
-    ; CALL scoring.add_to_score
-    ; POP HL
-
-    ; LD HL,(scoring.score)
-    ; PUSH HL
-    ; LD HL,0x100A
-    ; PUSH HL
-    ; CALL print.print_bcd_word
-    ; POP HL
-    ; POP HL
-
-    ; CALL scoring.print_score
 
     HALT 
 

@@ -50,11 +50,12 @@ draw:
     LD DE,sprites.PLAYER_BASE                           ; Sprite    
     PUSH DE
 
-    LD E,utils.FALSE_VALUE
-    PUSH DE ; xxx
-    CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite
-    POP DE ; xxx
+    LD E,utils.FALSE_VALUE                              ; Drawing
+    PUSH DE
 
+    CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite
+    
+    POP DE 
     POP DE
     POP DE
 
@@ -74,11 +75,12 @@ blank:
     LD DE,sprites.PLAYER_BASE                           ; Sprite    
     PUSH DE
 
-    LD E,utils.TRUE_VALUE
-    PUSH DE ;xxx
+    LD E,utils.TRUE_VALUE                               ; Blanking
+    PUSH DE 
+
     CALL fast_draw.draw_sprite_16x8                     ; Erase the player base sprite
-    POP DE ; xxx
     
+    POP DE 
     POP DE
     POP DE
 

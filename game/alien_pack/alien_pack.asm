@@ -282,21 +282,24 @@ event_alien_explosion_done:
     ; Done exploding - erase the explosion
     LD HL,(_exploding_alien)                           
     LD IX,HL
+
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
     PUSH HL
+
     LD HL, sprites.ALIEN_EXPLOSION
     PUSH HL
 
     LD L,utils.TRUE_VALUE
-    PUSH HL ; xxx
-    CALL fast_draw.draw_sprite_16x8
-    POP HL ; xxx
+    PUSH HL
 
+    CALL fast_draw.draw_sprite_16x8
+    
+    POP HL  
     POP HL
     POP HL 
 
     ; Start the pack moving again
-    LD A,0x00
+    LD A,0x00   
     LD (_pack_halted),A
 
     POP HL,AF
@@ -490,36 +493,37 @@ event_alien_hit_by_player_missile:
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IY+_STATE_OFFSET_VAR_0_SPRITE)                ; Use sprite as mask 
+    LD HL,(IY+_STATE_OFFSET_VAR_0_SPRITE)               ; Use sprite as mask 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IY+_STATE_OFFSET_VAR_1_SPRITE)                ; Use sprite as mask 
+    LD HL,(IY+_STATE_OFFSET_VAR_1_SPRITE)               ; Use sprite as mask 
 
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
 
-    LD L,utils.TRUE_VALUE
-    PUSH HL; xxx
+    LD L,utils.TRUE_VALUE                               ; Blanking
+    PUSH HL
     
     CALL fast_draw.draw_sprite_16x8
     
-    POP DE ; xxx
+    POP DE 
     POP DE
     POP DE
 
     ; Draw alien explosion
     LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL  
-    LD HL,sprites.ALIEN_EXPLOSION;
+
+    LD HL,sprites.ALIEN_EXPLOSION;                      ; Sprite
     PUSH HL
 
-    LD L,utils.FALSE_VALUE
-    PUSH HL ;xxx
+    LD L,utils.FALSE_VALUE                              ; Drawing
+    PUSH HL 
 
     CALL fast_draw.draw_sprite_16x8
 
-    POP HL ; xxx
+    POP HL 
     POP HL
     POP HL
 
