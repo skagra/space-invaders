@@ -68,7 +68,7 @@ init:
     LD A,_ALIEN_PACK_SIZE
     LD (_pack_loop_counter),A
 
-    LD A,0x00
+    LD A,utils.FALSE_VALUE
     LD (_pack_halted),A
 
     ; Pack extremeties
@@ -299,7 +299,7 @@ event_alien_explosion_done:
     POP HL 
 
     ; Start the pack moving again
-    LD A,0x00   
+    LD A,utils.FALSE_VALUE
     LD (_pack_halted),A
 
     POP HL,AF
@@ -326,7 +326,7 @@ update:
 
     ; Is the pack still globally halted?
     LD A,(_pack_halted)
-    AND A
+    BIT utils.TRUE_BIT,A
     JR NZ,.done
 
 .not_exploding
@@ -390,7 +390,7 @@ next_alien:
     PUSH AF,DE,HL,IX
 
     LD A,(_pack_halted)
-    AND A
+    BIT utils.TRUE_BIT,A
     JR NZ,.done
 
     LD HL,(_current_alien_lookup_ptr) 
@@ -477,7 +477,7 @@ event_alien_hit_by_player_missile:
     LD (_exploding_alien),HL
 
     ; Halt the pack during the explosion
-    LD A,0x01
+    LD A,utils.TRUE_VALUE
     LD (_pack_halted),A
 
     ; Set the alien state to be dead
