@@ -38,16 +38,21 @@ blank:
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IX+_STATE_OFFSET_VAR_0_BLANK)                
+    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)                
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IX+_STATE_OFFSET_VAR_1_BLANK)                
+    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE)                
 
 .variant_selected:
     PUSH HL                                             ; Sprite/mask is in HL
 
+    LD L,utils.TRUE_VALUE
+    PUSH HL ; xxx
+    
     CALL fast_draw.draw_sprite_16x8
+    
+    POP HL ; xxx
 
     POP DE
     POP DE
@@ -111,7 +116,13 @@ draw:
     LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_1
 
 .variant_selected:
+
+    LD L,utils.FALSE_VALUE
+    PUSH HL ; xxx
+    
     CALL fast_draw.draw_sprite_16x8
+    
+    POP HL ; xxxx
 
     POP DE
     POP DE

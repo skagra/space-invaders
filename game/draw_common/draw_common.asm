@@ -1,5 +1,5 @@
 init:
-    LD A,utils.FALSE
+    LD A,utils.FALSE_VALUE
     LD (collided),A
     RET
 

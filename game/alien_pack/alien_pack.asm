@@ -158,7 +158,7 @@ _adjust_alien_pack_direction:
     RET
 
 ; Limits of pack movement left and right before switching direction
-.PACK_MAX_RIGHT:                        EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-((sprites.ALIEN_1_VARIANT_0_BLANK_DIM_X_BYTES-1)*8)
+.PACK_MAX_RIGHT:                        EQU layout.INSET_X_PIXELS+layout.INSET_SCREEN_WIDTH_PIXELS-((sprites.ALIEN_1_VARIANT_0_DIM_X_BYTES-1)*8)
 .PACK_MIN_LEFT:                         EQU layout.INSET_X_PIXELS
 
 ;------------------------------------------------------------------------------
@@ -284,9 +284,14 @@ event_alien_explosion_done:
     LD IX,HL
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
     PUSH HL
-    LD HL, sprites.ALIEN_EXPLOSION_BLANK
+    LD HL, sprites.ALIEN_EXPLOSION
     PUSH HL
-    call fast_draw.draw_sprite_16x8
+
+    LD L,utils.TRUE_VALUE
+    PUSH HL ; xxx
+    CALL fast_draw.draw_sprite_16x8
+    POP HL ; xxx
+
     POP HL
     POP HL 
 
@@ -485,16 +490,21 @@ event_alien_hit_by_player_missile:
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IY+_STATE_OFFSET_VAR_0_BLANK)                ; Use sprite as mask 
+    LD HL,(IY+_STATE_OFFSET_VAR_0_SPRITE)                ; Use sprite as mask 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IY+_STATE_OFFSET_VAR_1_BLANK)                ; Use sprite as mask 
+    LD HL,(IY+_STATE_OFFSET_VAR_1_SPRITE)                ; Use sprite as mask 
 
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
 
+    LD L,utils.TRUE_VALUE
+    PUSH HL; xxx
+    
     CALL fast_draw.draw_sprite_16x8
+    
+    POP DE ; xxx
     POP DE
     POP DE
 
@@ -503,7 +513,13 @@ event_alien_hit_by_player_missile:
     PUSH HL  
     LD HL,sprites.ALIEN_EXPLOSION;
     PUSH HL
+
+    LD L,utils.FALSE_VALUE
+    PUSH HL ;xxx
+
     CALL fast_draw.draw_sprite_16x8
+
+    POP HL ; xxx
     POP HL
     POP HL
 

@@ -11,7 +11,7 @@
                 "--sym=${workspaceFolder}/bin/space-invaders-debug-symbols.txt",
                 "--lst=${workspaceFolder}/bin/space-invaders-debug-listing.txt",
                 "-DDEBUG",
-                //"-DDIRECT_DRAW",
+                "-DDIRECT_DRAW",
                 //"-DIGNORE_VSYNC",
                 //"-DAUTO_FLUSH",
                 //"-DPAUSEABLE",

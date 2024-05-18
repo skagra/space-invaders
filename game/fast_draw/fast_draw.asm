@@ -117,6 +117,50 @@ flush_buffer_to_screen_16x8:
 
 .stack_ptr: BLOCK 2
 
+    ; Modifies 
+    MACRO RENDER_BLANK_ROW 
+        
+        ; Adjust the off-screen buffer address to account for the X offset
+        LD HL,BC                                        ; Buffer address
+        LD DE,(HL)  
+        IFDEF DIRECT_DRAW
+            RES 7,D
+        ENDIF                                  
+        LD A,(.x_offset)                                ; Merge in x offset
+        OR E
+        LD E,A
+
+        IFNDEF DIRECT_DRAW
+            ; Record that we are writing to the double buffer
+            LD HL,(_draw_buffer_stack_top)              ; Top of draw stack address        
+            LD (HL),DE                                  ; Write screen buffer address at top of stack            
+            INC HL                                      ; Increase the stack top pointer +2 as a word was written
+            INC HL
+            LD (_draw_buffer_stack_top),HL
+        ENDIF
+
+        ; First word of mask/data
+        POP HL                                          ; Mask and sprite data
+        LD A,(DE)                                       ; Existing off-screen buffer data
+        AND L                                           ; Mask
+        LD (DE),A
+
+        ; Second word of mask/data
+        INC DE                                          ; Next address in off-screen buffer
+        POP HL                                          ; Mask and sprite data
+        LD A,(DE)                                       ; Existing off-screen buffer data
+        AND L                                           ; Mask
+        LD (DE),A
+
+        ; Third word of mask/data
+        INC DE                                          ; Next address in off-screen buffer
+        POP HL                                          ; Mask and sprite data
+        LD A,(DE)                                       ; Existing off-screen buffer data
+        AND L                                           ; Mask]
+        LD (DE),A
+
+    ENDM
+
 ;------------------------------------------------------------------------------
 ;
 ; Render a single row of a 16 bit wide (24 bits pre-shifted) sprite to the
@@ -150,9 +194,9 @@ flush_buffer_to_screen_16x8:
 
         IFNDEF DIRECT_DRAW
             ; Record that we are writing to the double buffer
-            LD HL,(_draw_buffer_stack_top)                  ; Top of draw stack address        
-            LD (HL),DE                                      ; Write screen buffer address at top of stack            
-            INC HL                                          ; Increase the stack top pointer +2 as a word was written
+            LD HL,(_draw_buffer_stack_top)              ; Top of draw stack address        
+            LD (HL),DE                                  ; Write screen buffer address at top of stack            
+            INC HL                                      ; Increase the stack top pointer +2 as a word was written
             INC HL
             LD (_draw_buffer_stack_top),HL
         ENDIF
@@ -190,9 +234,11 @@ flush_buffer_to_screen_16x8:
 ; Usage:
 ;   PUSH coords word - X high byte, Y low byte
 ;   PUSH address of pre-shifted sprite lookup table
+;   PUSH blanking - TRUE_VALUE or FALSE_VALUE
 ;   CALL fast_draw_sprite_16x8
-;   POP xx
-;   POP xx
+;   POP rr
+;   POP rr
+;   POP rr
 ;
 ; Return values:
 ;   -
@@ -204,9 +250,10 @@ flush_buffer_to_screen_16x8:
 
 draw_sprite_16x8:
 
-.PARAM_COORDS:            EQU 14                        ; Sprite coordinates
-.PARAM_SPRITE_DATA:       EQU 12                        ; Sprite pre-shifted data lookup table
-        
+.PARAM_COORDS:            EQU 16                        ; Sprite coordinates
+.PARAM_SPRITE_DATA:       EQU 14                        ; Sprite pre-shifted data lookup table
+.PARAM_BLANK              EQU 12                        ; Drawing or blanking?
+
     DI                                                  ; Disable interrupts as we'll be messing with the SP
 
     PUSH AF,BC,DE,HL,IX
@@ -248,6 +295,12 @@ draw_sprite_16x8:
     LD (.stack_ptr),SP                                  ; Store current SP to restore later
     LD HL,DE
     LD SP,HL
+    
+    LD A,(IX+.PARAM_BLANK)
+    BIT utils.TRUE_BIT,A
+    JP NZ,.blanking
+
+    ; Drawing (as opposed to blanking)
 
     ; Render row 0 (top most)
     RENDER_ROW 
@@ -287,6 +340,50 @@ draw_sprite_16x8:
     INC BC
     RENDER_ROW 
     
+    JP .done
+
+.blanking
+    ; Blanking (as opposed to drawing)
+
+    ; Render row 0 (top most)
+    RENDER_BLANK_ROW 
+
+    ; Render row 1
+    INC BC                                              ; Next entry in Y lookup table
+    INC BC
+    RENDER_BLANK_ROW 
+    
+    ; Render row 2
+    INC BC                                              ; Next entry in Y lookup table
+    INC BC
+    RENDER_BLANK_ROW 
+
+    ; Render row 3
+    INC BC                                              ; Next entry in Y lookup table
+    INC BC
+    RENDER_BLANK_ROW 
+
+    ; Render row 4
+    INC BC                                              ; Next entry in Y lookup table  
+    INC BC
+    RENDER_BLANK_ROW 
+
+    ; Render row 5
+    INC BC                                              ; Next entry in Y lookup table
+    INC BC
+    RENDER_BLANK_ROW 
+
+    ; Render row 6
+    INC BC                                              ; Next entry in Y lookup table
+    INC BC
+    RENDER_BLANK_ROW 
+
+    ; Render row 7 (bottom most)
+    INC BC                                              ; Next entry in Y lookup table
+    INC BC
+    RENDER_BLANK_ROW 
+
+.done
     LD SP,(.stack_ptr)                                  ; Restore the original SP
 
     POP IX,HL,DE,BC,AF   

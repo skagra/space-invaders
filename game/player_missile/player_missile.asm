@@ -58,7 +58,7 @@ init:
 
     ; OK to fire (no alien exploding)
     LD HL,_can_fire
-    LD (HL),utils.TRUE
+    LD (HL),utils.TRUE_VALUE
 
     POP HL
 
@@ -114,14 +114,18 @@ blank:
     LD E,A
     PUSH DE
     
-    LD DE, sprites.PLAYER_MISSILE_BLANK_DIMS            ; Dimensions
+    LD DE, sprites.PLAYER_MISSILE_DIMS                  ; Dimensions
     PUSH DE
 
-    LD DE,sprites.PLAYER_MISSILE_BLANK                  ; Sprite mask  
+    LD DE,sprites.PLAYER_MISSILE                       ; Sprite mask  
     PUSH DE
+    
+    LD D,0x00
+    LD E,utils.TRUE_VALUE    
+    PUSH DE 
 
     CALL draw.draw_sprite                               ; Erase the player missile 
-
+    POP DE  
     POP DE
     POP DE
     POP DE
@@ -144,13 +148,18 @@ blank:
     LD E,A                                              ; than branching on state here?
     PUSH DE
          
-    LD DE, sprites.PLAYER_MISSILE_EXPLOSION_BLANK_DIMS  ; Dimensioons
+    LD DE, sprites.PLAYER_MISSILE_EXPLOSION_DIMS        ; Dimensioons
     PUSH DE
 
-    LD DE,sprites.PLAYER_MISSILE_EXPLOSION_BLANK        ; Sprite mask  
+    LD DE,sprites.PLAYER_MISSILE_EXPLOSION              ; Sprite mask  
     PUSH DE
+
+    LD D,0x00
+    LD E,utils.TRUE_VALUE
+    PUSH DE 
 
     CALL draw.draw_sprite                               ; Erase the player missile explosion
+    POP DE 
 
     POP DE
     POP DE
@@ -214,8 +223,13 @@ draw:
     LD DE,sprites.PLAYER_MISSILE                        ; Sprite    
     PUSH DE
 
-    CALL draw.draw_sprite                               ; Draw the player missile
+    LD D,0x00
+    LD E,utils.FALSE_VALUE
+    PUSH DE 
 
+    CALL draw.draw_sprite                               ; Draw the player missile
+    
+    POP DE 
     POP DE
     POP DE
     POP DE
@@ -236,7 +250,12 @@ draw:
     LD DE,sprites.PLAYER_MISSILE_EXPLOSION              ; Sprite    
     PUSH DE
 
+    LD D,0x00
+    LD E,utils.FALSE_VALUE
+    PUSH DE 
+
     CALL draw.draw_sprite                               ; Draw the explosion
+    POP DE 
 
     POP DE
     POP DE
@@ -432,7 +451,7 @@ event_player_missile_hit_alien:
     LD HL,_missile_state                                ; Set state to indicate we have no current missile
     LD (HL),_MISSILE_STATE_NO_MISSILE
 
-    LD A,utils.FALSE                                    ; Can't fire another missile while an alien is exploding
+    LD A,utils.FALSE_VALUE                              ; Can't fire another missile while an alien is exploding
     LD (_can_fire),A
 
     POP HL,AF
@@ -442,7 +461,7 @@ event_player_missile_hit_alien:
 event_alien_explosion_done:
     PUSH AF
 
-    LD A,utils.TRUE                                     ; Alien done exploding, so allow player to fire missiles 
+    LD A,utils.TRUE_VALUE                               ; Alien done exploding, so allow player to fire missiles 
     LD (_can_fire),A
 
     POP AF

@@ -54,6 +54,7 @@ draw_sprite_and_flush_buffer:
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP                                                   
 
+    ; Pass parameters onto draw_sprite
     LD HL,(IX+.PARAM_COORDS)
     PUSH HL
     LD HL,(IX+.PARAM_DIMS)
@@ -61,12 +62,16 @@ draw_sprite_and_flush_buffer:
     LD HL,(IX+.PARAM_SPRITE_DATA)
     PUSH HL
 
+    LD H,0x00
+    LD L,utils.FALSE_VALUE
+    PUSH HL 
     CALL draw.draw_sprite
-
+    POP HL 
     POP HL
     POP HL
     POP HL
 
+    ; Flush the off-screen buffer
     CALL flush_buffer_to_screen
 
     POP IX,HL
@@ -74,7 +79,7 @@ draw_sprite_and_flush_buffer:
     RET
 
 flush_buffer_to_screen:
-    IFDEF DIRECT_DRAW
+    IFDEF DIRECT_DRAW                                   ; Nothing to do if DIRECT_DRAW is enabled
         RET
     ENDIF
 
@@ -133,6 +138,12 @@ flush_buffer_to_screen:
 ;   PUSH coords word - X high byte, Y low byte
 ;   PUSH dimensions word - X dim high byte, Y dim low byte
 ;   PUSH address of pre-shifted sprite lookup table
+;   PUSH blanking - TRUE_VALUE or FALSE_VALUE
+;   CALL draw_sprite
+;   POP rr
+;   POP rr
+;   POP rr
+;   POP rr
 ;
 ; Return values:
 ;   -
@@ -143,10 +154,11 @@ flush_buffer_to_screen:
 
 draw_sprite:
 
-.PARAM_COORDS:            EQU 16                        ; Sprite coordinates
-.PARAM_DIMS:              EQU 14                        ; Sprite dimensions
-.PARAM_SPRITE_DATA:       EQU 12                        ; Sprite pre-shifted data lookup table
-    
+.PARAM_COORDS:            EQU 18                        ; Sprite coordinates
+.PARAM_DIMS:              EQU 16                        ; Sprite dimensions
+.PARAM_SPRITE_DATA:       EQU 14                        ; Sprite pre-shifted data lookup table
+.PARAM_BLANKING:          EQU 12                       
+
     DI 
 
     PUSH AF,BC,DE,HL,IX
@@ -156,7 +168,7 @@ draw_sprite:
 
     ; Initialize the collision flag
     LD HL,draw_common.collided                      
-    LD (HL),utils.FALSE
+    LD (HL),utils.FALSE_VALUE
 
     ; Get and store the coords
     LD HL,(IX+.PARAM_COORDS)                            ; Grab the pixel coords
@@ -175,7 +187,11 @@ draw_sprite:
     LD E,A
     ADD HL,DE                                           ; Add the offset into the table to the base of the table                 
     LD DE, (HL)                                         ; Lookup the sprite data ptr in the table
-    LD (.sprite_data_ptr), DE
+
+    ; Point SP to the sprite data
+    LD (.stack_ptr),SP                                  ; Store current SP to restore at end
+    LD HL,DE                                            ; Set the SP to the start of the sprite data
+    LD SP,HL
 
     ; Calculate X7,X6,X5,X4,X3
     LD A,(.x_coord)                                     ; Grab the x coord
@@ -193,10 +209,6 @@ draw_sprite:
     LD HL, draw_common._Y_MEM_ROW_LOOKUP                ; Base of lookup table in HL
     ADD HL,BC                                           ; Location of the row start in the lookup table
     LD (.y_lookup_table_ptr), HL
-
-    LD (.stack_ptr),SP                                  ; Store current SP to restore at end
-    LD HL,DE
-    LD SP,HL
 
     LD A,(.y_dim)                                       ; Y dim loop counter
     LD C,A
@@ -235,30 +247,45 @@ draw_sprite:
     LD DE,(.mem_write_ptr)
     POP HL                                              ; Mask and sprite data
     
+    BIT utils.TRUE_BIT,(IX+.PARAM_BLANKING)             ; Blanking or drawing?
+    JR NZ,.blanking
+
+    ; Drawing
     LD A,(draw_common.collided)                         ; Has a collision already been recorded?
     BIT utils.TRUE_BIT,A
-    JR NZ,.no_collision
+    JR NZ,.skip_collision_detection
 
     LD A,(DE)                                           ; Data from screen
-    AND H
-    JR Z,.no_collision
+    AND H                                               ; And with sprite data to detect collision
+    JR Z,.skip_collision_detection                      ; Collided? No
 
-    LD A,utils.TRUE                                     ; Record the collision
+    ; A collision has been detected
+    LD A,utils.TRUE_VALUE                               ; Record the collision
     LD (draw_common.collided),A
     LD A,(.y_coord)
     LD (draw_common.collision_y),A
     LD A,(.x_coord)
     LD (draw_common.collision_x),A
 
-.no_collision
+.skip_collision_detection
+    ; Write screen data
     LD A,(DE)                                           ; Data from screen
-    AND L
-    OR H
-    LD (DE),A
+    AND L                                               ; And the mask
+    OR H                                                ; Or the sprite data
+    LD (DE),A                                           ; Write result back to screen
 
+    JR .next_x
+
+.blanking
+    ; Blanking
+    LD A,(DE)                                           ; Data from screen
+    AND L                                               ; And the mask
+    LD (DE),A                                           ; Write result back to the screen
+
+.next_x
     ; Next X
-    INC DE
-    LD (.mem_write_ptr),DE
+    INC DE                                              ; Next X screen byte
+    LD (.mem_write_ptr),DE                              
 
     DEC B
     JR NZ,.x_loop
@@ -283,11 +310,14 @@ draw_sprite:
 .coords:                                                ; Sprite location (Y is updated to line being drawn)
 .y_coord:              BLOCK 1
 .x_coord:              BLOCK 1
+
 .dims:                                                  ; Sprite dimensions
 .y_dim:                BLOCK 1
 .x_dim:                BLOCK 1
-.sprite_data_ptr       BLOCK 2                          ; Pointer to current sprite data byte
-.x_offset:             BLOCK 1
-.stack_ptr:            BLOCK 2
-.y_lookup_table_ptr    BLOCK 2
-.mem_write_ptr         BLOCK 2
+
+.x_offset:             BLOCK 1                          ; X offset into Y line
+
+.y_lookup_table_ptr    BLOCK 2                          ; Y lookup table address
+.mem_write_ptr         BLOCK 2                          ; Offscreen screen buffer address
+
+.stack_ptr:            BLOCK 2                          ; Original SP

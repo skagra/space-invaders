@@ -59,7 +59,12 @@ main:
     INC HL
     LD DE,(HL)   
     PUSH DE
+
+    LD E,utils.FALSE_VALUE
+    PUSH DE ; xxx
     CALL fast_draw.draw_sprite_16x8
+    POP DE ; xxx
+    
     POP DE
     POP DE
     INC HL
@@ -73,7 +78,9 @@ main:
     PUSH HL
     LD HL,sprites.SHIELD
     PUSH HL
+    PUSH HL ; xxx
     CALL draw.draw_sprite
+    POP HL ; xxx 
     POP HL
     POP HL
     POP HL
