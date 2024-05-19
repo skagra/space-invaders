@@ -3,7 +3,7 @@ _ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0:                 EQU 2
 _ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_1:                 EQU 4
 _ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_2:                 EQU 6
 _ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_3:                 EQU 8
-_ALIEN_MISSILE_CURRENT_VARIANT:                         EQU 10
+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT:                  EQU 10
 _ALIEN_MISSILE_OFFSET_STATE:                            EQU 11
 _ALIEN_MISSILE_OFFSET_EXPLOSION_COUNT_DOWN:             EQU 12
 _ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT:                EQU 13
@@ -24,10 +24,10 @@ _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_BIT:           EQU 3
 _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT:      EQU 4
 
 ; Values to give offsets into missile struct
-_ALIEN_MISSILE_VARIANT_0:                               EQU 2
-_ALIEN_MISSILE_VARIANT_1:                               EQU 4
-_ALIEN_MISSILE_VARIANT_2:                               EQU 5
-_ALIEN_MISSILE_VARIANT_3:                               EQU 8
+_ALIEN_MISSILE_VARIANT_0:                               EQU 0
+_ALIEN_MISSILE_VARIANT_1:                               EQU 1
+_ALIEN_MISSILE_VARIANT_2:                               EQU 2
+_ALIEN_MISSILE_VARIANT_3:                               EQU 3
 _ALIEN_MISSILE_VARIANT_COUNT:                           EQU 4
 
 _ALIEN_MISSILE_0: WORD 0x0000
@@ -97,13 +97,16 @@ draw:
     PUSH DE
 
     ; Which variant are we dealing with?                ; Sprite/mask
-    LD L,(IX+_ALIEN_MISSILE_CURRENT_VARIANT)            ; This gives an offset into the current alien missile
-    LD H,0x00
-    LD DE,IX                                            ; Base of current alien missile struct
-    ADD HL,DE                                           ; HL now points to the address of the current alien missle variant sprite
-    LD DE,(HL)                                          ; Push the sprite reference
+    LD D,0x00                                           ; Current alient type 0 to 3
+    LD E,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)
+    SLA E                                               ; Double it - as there are WORDs in the table
+    LD HL,_ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0        ; Add on the offset for the first variant
+    ADD HL,DE                                           ; HL now contains the offset of the address of the variant (offset from IX)
+    LD DE,IX                                            ; Offset from the base address
+    ADD HL,DE
+    LD DE,(HL)
     PUSH DE
-                                         
+
     LD E,utils.FALSE_VALUE                              ; Drawing (not blanking)
     PUSH DE 
 
@@ -173,13 +176,16 @@ blank:
     PUSH DE
 
     ; Which variant are we dealing with?                ; Sprite/mask
-    LD L,(IX+_ALIEN_MISSILE_CURRENT_VARIANT)            ; This gives an offset into the current alien missile
-    LD H,0x00
-    LD DE,IX                                            ; Base of current alien missile struct
-    ADD HL,DE                                           ; HL now points to the address of the current alien missle variant sprite
-    LD DE,(HL)                                          ; Push the sprite reference
-    PUSH DE
-                                         
+    LD D,0x00                                           ; Current alient type 0 to 3
+    LD E,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)
+    SLA E                                               ; Double it - as there are WORDs in the table
+    LD HL,_ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0        ; Add on the offset for the first variant
+    ADD HL,DE                                           ; HL now contains the offset of the address of the variant (offset from IX)
+    LD DE,IX                                            ; Offset from the base address
+    ADD HL,DE
+    LD DE,(HL)
+    PUSH DE 
+
     LD E,utils.TRUE_VALUE                               ; Blanking (not drawing)
     PUSH DE 
 
@@ -265,14 +271,25 @@ update:
     ; Have we hit the bottom of the screen
     LD A,L                                              ; Y coord
     CP .ALIEN_MISSILE_MAX_Y
-    JR C, .done                                         ; Still further to travel
+    JR C, .update_variant                               ; Still further to travel
 
     ; The missile has hit the bottom of the screen
     LD A,_ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A
 
     JR .done
-    
+
+.update_variant:
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)
+    INC A
+    CP A,_ALIEN_MISSILE_VARIANT_COUNT
+    JR NZ,.next_variant
+    LD A,_ALIEN_MISSILE_VARIANT_0
+
+.next_variant:
+    LD (IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT),A
+    JR .done
+
 .reached_bottom_of_screen:
     LD A,_ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A
@@ -397,7 +414,7 @@ _fire_if_ready:
     ; LD A,(alien_missile_offset_reload_0)
     ; LD HL,alien_missile_offset_reload_1
     ; OR (HL)
-    ; JR Z,.fire                                          ; Both other reload step counts are zero => fire 
+    ; JR Z,.fire                                        ; Both other reload step counts are zero => fire 
 
     ; JR .done
 .fire
@@ -412,20 +429,20 @@ _fire_if_ready:
 
     ; Find the lowest alien in the selected column
     LD L,A
-    PUSH HL                                                 ; Target column (low byte)
-    PUSH HL                                                 ; Space for the return pointer to alien struct
+    PUSH HL                                             ; Target column (low byte)
+    PUSH HL                                             ; Space for the return pointer to alien struct
     CALL alien_pack.get_lowest_active_alien_in_column
-    POP HL                                                  ; Lowest alien (unless column is empty)
+    POP HL                                              ; Lowest alien (unless column is empty)
     POP DE
 
-    LD A,H                                                  ; High byte == 0 => not found
+    LD A,H                                              ; High byte == 0 => not found
     CP 0x00
     JR Z,.done
 
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE), _ALIEN_MISSILE_STATE_ACTIVE    ; Activate the alien missile
     LD IY,HL                                                            ; Alien pointer
     LD HL,(IY+alien_pack._STATE_OFFSET_DRAW_COORDS)
-    LD D,0x06
+    LD D,0x04
     LD E,0x08
     ADD HL,DE
     LD (IX+_ALIEN_MISSILE_OFFSET_COORDS),HL
