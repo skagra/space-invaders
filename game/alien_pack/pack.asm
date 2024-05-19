@@ -4,13 +4,11 @@ _STATE_OFFSET_DRAW_COORDS_Y:            EQU _STATE_OFFSET_DRAW_COORDS
 _STATE_OFFSET_DRAW_COORDS_X:            EQU _STATE_OFFSET_DRAW_COORDS+1
 _STATE_OFFSET_VAR_0_SPRITE:             EQU 2           ; First variant sprite
 _STATE_OFFSET_VAR_1_SPRITE:             EQU 4           ; Second variant sprite
-;_STATE_OFFSET_VAR_0_BLANK:              EQU 6           ; First variant blank
-;_STATE_OFFSET_VAR_1_BLANK:              EQU 8           ; Second variant blank
-_STATE_OFFSET_STATE:                    EQU 6          ; Status of sprite from _ALIEN_STATE_* values
+_STATE_OFFSET_STATE:                    EQU 6           ; Status of sprite from _ALIEN_STATE_* values
 _STATE_OFFSET_VARIANT:                  EQU 7
 _STATE_OFFSET_TYPE:                     EQU 8
 
-_AS_SIZE:                               EQU 9          ; Size of the alien sprite structure
+_AS_SIZE:                               EQU 9           ; Size of the alien sprite structure
 
 ; Status of an alien
 _ALIEN_STATE_NEW:                       EQU 0b00000001  ; Just created
@@ -175,3 +173,5 @@ _ALIEN_LOOKUP:
 
 ; Number of aliens in total in new pack
 _ALIEN_PACK_SIZE:                       EQU ($-_ALIEN_LOOKUP)/2
+_ALIEN_PACK_ROW_COUNT:                  EQU 5
+_ALIEN_PACK_COLUMN_COUNT:               EQU 11

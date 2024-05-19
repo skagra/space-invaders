@@ -151,3 +151,56 @@ get_alien_at_coords:
 .target_y:              BLOCK 1
 .target_x:              BLOCK 1
 .alien_index:           BLOCK 1
+
+get_lowest_active_alien_in_column:
+
+.PARAM_COL:     EQU 16                                  ; Column to search 
+.RTN_ALIEN_PTR: EQU 14                                  ; Return value
+
+    PUSH AF,BC,DE,HL,IX,IY
+
+    ; Point IX to the stack
+    LD  IX,0                                            
+    ADD IX,SP  
+
+    ; Flag nothing has been found (yet) in the return value
+    LD (IX+.RTN_ALIEN_PTR),0x00
+    LD (IX+.RTN_ALIEN_PTR+1),0x00
+
+    ; Initialize pointer to scan through alien lookup table
+    LD HL,_ALIEN_LOOKUP                                    
+
+    ; Adjust for the first alien in the required column
+    LD D,0x00
+    LD E,(IX+.PARAM_COL)
+    SLA E                                               ; Double the column number as there pointers in lookup are WORDs
+    ADD HL,DE                                           ; HL now points to the address of the first candidate alien 
+
+    ; Loop counter
+    LD B,_ALIEN_PACK_ROW_COUNT
+
+    ; Loop through aliens in columns
+.search_loop:
+    LD DE,(HL)                                          ; DE now holds the address of the alien
+    LD IY,DE                                            ; Move it into IY
+
+    ; Is the alien dead?
+    BIT _ALIEN_STATE_DEAD_BIT,(IY+_STATE_OFFSET_STATE)
+    JR NZ,.next
+
+    ; Record that we've found our alien
+    LD (IX+.RTN_ALIEN_PTR),DE                           ; LOGPOINT [GET_LOWEST_ALIEN] Found alien at Row=${B}
+    JR .done
+
+.next
+    LD DE,.ALIEN_PACK_LOOKUP_ROW_DELTA
+    ADD HL,DE                                           ; Move pointer next alien in column
+    
+    DJNZ .search_loop                                   ; Next if aliens left, otherwise fall through
+
+.done:
+    POP IY,IX,HL,DE,BC,AF
+
+    RET
+
+.ALIEN_PACK_LOOKUP_ROW_DELTA: EQU _ALIEN_PACK_COLUMN_COUNT*2 ; WORD pointers 

@@ -72,6 +72,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
     INCLUDE "character_set/module.asm"
+    INCLUDE "alien_missiles/module.asm"
 
     MODULE main
 
@@ -96,6 +97,7 @@ main:
     CALL alien_pack.init
     CALL collision.init
     CALL scoring.init
+    CALL alien_missiles.init
 
     ; Draw the initial screen
     CALL game_screen.draw_pre_play
@@ -108,6 +110,9 @@ main:
 .animation_loop:
     ; Read keyboard
     CALL keyboard.get_keys
+
+    LD A,0x00                               ; TODO - We need to do better with evaluating and storing collision flag
+    LD (draw_common.collided),A
 
     ; Erase player base
     CALL player.blank
@@ -144,6 +149,14 @@ main:
 
     ; Move on to next alien
     CALL alien_pack.next_alien
+
+    CALL alien_missiles.blank
+
+    CALL alien_missiles.update
+
+    CALL alien_missiles.draw
+
+    CALL alien_missiles.next
 
     ; Draw the player's score
     CALL game_screen.print_score_player_1 

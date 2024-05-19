@@ -117,7 +117,7 @@ blank:
     LD DE, sprites.PLAYER_MISSILE_DIMS                  ; Dimensions
     PUSH DE
 
-    LD DE,sprites.PLAYER_MISSILE                       ; Sprite mask  
+    LD DE,sprites.PLAYER_MISSILE                        ; Sprite/mask  
     PUSH DE
     
     LD D,0x00

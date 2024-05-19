@@ -20,7 +20,8 @@
     INCLUDE "character_set/module.asm"
     INCLUDE "sprites/module.asm"
     INCLUDE "scoring/module.asm"
-    
+    INCLUDE "alien_missiles/module.asm"
+
     MODULE main
 
 main:
@@ -37,7 +38,8 @@ main:
     CALL fast_draw.init
     CALL print.init
     CALL scoring.init
-  
+    CALL alien_missiles.init
+
     ; Clear the screen
     call draw_common.wipe_screen
 
@@ -50,8 +52,15 @@ main:
     LD B, NUM_TEST_SPRITES
     LD HL, TEST_SPRITES
 
-.test_loop
+    CALL alien_missiles.draw
+    CALL draw.flush_buffer_to_screen
+
+.here:  JR .here
+
     DEBUG_PRINT "A TEST"
+
+.test_loop
+    
 
     LD DE,(HL)
     PUSH DE
