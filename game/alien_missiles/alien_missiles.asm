@@ -77,18 +77,18 @@ draw:
     PUSH DE,HL,IX
 
      ; Point IX to current missle struct
-    LD DE,_ALIEN_MISSILE_LOOKUP                         ; Base of alient lookup table
-    LD A,(_current_alien_missile_type)                  ; Current type of missle TODO - This missile type might be less than ideal - could just hold the address and do without all of this
+    LD DE,_ALIEN_MISSILE_LOOKUP                             ; Base of alient lookup table
+    LD A,(_current_alien_missile_type)                      ; Current type of missle TODO - This missile type might be less than ideal - could just hold the address and do without all of this
     LD H,0x00                                           
     LD L,A
-    ADD HL,DE                                           ; Add base to missle type to give location of address of current alient struct
-    LD DE,(HL)                                          ; Address of current alient struct => DE
-    LD IX,0x0000                                        ; Transfer into IX
+    ADD HL,DE                                               ; Add base to missle type to give location of address of current alient struct
+    LD DE,(HL)                                              ; Address of current alient struct => DE
+    LD IX,0x0000                                            ; Transfer into IX
     ADD IX,DE
 
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)               ; Current missile state
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)                   ; Current missile state
 
-    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A               ; Active? Draw the missle.
+    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active? Draw the missle.
     JR NZ,.draw_missile
 
     BIT _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_BIT,A ; Reached the bottom of the screen? Draw the missile exploding.
@@ -98,27 +98,27 @@ draw:
 
 .draw_missile:
     ; Draw the current alien missile
-    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)             ; Coords
+    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords
     PUSH DE
     
-    LD DE,sprites.ALIEN_MISSILE_0_VARIANT_0_DIMS        ; Dimensions - TODO This should really be pulled from the actual variant!
+    LD DE,sprites.ALIEN_MISSILE_0_VARIANT_0_DIMS            ; Dimensions - TODO This should really be pulled from the actual variant!
     PUSH DE
 
-    ; Which variant are we dealing with?                ; Sprite/mask
-    LD D,0x00                                           ; Current alient type 0 to 3
+    ; Which variant are we dealing with?                    ; Sprite/mask
+    LD D,0x00                                               ; Current alient type 0 to 3
     LD E,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)
-    SLA E                                               ; Double it - as there are WORDs in the table
-    LD HL,_ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0        ; Add on the offset for the first variant
-    ADD HL,DE                                           ; HL now contains the offset of the address of the variant (offset from IX)
-    LD DE,IX                                            ; Offset from the base address
+    SLA E                                                   ; Double it - as there are WORDs in the table
+    LD HL,_ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0            ; Add on the offset for the first variant
+    ADD HL,DE                                               ; HL now contains the offset of the address of the variant (offset from IX)
+    LD DE,IX                                                ; Offset from the base address
     ADD HL,DE
     LD DE,(HL)
     PUSH DE
 
-    LD E,utils.FALSE_VALUE                              ; Drawing (not blanking)
+    LD E,utils.FALSE_VALUE                                  ; Drawing (not blanking)
     PUSH DE 
 
-    CALL draw.draw_sprite                               ; Draw the bullet
+    CALL draw.draw_sprite                                   ; Draw the bullet
    
     POP DE
     POP DE
@@ -128,19 +128,19 @@ draw:
     JR .done
 
 .draw_explosion:
-    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)             ; Coords
+    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords
     PUSH DE
 
-    LD DE,sprites.ALIEN_MISSILE_EXPLOSION_DIMS          ; Dimensions
+    LD DE,sprites.ALIEN_MISSILE_EXPLOSION_DIMS              ; Dimensions
     PUSH DE
 
-    LD DE,sprites.ALIEN_MISSILE_EXPLOSION               ; Spite/mask
+    LD DE,sprites.ALIEN_MISSILE_EXPLOSION                   ; Spite/mask
     PUSH DE
 
-    LD E,utils.FALSE_VALUE                              ; Drawing (not blanking)
+    LD E,utils.FALSE_VALUE                                  ; Drawing (not blanking)
     PUSH DE
 
-    CALL draw.draw_sprite                               ; Draw the explosion
+    CALL draw.draw_sprite                                   ; Draw the explosion
    
     POP DE
     POP DE
@@ -177,27 +177,27 @@ blank:
 
 .blank_missile:
     ; Draw the current alien missile
-    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)             ; Coords
+    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords
     PUSH DE
     
-    LD DE,sprites.ALIEN_MISSILE_0_VARIANT_0_DIMS        ; Dimensions - TODO This should really be pulled from the actual variant!
+    LD DE,sprites.ALIEN_MISSILE_0_VARIANT_0_DIMS            ; Dimensions - TODO This should really be pulled from the actual variant!
     PUSH DE
 
-    ; Which variant are we dealing with?                ; Sprite/mask
-    LD D,0x00                                           ; Current alient type 0 to 3
+    ; Which variant are we dealing with?                    ; Sprite/mask
+    LD D,0x00                                               ; Current alient type 0 to 3
     LD E,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)
-    SLA E                                               ; Double it - as there are WORDs in the table
-    LD HL,_ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0        ; Add on the offset for the first variant
-    ADD HL,DE                                           ; HL now contains the offset of the address of the variant (offset from IX)
-    LD DE,IX                                            ; Offset from the base address
+    SLA E                                                   ; Double it - as there are WORDs in the table
+    LD HL,_ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0            ; Add on the offset for the first variant
+    ADD HL,DE                                               ; HL now contains the offset of the address of the variant (offset from IX)
+    LD DE,IX                                                ; Offset from the base address
     ADD HL,DE
     LD DE,(HL)
     PUSH DE 
 
-    LD E,utils.TRUE_VALUE                               ; Blanking (not drawing)
+    LD E,utils.TRUE_VALUE                                   ; Blanking (not drawing)
     PUSH DE 
 
-    CALL draw.draw_sprite                               ; Draw the bullet
+    CALL draw.draw_sprite                                   ; Draw the bullet
    
     POP DE
     POP DE
@@ -207,19 +207,19 @@ blank:
     JR .done
 
 .blank_explosion:
-    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)             ; Coords
+    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords
     PUSH DE
 
-    LD DE,sprites.ALIEN_MISSILE_EXPLOSION_DIMS          ; Dimensions
+    LD DE,sprites.ALIEN_MISSILE_EXPLOSION_DIMS              ; Dimensions
     PUSH DE
 
-    LD DE,sprites.ALIEN_MISSILE_EXPLOSION               ; Spite/mask
+    LD DE,sprites.ALIEN_MISSILE_EXPLOSION                   ; Spite/mask
     PUSH DE
 
-    LD E,utils.TRUE_VALUE                               ; Blanking (not drawing)
+    LD E,utils.TRUE_VALUE                                   ; Blanking (not drawing)
     PUSH DE
 
-    CALL draw.draw_sprite                               ; Blank the explosion
+    CALL draw.draw_sprite                                   ; Blank the explosion
    
     POP DE
     POP DE
@@ -275,24 +275,24 @@ update:
     INC A                                                
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A
 
-    LD HL,(IX+_ALIEN_MISSILE_OFFSET_COORDS)             ; Current coords
-    LD DE,0x0004                                        ; Move missile 4 pixels down 
-    ADD HL,DE                                           ; TODO - This should change to 5 when there are 5 or fewer aliens
+    LD HL,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Current coords
+    LD DE,0x0004                                            ; Move missile 4 pixels down 
+    ADD HL,DE                                               ; TODO - This should change to 5 when there are 5 or fewer aliens
     LD (IX+_ALIEN_MISSILE_OFFSET_COORDS),HL
 
     ; Have we hit the bottom of the screen
-    LD A,L                                              ; Y coord
+    LD A,L                                                  ; Y coord
     CP .ALIEN_MISSILE_MAX_Y
-    JR C, .update_variant                               ; Still further to travel
+    JR C, .update_variant                                   ; Still further to travel
 
     ; The missile has hit the bottom of the screen
-    LD A,_ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN  ; Update state to indicate missile has reached the bottom of the screen
+    LD A,_ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN      ; Update state to indicate missile has reached the bottom of the screen
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A
 
     JR .done
 
 .update_variant:
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)     ; Move on to the next sprite variant
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)         ; Move on to the next sprite variant
     INC A
     CP A,_ALIEN_MISSILE_VARIANT_COUNT
     JR NZ,.next_variant
@@ -374,6 +374,18 @@ next:
         LD (alien_missile_step_count_stash),A                   
     ENDM
 
+; Firing algorithm
+;
+; Is there an alien in the currently selected column
+;   yes => continue
+;   no => update to next value in column lookup table and done
+;
+; Are both of the other step counts zero
+; or 
+; Is the lowest non zero of the other two step counts > reload threshold?
+;   yes => fire and update to next value in column lookup table
+;   no => done
+; 
 _fire_if_ready:
     PUSH AF,BC,DE,HL,IX,IY
 
@@ -426,7 +438,7 @@ _fire_if_ready:
     JR .fire_test
 
 .fire_test
-    ; LOGPOINT [ALIEN_MISSILES] --->
+    ; LOGPOINT [ALIEN_MISSILES] fire_test --->
     ; LOGPOINT [ALIEN_MISSILES] alien_missile_step_count_0=${(alien_missiles.alien_missile_step_count_0)}
     ; LOGPOINT [ALIEN_MISSILES] alien_missile_step_count_1=${(alien_missiles.alien_missile_step_count_1)}
 
@@ -435,14 +447,14 @@ _fire_if_ready:
     LD B,A
     LD A,(alien_missile_step_count_1)
     OR B
-    JR Z,.fire                                          ; Both reload step counts are zero => fire 
+    JR Z,.fire                                              ; Both reload step counts are zero => fire 
 
     ; Use the lowest of the two - ignoring zero values
-    LD A,(alien_missile_step_count_0)                   ; Is reload_0 zero?
+    LD A,(alien_missile_step_count_0)                       ; Is reload_0 zero?
     CP 0x00
     JR Z,.step_count_0_is_zero
 
-    LD A,(alien_missile_step_count_1)                   ; Is reload_1 zero?
+    LD A,(alien_missile_step_count_1)                       ; Is reload_1 zero?
     CP 0x00
     JR Z,.step_count_1_is_zero
 
@@ -454,31 +466,31 @@ _fire_if_ready:
 
     JR C, .step_count_1_is_lower 
 
-    LD A,(alien_missile_step_count_0)                   ; LOGPOINT [ALIEN_MISSILES] step_count_0_is_lower
+    LD A,(alien_missile_step_count_0)                       ; LOGPOINT [ALIEN_MISSILES] step_count_0_is_lower
     JR .test_reload_threshold
 
 .step_count_1_is_lower:
-    LD A,(alien_missile_step_count_1)                   ; LOGPOINT [ALIEN_MISSILES] step_count_1_is_lower
+    LD A,(alien_missile_step_count_1)                       ; LOGPOINT [ALIEN_MISSILES] step_count_1_is_lower
     JR .test_reload_threshold
 
 .step_count_0_is_zero:
     ; Reload 1 must be non-zero as we've already tested for both being zero.
-    LD A,(alien_missile_step_count_1)                   ; LOGPOINT [ALIEN_MISSILES] step_count_0_is_zero
+    LD A,(alien_missile_step_count_1)                       ; LOGPOINT [ALIEN_MISSILES] step_count_0_is_zero
     JR .test_reload_threshold
 
 .step_count_1_is_zero:
     ; Reload 0 must be non-zero as we've already tested for both being zero.
-    LD A,(alien_missile_step_count_0)                   ; LOGPOINT [ALIEN_MISSILES] step_count_1_is_zero
+    LD A,(alien_missile_step_count_0)                       ; LOGPOINT [ALIEN_MISSILES] step_count_1_is_zero
     JR .test_reload_threshold
 
-.test_reload_threshold                                  ; TODO this will become variable reload rate
-    LD B,14                                             ; LOGPOINT [ALIEN_MISSILES] Testing step count ${A} against threshold 14
+.test_reload_threshold                                      ; TODO this will become variable reload rate
+    LD B,14                                                 ; LOGPOINT [ALIEN_MISSILES] Testing step count ${A} against threshold 14
     CP B                                                
-    JR C,.done                                          ; Not time to reload yet
+    JR C,.done                                              ; Not time to reload yet
 
 .fire
     ; Which column to fire from?
-    LD HL,(alien_missile_shot_col_table_ptr)            ; LOGPOINT [ALIEN_MISSILES] Firing
+    LD HL,(alien_missile_shot_col_table_ptr)                ; LOGPOINT [ALIEN_MISSILES] Firing
     LD D,0x00
     LD E,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)
     ADD HL,DE
@@ -486,41 +498,41 @@ _fire_if_ready:
                                            
     ; Find the lowest alien in the selected column
     LD L,A
-    PUSH HL                                             ; Target column (low byte)
-    PUSH HL                                             ; Space for the return pointer to alien struct
+    PUSH HL                                                 ; Target column (low byte)
+    PUSH HL                                                 ; Space for the return pointer to alien struct
     CALL alien_pack.get_lowest_active_alien_in_column
-    POP HL                                              ; Lowest alien (unless column is empty)
+    POP HL                                                  ; Lowest alien (unless column is empty)
     POP DE
 
-    LD A,H                                              ; High byte == 0 => not found
+    LD A,H                                                  ; High byte == 0 => not found
     CP 0x00
     JR Z,.update_to_next_col
 
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE), _ALIEN_MISSILE_STATE_ACTIVE    ; Activate the missile
-    LD IY,HL                                            ; Alien pointer
-    LD HL,(IY+alien_pack._STATE_OFFSET_DRAW_COORDS)     ; Alien coords
-    LD D,0x04                                           ; Adjust firing coords to bottom middle of alien
+    LD IY,HL                                                ; Alien pointer
+    LD HL,(IY+alien_pack._STATE_OFFSET_DRAW_COORDS)         ; Alien coords
+    LD D,0x04                                               ; Adjust firing coords to bottom middle of alien
     LD E,0x08
     ADD HL,DE
     LD (IX+_ALIEN_MISSILE_OFFSET_COORDS),HL
 
-    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0x01 ; One step taken (required for reload algorithm)
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0x01    ; One step taken (required for reload algorithm)
     ; Fall through 
 
 .update_to_next_col:
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)   ; Update location in column table,
-    INC A                                               ; if either we've fired or there were no aliens in the selected column
-    CP SHOT_COLUMNS_COUNT                               ; Has the end of the column lookup table been reached?
-    JR NZ,.dont_reset_col_lookup                        ; No - so we are good
-    LD A,0x00                                           ; Yes - reset to the start
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)       ; Update location in column table,
+    INC A                                                   ; if either we've fired or there were no aliens in the selected column
+    CP SHOT_COLUMNS_COUNT                                   ; Has the end of the column lookup table been reached?
+    JR NZ,.dont_reset_col_lookup                            ; No - so we are good
+    LD A,0x00                                               ; Yes - reset to the start
 
 .dont_reset_col_lookup:
-    LD (IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX),A   ; Store the new location in column lookup table
+    LD (IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX),A       ; Store the new location in column lookup table
 
 .done:
     POP IY,IX,HL,DE,BC,AF
 
-    ; LOGPOINT [ALIEN_MISSILES] <---
+    ; LOGPOINT [ALIEN_MISSILES] <--- fire_test
 
     RET
 

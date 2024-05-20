@@ -150,12 +150,16 @@ main:
     ; Move on to next alien
     CALL alien_pack.next_alien
 
+    ; Blank current alien missile in cycle 
     CALL alien_missiles.blank
 
+    ; Update current alien missile
     CALL alien_missiles.update
 
+    ; Draw current alien missile
     CALL alien_missiles.draw
 
+    ; Next alien missile
     CALL alien_missiles.next
 
     ; Draw the player's score
