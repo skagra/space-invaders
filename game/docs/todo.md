@@ -19,5 +19,9 @@
 * Remove all hard coded positions - replace with constants and calculation - game screen is the greatest offender here
 * Replace infinite loop errors traps with ASSERTION
 * Review masks and blanks for aliens so they completely eat the shields
+* Add targeting missile
+* Add disable one missile when one alien
+* Add saucer
+* Don't drop missiles until screen is draw - is there more delay too?
 
   

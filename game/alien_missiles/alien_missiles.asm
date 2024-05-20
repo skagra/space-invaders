@@ -18,6 +18,7 @@ _ALIEN_MISSILE_STATE_ACTIVE:                            EQU 0b00000010          
 _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN:          EQU 0b00000100          ; Reach the bottom of the screen
 _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN:               EQU 0b00001000          ; At the bottom of the screen and so exploding
 _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN:          EQU 0b00010000          ; Finised exploding
+_ALIEN_MISSILE_STATE_HIT_SHIELD:                        EQU 0b00100000
 
 ; Bit positions correspond to each of the states
 _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT:                    EQU 0
@@ -25,6 +26,7 @@ _ALIEN_MISSILE_STATE_ACTIVE_BIT:                        EQU 1
 _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_BIT:      EQU 2    
 _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_BIT:           EQU 3
 _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT:      EQU 4
+_ALIEN_MISSILE_STATE_HIT_SHIELD_BIT:                    EQU 5
 
 ; Values to indicate current missile sprite variant
 _ALIEN_MISSILE_VARIANT_0:                               EQU 0
@@ -118,8 +120,12 @@ draw:
     LD E,utils.FALSE_VALUE                                  ; Drawing (not blanking)
     PUSH DE 
 
+    LD DE,collision.alien_missile_collision                 ; Where to record collision data
+    PUSH DE
+
     CALL draw.draw_sprite                                   ; Draw the bullet
    
+    POP DE
     POP DE
     POP DE
     POP DE
@@ -140,8 +146,12 @@ draw:
     LD E,utils.FALSE_VALUE                                  ; Drawing (not blanking)
     PUSH DE
 
+    LD DE,collision.dummy_collision                         ; Where to record collision data
+    PUSH DE
+    
     CALL draw.draw_sprite                                   ; Draw the explosion
    
+    POP DE
     POP DE
     POP DE
     POP DE
@@ -173,6 +183,9 @@ blank:
     BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A
     JR NZ,.blank_explosion
 
+    BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A
+    JR NZ,.blank_missile
+    
     JR .done
 
 .blank_missile:
@@ -197,8 +210,12 @@ blank:
     LD E,utils.TRUE_VALUE                                   ; Blanking (not drawing)
     PUSH DE 
 
+    LD DE,collision.dummy_collision                         ; Where to record collision data
+    PUSH DE
+
     CALL draw.draw_sprite                                   ; Draw the bullet
    
+    POP DE
     POP DE
     POP DE
     POP DE
@@ -219,8 +236,12 @@ blank:
     LD E,utils.TRUE_VALUE                                   ; Blanking (not drawing)
     PUSH DE
 
+    LD DE,collision.dummy_collision                         ; Where to record collision data
+    PUSH DE
+
     CALL draw.draw_sprite                                   ; Blank the explosion
    
+    POP DE
     POP DE
     POP DE
     POP DE
@@ -260,6 +281,9 @@ update:
 
     BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A
     JR NZ,.done_at_bottom_of_screen
+
+    BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A
+    JR NZ,.hit_shield
 
     ; This should never be reached!
     ; ASSERTION This code should never be reached
@@ -330,7 +354,13 @@ update:
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A       ; Reset step count used as part of reload algorithm
 
     JR .done
-    
+
+.hit_shield
+    LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                  
+
+    JR .done
+
 .done:
     POP IX,HL,DE,AF
 
@@ -533,6 +563,53 @@ _fire_if_ready:
     POP IY,IX,HL,DE,BC,AF
 
     ; LOGPOINT [ALIEN_MISSILES] <--- fire_test
+
+    RET
+
+; TODO - Wrong need to take action now!
+event_alien_missile_hit_shield:
+    PUSH AF,DE,HL,IX
+
+    ; Point IX to current missle struct
+    LD DE,_ALIEN_MISSILE_LOOKUP  
+    LD A,(_current_alien_missile_type)  
+    LD H,0x00  
+    LD L,A
+    ADD HL,DE
+    LD DE,(HL)
+    LD IX,0x0000
+    ADD IX,DE
+
+    ; Set state
+    LD A,_ALIEN_MISSILE_STATE_HIT_SHIELD
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A  
+
+    ; Erase the explosion
+    LD IX,collision.alien_missile_collision
+    
+    LD DE,(IX+collision.COLLISION_OFFSET_COORDS)            ; Coords
+    PUSH DE
+
+    LD DE,sprites.ALIEN_MISSILE_EXPLOSION_DIMS              ; Dimensions
+    PUSH DE
+
+    LD DE,sprites.ALIEN_MISSILE_EXPLOSION                   ; Spite/mask
+    PUSH DE
+
+    LD E,utils.TRUE_VALUE                                   ; Drawing (not blanking)
+    PUSH DE
+
+    LD DE,collision.dummy_collision                         ; Where to record collision data
+    PUSH DE
+    
+    CALL draw.draw_sprite       
+
+    POP DE
+    POP DE
+    POP DE
+    POP DE
+
+    POP IX,HL,DE,AF
 
     RET
 

@@ -1,13 +1,5 @@
 init:
-    LD A,utils.FALSE_VALUE
-    LD (collided),A
     RET
-
-; Collision detection
-collided:           BLOCK 1                             ; The last draw operation detected a collision
-collision_coords:
-collision_y:        BLOCK 1
-collision_x:        BLOCK 1
 
 OFF_SCREEN_BUFFER_START: EQU 0xC000
 

@@ -1,4 +1,29 @@
 init:
+    CALL reset
+
+    RET
+
+COLLISION_OFFSET_COLLIDED:  EQU 0
+COLLISION_OFFSET_COORDS:    EQU 1
+COLLISION_OFFSET_Y_COORD:   EQU 1
+COLLISION_OFFSET_X_COORD:   EQU 2
+COLLISION_STRUCT_SIZE:      EQU 3
+
+dummy_collision:            BLOCK COLLISION_STRUCT_SIZE
+player_missile_collision:   BLOCK COLLISION_STRUCT_SIZE
+alien_missile_collision:    BLOCK COLLISION_STRUCT_SIZE
+
+reset:
+    PUSH IX
+
+    LD IX,player_missile_collision
+    LD (IX+COLLISION_OFFSET_COLLIDED),utils.FALSE_VALUE
+
+    LD IX,alien_missile_collision
+    LD (IX+COLLISION_OFFSET_COLLIDED),utils.FALSE_VALUE
+
+    POP IX
+
     RET
 
 ;------------------------------------------------------------------------------
@@ -21,15 +46,16 @@ init:
 ;------------------------------------------------------------------------------
 
 handle_collision:
-    PUSH AF,DE,HL
+    PUSH AF,DE,HL,IX
+
+    LD IX,player_missile_collision
 
     ; Has there been a collision with the player missle?
-    LD A,(draw_common.collided)
-    BIT utils.TRUE_BIT,A
-    JR Z,.done                                          ; No collision so done
+    BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
+    JR Z,.check_alien_missile_collision                 ; No collision so done
 
     ; Did player missile hit an alien?
-    LD HL,(draw_common.collision_coords)
+    LD HL,(IX+COLLISION_OFFSET_COORDS)
     PUSH HL
     PUSH HL                                             ; Space for return value
     CALL alien_pack.get_alien_at_coords
@@ -45,13 +71,22 @@ handle_collision:
     CALL global_state.event_player_missile_hit_alien
     POP HL
     
-    JR .done
+    JR .check_alien_missile_collision
 
 .not_hit_an_alien:
     ; Collision was not with an alien - so assume a shield
     CALL global_state.event_player_missile_hit_shield           
 
+.check_alien_missile_collision:
+    LD IX,alien_missile_collision
+
+    ; Has there been a collision with an alien missile?
+    BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
+    JR Z,.done                                          ; No collision so done
+
+    CALL alien_missiles.event_alien_missile_hit_shield  ; TODO assume a shield for now
+
 .done
-    POP HL,DE,AF
+    POP IX,HL,DE,AF
     
     RET

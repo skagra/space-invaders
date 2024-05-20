@@ -94,9 +94,13 @@ main:
     LD L, utils.FALSE_VALUE
     PUSH HL
     
+    LD HL,collision.dummy_collision
+    PUSH HL
+
     CALL draw.draw_sprite
     
     POP HL 
+    POP HL
     POP HL
     POP HL
     POP HL

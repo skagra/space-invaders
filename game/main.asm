@@ -108,11 +108,11 @@ main:
     CALL fast_draw.flush_buffer_to_screen_16x8
 
 .animation_loop:
+    ; Reset all collisions
+    CALL collision.reset
+
     ; Read keyboard
     CALL keyboard.get_keys
-
-    LD A,0x00                               ; TODO - We need to do better with evaluating and storing collision flag
-    LD (draw_common.collided),A
 
     ; Erase player base
     CALL player.blank
@@ -131,12 +131,6 @@ main:
 
     ; Draw player missile if there is one
     CALL player_missile.draw
-
-    ; Handle collisions with player missile 
-    CALL collision.handle_collision
-
-    ; Update global state information
-    CALL global_state.update
 
     ; Erase the current alien
     CALL alien_pack.blank
@@ -158,6 +152,12 @@ main:
 
     ; Draw current alien missile
     CALL alien_missiles.draw
+
+    ; Handle collisions with player missile 
+    CALL collision.handle_collision
+
+    ; Update global state information
+    CALL global_state.update
 
     ; Next alien missile
     CALL alien_missiles.next

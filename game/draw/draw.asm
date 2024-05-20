@@ -65,7 +65,13 @@ draw_sprite_and_flush_buffer:
     LD H,0x00
     LD L,utils.FALSE_VALUE
     PUSH HL 
+
+    LD HL,collision.dummy_collision                     ; Where to record collision data
+    PUSH HL
+
     CALL draw.draw_sprite
+
+    POP HL
     POP HL 
     POP HL
     POP HL
@@ -154,11 +160,11 @@ flush_buffer_to_screen:
 
 draw_sprite:
 
-.PARAM_COORDS:            EQU 18                        ; Sprite coordinates
-.PARAM_DIMS:              EQU 16                        ; Sprite dimensions
-.PARAM_SPRITE_DATA:       EQU 14                        ; Sprite pre-shifted data lookup table
-.PARAM_BLANKING:          EQU 12                        ; Drawing or blanking?                   
-
+.PARAM_COORDS:            EQU 20                        ; Sprite coordinates
+.PARAM_DIMS:              EQU 18                        ; Sprite dimensions
+.PARAM_SPRITE_DATA:       EQU 16                        ; Sprite pre-shifted data lookup table
+.PARAM_BLANKING:          EQU 14                        ; Drawing or blanking?                   
+.PARAM_COLLISION_STRUCT:  EQU 12
     DI 
 
     PUSH AF,BC,DE,HL,IX
@@ -167,8 +173,10 @@ draw_sprite:
     ADD IX,SP                                                   
 
     ; Initialize the collision flag
-    LD HL,draw_common.collided                      
-    LD (HL),utils.FALSE_VALUE
+    LD HL,(IX+.PARAM_COLLISION_STRUCT)                  ; TODO Maybe have a local flag for efficiency?
+    LD IY,0x0000
+    LD IY,HL                     
+    LD (IY+collision.COLLISION_OFFSET_COLLIDED),utils.FALSE_VALUE
 
     ; Get and store the coords
     LD HL,(IX+.PARAM_COORDS)                            ; Grab the pixel coords
@@ -251,21 +259,19 @@ draw_sprite:
     JR NZ,.blanking
 
     ; Drawing
-    LD A,(draw_common.collided)                         ; Has a collision already been recorded?
-    BIT utils.TRUE_BIT,A
+    BIT utils.TRUE_BIT,(IY+collision.COLLISION_OFFSET_COLLIDED)   ; Has a collision already been recorded?
     JR NZ,.skip_collision_detection
 
     LD A,(DE)                                           ; Data from screen
     AND H                                               ; And with sprite data to detect collision
     JR Z,.skip_collision_detection                      ; Collided? No
 
-    ; A collision has been detected
-    LD A,utils.TRUE_VALUE                               ; Record the collision
-    LD (draw_common.collided),A
+    ; A collision has been detected                  
+    LD (IY+collision.COLLISION_OFFSET_COLLIDED),utils.TRUE_VALUE  ; Record the collision
     LD A,(.y_coord)
-    LD (draw_common.collision_y),A
+    LD (IY+collision.COLLISION_OFFSET_Y_COORD),A
     LD A,(.x_coord)
-    LD (draw_common.collision_x),A
+    LD (IY+collision.COLLISION_OFFSET_X_COORD),A
 
 .skip_collision_detection
     ; Write screen data
