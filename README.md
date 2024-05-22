@@ -21,12 +21,11 @@ A faithful reproduction of the original arcade Space Invaders game, as released 
 
 # Status
 
-In terms of major game play elements the following remain to be implemented:
+Most of the major game elements are now in place, though there is significant work remaining, for example.
 
-* Full collision detection.
-* Alien destruction by player missiles.
-* Alien missiles.
-* Scoring.
+* Player base destruction.
 * Saucer ship.
+* "Landing" page
+* Credits and 2 player mode.
+* Sound.
 
-The project is now hitting a hurdle in squeezing out enough performance from the ZX Spectrum to remain flicker free while completing the feature set - some optimization will be required and possibly a change in approach to rendering entirely.
