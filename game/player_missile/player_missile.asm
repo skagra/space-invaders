@@ -15,8 +15,7 @@ _MISSILE_STATE_ACTIVE:                      EQU 0b00000100                      
 _MISSILE_STATE_REACHED_TOP_OF_SCREEN:       EQU 0b00001000                      ; Bullet has reached the top of the screen
 _MISSILE_STATE_AT_TOP_OF_SCREEN:            EQU 0b00010000                      ; Retain expoding image at top of screen
 _MISSILE_STATE_DONE_AT_TOP_OF_SCREEN:       EQU 0b00100000                      ; At top of screen and missile is done
-; _MISSILE_STATE_COLLIDED:                    EQU 0b01000000                      ; The missile has collided with something
-_MISSILE_STATE_HIT_A_SHIELD:                EQU 0b10000000                      ; The missile has collided with a shield
+_MISSILE_STATE_HIT_A_SHIELD:                EQU 0b01000000                      ; The missile has collided with a shield
 
 ; Bullet state mask bit positions
 _MISSILE_STATE_NO_MISSILE_BIT:              EQU 0                   
@@ -25,8 +24,7 @@ _MISSILE_STATE_ACTIVE_BIT:                  EQU 2
 _MISSILE_STATE_REACHED_TOP_OF_SCREEN_BIT:   EQU 3   
 _MISSILE_STATE_AT_TOP_OF_SCREEN_BIT         EQU 4               
 _MISSILE_STATE_DONE_AT_TOP_OF_SCREEN_BIT:   EQU 5                  
-; _MISSILE_STATE_COLLIDED_BIT:                EQU 6
-_MISSILE_STATE_HIT_A_SHIELD_BIT:            EQU 7
+_MISSILE_STATE_HIT_A_SHIELD_BIT:            EQU 6
 
 _missile_state:                             BLOCK 1     ; Current state of the missile from _MISSILE_STATE_*
 _missile_coords:
@@ -494,3 +492,13 @@ event_player_missile_hit_shield:
     POP HL
     
     RET 
+event_missiles_collided:
+    PUSH HL
+    
+    LD HL,_missile_state                               
+    LD (HL),_MISSILE_STATE_HIT_A_SHIELD                ; TODO
+
+    POP HL
+    
+    RET 
+    

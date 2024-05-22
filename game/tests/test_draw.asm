@@ -21,6 +21,13 @@
     INCLUDE "sprites/module.asm"
     INCLUDE "scoring/module.asm"
     INCLUDE "alien_missiles/module.asm"
+    INCLUDE "collision/module.asm"
+    INCLUDE "alien_pack/module.asm"
+    INCLUDE "global_state/module.asm"
+    INCLUDE "layout/module.asm"
+    INCLUDE "player_missile/module.asm"
+    INCLUDE "keyboard/module.asm"
+    INCLUDE "player_base/module.asm"
 
     MODULE main
 
@@ -39,6 +46,13 @@ main:
     CALL print.init
     CALL scoring.init
     CALL alien_missiles.init
+    CALL collision.init
+    CALL alien_pack.init
+    CALL global_state.init
+    CALL layout.init
+    CALL player_missile.init
+    CALL keyboard.init
+    CALL player.init
 
     ; Clear the screen
     call draw_common.wipe_screen
@@ -55,13 +69,9 @@ main:
     CALL alien_missiles.draw
     CALL draw.flush_buffer_to_screen
 
-.here:  JR .here
-
     DEBUG_PRINT "A TEST"
 
 .test_loop
-    
-
     LD DE,(HL)
     PUSH DE
     INC HL

@@ -95,7 +95,7 @@ init:
 _adjust_alien_pack_direction:
     PUSH AF,HL
 
-    ; In which directin is the pack currently moving?
+    ; In which direction is the pack currently moving?
     LD A,(_pack_direction)    
 
     ; Moving right?

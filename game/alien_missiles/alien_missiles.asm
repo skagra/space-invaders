@@ -47,7 +47,6 @@ _ALIEN_MISSILE_2: WORD 0x0000
                   BYTE _ALIEN_MISSILE_VARIANT_0, _ALIEN_MISSILE_STATE_NOT_ACTIVE,0x00,0x00,0x00
 
 ; Values set to give offsets into _ALIEN_MISSILE_LOOKUP table 
-; TODO Not convinced this is either good or necessary
 _ALIEN_MISSILE_TYPE_0:                                  EQU 0           
                                               
 _ALIEN_MISSILE_TYPE_1:                                  EQU 2              
@@ -65,6 +64,22 @@ _ALIEN_MISSILE_DELTA_Y:                                 EQU 3
 ; Current alient missile type with values from _ALIEN_MISSILE_TYPE_?
 _current_alien_missile_type: BLOCK 1
 
+;------------------------------------------------------------------------------
+;
+; Initialise the module
+; 
+; Usage:
+;   CALL init
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
+
 init:
     PUSH AF
 
@@ -75,13 +90,28 @@ init:
 
     RET
 
+;------------------------------------------------------------------------------
+;
+; Draw the current alien missile/explosion.
+; 
+; Usage:
+;   CALL draw
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
 draw:
     PUSH DE,HL,IX
 
      ; Point IX to current missle struct
     LD DE,_ALIEN_MISSILE_LOOKUP                             ; Base of alient lookup table
-    LD A,(_current_alien_missile_type)                      ; Current type of missle TODO - This missile type might be less than ideal - could just hold the address and do without all of this
-    LD H,0x00                                           
+    LD A,(_current_alien_missile_type)                      ; Current type of missle 
+    LD H,0x00                                               ; TODO The missile type mechanism might be less than ideal - could just hold the address and do without all of this
     LD L,A
     ADD HL,DE                                               ; Add base to missle type to give location of address of current alient struct
     LD DE,(HL)                                              ; Address of current alient struct => DE
@@ -103,8 +133,8 @@ draw:
     LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords
     PUSH DE
     
-    LD DE,sprites.ALIEN_MISSILE_0_VARIANT_0_DIMS            ; Dimensions - TODO This should really be pulled from the actual variant!
-    PUSH DE
+    LD DE,sprites.ALIEN_MISSILE_0_VARIANT_0_DIMS            ; Dimensions
+    PUSH DE                                                 ; TODO This should really be pulled from the actual variant!
 
     ; Which variant are we dealing with?                    ; Sprite/mask
     LD D,0x00                                               ; Current alient type 0 to 3
@@ -162,31 +192,46 @@ draw:
 
     RET
 
+;------------------------------------------------------------------------------
+;
+; Blank the current alien missile/explosion.
+; 
+; Usage:
+;   CALL blank
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
 blank:
     PUSH AF,DE,HL,IX
 
     ; Point IX to current missle struct
-    LD DE,_ALIEN_MISSILE_LOOKUP  
-    LD A,(_current_alien_missile_type)  
-    LD H,0x00  
+    LD DE,_ALIEN_MISSILE_LOOKUP                             ; Alien lookup table base
+    LD A,(_current_alien_missile_type)                      ; Current alient type provides an index into the lookup table
+    LD H,0x00                                               ; Add the type index to the base
     LD L,A
-    ADD HL,DE
-    LD DE,(HL)
-    LD IX,0x0000
+    ADD HL,DE                                               ; HL now points to the entry in the table containing the address of the current missile struct
+    LD DE,(HL)                                              ; Dereference the pointer to get a pointer to the actual current missile struct
+    LD IX,0x0000                                            ; Transfer the the struct pointer to IX
     ADD IX,DE
 
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)                   ; Grab current missile state
 
-    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A
-    JR NZ,.blank_missile
+    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active?
+    JR NZ,.blank_missile                                    ; Y - handle it
 
-    BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A
-    JR NZ,.blank_explosion
+    BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A ; Finished blowing up at the bottom of the screen?
+    JR NZ,.blank_explosion                                  ; Y - handle it
 
-    BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A
-    JR NZ,.blank_missile
+    BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A               ; Alien missile has hit a shield
+    JR NZ,.blank_missile                                    ; Handle it
     
-    JR .done
+    JR .done                                                ; Nothing to do for other states
 
 .blank_missile:
     ; Draw the current alien missile
@@ -252,38 +297,53 @@ blank:
 
     RET
 
+;------------------------------------------------------------------------------
+;
+; Update the state of the current alien missile
+; 
+; Usage:
+;   CALL update
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
 update:
     PUSH AF,DE,HL,IX
 
     ; Point IX to current missle struct
-    LD DE,_ALIEN_MISSILE_LOOKUP  
-    LD A,(_current_alien_missile_type)  
-    LD H,0x00  
+    LD DE,_ALIEN_MISSILE_LOOKUP                             ; Alien lookup table base
+    LD A,(_current_alien_missile_type)                      ; Current alient type provides an index into the lookup table
+    LD H,0x00                                               ; Add the type index to the base
     LD L,A
-    ADD HL,DE
-    LD DE,(HL)
-    LD IX,0x0000
+    ADD HL,DE                                               ; HL now points to the entry in the table containing the address of the current missile struct
+    LD DE,(HL)                                              ; Dereference the pointer to get a pointer to the actual current missile struct
+    LD IX,0x0000                                            ; Transfer the the struct pointer to IX
     ADD IX,DE
 
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)                   ; Get the missile state
 
-    BIT _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT,A
-    JR NZ,.not_active
+    BIT _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT,A               ; Not active?
+    JR NZ,.not_active                                       ; Handle it
 
-    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A
-    JR NZ,.active
+    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active?
+    JR NZ,.active                                           ; Handle it.
 
-    BIT _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_BIT,A
-    JR NZ,.reached_bottom_of_screen
+    BIT _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_BIT,A ; Reached bottom of screen?
+    JR NZ,.reached_bottom_of_screen                         ; Handle it.
 
-    BIT _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_BIT,A
-    JR NZ,.at_bottom_of_screen
+    BIT _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_BIT,A      ; At bottom of screen?
+    JR NZ,.at_bottom_of_screen                              ; Handle it.
 
-    BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A
-    JR NZ,.done_at_bottom_of_screen
+    BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A ; Done exploding bottom of screen?
+    JR NZ,.done_at_bottom_of_screen                         ; Handle it.
 
-    BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A
-    JR NZ,.hit_shield
+    BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A               ; Hit a shield?
+    JR NZ,.hit_shield                                       ; Handle it.
 
     ; This should never be reached!
     ; ASSERTION This code should never be reached
@@ -291,11 +351,11 @@ update:
     JR .done
 
 .not_active:
-    CALL _fire_if_ready
+    CALL _fire_if_ready                                     ; Fire a new missle if it's time to do so
     JR .done
 
 .active:
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT)   
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT)       ; Record that the missile has taken a step
     INC A                                                
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A
 
@@ -356,8 +416,8 @@ update:
     JR .done
 
 .hit_shield
-    LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                  
+    LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE                    ; Missile has hit a shield
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                   ; Move it to a not active state
 
     JR .done
 
@@ -366,33 +426,48 @@ update:
 
     RET
 
-.ALIEN_MISSILE_MAX_Y:            EQU draw_common.SCREEN_HEIGHT_PIXELS-20
-.ALIEN_MISSILE_EXPLOSION_CYCLES: EQU 3
+.ALIEN_MISSILE_MAX_Y:            EQU draw_common.SCREEN_HEIGHT_PIXELS-20    ; Coordinate a which missile is considered to have hit the bottom of the screen
+.ALIEN_MISSILE_EXPLOSION_CYCLES: EQU 3                      ; How long to display the missile explosion
+
+;------------------------------------------------------------------------------
+;
+; Move onto the next missile type
+; 
+; Usage:
+;   CALL next
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
 
 next:
     PUSH AF
 
-    LD A,(_current_alien_missile_type)  
-    CP _ALIEN_MISSILE_TYPE_0
-    JR Z,.type_0
+    LD A,(_current_alien_missile_type)                      ; Get the current alient type
+    CP _ALIEN_MISSILE_TYPE_0                                ; Type 0?
+    JR Z,.type_0                                            ; Handle it.
 
-    CP _ALIEN_MISSILE_TYPE_1
-    JR Z,.type_1
+    CP _ALIEN_MISSILE_TYPE_1                                ; Type 1?
+    JR Z,.type_1                                            ; Handle it.
 
     ; type 2
-    LD A,_ALIEN_MISSILE_TYPE_0
+    LD A,_ALIEN_MISSILE_TYPE_0                              ; Must be type 2 so loop round to type 0
     JR .set_type
 
 .type_0:
-    LD A,_ALIEN_MISSILE_TYPE_1
+    LD A,_ALIEN_MISSILE_TYPE_1                              ; Type 0 => type 1
     JR .set_type
 
 .type_1:
-    LD A,_ALIEN_MISSILE_TYPE_2
+    LD A,_ALIEN_MISSILE_TYPE_2                              ; Type 1 => type 2
     JR .set_type
 
 .set_type:
-    LD (_current_alien_missile_type),A
+    LD (_current_alien_missile_type),A                      ; Record the new type
 
     POP AF
 
@@ -404,18 +479,27 @@ next:
         LD (alien_missile_step_count_stash),A                   
     ENDM
 
+;------------------------------------------------------------------------------
+;
+; Fire a new missile if its time
+; 
+; Usage:
+;   CALL _fire_if_ready
+;
 ; Firing algorithm
 ;
-; Is there an alien in the currently selected column
+; Is there an alien in the currently selected column?
 ;   yes => continue
 ;   no => update to next value in column lookup table and done
 ;
-; Are both of the other step counts zero
+; Are both of the other step counts zero?
 ; or 
 ; Is the lowest non zero of the other two step counts > reload threshold?
 ;   yes => fire and update to next value in column lookup table
 ;   no => done
-; 
+;
+;------------------------------------------------------------------------------
+
 _fire_if_ready:
     PUSH AF,BC,DE,HL,IX,IY
 
@@ -566,7 +650,6 @@ _fire_if_ready:
 
     RET
 
-; TODO - Wrong need to take action now!
 event_alien_missile_hit_shield:
     PUSH AF,DE,HL,IX
 
@@ -583,11 +666,8 @@ event_alien_missile_hit_shield:
     ; Set state
     LD A,_ALIEN_MISSILE_STATE_HIT_SHIELD
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A  
-
-    ; Erase the explosion
-    LD IX,collision.alien_missile_collision
     
-    LD DE,(IX+collision.COLLISION_OFFSET_COORDS)            ; Coords
+    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords
     PUSH DE
 
     LD DE,sprites.ALIEN_MISSILE_EXPLOSION_DIMS              ; Dimensions
@@ -608,8 +688,26 @@ event_alien_missile_hit_shield:
     POP DE
     POP DE
     POP DE
+    POP DE
 
     POP IX,HL,DE,AF
+
+    RET
+
+event_missiles_collided:
+.PARAM_ALIEN_MISSILE: EQU 10
+    PUSH AF,HL,IX,IY
+
+    LD  IX,0                                            ; Point IX to the stack
+    ADD IX,SP  
+
+    LD HL,(IX+.PARAM_ALIEN_MISSILE)  
+    LD IY,HL      
+    
+    LD A,_ALIEN_MISSILE_STATE_HIT_SHIELD  ; TODO
+    LD (IY+_ALIEN_MISSILE_OFFSET_STATE),A  
+
+    POP IY,IX,HL,AF
 
     RET
 
@@ -621,4 +719,3 @@ SHOT_COLUMNS_0: BYTE 0x00,0x06,0x00,0x00,0x00,0x03,0x0A,0x00,0x05,0x02,0x00,0x00
 SHOT_COLUMNS_1: BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
 SHOT_COLUMNS_2: BYTE 0x05,0x02,0x05,0x04,0x06,0x07,0x08,0x0A,0x06,0x0A,0x03,0x04,0x06,0x07,0x04,0x06     
 SHOT_COLUMNS_COUNT: EQU 16
-

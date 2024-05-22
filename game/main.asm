@@ -153,7 +153,7 @@ main:
     ; Draw current alien missile
     CALL alien_missiles.draw
 
-    ; Handle collisions with player missile 
+    ; Process collisions  
     CALL collision.handle_collision
 
     ; Update global state information
