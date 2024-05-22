@@ -2,8 +2,8 @@
 
 _module_start:
 
-    INCLUDE "init.asm"
     INCLUDE "state.asm"
+    INCLUDE "init.asm"
         
     MEMORY_USAGE "layout          ",_module_start
     

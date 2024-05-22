@@ -2,8 +2,8 @@
 
 _module_start:
 
-    INCLUDE "init.asm"
     INCLUDE "state.asm"
+    INCLUDE "init.asm"
     INCLUDE "memory_usage.asm"
     INCLUDE "debug.asm"
 
