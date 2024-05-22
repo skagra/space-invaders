@@ -78,7 +78,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
 main:
     ; Set up stack
-    DI                          
+aa    DI                          
     LD SP,STACK_TOP
     EI
 
