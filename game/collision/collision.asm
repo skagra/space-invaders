@@ -1,20 +1,3 @@
-init:
-    CALL reset
-
-    RET
-
-COLLISION_OFFSET_COLLIDED:      EQU 0
-COLLISION_OFFSET_COORDS:        EQU 1
-COLLISION_OFFSET_Y_COORD:       EQU 1
-COLLISION_OFFSET_X_COORD:       EQU 2
-COLLISION_OFFSET_CLIENT_DATA:   EQU 3
-
-COLLISION_STRUCT_SIZE:          EQU 5
-
-dummy_collision:                BLOCK COLLISION_STRUCT_SIZE
-player_missile_collision:       BLOCK COLLISION_STRUCT_SIZE
-alien_missile_collision:        BLOCK COLLISION_STRUCT_SIZE
-
 reset:
     PUSH IX
 
@@ -47,25 +30,7 @@ reset:
 ;      
 ;------------------------------------------------------------------------------
 
-_player_missile_hit_alien_value:            EQU 0b00000001
-_player_missile_hit_shield_value:           EQU 0b00000010
-_player_missile_hit_alien_missile_value:    EQU 0b00000100
-_alien_missile_hit_shield_value:            EQU 0b00001000
-
-_player_missile_hit_alien_bit:              EQU 0
-_player_missile_hit_shield_bit:             EQU 1
-_player_missile_hit_alien_missile_bit:      EQU 2
-_alien_missile_hit_shield_bit:              EQU 3
-
-_collisions:                                BLOCK 1
-
 _alien_hit_by_player_missile:               BLOCK 2
-
-_fire_player_hit_alien:                     EQU _player_missile_hit_alien_value
-_fire_player_hit_shield:                    EQU _player_missile_hit_shield_value & (~ _player_missile_hit_alien_value) & (~_player_missile_hit_alien_missile_value)
-_fire_alien_hit_shield:                     EQU _alien_missile_hit_shield_value & (~ _player_missile_hit_alien_value) & (~_player_missile_hit_alien_missile_value)
-_fire_missiles_collided:                    EQU _player_missile_hit_alien_missile_value & (~ _player_missile_hit_alien_value)                    
-
 
     MACRO CHECK_ALIEN_MISSILE am_number
     
@@ -109,13 +74,13 @@ handle_collision:
 
     ; ---> Reset collision flags
     LD A,0x00
-    LD (_collisions),A
+    LD (.collisions),A
     ; <--- Reset collision flags
 
     ; ---> Player missile collisions 
     LD IX,player_missile_collision
 
-    ; TODO CHECK ACTIVE HERE?
+    ; TODO Should we check that the player missile is active here?
     ; Has there been a collision with the player missle?
     BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
     JP Z,.check_alien_missile_collisions                    ; No collision so done
@@ -124,7 +89,7 @@ handle_collision:
     LD DE,(IX+COLLISION_OFFSET_COORDS)
     PUSH DE
     PUSH DE                                                 ; Space for return value
-    CALL alien_pack.get_alien_at_coords
+    CALL aliens.get_alien_at_coords
     POP DE                                                  ; Return value
     POP HL
 
@@ -132,9 +97,9 @@ handle_collision:
     CP D
     JR Z,.check_player_missile_alien_missile_collision      ; No, so done here.
 
-    LD A,(_collisions)                                      ; Record the collision
-    OR _player_missile_hit_alien_value
-    LD (_collisions),A
+    LD A,(.collisions)                                      ; Record the collision
+    OR .PLAYER_MISSILE_HIT_ALIEN_VALUE
+    LD (.collisions),A
     LD HL,_alien_hit_by_player_missile
     LD (HL),DE
     
@@ -165,43 +130,44 @@ handle_collision:
     ; Fall through
 
 .alien_missile_found:
-    LD A,(_collisions)                                  ; Record the collision
-    OR _player_missile_hit_alien_missile_value
-    LD (_collisions),A
+    LD A,(.collisions)                                      ; Record the collision
+    OR .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE
+    LD (.collisions),A
 
     JR .check_alien_missile_collisions  
 
 .assume_player_missile_collided_with_shield:
-    LD A,(_collisions)                                  ; Assume the collision was with a shield
-    OR _player_missile_hit_shield_value
-    LD (_collisions),A
+    LD A,(.collisions)                                      ; Assume the collision was with a shield
+    OR .PLAYER_MISSILE_HIT_SHIELD_VALUE
+    LD (.collisions),A
     ; Fall through
 
     ; ---> Alien missile collisions (missile to missile collision already checked)
 .check_alien_missile_collisions
     LD IX,alien_missile_collision
 
+    ; TODO Should we check that the alien missile is active here?
     ; Has there been a collision with an alien missile?
     BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
-    JR Z,.done_checking                                 ; No collision so done
+    JR Z,.done_checking                                     ; No collision so done
 
-    LD A,(_collisions)                                  ; Was there a missile to missile collision?
-    BIT _player_missile_hit_alien_missile_bit,A         ; Yes - so already dealt with
+    LD A,(.collisions)                                      ; Was there a missile to missile collision?
+    BIT .PLAYER_MISSILE_HIT_ALIEN_MISSILE_BIT,A             ; Yes - so already dealt with
     JR NZ, .done_checking
 
-    LD A,(_collisions)                                  ; Assume alien missile hit a shield
-    OR _alien_missile_hit_shield_value
-    LD (_collisions),A
+    LD A,(.collisions)                                      ; Assume alien missile hit a shield
+    OR .ALIEN_MISSILE_HIT_SHIELD_VALUE
+    LD (.collisions),A
 
     JR .done_checking
     ; <---Alien missile collisions
 
     ; ---> Done check collisions, now decide what to do
 .done_checking:
-    LD A,(_collisions)
+    LD A,(.collisions)
     
     ; Did the player missile hit an alien?
-    CP _fire_player_hit_alien
+    CP .FIRE_PLAYER_HIT_ALIEN
     JR NZ,.next_1
     LD HL,(_alien_hit_by_player_missile)
     PUSH HL
@@ -210,19 +176,19 @@ handle_collision:
     ; Fall through
 
 .next_1
-    CP _fire_player_hit_shield
+    CP .FIRE_PLAYER_HIT_SHIELD
     JR NZ,.next_2
     CALL global_state.event_player_missile_hit_shield 
     ; Fall through
 
 .next_2
-    CP _fire_alien_hit_shield
+    CP .FIRE_ALIEN_HIT_SHIELD
     JR NZ,.next_3
     CALL global_state.event_alien_missile_hit_shield
     ; Fall through
 
 .next_3
-    CP _fire_missiles_collided
+    CP .FIRE_MISSILES_COLLIDED
     JR NZ,.next_4
     LD HL,(.alien_missile_hit)
     PUSH HL
@@ -240,7 +206,24 @@ handle_collision:
     POP IX,HL,DE,BC,AF
     
     RET
-.alien_missile_hit: BLOCK 2
+
+.collisions:                                BLOCK 1
+.alien_missile_hit:                         BLOCK 2
+
+.FIRE_PLAYER_HIT_ALIEN:                     EQU .PLAYER_MISSILE_HIT_ALIEN_VALUE
+.FIRE_PLAYER_HIT_SHIELD:                    EQU .PLAYER_MISSILE_HIT_SHIELD_VALUE & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE)
+.FIRE_ALIEN_HIT_SHIELD:                     EQU .ALIEN_MISSILE_HIT_SHIELD_VALUE & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE)
+.FIRE_MISSILES_COLLIDED:                    EQU .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE)     
+
+.PLAYER_MISSILE_HIT_ALIEN_VALUE:            EQU 0b00000001
+.PLAYER_MISSILE_HIT_SHIELD_VALUE:           EQU 0b00000010
+.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE:    EQU 0b00000100
+.ALIEN_MISSILE_HIT_SHIELD_VALUE:            EQU 0b00001000
+
+.PLAYER_MISSILE_HIT_ALIEN_BIT:              EQU 0
+.PLAYER_MISSILE_HIT_SHIELD_BIT:             EQU 1
+.PLAYER_MISSILE_HIT_ALIEN_MISSILE_BIT:      EQU 2
+.ALIEN_MISSILE_HIT_SHIELD_BIT:              EQU 3
 
 
    

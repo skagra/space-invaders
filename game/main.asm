@@ -64,9 +64,9 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "draw/module.asm"
     INCLUDE "fast_draw/module.asm"
     INCLUDE "keyboard/module.asm"
-    INCLUDE "player_base/module.asm"
+    INCLUDE "player/module.asm"
     INCLUDE "player_missile/module.asm"
-    INCLUDE "alien_pack/module.asm"
+    INCLUDE "aliens/module.asm"
     INCLUDE "print/module.asm"
     INCLUDE "game_screen/module.asm"
     INCLUDE "collision/module.asm"
@@ -94,7 +94,7 @@ main:
     CALL game_screen.init
     CALL player.init
     CALL player_missile.init
-    CALL alien_pack.init
+    CALL aliens.init
     CALL collision.init
     CALL scoring.init
     CALL alien_missiles.init
@@ -133,16 +133,16 @@ main:
     CALL player_missile.draw
 
     ; Erase the current alien
-    CALL alien_pack.blank
+    CALL aliens.blank
 
     ; Calculate new coordinates and variant for current alien  
-    CALL alien_pack.update  
+    CALL aliens.update  
 
     ; Draw the current alien
-    CALL alien_pack.draw
+    CALL aliens.draw
 
     ; Move on to next alien
-    CALL alien_pack.next_alien
+    CALL aliens.next_alien
 
     ; Blank current alien missile in cycle 
     CALL alien_missiles.blank

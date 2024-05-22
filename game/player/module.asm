@@ -2,7 +2,10 @@
 
 _module_start:
 
-    INCLUDE "player_base.asm"
+    INCLUDE "init.asm"
+    INCLUDE "state.asm"
+    INCLUDE "draw.asm"
+    INCLUDE "update.asm"
 
     MEMORY_USAGE "player          ",_module_start
 

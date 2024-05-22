@@ -2,6 +2,7 @@
 
 _module_start:
 
+    INCLUDE "init.asm"
     INCLUDE "game_screen.asm"
     INCLUDE "scoring.asm"
     INCLUDE "credits.asm"

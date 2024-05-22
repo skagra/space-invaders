@@ -1,5 +1,4 @@
-init:
-    RET
+
 
 ; The play area is inset slightly to adjust the aspect ration to be as close as we can get to the arcade machine
 INSET_X_PIXELS:                 EQU 16

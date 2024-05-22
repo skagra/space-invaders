@@ -1,6 +1,7 @@
     MODULE memory_map
 
-    INCLUDE "memory_map.asm"
+    INCLUDE "init.asm"
+    INCLUDE "state.asm"
   
     ENDMODULE
   

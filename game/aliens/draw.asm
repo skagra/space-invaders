@@ -26,7 +26,7 @@ blank:
     LD A,(IX+_STATE_OFFSET_STATE)                       ; State of current alien
 
     ; Is the current alien dead or new
-    AND _ALIEN_STATE_DEAD | _ALIEN_STATE_NEW,A
+    AND _ALIEN_STATE_DEAD_VALUE | _ALIEN_STATE_NEW_VALUE,A
     JR NZ,.done                                         ; Dead or new so nothing to do
 
     ; Blank old sprite position
@@ -89,7 +89,7 @@ draw:
     
     ; Is the deferred alien active pr new
     LD A,(IX+_STATE_OFFSET_STATE)
-    AND _ALIEN_STATE_ACTIVE|_ALIEN_STATE_NEW,A    
+    AND _ALIEN_STATE_ACTIVE_VALUE|_ALIEN_STATE_NEW_VALUE,A    
     JR Z,.done                                          ; Dead 
 
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
@@ -104,7 +104,7 @@ draw:
     LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)
     PUSH HL 
 
-    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_0 
+    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_0_VALUE 
     JR .variant_selected
 
 .variant_1_is_current:   
@@ -112,7 +112,7 @@ draw:
     LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE) 
     PUSH HL
 
-    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_1
+    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_1_VALUE
 
 .variant_selected:
 

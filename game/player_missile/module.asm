@@ -2,7 +2,10 @@
 
 _module_start:
 
-    INCLUDE "player_missile.asm"
+    INCLUDE "state.asm"
+    INCLUDE "init.asm"
+    INCLUDE "draw.asm"
+    INCLUDE "update.asm"
 
     MEMORY_USAGE "player missile  ",_module_start
 

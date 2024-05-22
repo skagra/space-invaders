@@ -1,21 +1,5 @@
 ;------------------------------------------------------------------------------
 ;
-; Initialise the module
-;
-; Usage:
-;   CALL init
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;------------------------------------------------------------------------------
-init:
-    RET
-    
-;------------------------------------------------------------------------------
-;
 ; Draw the initial screen.
 ; 
 ; Usage:
@@ -66,7 +50,7 @@ draw_pre_play:
 
     LD HL,.PLAY_PLAYER_1_TEXT
     PUSH HL
-    LD HL,10 ; TODO
+    LD HL,10                                    ; TODO Pull out hard coded value
     PUSH HL
     CALL print.print_string
     POP HL

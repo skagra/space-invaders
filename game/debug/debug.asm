@@ -1,25 +1,3 @@
-
-_VTRACE_INTERVAL:   EQU 5
-_vtrace_count:      BLOCK 1
-_VTRACE_BYTE:       EQU memory_map.SCREEN_ATTR_START+(draw_common.SCREEN_HEIGHT_CHARS-1)*draw_common.SCREEN_WIDTH_CHARS
-
-_CYCLE_BYTE: EQU _VTRACE_BYTE+1
-
-init:
-    PUSH AF
-
-    IFDEF DEBUG
-        LD A,_VTRACE_INTERVAL
-        LD (_vtrace_count),A
-        LD A,0x00
-        LD (_VTRACE_BYTE),A 
-        LD (_CYCLE_BYTE),A
-    ENDIF
-
-    POP AF
-
-    RET
-
 _vtrace_flash:
     PUSH AF,HL
 

@@ -34,24 +34,24 @@ get_alien_at_coords:
     LD IX,DE                                            ; Set IX to point to alien state
 
     ; Is the alien active?
-    LD A,(IX+alien_pack._STATE_OFFSET_STATE);           ; Is alien active?
-    BIT alien_pack._ALIEN_STATE_ACTIVE_BIT,A
+    LD A,(IX+aliens._STATE_OFFSET_STATE);               ; Is alien active?
+    BIT aliens._ALIEN_STATE_ACTIVE_BIT,A
     JR Z,.row_not_found                                 ; No - so skip it
 
     IFDEF DEBUG
-        LD B,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)
+        LD B,(IX+aliens._STATE_OFFSET_DRAW_COORDS_Y)
         ; LOGPOINT [COLLISION] get_alien_at_coords: Testing top at ${B}
     ENDIF
 
     ; Is the target Y "below" to top of the alien - Y coords increase as we go down the screen
     LD A,(.target_y)                                    ; target Y coordinate
-    CP (IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)      ; Compare to top of alien
+    CP (IX+aliens._STATE_OFFSET_DRAW_COORDS_Y)          ; Compare to top of alien
     JR C,.row_not_found                                 ; Is the top of the alien coord greater than the target coord
 
     ; Is the target Y "above" the bottom of the alien?
     LD A,(.target_y)
     LD B,A
-    LD A,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_Y)
+    LD A,(IX+aliens._STATE_OFFSET_DRAW_COORDS_Y)
     ADD 0x08                                            ; Bottom of alien is at +8
 
     ; LOGPOINT [COLLISION] get_alien_at_coords: Testing bottom at ${A}
@@ -87,13 +87,13 @@ get_alien_at_coords:
     LD IX,DE                                            ; Point IX to alien state
 
     ; Is the alien active?
-    LD A,(IX+alien_pack._STATE_OFFSET_STATE);           ; Is the alien active?
-    BIT alien_pack._ALIEN_STATE_ACTIVE_BIT,A
+    LD A,(IX+aliens._STATE_OFFSET_STATE);               ; Is the alien active?
+    BIT aliens._ALIEN_STATE_ACTIVE_BIT,A
     JR Z,.col_not_found                                 ; No - so skip it
    
     ; Is the target X <= alien RHS
     LD A,(.target_x)
-    LD A,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_X)    ; Alien X coord
+    LD A,(IX+aliens._STATE_OFFSET_DRAW_COORDS_X)        ; Alien X coord
     ADD 14                                              ; RHS of alien is at +16  TODO
     LD B,A
     LD A,(.target_x)
@@ -103,13 +103,13 @@ get_alien_at_coords:
 
     ; Is the target X >= alien LHS
     IFDEF DEBUG
-        LD B,(IX+alien_pack._STATE_OFFSET_DRAW_COORDS_X)
+        LD B,(IX+aliens._STATE_OFFSET_DRAW_COORDS_X)
         ; LOGPOINT [COLLISION] get_alien_at_coords: Testing LHS at ${B}
     ENDIF
     LD A,(.target_x)
     INC A
     INC A
-    CP (IX+alien_pack._STATE_OFFSET_DRAW_COORDS_X)                                              
+    CP (IX+aliens._STATE_OFFSET_DRAW_COORDS_X)                                              
     JR C,.col_not_found                                 ; No, so not this alien.  TODO Can we jump right to done here?
 
     ; Alien found

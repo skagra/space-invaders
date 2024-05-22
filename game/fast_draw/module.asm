@@ -2,7 +2,9 @@
 
 _module_start:
 
-    INCLUDE "fast_draw.asm"
+    INCLUDE "state.asm"
+    INCLUDE "init.asm"
+    INCLUDE "draw.asm"
 
     MEMORY_USAGE "fast draw       ",_module_start
 

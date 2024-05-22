@@ -1,32 +1,6 @@
-score_player_1: 
-score_lsb_player_1: BLOCK 1
-score_msb_player_1: BLOCK 1
 
-score_player_2: 
-score_lsb_player_2: BLOCK 1
-score_msb_player_2: BLOCK 1
 
-score_high: 
-score_lsb_high:     BLOCK 1
-score_msb_high:     BLOCK 1
 
-init:
-    PUSH DE,HL
-
-    LD DE,0x0000
-
-    LD HL,score_player_1
-    LD (HL),DE
-
-    LD HL,score_player_2
-    LD (HL),DE
-
-    LD HL,score_high
-    LD (HL),DE
-
-    POP DE,HL
-    
-    RET
 
 add_to_score:
 

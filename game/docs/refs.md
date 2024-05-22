@@ -9,7 +9,7 @@
 
 # Z80
 
-* [Zilog Z80 User Manual](UserManual.pdf)
+* [Zilog Z80 User Manual](http://www.zilog.com/docs/z80/um0080.pdf)
 * [DeZog](https://github.com/maziac/DeZog) - Z80 Debugger with Spectrum Emulation.
 * [DeZog Sample Program](https://github.com/maziac/z80-sample-program)
 * Sjasmplus - [Assembler](https://github.com/z00m128/sjasmplus) [Docs](https://z00m128.github.io/sjasmplus/documentation.html)

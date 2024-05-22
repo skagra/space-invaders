@@ -1,8 +1,8 @@
 ; Direction of movement of alien pack
-_PACK_DIRECTION_LEFT:                   EQU 0b00000001   
-_PACK_DIRECTION_RIGHT:                  EQU 0b00000010
-_PACK_DIRECTION_DOWN_AT_LEFT:           EQU 0b00000100
-_PACK_DIRECTION_DOWN_AT_RIGHT:          EQU 0b00001000
+_PACK_DIRECTION_LEFT_VALUE:             EQU 0b00000001   
+_PACK_DIRECTION_RIGHT_VALUE:            EQU 0b00000010
+_PACK_DIRECTION_DOWN_AT_LEFT_VALUE:     EQU 0b00000100
+_PACK_DIRECTION_DOWN_AT_RIGHT_VALUE:    EQU 0b00001000
 
 _PACK_DIRECTION_LEFT_BIT:               EQU 0   
 _PACK_DIRECTION_RIGHT_BIT:              EQU 1
@@ -34,64 +34,6 @@ _pack_halted:                           BLOCK 1
 ; Current number of aliens
 _alien_count:                           BLOCK 1
 
-;------------------------------------------------------------------------------
-;
-; Initialise the module
-;
-; Usage:
-;   CALL init
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-;------------------------------------------------------------------------------
-
-init:
-    PUSH AF,DE,HL
-
-    ; Alien pack direction
-    LD A,_PACK_DIRECTION_RIGHT
-    LD (_pack_direction),A
-
-    ; Pointer to pack data
-    LD HL,_ALIEN_LOOKUP                            
-    LD (_current_alien_lookup_ptr),HL
-
-    ; Initial pack variant
-    LD A,_ALIEN_VARIANT_0
-    LD (_current_pack_variant_flag),A        
-
-    ; Pack loop counter
-    LD A,_ALIEN_PACK_SIZE
-    LD (_pack_loop_counter),A
-
-    LD A,utils.FALSE_VALUE
-    LD (_pack_halted),A
-
-    ; Pack extremeties
-    ; TODO proper way of setting initial values
-    LD A,0x20
-    LD (_pack_bottom),A  
-
-    LD A,0x10
-    LD (_pack_left),A
-    
-    LD A,0x60
-    LD (_pack_top),A
-    
-    LD A,0xB0
-    LD (_pack_right),A                      
-
-    LD A,_ALIEN_PACK_SIZE
-    LD (_alien_count),A
-
-    POP HL,DE,AF
-
-    RET
-
 _adjust_alien_pack_direction:
     PUSH AF,HL
 
@@ -99,19 +41,19 @@ _adjust_alien_pack_direction:
     LD A,(_pack_direction)    
 
     ; Moving right?
-    CP _PACK_DIRECTION_RIGHT
+    CP _PACK_DIRECTION_RIGHT_VALUE
     JR Z,.currently_moving_right
 
     ; Moving left?
-    CP _PACK_DIRECTION_LEFT
+    CP _PACK_DIRECTION_LEFT_VALUE
     JR Z,.currently_moving_left
 
     ; Moving down - is pack at the RHS of the screen?
-    CP _PACK_DIRECTION_DOWN_AT_RIGHT
+    CP _PACK_DIRECTION_DOWN_AT_RIGHT_VALUE
     JR Z,.currently_moving_down_at_right
 
     ; Movin down, pack is at LHS of the screen
-    LD A,_PACK_DIRECTION_RIGHT                          ; Switch to moving right
+    LD A,_PACK_DIRECTION_RIGHT_VALUE                    ; Switch to moving right
     LD (_pack_direction),A
 
     ; Reset pack right 
@@ -121,7 +63,7 @@ _adjust_alien_pack_direction:
     JR .done
 
 .currently_moving_down_at_right:
-    LD A,_PACK_DIRECTION_LEFT                           ; Switch to moving left
+    LD A,_PACK_DIRECTION_LEFT_VALUE                     ; Switch to moving left
     LD (_pack_direction),A
 
     ; Reset pack left
@@ -137,7 +79,7 @@ _adjust_alien_pack_direction:
     JR C,.done                                          ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at right of screen
-    LD A,_PACK_DIRECTION_DOWN_AT_RIGHT              
+    LD A,_PACK_DIRECTION_DOWN_AT_RIGHT_VALUE              
     LD (_pack_direction),A
     
     JR .done
@@ -149,7 +91,7 @@ _adjust_alien_pack_direction:
     JR NC,.done                                         ; No, carry on in same direction
 
     ; Switch to moving down flagging pack is at left of screen
-    LD A,_PACK_DIRECTION_DOWN_AT_LEFT             
+    LD A,_PACK_DIRECTION_DOWN_AT_LEFT_VALUE             
     LD (_pack_direction),A
     
 .done
@@ -189,7 +131,7 @@ _move_current_alien:
 
     ; Is the pack moving left, right or down
     LD A,(_pack_direction)
-    CP _PACK_DIRECTION_LEFT
+    CP _PACK_DIRECTION_LEFT_VALUE
     JR NZ,.not_moving_left                              ; No
 
     ; Moving left
@@ -200,7 +142,7 @@ _move_current_alien:
     JR .done_moving
 
 .not_moving_left:
-    CP _PACK_DIRECTION_RIGHT                            ; Is the pack moving right
+    CP _PACK_DIRECTION_RIGHT_VALUE                            ; Is the pack moving right
     JR NZ,.moving_down                                  ; No
 
     ; Moving right
@@ -356,7 +298,7 @@ update:
     JR .done
 
 .new:
-    LD (IX+_STATE_OFFSET_STATE),_ALIEN_STATE_ACTIVE
+    LD (IX+_STATE_OFFSET_STATE),_ALIEN_STATE_ACTIVE_VALUE
     JR .done
 
 .active:
@@ -447,7 +389,7 @@ _next_pack_cycle:
     ; Cycle which variant we'll draw
     LD HL,_current_pack_variant_flag 
     LD A, (HL)
-    XOR _ALIEN_VARIANT_0 | _ALIEN_VARIANT_1
+    XOR _ALIEN_VARIANT_0_VALUE | _ALIEN_VARIANT_1_VALUE
     LD (_current_pack_variant_flag),A
 
     ; Reset current alien pointer to start of pack
@@ -460,85 +402,7 @@ _next_pack_cycle:
 
     RET
 
-event_alien_hit_by_player_missile:
 
-.PARAM_ALIEN_STATE_PTR EQU 8 
-
-    PUSH HL,IX,IY
-
-    ; Point IX to the stack
-    LD  IX,0                                            
-    ADD IX,SP   
-
-    ; Pointer to the collided alien
-    LD HL,(IX+.PARAM_ALIEN_STATE_PTR)
-
-    ; Store it
-    LD (_exploding_alien),HL
-
-    ; Halt the pack during the explosion
-    LD A,utils.TRUE_VALUE
-    LD (_pack_halted),A
-
-    ; Set the alien state to be dead
-    LD IY,HL
-    LD (IY+alien_pack._STATE_OFFSET_STATE),_ALIEN_STATE_DEAD 
-
-    ; Blank out the alien
-    LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
-    PUSH HL     
-
-    ; Select sprite mask based on variant
-    LD A,(IY+_STATE_OFFSET_VARIANT)                     
-    BIT _ALIEN_VARIANT_1_BIT,A
-    JR NZ,.variant_1_is_current                         
-                             
-    LD HL,(IY+_STATE_OFFSET_VAR_0_SPRITE)               ; Use sprite as mask 
-    JR .variant_selected
-
-.variant_1_is_current:   
-    LD HL,(IY+_STATE_OFFSET_VAR_1_SPRITE)               ; Use sprite as mask 
-
-.variant_selected:
-    PUSH HL                                             ; Mask is in HL
-
-    LD L,utils.TRUE_VALUE                               ; Blanking
-    PUSH HL
-    
-    CALL fast_draw.draw_sprite_16x8
-    
-    POP DE 
-    POP DE
-    POP DE
-
-    ; Draw alien explosion
-    LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
-    PUSH HL  
-
-    LD HL,sprites.ALIEN_EXPLOSION;                      ; Sprite
-    PUSH HL
-
-    LD L,utils.FALSE_VALUE                              ; Drawing
-    PUSH HL 
-
-    CALL fast_draw.draw_sprite_16x8
-
-    POP HL 
-    POP HL
-    POP HL
-
-    POP IY,IX,HL
-
-    ; Decrease the count of aliens
-    LD A,(_alien_count)
-    DEC A
-    LD (_alien_count),A
-
-    ; Are we down to the last alien?
-
-    RET
-
-.EXPLODING_ALIEN_DELAY EQU  15
 
 
 

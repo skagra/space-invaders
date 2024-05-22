@@ -1,0 +1,4 @@
+init:
+    CALL reset
+
+    RET

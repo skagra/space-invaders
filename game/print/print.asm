@@ -1,20 +1,3 @@
-;------------------------------------------------------------------------------
-;
-; Initialise the module
-;
-; Usage:
-;   CALL init
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;------------------------------------------------------------------------------
-
-init:
-    RET
-
 print_bcd_word:
 
 .PARAM_COORDS EQU 10

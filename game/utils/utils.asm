@@ -1,26 +1,3 @@
-TRUE_VALUE:   EQU 0b00000001
-FALSE_VALUE:  EQU 0b00000010
-
-TRUE_BIT:   EQU 0
-FALSE_BIT:  EQU 1
-
-;------------------------------------------------------------------------------
-;
-; Initialise the module
-;
-; Usage:
-;   CALL init
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;------------------------------------------------------------------------------
-
-init:
-    RET
-    
 ;------------------------------------------------------------------------------
 ;
 ; Fill an area of memory with a given value
