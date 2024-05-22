@@ -81,7 +81,7 @@
                 "reverseDebugInstructionCount": 1000000,
                 "spotCount": 10
             },
-            "startAutomatically": false,
+            "startAutomatically": true,
             "commandsAfterLaunch": [],
             "rootFolder": "${workspaceFolder}",
             "topOfStack": "main.STACK_TOP",
