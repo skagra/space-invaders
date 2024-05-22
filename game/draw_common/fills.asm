@@ -12,7 +12,6 @@
 ;   -
 ;------------------------------------------------------------------------------
 
-; TODO This should be using the double buffer
 wipe_screen:
     PUSH HL,IX    
 

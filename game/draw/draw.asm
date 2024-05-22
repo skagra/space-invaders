@@ -145,7 +145,7 @@ draw_sprite:
     ADD IX,SP                                                   
 
     ; Initialize the collision flag
-    LD HL,(IX+.PARAM_COLLISION_STRUCT)                  ; TODO Maybe have a local flag for efficiency?
+    LD HL,(IX+.PARAM_COLLISION_STRUCT)                  
     LD IY,0x0000
     LD IY,HL                     
     LD (IY+collision.COLLISION_OFFSET_COLLIDED),utils.FALSE_VALUE
