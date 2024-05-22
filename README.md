@@ -2,9 +2,9 @@
 
 A faithful reproduction of the original arcade Space Invaders game, as released in 1978 by Taito. Implemented in Z80 machine code for the ZX Spectrum 48K. 
 
-<div style="text-align: center">
+<p align="center">
 <img src="docs/animation.gif">
-</div>
+</p>
 
 # Contents
 
