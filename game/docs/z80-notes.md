@@ -29,6 +29,18 @@
     RL H
 ```
 
+If only one shift is needed, then this is faster:
+
+```
+    ADD HL,HL
+```
+
+Likewise for 8 bit registers:
+
+```
+    ADD A,A
+```
+
 # Compare A to Zero with Modifying
 
 ```
@@ -40,4 +52,27 @@
 ```
     LD  IX,0
     ADD IX,SP   
+```
+
+# Compare
+
+```
+    CP 10
+```
+
+* `Z` => `A=10` 
+* `NZ` => `A!=10` 
+* `C` =>`A<10`  
+* `NC` =>`A>=10`  
+
+# Set A=0
+
+```
+    XOR A
+```
+
+# Compare A==0
+
+```
+    AND A
 ```

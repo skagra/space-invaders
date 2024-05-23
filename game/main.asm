@@ -4,6 +4,9 @@
     ; Source debugging settings
     SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
 
+    ; Skip past contended memory
+    ORG 0x8000 
+
     DISPLAY "Build settings"
     DISPLAY " "
 
@@ -46,13 +49,6 @@
     DISPLAY " "
 
     INCLUDE "memory_map/module.asm"
-
-    ; Reserve space for screen memory     
-    ORG 0x0
-    BLOCK memory_map.FREE_MEMORY_START
-
-    ; Skip past contended memory
-    ORG 0x8000 
     INCLUDE "debug/module.asm"
     INCLUDE "sprites/module.asm"
     
@@ -218,8 +214,10 @@ STACK_TOP: EQU $-1
     ; Save snapshot for spectrum emulator
     IFDEF DEBUG
         SAVESNA "bin/space-invaders-debug.sna",main.main
+;       SAVETAP "bin/space-invaders-debug.tap",main.main
     ELSE
         SAVESNA "bin/space-invaders-release.sna",main.main
+;       SAVETAP "bin/space-invaders-release.tap",main.main
     ENDIF
    
     

@@ -185,7 +185,6 @@ handle_collision:
     JR .done_checking
 
 .check_alien_missile_shield_collision:
-    ; TODO Should we check that the alien missile is active here?
     ; Has there been a collision with an alien missile?
     BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
     JR Z,.done_checking                                     ; No collision so done

@@ -315,7 +315,7 @@ _fire_if_ready:
     LD IY,HL                                                ; Alien pointer
     LD HL,(IY+aliens._STATE_OFFSET_DRAW_COORDS)             ; Alien coords
     LD D,0x04                                               ; Adjust firing coords to bottom middle of alien
-    LD E,0x08
+    LD E,0x08                                               ; TODO - This should be moved out to a defined constant
     ADD HL,DE
     LD (IX+_ALIEN_MISSILE_OFFSET_COORDS),HL
 

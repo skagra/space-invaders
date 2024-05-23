@@ -43,10 +43,10 @@ PLAYER_COUNT_CHAR_Y:            EQU draw_common.SCREEN_HEIGHT_CHARS-1
 PLAYER_COUNT_CHAR_COORDS:       EQU (PLAYER_COUNT_CHAR_X<<8) + PLAYER_COUNT_CHAR_Y
 
 ; Player base
-PLAYER_START_X:                 EQU (draw_common.SCREEN_WIDTH_PIXELS/2)-(((sprites.PLAYER_DIM_X_BYTES-1)*8)/2) 
+PLAYER_START_X:                 EQU PLAYER_MIN_X+1  
 PLAYER_Y:                       EQU draw_common.SCREEN_HEIGHT_PIXELS-3*8
-PLAYER_MIN_X:                   EQU INSET_X_PIXELS
-PLAYER_MAX_X:                   EQU INSET_X_PIXELS+INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_DIM_X_BYTES-1)*8
+PLAYER_MIN_X:                   EQU INSET_X_PIXELS+16
+PLAYER_MAX_X:                   EQU INSET_X_PIXELS+INSET_SCREEN_WIDTH_PIXELS-(sprites.PLAYER_DIM_X_BYTES-1)*8-16
 
 ; Player missile
 PLAYER_MISSILE_START_Y:         EQU PLAYER_Y-4 
@@ -76,4 +76,4 @@ PLAY_PLAYER_X:                  EQU 0
 PLAY_PLAYER_COORDS:             EQU (PLAY_PLAYER_X<<8) + PLAY_PLAYER_Y
 
 ; Alien missiles
-ALIEN_MISSILE_MAX_Y:            EQU draw_common.SCREEN_HEIGHT_PIXELS-2*8-5    ; Y at which missile is considered to have hit the bottom of the screen
+ALIEN_MISSILE_MAX_Y:            EQU draw_common.SCREEN_HEIGHT_PIXELS-2*8-4    ; Y at which missile is considered to have hit the bottom of the screen
