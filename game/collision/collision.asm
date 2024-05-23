@@ -144,8 +144,47 @@ handle_collision:
 
     ; ---> Alien missile collisions (missile to missile collision already checked)
 .check_alien_missile_collisions
-    LD IX,alien_missile_collision
+    LD IX,alien_missile_collision                           ; Point IX at the collision structure
+    
+    BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
+    JP Z,.done_checking                                     ; No collision so done
 
+    ; Has current alien missile hit the player
+    LD DE,(IX+COLLISION_OFFSET_COORDS)                      ; Target coords
+    PUSH DE
+
+    LD A,(player.player_x)                                  ; Coordinates of the player
+    LD H,A
+    LD A,layout.PLAYER_Y
+    LD L,A
+ 
+    LD BC,0x0808
+    SUB HL,BC                                               ; Top left   
+    PUSH HL
+
+    LD BC,0x1414
+    ADD HL,BC                                               ; Bottom right
+    PUSH HL
+
+    PUSH HL                                                 ; Space for return value
+
+    CALL utils.is_point_in_box
+
+    POP HL                                                  ; Result
+    POP DE
+    POP DE
+    POP DE
+
+    BIT utils.TRUE_BIT,L
+    JR Z,.check_alien_missile_shield_collision
+
+    LD A,(.collisions)                                      ; Assume the collision was with a shield
+    OR .ALIEN_MISSILE_HIT_PLAYER_VALUE                      ; LOGPOINT [COLLISION_CHECKS] Player hit but alien missile
+    LD (.collisions),A
+
+    JR .done_checking
+
+.check_alien_missile_shield_collision:
     ; TODO Should we check that the alien missile is active here?
     ; Has there been a collision with an alien missile?
     BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
@@ -197,11 +236,14 @@ handle_collision:
     ; Fall through
 
 .next_4
+    ; CP .FIRE_ALIEN_MISSILE_HIT_PLAYER
+    BIT .ALIEN_MISSILE_HIT_PLAYER_BIT,A
+    JR Z,.next_5
+    CALL global_state.event_alien_missile_hit_player
 
-    ; LOGPOINT [COLLISION_CHECKS] _player_missile_hit_alien=${(collision._player_missile_hit_alien)}
-    ; LOGPOINT [COLLISION_CHECKS] _player_missile_hit_alien_missile=${(collision._player_missile_hit_alien_missile)}
-    ; LOGPOINT [COLLISION_CHECKS] _player_missile_hit_shield=${(collision._player_missile_hit_shield)}
-    ; LOGPOINT [COLLISION_CHECKS] _alien_missile_hit_shield=${(collision._alien_missile_hit_shield)}
+    ; Fall through
+
+.next_5
 
     POP IX,HL,DE,BC,AF
     
@@ -210,20 +252,24 @@ handle_collision:
 .collisions:                                BLOCK 1
 .alien_missile_hit:                         BLOCK 2
 
+; TODO - Not convinced about this mechanism! Should these be masks?   We have bits that must be true and bits we don't care about?
+; Or maybe just one alien bit and one player bit or two separate variables?
 .FIRE_PLAYER_HIT_ALIEN:                     EQU .PLAYER_MISSILE_HIT_ALIEN_VALUE
-.FIRE_PLAYER_HIT_SHIELD:                    EQU .PLAYER_MISSILE_HIT_SHIELD_VALUE & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE)
-.FIRE_ALIEN_HIT_SHIELD:                     EQU .ALIEN_MISSILE_HIT_SHIELD_VALUE & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE)
-.FIRE_MISSILES_COLLIDED:                    EQU .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE)     
+.FIRE_PLAYER_HIT_SHIELD:                    EQU .PLAYER_MISSILE_HIT_SHIELD_VALUE ; & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE) 
+.FIRE_ALIEN_HIT_SHIELD:                     EQU .ALIEN_MISSILE_HIT_SHIELD_VALUE ; & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE) 
+.FIRE_MISSILES_COLLIDED:                    EQU .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE ; & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE)     
+.FIRE_ALIEN_MISSILE_HIT_PLAYER:             EQU .ALIEN_MISSILE_HIT_PLAYER_VALUE 
 
 .PLAYER_MISSILE_HIT_ALIEN_VALUE:            EQU 0b00000001
 .PLAYER_MISSILE_HIT_SHIELD_VALUE:           EQU 0b00000010
 .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE:    EQU 0b00000100
 .ALIEN_MISSILE_HIT_SHIELD_VALUE:            EQU 0b00001000
+.ALIEN_MISSILE_HIT_PLAYER_VALUE:            EQU 0b00010000
 
 .PLAYER_MISSILE_HIT_ALIEN_BIT:              EQU 0
 .PLAYER_MISSILE_HIT_SHIELD_BIT:             EQU 1
 .PLAYER_MISSILE_HIT_ALIEN_MISSILE_BIT:      EQU 2
 .ALIEN_MISSILE_HIT_SHIELD_BIT:              EQU 3
-
+.ALIEN_MISSILE_HIT_PLAYER_BIT:              EQU 4
 
    

@@ -3,7 +3,7 @@ print_player_bases_count:
 
     LD HL,.dummy_bases_count
     PUSH HL
-    LD HL,layout.PLAYER_BASES_COUNT_CHAR_COORDS
+    LD HL,layout.PLAYER_COUNT_CHAR_COORDS
     PUSH HL
     CALL print.print_string
     POP HL

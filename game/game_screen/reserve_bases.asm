@@ -31,9 +31,9 @@ draw_reserve_base:
 
     LD DE,(IX+.PARAM_COORDS)             
     PUSH DE     
-    LD DE,sprites.PLAYER_BASE_DIMS
+    LD DE,sprites.PLAYER_DIMS
     PUSH DE
-    LD DE,sprites.PLAYER_BASE     
+    LD DE,sprites.PLAYER     
     PUSH DE
     CALL draw.draw_sprite_and_flush_buffer
     POP DE

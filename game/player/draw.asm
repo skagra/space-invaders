@@ -15,13 +15,17 @@
 draw:
     PUSH AF,DE
 
+    LD A,(player_state)
+    BIT _PLAYER_STATE_EXPLODING_BIT,A
+    JR NZ,.draw_explosion
+
     ; Draw the player base sprite
     LD A, (player_x)                                    ; Player base coords
     LD D,A
-    LD E, layout.PLAYER_BASE_Y
+    LD E, layout.PLAYER_Y
     PUSH DE
       
-    LD DE,sprites.PLAYER_BASE                           ; Sprite    
+    LD DE,sprites.PLAYER                                ; Sprite    
     PUSH DE
 
     LD E,utils.FALSE_VALUE                              ; Drawing
@@ -33,6 +37,27 @@ draw:
     POP DE
     POP DE
 
+    JR .done
+
+.draw_explosion
+    LD A, (player_x)                                    ; Player base coords
+    LD D,A
+    LD E, layout.PLAYER_Y
+    PUSH DE
+      
+    LD DE,(_player_explosion_current_variant_sprite)    ; Sprite    
+    PUSH DE
+
+    LD E,utils.FALSE_VALUE                              ; Drawing
+    PUSH DE
+
+    CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite
+    
+    POP DE 
+    POP DE
+    POP DE
+
+.done
     POP DE,AF
 
     RET
@@ -40,13 +65,17 @@ draw:
 blank:
     PUSH AF,DE
 
+    LD A,(player_state)
+    BIT _PLAYER_STATE_EXPLODING_BIT,A
+    JR NZ,.blank_explosion
+
     ; Erase the player base sprite
     LD A, (player_x)                                    ; Coords
     LD D,A
-    LD E, layout.PLAYER_BASE_Y
+    LD E, layout.PLAYER_Y
     PUSH DE
 
-    LD DE,sprites.PLAYER_BASE                           ; Sprite    
+    LD DE,sprites.PLAYER                                ; Sprite    
     PUSH DE
 
     LD E,utils.TRUE_VALUE                               ; Blanking
@@ -57,6 +86,28 @@ blank:
     POP DE 
     POP DE
     POP DE
+
+    JR .done
+
+.blank_explosion   
+    LD A, (player_x)                                    ; Player base coords
+    LD D,A
+    LD E, layout.PLAYER_Y
+    PUSH DE
+      
+    LD DE,(_player_explosion_current_variant_sprite)    ; Sprite    
+    PUSH DE
+
+    LD E,utils.TRUE_VALUE                               ; Drawing
+    PUSH DE
+
+    CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite
+    
+    POP DE 
+    POP DE
+    POP DE
+
+.done
 
     POP DE,AF
 

@@ -59,7 +59,7 @@ update:
 
     ; Have we hit the bottom of the screen
     LD A,L                                                  ; Y coord
-    CP .ALIEN_MISSILE_MAX_Y
+    CP layout.ALIEN_MISSILE_MAX_Y
     JR C, .update_variant                                   ; Still further to travel
 
     ; The missile has hit the bottom of the screen
@@ -119,7 +119,6 @@ update:
 
     RET
 
-.ALIEN_MISSILE_MAX_Y:            EQU draw_common.SCREEN_HEIGHT_PIXELS-20    ; Y at which missile is considered to have hit the bottom of the screen
 .ALIEN_MISSILE_EXPLOSION_CYCLES: EQU 3                                      ; How long to display a missile explosion
 
 ;------------------------------------------------------------------------------

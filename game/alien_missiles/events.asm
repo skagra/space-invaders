@@ -82,3 +82,16 @@ event_missiles_collided:
     POP IY,IX,HL,AF
 
     RET
+
+event_alien_missile_hit_player:
+    PUSH AF,IX
+
+    LD A,_ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE
+    LD IX,(_current_alien_missile_ptr) 
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A
+
+    POP IX,AF
+
+    RET
+    
+    

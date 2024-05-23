@@ -64,3 +64,8 @@ event_missile_hit_missile:
     POP HL
 
     RET
+
+event_alien_missile_hit_player:
+    CALL player.event_alien_missile_hit_player
+    CALL alien_missiles.event_alien_missile_hit_player
+    RET

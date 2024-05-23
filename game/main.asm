@@ -37,6 +37,12 @@
         DISPLAY "PAUSEABLE disabled"
     ENDIF
 
+    IFDEF NO_SHIELDS
+        DISPLAY "NO_SHIELDS **ENABLED**"
+    ELSE
+        DISPLAY "NO_SHIELDS disabled"
+    ENDIF
+    
     DISPLAY " "
 
     INCLUDE "memory_map/module.asm"

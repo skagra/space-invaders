@@ -56,10 +56,6 @@ update:
     BIT _MISSILE_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
     JP NZ,.done_at_top_of_screen 
 
-    ; Has the missile collided with something?
-    ; BIT _MISSILE_STATE_COLLIDED_BIT,A
-    ; JP NZ,.collided
-
     ; Hit a base?
     BIT _MISSILE_STATE_HIT_A_SHIELD_BIT,A
     JP NZ,.missile_state_hit_a_shield

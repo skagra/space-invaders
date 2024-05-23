@@ -50,14 +50,11 @@ is_point_in_box:
     JR C,.done                                              ; Target Y (B) > box bottom (A) => outside                            
 
     LD A,utils.TRUE_VALUE                                   ; Return success
-    LD (IX+.PARAM_RETURN),A
-    
-    NOP
+    LD (IX+.PARAM_RETURN),A   
     ; LOGPOINT [IS_POINT_IN_BOX] Point is within box
-    NOP
+
 .done
-    POP IX,BC,AF
-    
+    POP IX,BC,AF  
     ; LOGPOINT [IS_POINT_IN_BOX] <--- is_point_in_box
 
     RET
