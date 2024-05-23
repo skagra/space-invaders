@@ -78,7 +78,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
 main:
     ; Set up stack
-aa    DI                          
+    DI                          
     LD SP,STACK_TOP
     EI
 
@@ -117,47 +117,47 @@ aa    DI
     ; Erase player base
     CALL player.blank
 
-    ; Calcate new coordinates for the player base
-    CALL player.update
-
-    ; Draw the player base
-    CALL player.draw
-
-    ; Erase current player missile
-    CALL player_missile.blank
-
-    ; Calculate new coordinates and handle state changes for the player missile               
-    CALL player_missile.update
-
-    ; Draw player missile if there is one
-    CALL player_missile.draw
-
     ; Erase the current alien
     CALL aliens.blank
-
-    ; Calculate new coordinates and variant for current alien  
-    CALL aliens.update  
-
-    ; Draw the current alien
-    CALL aliens.draw
-
-    ; Move on to next alien
-    CALL aliens.next_alien
 
     ; Blank current alien missile in cycle 
     CALL alien_missiles.blank
 
+    ; Erase current player missile
+    CALL player_missile.blank
+
+    ; Calcate new coordinates for the player base
+    CALL player.update
+
+    ; Calculate new coordinates and variant for current alien  
+    CALL aliens.update  
+
     ; Update current alien missile
     CALL alien_missiles.update
 
+    ; Calculate new coordinates and handle state changes for the player missile               
+    CALL player_missile.update
+
+    ; Draw the current alien
+    CALL aliens.draw
+
+    ; Draw the player base
+    CALL player.draw
+
     ; Draw current alien missile
     CALL alien_missiles.draw
+
+    ; Draw player missile if there is one
+    CALL player_missile.draw
 
     ; Process collisions  
     CALL collision.handle_collision
 
     ; Update global state information
     CALL global_state.update
+
+    ; Move on to next alien
+    CALL aliens.next_alien
 
     ; Next alien missile
     CALL alien_missiles.next
