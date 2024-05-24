@@ -112,6 +112,9 @@ update:
     LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE              ; Missile has hit a shield
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                   ; Move it to a not active state
 
+    LD A,0x00
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A       ; Reset step count used as part of reload algorithm
+
     JR .done
 
 .done:
@@ -137,9 +140,12 @@ update:
 ;------------------------------------------------------------------------------
 
 next:
-    PUSH AF
+    PUSH AF,IX
 
-    LD A,(_current_alien_missile_type)                      ; Get the current alient type
+    ; TODO - just track current missile there's now a type value in the struct
+    LD IX,(_current_alien_missile_ptr)
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                     ; Get the current alient type
+
     CP _ALIEN_MISSILE_TYPE_0                                ; Type 0?
     JR Z,.type_0                                            ; Handle it.
 
@@ -147,25 +153,22 @@ next:
     JR Z,.type_1                                            ; Handle it.
 
     ; type 2
-    LD A,_ALIEN_MISSILE_TYPE_0                              ; Must be type 2 so loop round to type 0
     LD DE,_ALIEN_MISSILE_0
     JR .set_type
 
 .type_0:
-    LD A,_ALIEN_MISSILE_TYPE_1                              ; Type 0 => type 1
     LD DE,_ALIEN_MISSILE_1
     JR .set_type
 
 .type_1:
-    LD A,_ALIEN_MISSILE_TYPE_2                              ; Type 1 => type 2
     LD DE,_ALIEN_MISSILE_2
     JR .set_type
 
 .set_type:
-    LD (_current_alien_missile_type),A                      ; Record the new type
     LD HL,_current_alien_missile_ptr
     LD (HL),DE
-    POP AF
+
+    POP IX,AF
 
     RET
 
@@ -203,7 +206,8 @@ _fire_if_ready:
     LD IX,(_current_alien_missile_ptr)                      
 
     ; Get the step count of the other two missiles
-    LD A,(_current_alien_missile_type)  
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)  
+
     CP _ALIEN_MISSILE_TYPE_0
     JR Z,.type_0
 
@@ -234,9 +238,9 @@ _fire_if_ready:
     GET_RELOAD_STEP_COUNT 0,0
     GET_RELOAD_STEP_COUNT 2,1
 
-    LD DE,.SHOT_COLUMNS_1
-    LD HL,.alien_missile_shot_col_table_ptr
-    LD (HL),DE
+    ; LD DE,.SHOT_COLUMNS_1   NOT USED FOR TYPE 1
+    ; LD HL,.alien_missile_shot_col_table_ptr
+    ; LD (HL),DE
 
     JR .fire_test
 
@@ -286,19 +290,23 @@ _fire_if_ready:
     LD A,(.alien_missile_step_count_0)                      ; LOGPOINT [ALIEN_MISSILES] step_count_1_is_zero
     JR .test_reload_threshold
 
-.test_reload_threshold                                      ; TODO this will become variable reload rate
+.test_reload_threshold                                      ; TODO This should be a variable reload rate
     LD B,14                                                 ; LOGPOINT [ALIEN_MISSILES] Testing step count ${A} against threshold 14
     CP B                                                
     JR C,.done                                              ; Not time to reload yet
 
 .fire
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)
+    CP _ALIEN_MISSILE_TYPE_1
+    JP Z,.target_missile_type_1
+
     ; Which column to fire from?
     LD HL,(.alien_missile_shot_col_table_ptr)               ; LOGPOINT [ALIEN_MISSILES] Firing
     LD D,0x00
     LD E,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)
     ADD HL,DE
     LD A,(HL)                                            
-                                           
+
     ; Find the lowest alien in the selected column
     LD L,A
     PUSH HL                                                 ; Target column (low byte)
@@ -310,7 +318,27 @@ _fire_if_ready:
     LD A,H                                                  ; High byte == 0 => not found
     CP 0x00
     JR Z,.update_to_next_col
+    JR .firing_alien_found
 
+.target_missile_type_1:                                     ; Type 1 missile directly targets the player
+    LD A,(player.player_x)                                  ; X coord of player base
+    LD H,A                                 
+    LD L,0x00 
+    PUSH HL
+
+    PUSH HL                                                 ; Space for the return value
+
+    CALL aliens.get_lowest_alien_at_x
+    
+    POP HL                                                  ; Return value
+    POP DE
+
+    LD A,H                                                  ; 0xFF in high byte => no match
+    CP H,0xFF
+    JR Z,.done
+    ; Fall through
+
+.firing_alien_found
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE), _ALIEN_MISSILE_STATE_ACTIVE_VALUE    ; Activate the missile
     LD IY,HL                                                ; Alien pointer
     LD HL,(IY+aliens._STATE_OFFSET_DRAW_COORDS)             ; Alien coords
@@ -322,7 +350,7 @@ _fire_if_ready:
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0x01    ; One step taken (required for reload algorithm)
     ; Fall through 
 
-.update_to_next_col:
+.update_to_next_col:                                        ; TODO Don't do this for type 1
     LD A,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)       ; Update location in column table,
     INC A                                                   ; if either we've fired or there were no aliens in the selected column
     CP .SHOT_COLUMNS_COUNT                                  ; Has the end of the column lookup table been reached?
@@ -341,8 +369,7 @@ _fire_if_ready:
 
 ; Tables of alien columns from which to launch missiles
 .SHOT_COLUMNS_0: BYTE 0x00,0x06,0x00,0x00,0x00,0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07
-.SHOT_COLUMNS_1: BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
-.SHOT_COLUMNS_2: BYTE 0x05,0x02,0x05,0x04,0x06,0x07,0x08,0x0A,0x06,0x0A,0x03,0x04,0x06,0x07,0x04,0x06     
+.SHOT_COLUMNS_2: BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
 .SHOT_COLUMNS_COUNT: EQU 16
 
 .alien_missile_shot_col_table_ptr:  BLOCK 2                 ; Shot column table for the current alien missiles

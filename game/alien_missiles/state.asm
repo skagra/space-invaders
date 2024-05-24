@@ -9,7 +9,9 @@ _ALIEN_MISSILE_OFFSET_STATE:                            EQU 11                  
 _ALIEN_MISSILE_OFFSET_EXPLOSION_COUNT_DOWN:             EQU 12                  ; Count down when the missile is exploding at the bottom of the screen
 _ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT:                EQU 13                  ; Number of active steps taken - used as part of the reload algorithm
 _ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX:                EQU 14                  ; Index into relevant SHOT_COLUMNS_? table for the next column to fire from
-_ALIEN_MISSILE_STRUCT_SIZE:                             EQU 15                  ; Size of the entire struct in bytes
+_ALIEN_MISSILE_OFFSET_TYPE:                             EQU 15           
+
+_ALIEN_MISSILE_STRUCT_SIZE:                             EQU 16                  ; Size of the entire struct in bytes
 
 
 ; Alien missile states
@@ -38,13 +40,13 @@ _ALIEN_MISSILE_VARIANT_COUNT:                           EQU 4
 ; Three alien missiles
 _ALIEN_MISSILE_0: WORD 0x0000
                   WORD sprites.ALIEN_MISSILE_0_VARIANT_0,sprites.ALIEN_MISSILE_0_VARIANT_1,sprites.ALIEN_MISSILE_0_VARIANT_2,sprites.ALIEN_MISSILE_0_VARIANT_3 
-                  BYTE _ALIEN_MISSILE_VARIANT_0, _ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE,0x00,0x00,0x00
+                  BYTE _ALIEN_MISSILE_VARIANT_0, _ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE,0x00,0x00,0x00,_ALIEN_MISSILE_TYPE_0
 _ALIEN_MISSILE_1: WORD 0x0000
                   WORD sprites.ALIEN_MISSILE_1_VARIANT_0,sprites.ALIEN_MISSILE_1_VARIANT_1,sprites.ALIEN_MISSILE_1_VARIANT_2,sprites.ALIEN_MISSILE_1_VARIANT_3 
-                  BYTE _ALIEN_MISSILE_VARIANT_0, _ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE,0x00,0x00,0x00
+                  BYTE _ALIEN_MISSILE_VARIANT_0, _ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE,0x00,0x00,0x00,_ALIEN_MISSILE_TYPE_1
 _ALIEN_MISSILE_2: WORD 0x0000
                   WORD sprites.ALIEN_MISSILE_2_VARIANT_0,sprites.ALIEN_MISSILE_2_VARIANT_1,sprites.ALIEN_MISSILE_2_VARIANT_2,sprites.ALIEN_MISSILE_2_VARIANT_3 
-                  BYTE _ALIEN_MISSILE_VARIANT_0, _ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE,0x00,0x00,0x00
+                  BYTE _ALIEN_MISSILE_VARIANT_0, _ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE,0x00,0x00,0x00,_ALIEN_MISSILE_TYPE_2
 
 ; Values to flag each of the three alien missiles
 _ALIEN_MISSILE_TYPE_0:                                  EQU 0                                               
@@ -55,9 +57,6 @@ _ALIEN_MISSILE_TYPE_COUNT:                              EQU 3
 
 ; Nominal number of pixels to move a missile each cycle
 _ALIEN_MISSILE_DELTA_Y:                                 EQU 3
-
-; Current alien missile type with values from _ALIEN_MISSILE_TYPE_?
-_current_alien_missile_type: BLOCK 1
 
 ; Pointer to the current missile struct
 _current_alien_missile_ptr: BLOCK 2
