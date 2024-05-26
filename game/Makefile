@@ -40,4 +40,7 @@ $(BIN)/space-invaders-release.sna: main.asm */*.asm
 clean-windows:
 		rmdir /S /Q $(BIN)
 
+clean-linux:
+		rm -r $(BIN)
+
 	
