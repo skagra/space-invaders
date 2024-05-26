@@ -6,11 +6,11 @@ _module_start:
     INCLUDE "game_screen.asm"
     INCLUDE "scoring.asm"
     INCLUDE "credits.asm"
-    INCLUDE "player_bases_count.asm"
     INCLUDE "shields.asm"
     INCLUDE "gels.asm"
-    INCLUDE "reserve_bases.asm"
+    INCLUDE "player_lives.asm"
     INCLUDE "horizontal_line.asm"
+    INCLUDE "game_over.asm"
         
     MEMORY_USAGE "game screen     ",_module_start
     

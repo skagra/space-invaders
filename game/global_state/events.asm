@@ -69,6 +69,27 @@ event_missile_hit_missile:
     RET
 
 event_alien_missile_hit_player:
+    PUSH AF
+
     CALL player.event_alien_missile_hit_player
     CALL alien_missiles.event_alien_missile_hit_player
+
+    IFNDEF INVINCIBLE
+        CALL player_lives.event_life_lost
+    ENDIF
+
+    CALL game_screen.draw_bases
+    CALL game_screen.print_bases_count
+
+    LD A,(player_lives.player_lives_1)                  ; Game over?
+    AND A
+    JR NZ,.done
+
+    LD A,_GAME_STATE_GAME_OVER_VALUE
+    LD (_game_state),A
+    CALL game_screen.print_game_over
+    
+.done
+    POP AF
+
     RET

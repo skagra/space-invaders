@@ -10,15 +10,15 @@ add_to_score:
     LD HL,(IX+.PARAM_INCREMENT)                         ; Grab the value to add to the score
     OR A                                                ; Ensure the half carry is reset
 
-    LD A,(score_lsb_player_1)                                    ; Get the current score low byte
+    LD A,(score_lsb_player_1)                           ; Get the current score low byte
     ADD L                                               ; Add the increment low byte
     DAA                                                 ; Adjust for BCD
-    LD (score_lsb_player_1),A                                    ; Store the new low byte of the score
+    LD (score_lsb_player_1),A                           ; Store the new low byte of the score
 
-    LD A,(score_msb_player_1)                                    ; Grab the current score high byte
+    LD A,(score_msb_player_1)                           ; Grab the current score high byte
     ADC H                                               ; Add the increment high byte with any carry  
     DAA                                                 ; Adjust for BCD
-    LD (score_msb_player_1),A                                    ; Store the new high byte of the score
+    LD (score_msb_player_1),A                           ; Store the new high byte of the score
 
     POP IX,AF
 

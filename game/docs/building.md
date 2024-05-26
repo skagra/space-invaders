@@ -18,7 +18,8 @@ The build may be configured via the following settings, specified with the `-D` 
 * `DIRECT_DRAW` - Draw directly to the screen rather than using the off-screen buffer.    
 * `PAUSEABLE` - Press space to pause game.
 * `NO_SHIELDS` - Don't draw shields.
-
+* `INVINCIBLE` - Player is invulnerable to alien missiles.
+ 
 For a standard *release* build specify none of the above.
 
 The build will generate the following files:

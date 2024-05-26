@@ -16,6 +16,7 @@
                 //"-DAUTO_FLUSH",
                 //"-DPAUSEABLE",
                 //"-DNO_SHIELDS",
+                //"-DINVINCIBLE"
                 "main.asm"
             ],
             "problemMatcher": {

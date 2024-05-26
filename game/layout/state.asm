@@ -77,3 +77,9 @@ PLAY_PLAYER_COORDS:             EQU (PLAY_PLAYER_X<<8) + PLAY_PLAYER_Y
 
 ; Alien missiles
 ALIEN_MISSILE_MAX_Y:            EQU draw_common.SCREEN_HEIGHT_PIXELS-2*8-4    ; Y at which missile is considered to have hit the bottom of the screen
+
+; Game over message
+
+GAME_OVER_X:                    EQU 11
+GAME_OVER_Y:                    EQU 2
+GAME_OVER_COORDS:               EQU (GAME_OVER_X<<8) + GAME_OVER_Y

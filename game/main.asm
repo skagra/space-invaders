@@ -46,6 +46,12 @@
         DISPLAY "NO_SHIELDS disabled"
     ENDIF
     
+    IFDEF INVINCIBLE
+        DISPLAY "INVINCIBLE **ENABLED**"
+    ELSE
+        DISPLAY "INVINCIBLE disabled"
+    ENDIF
+
     DISPLAY " "
 
     INCLUDE "memory_map/module.asm"
@@ -75,6 +81,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "scoring/module.asm"
     INCLUDE "character_set/module.asm"
     INCLUDE "alien_missiles/module.asm"
+    INCLUDE "player_lives/module.asm"
 
     MODULE main
 
@@ -100,6 +107,7 @@ main:
     CALL collision.init
     CALL scoring.init
     CALL alien_missiles.init
+    CALL player_lives.init
 
     ; Draw the initial screen
     CALL game_screen.draw_pre_play
@@ -196,7 +204,12 @@ main:
 
     DEBUG_VTRACE_FLASH
 
-    JP .animation_loop           
+    LD A,(global_state._game_state)
+    BIT global_state._GAME_STATE_GAME_OVER_BIT,A
+    JP Z,.animation_loop           
+
+.forever:   
+    JR .forever
 
     MEMORY_USAGE "main            ", main
 

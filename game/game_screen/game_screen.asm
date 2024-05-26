@@ -50,7 +50,7 @@ draw_pre_play:
 
     LD HL,.PLAY_PLAYER_1_TEXT
     PUSH HL
-    LD HL,10                                    ; TODO Pull out hard coded value
+    LD HL,10                                            ; TODO Pull out hard coded value
     PUSH HL
     CALL print.print_string
     POP HL
@@ -66,10 +66,10 @@ draw_pre_play:
     POP HL
     CALL draw.flush_buffer_to_screen
 
-    CALL draw_reserve_bases                             ; Reserved bases
+    CALL draw_bases                                     ; Reserved bases
     CALL game_screen.print_score_high                   ; High score
     CALL game_screen.print_credits                      ; Credits
-    CALL game_screen.print_player_bases_count           ; Count of remanining bases
+    CALL game_screen.print_bases_count                  ; Count of remanining bases
    
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
