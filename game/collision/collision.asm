@@ -1,3 +1,18 @@
+;------------------------------------------------------------------------------
+;
+; Reset all collision data - ready for another cycle
+;
+; Usage:
+;   CALL handle_collision
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;      
+;------------------------------------------------------------------------------
+
 reset:
     PUSH IX
 
@@ -10,27 +25,6 @@ reset:
     POP IX
 
     RET
-
-;------------------------------------------------------------------------------
-;
-; Processes the collision of the player missile with aliens and shields
-;
-; Usage:
-;   CALL handle_collision
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-; External state:
-;   draw_common.collided - collision flag
-;   draw_common.collision_coords - location of the collision (if any)
-;      
-;------------------------------------------------------------------------------
-
-_alien_hit_by_player_missile:               BLOCK 2
 
     MACRO CHECK_ALIEN_MISSILE am_number
     
@@ -69,6 +63,22 @@ _alien_hit_by_player_missile:               BLOCK 2
 
     ENDM
 
+;------------------------------------------------------------------------------
+;
+; Processes the collision of the player missile, alien missiles, aliens,
+; shields and player.
+;
+; Usage:
+;   CALL handle_collision
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
 handle_collision:
     PUSH AF,BC,DE,HL,IX
 
@@ -100,7 +110,7 @@ handle_collision:
     LD A,(.collisions)                                      ; Record the collision
     OR .PLAYER_MISSILE_HIT_ALIEN_VALUE
     LD (.collisions),A
-    LD HL,_alien_hit_by_player_missile
+    LD HL,.alien_hit_by_player_missile
     LD (HL),DE
     
     JP .check_alien_missile_collisions                      ; Player missile has hit an alien so skip other player missile checks
@@ -207,7 +217,7 @@ handle_collision:
     ; Did the player missile hit an alien?
     CP .FIRE_PLAYER_HIT_ALIEN
     JR NZ,.next_1
-    LD HL,(_alien_hit_by_player_missile)
+    LD HL,(.alien_hit_by_player_missile)
     PUSH HL
     CALL global_state.event_player_missile_hit_alien
     POP HL
@@ -271,4 +281,4 @@ handle_collision:
 .ALIEN_MISSILE_HIT_SHIELD_BIT:              EQU 3
 .ALIEN_MISSILE_HIT_PLAYER_BIT:              EQU 4
 
-   
+.alien_hit_by_player_missile:               BLOCK 2

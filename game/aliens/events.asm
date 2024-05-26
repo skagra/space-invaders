@@ -73,7 +73,8 @@ event_alien_hit_by_player_missile:
     LD (_alien_count),A
 
     ; Are we down to the last alien?
-
+    ; TODO This is likely where we flag the alien screen has been cleared
+    
     RET
 
 .EXPLODING_ALIEN_DELAY EQU  15

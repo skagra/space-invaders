@@ -1,7 +1,3 @@
-
-
-
-
 add_to_score:
 
 .PARAM_INCREMENT EQU 6

@@ -66,8 +66,10 @@ event_alien_missile_hit_shield:
 ;   -
 ;
 ;------------------------------------------------------------------------------
+
 event_missiles_collided:
 .PARAM_ALIEN_MISSILE: EQU 10
+
     PUSH AF,HL,IX,IY
 
     LD  IX,0                                                ; Point IX to the stack

@@ -1,77 +1,61 @@
-print_bcd_word:
+print_bcd_word:    ; TODO Option of number of characters to print
 
 .PARAM_COORDS EQU 10
 .PARAM_NUMBER_MS EQU 13
 .PARAM_NUMBER_LS EQU 12
 
-    PUSH AF,BC,DE,IX
+    PUSH AF,BC,HL,IX
 
     LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD DE,(IX+.PARAM_COORDS)
-
     ; First (most significant) digit
+    LD HL,.buffer
     LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significat 2 digits
     SRL A                                               ; Shift down the top 4 bits
     SRL A
     SRL A
     SRL A
     ADD '0'                                             ; Numberic characters are based at '0'
-    LD C,A
-    LD B,0x00
-    PUSH BC                                             ; Character to draw
-    
-    PUSH DE                                             ; Coordinates
-    CALL print_char                                     ; Draw the numbner
-    POP BC
-    POP BC
-
+    LD (HL),A
+  
     ; Second digit
-    INC D                                               ; Move forward one X character cell
+    INC HL                                              ; Next position in buffer
     LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significat 2 digits
     AND 0x0F                                            ; AND out the top 4 bits
-    ADD '0'                                             ; Numberic characters are based at '0'
-    LD C,A
-    LD B,0x00
-    PUSH BC                                             ; Character to draw
-    PUSH DE                                             ; Coordinates
-    CALL print_char                                     ; Draw the numbner
-    POP BC
-    POP BC
+    ADD '0'                                             ; Numeric characters are based at '0'
+    LD (HL),A
 
     ; 3rd digit
-    INC D                                               ; Move forward one X character cell
+    INC HL                                              ; Next position in buffer
     LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the least significat 2 digits
     SRL A                                               ; Shift down the top 4 bits
     SRL A
     SRL A
     SRL A
     ADD '0'                                             ; Numberic characters are based at '0'
-    LD C,A
-    LD B,0x00
-    PUSH BC                                             ; Character to draw
-    PUSH DE                                             ; Coordinates
-    CALL print_char                                     ; Draw the numbner
-    POP BC
-    POP BC
+    LD (HL),A
 
     ; 4th
-    INC D                                               ; Move forward one X character cell
+    INC HL                                              ; Next position in buffer
     LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the most significat 2 digits
     AND 0x0F                                            ; AND out the top 4 bits
-    ADD '0'                                             ; Numberic characters are based at '0'
-    LD C,A
-    LD B,0x00
-    PUSH BC                                             ; Character to draw
-    PUSH DE                                             ; Coordinates
-    CALL print_char                                     ; Draw the numbner
-    POP BC
-    POP BC
-
-    POP IX,DE,BC,AF
+    ADD '0'                                             ; Numeric characters are based at '0'
+    LD (HL),A
+    
+    LD HL,.buffer
+    PUSH HL
+    LD HL,(IX+.PARAM_COORDS)
+    PUSH HL
+    CALL print_string 
+    POP HL
+    POP HL
+    
+    POP IX,HL,BC,AF
 
     RET
+
+.buffer: BYTE 0x00,0x00,0x00,0x00,0x00
 
 ;------------------------------------------------------------------------------
 ;
@@ -102,127 +86,42 @@ print_string:
     LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD DE,(IX+.PARAM_STRING_PTR)                        ; Pointer to current character
-    LD BC,(IX+.PARAM_COORDS)                            ; Current coords X in B, Y in C
-
-.ps_char_loop:
-    ; Get character to print
-    LD A,(DE)                                           ; Have we hit the end of the string?
-    CP 0x00
-    JR Z,.ps_done
-
-    LD H, 0x00  
-    LD L,A
-    PUSH HL                                             ; Character to print
-    PUSH BC                                             ; Character cell coordinates
-    
-    call print_char                                     ; Print character
-
-    POP HL                                              ; Ditch parameters
-    POP HL
-
-    INC DE                                              ; Next character
-    LD HL,0x0100                                        ; Inc X coord
-    ADD HL,BC
-    LD BC,HL
-
-    JR .ps_char_loop                                    ; Next character
-
-.ps_done:
-    POP IX,HL,DE,BC,AF
-
-    RET
-
-;------------------------------------------------------------------------------
-;
-; Print a single character
-; 
-; Usage:
-;   PUSH rr  ; Character to print in LSB
-;   PUSH rr  ; Character cell coordiates (X in high byte, Y in low byte)
-;   CALL print_char
-;   POP rr   ; Ditch the supplied parameters
-;   POP rr    
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-;------------------------------------------------------------------------------
-
-print_char:
-
-.PARAM_CHAR:   EQU 14
-.PARAM_COORDS: EQU 12
-
-    PUSH AF,BC,DE,HL,IX
-
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
-
     ; Calculate memory location from coords
     LD HL,(IX+.PARAM_COORDS)
     PUSH HL
     PUSH HL                                             ; Space for return value
     CALL char_coords_to_mem
-    POP HL                                              ; Grab return value
-    LD (.print_mem_ptr),HL                             ; Store the result
-    POP HL                                              ; Ditch the supplied parameter
+    POP HL                                              ; Grab return value - screen address
+    POP DE        
 
-    ; Find the bitmap for the required character
-    LD HL,character_set.CHARACTER_SET_BASE-(32*8)       ; Then the char data is at character code * 8 offset
-    LD DE,(IX+.PARAM_CHAR)                              ; Get the char to draw
-    SLA E                                               ; Multiply char code by 8
-    RL D
-    SLA E
-    RL D
-    SLA E
-    RL D
-    ADD HL,DE                                           ; HL now points at character bitmap
-    LD (.char_data_ptr), HL                            ; Store pointer to first byte of character data 
+    LD DE,(IX+.PARAM_STRING_PTR)                        ; Pointer to current character
 
-    LD B,0x08                                           ; Loop counter for drawing bytes of character data
+.character_loop:
+    ; Get character to print
+    LD A,(DE)                                           ; Have we hit the end of the string?
+    AND A
+    JR Z,.ps_done
 
-.pc_y_loop:
-    LD HL,(.char_data_ptr)                             ; Get character bits to print
-    LD A,(HL)
+    LD B,0x00                                           ; Character to print
+    LD C,A
+    PUSH BC
     
-    INC HL                                              ; Move character data pointer to next byte
-    LD (.char_data_ptr),HL
+    PUSH HL                                             ; On-screen address                                    
 
-    LD HL,(.print_mem_ptr)                             ; Write character bits into screen memory
-    LD (HL), A
+    CALL _print_char_at_screen_mem                      ; Print character
 
-    IFNDEF DIRECT_DRAW
-        ; Record that we are writing to the double buffer
-        LD HL,(draw._buffer_stack_top)                      ; Top of stack address
-        LD DE,(.print_mem_ptr)       
-        LD (HL),DE                                          ; Write screen buffer address at top of stack            
-        INC HL                                              ; Increase the stack top pointer +2 as a word was written
-        INC HL
-        LD (draw._buffer_stack_top),HL
-    ENDIF
+    POP BC                                              ; Result
+    POP BC                                              ; Ditch the parameter
 
-    LD HL,(.print_mem_ptr)
-    LD DE,0x0100                                        ; Move pointer to screen memory down a line
-    ADD HL,DE
-    LD (.print_mem_ptr),HL
+    INC DE                                              ; Move to the next character
+    INC HL                                              ; Next screen address
 
-    DEC B                                               ; Done?
-    JR NZ,.pc_y_loop 
+    JR .character_loop                                  ; Next character
 
+.ps_done:
     POP IX,HL,DE,BC,AF
 
-    IFDEF AUTO_FLUSH
-        call draw.flush_buffer_to_screen
-    ENDIF
-
     RET
-
-.print_mem_ptr:  BLOCK 2
-.char_data_ptr:  BLOCK 2
 
 ;------------------------------------------------------------------------------
 ;
@@ -247,6 +146,7 @@ print_char:
 ;   -
 ;
 ;------------------------------------------------------------------------------
+
 char_coords_to_mem:
 
 .PARAM_COORDS:   EQU 12                                 ; Coordinates
@@ -341,5 +241,116 @@ inline_print:
         ENDIF
     ENDM
 
+_print_char_at_screen_mem:
 
+.PARAM_CHAR:    EQU 14
+.PARAM_ADDRESS: EQU 12
 
+    PUSH AF,BC,DE,HL,IX
+
+    LD  IX,0                                            ; Get the stack pointer
+    ADD IX,SP
+
+    LD HL,(IX+.PARAM_ADDRESS)                           ; Address in screen memory
+    LD (.print_mem_ptr),HL                              
+
+    ; Find the bitmap for the required character
+    LD HL,character_set.CHARACTER_SET_BASE-(32*8)       ; Then the char data is at character code * 8 offset
+    LD DE,(IX+.PARAM_CHAR)                              ; Get the char to draw
+    SLA E                                               ; Multiply char code by 8
+    RL D
+    SLA E
+    RL D
+    SLA E
+    RL D
+    ADD HL,DE                                           ; HL now points at character bitmap
+    LD (.char_data_ptr), HL                             ; Store pointer to first byte of character data 
+
+    LD B,0x08                                           ; Loop counter for drawing bytes of character data
+
+.pc_y_loop:
+    LD HL,(.char_data_ptr)                              ; Get character bits to print
+    LD A,(HL)
+    
+    INC HL                                              ; Move character data pointer to next byte
+    LD (.char_data_ptr),HL
+
+    LD HL,(.print_mem_ptr)                              ; Write character bits into screen memory
+    LD (HL),A
+
+    IFNDEF DIRECT_DRAW
+        ; Record that we are writing to the double buffer
+        LD HL,(draw._buffer_stack_top)                  ; Top of stack address
+        LD DE,(.print_mem_ptr)       
+        LD (HL),DE                                      ; Write screen buffer address at top of stack            
+        INC HL                                          ; Increase the stack top pointer +2 as a word was written
+        INC HL
+        LD (draw._buffer_stack_top),HL
+    ENDIF
+
+    LD HL,(.print_mem_ptr)
+    LD DE,0x0100                                        ; Move pointer to screen memory down a line
+    ADD HL,DE
+    LD (.print_mem_ptr),HL
+                                          
+    DJNZ .pc_y_loop                                     ; Done?
+
+    POP IX,HL,DE,BC,AF
+
+    IFDEF AUTO_FLUSH
+        call draw.flush_buffer_to_screen
+    ENDIF
+
+    RET
+
+.print_mem_ptr:  BLOCK 2
+.char_data_ptr:  BLOCK 2
+
+;------------------------------------------------------------------------------
+;
+; Print a single character
+; 
+; Usage:
+;   PUSH rr  ; Character to print in LSB
+;   PUSH rr  ; Character cell coordiates (X in high byte, Y in low byte)
+;   CALL print_char
+;   POP rr   ; Ditch the supplied parameters
+;   POP rr    
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;
+;------------------------------------------------------------------------------
+
+print_char:
+
+.PARAM_CHAR:   EQU 12
+.PARAM_COORDS: EQU 10
+
+    PUSH AF,DE,HL,IX
+
+    LD  IX,0                                            ; Get the stack pointer
+    ADD IX,SP
+
+    ; Calculate memory location from coords
+    LD HL,(IX+.PARAM_COORDS)
+    PUSH HL
+    PUSH HL                                             ; Space for return value
+    CALL char_coords_to_mem
+    POP HL                                              ; Grab return value
+    POP DE                                              
+
+    LD DE,(IX+.PARAM_CHAR)
+    PUSH DE
+    PUSH HL
+    CALL _print_char_at_screen_mem
+    POP HL
+    POP HL
+
+    POP IX,HL,DE,AF
+
+    RET
+    

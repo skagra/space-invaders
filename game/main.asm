@@ -109,6 +109,9 @@ main:
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
 
+    ; Draw the player's score
+    CALL game_screen.print_score_player_1 
+
 .animation_loop:
     ; Reset all collisions
     CALL collision.reset
@@ -163,9 +166,6 @@ main:
 
     ; Next alien missile
     CALL alien_missiles.next
-
-    ; Draw the player's score
-    CALL game_screen.print_score_player_1 
 
     IFNDEF IGNORE_VSYNC
         ; Wait for Vsync

@@ -29,7 +29,7 @@ update:
     BIT _PLAYER_STATE_DONE_EXPLODING_BIT,A
     JR NZ,.done_exploding
 
-    ; ASSERT This pointshould never be reached
+    ; ASSERT This point should never be reached
 
     JR .done
 

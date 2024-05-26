@@ -23,6 +23,9 @@ event_player_missile_hit_alien:
     CALL scoring.event_alien_hit_by_player_missile
     POP HL
 
+    ; Draw the player's score                           ; TODO - Maybe this should be sending an event?
+    CALL game_screen.print_score_player_1 
+
     ; Set global state to indicate an alien is exploding
     LD A,_GAME_STATE_ALIEN_EXPLODING_VALUE
     LD (_game_state),A
