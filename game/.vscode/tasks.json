@@ -38,7 +38,7 @@
         {
             "label": "make (release)",
             "type": "shell",
-            "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
+            "command": "sjasmplus",
             "args": [
                 "--sld=bin/space-invaders-release.sld",
                 "--fullpath",
@@ -65,7 +65,7 @@
         {
             "label": "make (tests)",
             "type": "shell",
-            "command": "C:/Program Files/sjasmplus-1.20.3.win/sjasmplus.exe",
+            "command": "sjasmplus",
             "args": [
                 "--sld=bin/test_draw.sld",
                 "--fullpath",
