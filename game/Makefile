@@ -1,6 +1,6 @@
 include build_conf/vars.mk
 
-TARGETS = debug release
+TARGETS = bin debug release
 
 all: all-asm
 
