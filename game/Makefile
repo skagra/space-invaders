@@ -1,6 +1,6 @@
 include build_conf/vars.mk
 
-TARGETS = debug.sna release
+TARGETS = debug release
 
 all: all-asm
 
