@@ -2,22 +2,11 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "make (debug)",
+            "label": "make all",
             "type": "shell",
-            "command": "sjasmplus",
+            "command": "make",
             "args": [
-                "--sld=bin/space-invaders-debug.sld",
-                "--fullpath",
-                "--sym=${workspaceFolder}/bin/space-invaders-debug-symbols.txt",
-                "--lst=${workspaceFolder}/bin/space-invaders-debug-listing.txt",
-                "-DDEBUG",
-                //"-DDIRECT_DRAW",
-                //"-DIGNORE_VSYNC",
-                //"-DAUTO_FLUSH",
-                //"-DPAUSEABLE",
-                //"-DNO_SHIELDS",
-                //"-DINVINCIBLE"
-                "main.asm"
+                "all"
             ],
             "problemMatcher": {
                 "owner": "sjasmplus",
@@ -34,62 +23,6 @@
                 "kind": "build",
                 "isDefault": true
             }
-        },
-        {
-            "label": "make (release)",
-            "type": "shell",
-            "command": "sjasmplus",
-            "args": [
-                "--sld=bin/space-invaders-release.sld",
-                "--fullpath",
-                "--sym=${workspaceFolder}/bin/space-invaders-symbols-release-symbols.txt",
-                "--lst=${workspaceFolder}/bin/space-invaders-symbols-release-listing.txt",
-                "main.asm"
-            ],
-            "problemMatcher": {
-                "owner": "sjasmplus",
-                "fileLocation": "autoDetect",
-                "pattern": {
-                    "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+(.*)$",
-                    "file": 1,
-                    "line": 2,
-                    "severity": 3,
-                    "message": 4
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        {
-            "label": "make (tests)",
-            "type": "shell",
-            "command": "sjasmplus",
-            "args": [
-                "--sld=bin/test_draw.sld",
-                "--fullpath",
-                "--sym=${workspaceFolder}/bin/test-draw-symbols.txt",
-                "--lst=${workspaceFolder}/bin/test-draw-listing.txt",
-                "-DDEBUG",
-                "-DDIRECT_DRAW",
-                "tests/test_draw.asm"
-            ],
-            "problemMatcher": {
-                "owner": "sjasmplus",
-                "fileLocation": "autoDetect",
-                "pattern": {
-                    "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+(.*)$",
-                    "file": 1,
-                    "line": 2,
-                    "severity": 3,
-                    "message": 4
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
+        }
     ]
 }

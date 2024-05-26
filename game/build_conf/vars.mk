@@ -1,0 +1,2 @@
+ASM=sjasmplus
+BIN=bin
