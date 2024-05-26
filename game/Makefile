@@ -1,6 +1,6 @@
 include build_conf/vars.mk
 
-TARGETS = space-invaders-debug.sna space-invaders-release.sna 
+TARGETS = debug.sna release
 
 all: all-asm
 
@@ -9,9 +9,9 @@ all-asm: $(BIN) $(TARGETS)
 bin: 
 	mkdir $(BIN)
 
-space-invaders-debug.sna: $(BIN)/space-invaders-debug.sna
+debug: $(BIN)/space-invaders-debug.sna
 
-space-invaders-release.sna: $(BIN)/space-invaders-release.sna
+release: $(BIN)/space-invaders-release.sna
 
 DEBUG_DEFINES=
 # -DDIRECT_DRAW 
@@ -22,19 +22,19 @@ DEBUG_DEFINES=
 # -DINVINCIBLE
 
 $(BIN)/space-invaders-debug.sna: main.asm */*.asm
-	$(ASM) 	--sld=$(BIN)/space-invaders-debug.sld \
+	$(ASM) 	--sld=$(basename $@).sld \
            	--fullpath \
-           	--sym=$(BIN)/space-invaders-debug-symbols.txt \
-           	--lst=$(BIN)/space-invaders-debug-listing.txt \
+           	--sym=$(basename $@)-symbols.txt \
+           	--lst=$(basename $@)-listing.txt \
            	-DDEBUG \
 			$(DEBUG_DEFINES) \
 		   	main.asm
 
 $(BIN)/space-invaders-release.sna: main.asm */*.asm
-	$(ASM) --sld=$(BIN)/space-invaders-release.sld \
+	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
-           --sym=$(BIN)/space-invaders-release-symbols.txt \
-           --lst=$(BIN)/space-invaders-release-listing.txt \
+           --sym=$(basename $@)-symbols.txt \
+           --lst=$(basename $@)-listing.txt \
            main.asm
 
 clean-windows:
