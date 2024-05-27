@@ -11,6 +11,6 @@ _GAME_STATE_ALIEN_EXPLODING_BIT:        EQU 1
 _GAME_STATE_GAME_OVER_BIT:              EQU 2
 _GAME_STATE_LIFE_LOST_PAUSING_BIT:      EQU 3
 
-_alien_exploding_count_down:            BLOCK 1             ; Cycles left to pauseable while alien explodes
+_alien_exploding_count_down:            BLOCK 1             ; Cycles left to pause while alien explodes
 
 _life_lost_pause_count_down:            BLOCK 1

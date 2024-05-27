@@ -13,7 +13,7 @@ debug: $(BIN)/space-invaders-debug.sna
 
 release: $(BIN)/space-invaders-release.sna
 
-DEBUG_DEFINES=
+DEBUG_DEFINES=-DDEBUG 
 # -DDIRECT_DRAW 
 # -DIGNORE_VSYNC 
 # -DAUTO_FLUSH
@@ -21,12 +21,11 @@ DEBUG_DEFINES=
 # -DNO_SHIELDS
 # -DINVINCIBLE
 
-$(BIN)/space-invaders-debug.sna: main.asm */*.asm
+$(BIN)/space-invaders-debug.sna: $(BIN) main.asm */*.asm
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-symbols.txt \
            --lst=$(basename $@)-listing.txt \
-           -DDEBUG \
 		   $(DEBUG_DEFINES) \
 		   main.asm
 
@@ -40,13 +39,15 @@ $(BIN)/space-invaders-release.sna: $(BIN) main.asm */*.asm
 clean: clean-$(OS)
 
 clean-Windows_NT:
-		rmdir /S /Q $(BIN)
+	rmdir /S /Q $(BIN)
 
-clean-linux:
-		rm -r $(BIN)
+clean-Linux:
+	rm -r $(BIN)
+
+CSPECT_FLAGS=+tv -60 -w2 -fps -w4 -sound -analytics
 
 run-cspect-debug: debug
-		CSpect +tv -60 -w2 -fps -sound -analytics $(BIN)/space-invaders-debug.sna
+	CSpect.exe $(CSPECT_FLAGS) $(BIN)/space-invaders-debug.sna 
 
 run-cspect-release: release
-		CSpect +tv -60 -w2 -fps -sound -analytics $(BIN)/space-invaders-release.sna
+	CSpect.exe $(CSPECT_FLAGS) $(BIN)/space-invaders-release.sna 

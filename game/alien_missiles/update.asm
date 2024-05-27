@@ -16,8 +16,8 @@
 update:
     PUSH AF,DE,HL,IX
 
-    LD A, (_alien_missiles_global_state)
-    BIT _ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_BIT,A
+    LD A,(_enabled)
+    BIT utils.TRUE_BIT,A
     JP Z,.done
 
     LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missle struct
@@ -41,6 +41,9 @@ update:
 
     BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A               ; Hit a shield?
     JR NZ,.hit_shield                                       ; Handle it.
+
+    BIT _ALIEN_MISSILE_STATE_MISSILES_COLLIDED_BIT,A
+    JR NZ,.missiles_collided
 
     ; This should never be reached!
     ; ASSERTION This code should never be reached
@@ -114,6 +117,15 @@ update:
 
 .hit_shield
     LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE              ; Missile has hit a shield
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                   ; Move it to a not active state
+
+    LD A,0x00
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A       ; Reset step count used as part of reload algorithm
+
+    JR .done
+
+.missiles_collided:
+    LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE              
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                   ; Move it to a not active state
 
     LD A,0x00
@@ -241,10 +253,6 @@ _fire_if_ready:
 .type_1:
     GET_RELOAD_STEP_COUNT 0,0
     GET_RELOAD_STEP_COUNT 2,1
-
-    ; LD DE,.SHOT_COLUMNS_1   NOT USED FOR TYPE 1
-    ; LD HL,.alien_missile_shot_col_table_ptr
-    ; LD (HL),DE
 
     JR .fire_test
 

@@ -21,6 +21,7 @@ _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_VALUE:    EQU 0b00000100          
 _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE:         EQU 0b00001000          ; At the bottom of the screen (exploding)
 _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_VALUE:    EQU 0b00010000          ; Done (exploding) at the bottom of the screen
 _ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE:                  EQU 0b00100000          ; Hit a shield
+_ALIEN_MISSILE_STATE_MISSILES_COLLIDED_VALUE:           EQU 0b01000000
 
 ; Bit positions correspond to each of the states
 _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT:                    EQU 0                   ; Missile is not active
@@ -29,6 +30,7 @@ _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_BIT:      EQU 2                   
 _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_BIT:           EQU 3                   ; At the bottom of the screen (exploding)
 _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT:      EQU 4                   ; Done (exploding) at the bottom of the screen
 _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT:                    EQU 5                   ; Hit a shield
+_ALIEN_MISSILE_STATE_MISSILES_COLLIDED_BIT:             EQU 6
 
 ; Values to indicate current missile sprite variant
 _ALIEN_MISSILE_VARIANT_0:                               EQU 0
@@ -61,10 +63,4 @@ _ALIEN_MISSILE_DELTA_Y:                                 EQU 3
 ; Pointer to the current missile struct
 _current_alien_missile_ptr:                             BLOCK 2
 
-_ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_VALUE:              EQU 0b00000001
-_ALIEN_MISSILES_GLOBAL_STATE_PAUSED_VALUE:              EQU 0b00000010
-
-_ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_BIT:                EQU 0
-_ALIEN_MISSILES_GLOBAL_STATE_PAUSED_BIT:                EQU 1
-
-_alien_missiles_global_state:                           BLOCK 1
+_enabled:                                               BLOCK 1

@@ -15,38 +15,15 @@
 ;------------------------------------------------------------------------------
 
 event_alien_missile_hit_shield:
-    PUSH AF,DE,HL,IX
+    PUSH IX
 
-    LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missle struct
+    ; Point IX to current missle struct
+    LD IX,(_current_alien_missile_ptr)                     
 
     ; Set state
-    LD A,_ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A  
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE
     
-    LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords
-    PUSH DE
-
-    LD DE,sprites.ALIEN_MISSILE_EXPLOSION_DIMS              ; Dimensions
-    PUSH DE
-
-    LD DE,sprites.ALIEN_MISSILE_EXPLOSION                   ; Spite/mask
-    PUSH DE
-
-    LD E,utils.TRUE_VALUE                                   ; Drawing (not blanking)
-    PUSH DE
-
-    LD DE,collision.dummy_collision                         ; Where to record collision data
-    PUSH DE
-    
-    CALL draw.draw_sprite       
-
-    POP DE
-    POP DE
-    POP DE
-    POP DE
-    POP DE
-
-    POP IX,HL,DE,AF
+    POP IX
 
     RET
 
@@ -68,6 +45,7 @@ event_alien_missile_hit_shield:
 ;------------------------------------------------------------------------------
 
 event_missiles_collided:
+
 .PARAM_ALIEN_MISSILE: EQU 10
 
     PUSH AF,HL,IX,IY
@@ -78,8 +56,7 @@ event_missiles_collided:
     LD HL,(IX+.PARAM_ALIEN_MISSILE)  
     LD IY,HL      
     
-    LD A,_ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE              ; TODO A state model is needed to handle missile-missile collision
-    LD (IY+_ALIEN_MISSILE_OFFSET_STATE),A  
+    LD (IY+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_MISSILES_COLLIDED_VALUE 
 
     POP IY,IX,HL,AF
 
@@ -88,8 +65,8 @@ event_missiles_collided:
 event_alien_missile_hit_player_begin:
     PUSH AF,DE,HL,IX
 
-    LD A, _ALIEN_MISSILES_GLOBAL_STATE_PAUSED_VALUE
-    LD (_alien_missiles_global_state),A
+    LD A,utils.FALSE_VALUE
+    LD (_enabled),A
 
     LD IX,_ALIEN_MISSILE_0
     BIT _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT,(IX+_ALIEN_MISSILE_OFFSET_STATE)
@@ -102,6 +79,9 @@ event_alien_missile_hit_player_begin:
     CALL blank
 
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
+    
+    LD A,0x00
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A 
 
 .skip_0
     LD IX,_ALIEN_MISSILE_1
@@ -115,6 +95,9 @@ event_alien_missile_hit_player_begin:
     CALL blank
 
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
+    
+    LD A,0x00
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A 
 
 .skip_1
     LD IX,_ALIEN_MISSILE_2
@@ -128,6 +111,9 @@ event_alien_missile_hit_player_begin:
     CALL blank
 
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
+    
+    LD A,0x00
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A 
 
 .skip_2
     POP IX,HL,DE,AF
@@ -135,8 +121,8 @@ event_alien_missile_hit_player_begin:
     RET
     
 event_alien_missile_hit_player_end:
-    LD A, _ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_VALUE
-    LD (_alien_missiles_global_state),A
+    LD A,utils.TRUE_VALUE
+    LD (_enabled),A
 
     RET
     

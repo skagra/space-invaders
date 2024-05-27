@@ -117,6 +117,9 @@ blank:
     BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active?
     JR NZ,.blank_missile                                    ; Y - handle it
 
+    BIT _ALIEN_MISSILE_STATE_MISSILES_COLLIDED_BIT,A
+    JR NZ,.blank_missile
+    
     BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A ; Finished blowing up at the bottom of the screen?
     JR NZ,.blank_explosion                                  ; Y - handle it
 
@@ -158,7 +161,8 @@ blank:
     POP DE
     POP DE
 
-    JR .done
+    BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A               ; Alien missile has hit a shield
+    JR Z,.done     
 
 .blank_explosion:
     LD DE,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Coords

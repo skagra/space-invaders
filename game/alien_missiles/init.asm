@@ -20,8 +20,8 @@ init:
     LD DE,_ALIEN_MISSILE_0
     LD (HL),DE
 
-    LD A,_ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_VALUE
-    LD (_alien_missiles_global_state),A
+    LD A,utils.TRUE_VALUE
+    LD (_enabled),A
 
     POP AF
 
