@@ -9,9 +9,9 @@ all-asm: $(BIN) $(TARGETS)
 bin: 
 	mkdir $(BIN)
 
-debug: $(BIN)/space-invaders-debug.sna
+debug: $(BIN)/$(SNA_DEBUG).sna
 
-release: $(BIN)/space-invaders-release.sna
+release: $(BIN)/$(SNA_RELEASE).sna
 
 DEBUG_DEFINES=-DDEBUG 
 # -DDIRECT_DRAW 
@@ -21,20 +21,20 @@ DEBUG_DEFINES=-DDEBUG
 # -DNO_SHIELDS
 # -DINVINCIBLE
 
-$(BIN)/space-invaders-debug.sna: $(BIN) main.asm */*.asm
+$(BIN)/$(SNA_DEBUG).sna: $(BIN) $(MAIN_ASM).asm */*.asm
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
-           --sym=$(basename $@)-symbols.txt \
-           --lst=$(basename $@)-listing.txt \
+           --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
+           --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
 		   $(DEBUG_DEFINES) \
-		   main.asm
+		   $(MAIN_ASM).asm
 
-$(BIN)/space-invaders-release.sna: $(BIN) main.asm */*.asm
+$(BIN)/$(SNA_RELEASE).sna: $(BIN) $(MAIN_ASM).asm */*.asm
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
-           --sym=$(basename $@)-symbols.txt \
-           --lst=$(basename $@)-listing.txt \
-           main.asm
+           --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
+           --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
+           $(MAIN_ASM).asm
 
 clean: clean-$(OS)
 
@@ -44,10 +44,14 @@ clean-Windows_NT:
 clean-Linux:
 	rm -r $(BIN)
 
-CSPECT_FLAGS=+tv -60 -w2 -fps -w4 -sound -analytics
-
 run-cspect-debug: debug
-	CSpect.exe $(CSPECT_FLAGS) $(BIN)/space-invaders-debug.sna 
+	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/space-invaders-debug.sna 
 
 run-cspect-release: release
-	CSpect.exe $(CSPECT_FLAGS) $(BIN)/space-invaders-release.sna 
+	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/space-invaders-release.sna 
+
+run-mame-debug: debug
+	$(MAME) $(MAME_FLAGS) -dump $(BIN)/space-invaders-debug.sna 
+
+run-mame-release: release
+	$(MAME) $(MAME_FLAGS) -dump $(BIN)/space-invaders-release.sna 

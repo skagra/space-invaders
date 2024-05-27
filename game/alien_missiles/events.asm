@@ -53,21 +53,26 @@ event_missiles_collided:
     LD  IX,0                                                ; Point IX to the stack
     ADD IX,SP  
 
-    LD HL,(IX+.PARAM_ALIEN_MISSILE)  
+    LD HL,(IX+.PARAM_ALIEN_MISSILE)                         ; Grab the alien missile involved in the collision
     LD IY,HL      
     
+    ; Flag it as collided
     LD (IY+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_MISSILES_COLLIDED_VALUE 
 
     POP IY,IX,HL
 
     RET
 
-    MACRO REMOVE_ALIENT_MISSILE num
+    MACRO REMOVE_ALIEN_MISSILE num
 
         LD IX,_ALIEN_MISSILE_num
-        BIT _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT,(IX+_ALIEN_MISSILE_OFFSET_STATE)
-        JR NZ,.skip
+        LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)
+        AND _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_VALUE | _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE
+        JR Z,.dont_modify
 
+        LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_VALUE
+
+.dont_modify:
         LD DE,_ALIEN_MISSILE_num
         LD HL,_current_alien_missile_ptr
         LD (HL),DE
@@ -90,9 +95,9 @@ event_alien_missile_hit_player_begin:
     LD A,utils.FALSE_VALUE
     LD (_enabled),A
 
-    REMOVE_ALIENT_MISSILE 0
-    REMOVE_ALIENT_MISSILE 1
-    REMOVE_ALIENT_MISSILE 2
+    REMOVE_ALIEN_MISSILE 0
+    REMOVE_ALIEN_MISSILE 1
+    REMOVE_ALIEN_MISSILE 2
     
     POP IX,HL,DE,AF
 

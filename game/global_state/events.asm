@@ -83,7 +83,7 @@ event_alien_missile_hit_player:
     CALL game_screen.draw_bases
     CALL game_screen.print_bases_count
 
-    LD A,240                                             ; TODO
+    LD A,40                                             ; TODO
     LD (_life_lost_pause_count_down),A
 
     LD A,_GAME_STATE_LIFE_LOST_PAUSING_VALUE
