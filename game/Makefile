@@ -21,14 +21,14 @@ DEBUG_DEFINES=
 # -DNO_SHIELDS
 # -DINVINCIBLE
 
-$(BIN)/space-invaders-debug.sna: $(BIN) main.asm */*.asm
-	$(ASM) 	--sld=$(basename $@).sld \
-           	--fullpath \
-           	--sym=$(basename $@)-symbols.txt \
-           	--lst=$(basename $@)-listing.txt \
-           	-DDEBUG \
-			$(DEBUG_DEFINES) \
-		   	main.asm
+$(BIN)/space-invaders-debug.sna: main.asm */*.asm
+	$(ASM) --sld=$(basename $@).sld \
+           --fullpath \
+           --sym=$(basename $@)-symbols.txt \
+           --lst=$(basename $@)-listing.txt \
+           -DDEBUG \
+		   $(DEBUG_DEFINES) \
+		   main.asm
 
 $(BIN)/space-invaders-release.sna: $(BIN) main.asm */*.asm
 	$(ASM) --sld=$(basename $@).sld \
