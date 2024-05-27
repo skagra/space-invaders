@@ -21,7 +21,7 @@ DEBUG_DEFINES=
 # -DNO_SHIELDS
 # -DINVINCIBLE
 
-$(BIN)/space-invaders-debug.sna: main.asm */*.asm
+$(BIN)/space-invaders-debug.sna: $(BIN) main.asm */*.asm
 	$(ASM) 	--sld=$(basename $@).sld \
            	--fullpath \
            	--sym=$(basename $@)-symbols.txt \
@@ -30,17 +30,23 @@ $(BIN)/space-invaders-debug.sna: main.asm */*.asm
 			$(DEBUG_DEFINES) \
 		   	main.asm
 
-$(BIN)/space-invaders-release.sna: main.asm */*.asm
+$(BIN)/space-invaders-release.sna: $(BIN) main.asm */*.asm
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-symbols.txt \
            --lst=$(basename $@)-listing.txt \
            main.asm
 
-clean-windows:
+clean: clean-$(OS)
+
+clean-Windows_NT:
 		rmdir /S /Q $(BIN)
 
 clean-linux:
 		rm -r $(BIN)
 
-	
+run-cspect-debug: debug
+		CSpect +tv -60 -w2 -fps -sound -analytics $(BIN)/space-invaders-debug.sna
+
+run-cspect-release: release
+		CSpect +tv -60 -w2 -fps -sound -analytics $(BIN)/space-invaders-release.sna
