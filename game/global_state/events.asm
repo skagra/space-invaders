@@ -71,25 +71,36 @@ event_missile_hit_missile:
 event_alien_missile_hit_player:
     PUSH AF
 
-    CALL player.event_alien_missile_hit_player
-    CALL alien_missiles.event_alien_missile_hit_player
+    CALL player.event_alien_missile_hit_player_begin
+    CALL player_missile.event_alien_missile_hit_player_begin
+    CALL alien_missiles.event_alien_missile_hit_player_begin
+    CALL aliens.event_alien_missile_hit_player_begin
 
     IFNDEF INVINCIBLE
-        CALL player_lives.event_life_lost
+        CALL player_lives.event_alien_missile_hit_player
     ENDIF
 
     CALL game_screen.draw_bases
     CALL game_screen.print_bases_count
 
-    LD A,(player_lives.player_lives_1)                  ; Game over?
-    AND A
-    JR NZ,.done
+    LD A,30                                             ; TODO
+    LD (_life_lost_pause_count_down),A
 
-    LD A,_GAME_STATE_GAME_OVER_VALUE
+    LD A,_GAME_STATE_LIFE_LOST_PAUSING_VALUE
     LD (_game_state),A
-    CALL game_screen.print_game_over
+
+    ; LD A,(player_lives.player_lives_1)                ; Game over?
+    ; AND A
+    ; JR NZ,.done
+
+    ; LD A,_GAME_STATE_GAME_OVER_VALUE
+    ; LD (_game_state),A
+    ; CALL game_screen.print_game_over
     
 .done
     POP AF
 
+
     RET
+
+

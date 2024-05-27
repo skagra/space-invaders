@@ -15,8 +15,11 @@ event_alien_hit_by_player_missile:
     LD (_exploding_alien),HL
 
     ; Halt the pack during the explosion
-    LD A,utils.TRUE_VALUE
-    LD (_pack_halted),A
+    ; LD A,utils.TRUE_VALUE
+    ; LD (_pack_halted),A
+
+    LD A,_ALIEN_PACK_STATE_PAUSED_VALUE
+    LD (_alien_pack_state),A
 
     ; Set the alien state to be dead
     LD IY,HL
@@ -71,10 +74,62 @@ event_alien_hit_by_player_missile:
     LD A,(_alien_count)
     DEC A
     LD (_alien_count),A
-
-    ; Are we down to the last alien?
-    ; TODO This is likely where we flag the alien screen has been cleared
     
     RET
 
-.EXPLODING_ALIEN_DELAY EQU  15
+; .EXPLODING_ALIEN_DELAY EQU  15
+
+event_alien_missile_hit_player_begin:
+    PUSH AF
+
+  ;  CALL event_alien_explosion_done        ; TODO I need to know there is an explosion first
+                                            ; BUG to be able to blank from alien missile hit player
+    LD A,_ALIEN_PACK_STATE_PAUSED_VALUE     ; Explosion is not undrawn as we are overloading PAUSED
+    LD (_alien_pack_state),A
+
+    POP AF
+
+    RET
+
+event_alien_missile_hit_player_end:
+    PUSH AF
+
+    LD A,_ALIEN_PACK_STATE_ACTIVE_VALUE
+    LD (_alien_pack_state),A
+
+    POP AF
+
+    RET
+
+event_alien_explosion_done:
+    PUSH AF,HL
+
+    ; Done exploding - erase the explosion
+    LD HL,(_exploding_alien)                           
+    LD IX,HL
+
+    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
+    PUSH HL
+
+    LD HL, sprites.ALIEN_EXPLOSION
+    PUSH HL
+
+    LD L,utils.TRUE_VALUE
+    PUSH HL
+
+    CALL fast_draw.draw_sprite_16x8
+    
+    POP HL  
+    POP HL
+    POP HL 
+
+    ; Start the pack moving again
+    ; LD A,utils.FALSE_VALUE
+    ; LD (_pack_halted),A
+
+    LD A,_ALIEN_PACK_STATE_ACTIVE_VALUE
+    LD (_alien_pack_state),A
+
+    POP HL,AF
+
+    RET

@@ -6,6 +6,7 @@ _module_start:
     INCLUDE "init.asm"
     INCLUDE "draw.asm"
     INCLUDE "update.asm"
+    INCLUDE "events.asm"
 
     MEMORY_USAGE "player missile  ",_module_start
 

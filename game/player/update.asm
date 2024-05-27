@@ -20,8 +20,8 @@ update:
     BIT _PLAYER_STATE_ACTIVE_BIT,A
     JR NZ,.active
 
-    BIT _PLAYER_STATE_HIT_BIT,A
-    JR NZ,.hit
+    ; BIT _PLAYER_STATE_HIT_BIT,A
+    ; JR NZ,.hit
 
     BIT _PLAYER_STATE_EXPLODING_BIT,A
     JR NZ,.exploding
@@ -60,13 +60,13 @@ update:
 
     JR .done
 
-.hit:
-    LD A,_PLAYER_STATE_EXPLODING_VALUE
-    LD (player_state),A
-    LD A,10                                             ; TODO Cycles to explode for
-    LD (.exploding_count),A
+; .hit:
+;     LD A,_PLAYER_STATE_EXPLODING_VALUE
+;     LD (player_state),A
+;     LD A,10                                             ; TODO Cycles to explode for
+;     LD (.exploding_count),A
 
-    JR .done
+;     JR .done
 
 .exploding:
     LD A,(_player_explosion_current_variant_toggle)
@@ -78,14 +78,14 @@ update:
     LD HL,_player_explosion_current_variant_sprite
     LD (HL),DE
 
-    LD A, (.exploding_count)
-    DEC A
-    LD (.exploding_count),A
+    ; LD A, (.exploding_count)
+    ; DEC A
+    ; LD (.exploding_count),A
 
-    JR NZ,.done
+    ; JR NZ,.done
 
-    LD A,_PLAYER_STATE_DONE_EXPLODING_VALUE
-    LD (player_state),A
+    ; LD A,_PLAYER_STATE_DONE_EXPLODING_VALUE
+    ; LD (player_state),A
 
     JR .done
 
@@ -107,5 +107,5 @@ update:
 
     RET
     
-.exploding_count:   BLOCK 1
+;.exploding_count:   BLOCK 1
 

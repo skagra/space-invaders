@@ -26,3 +26,11 @@ _missile_y:                                 BLOCK 1             ; Y coord to bla
 _missile_x:                                 BLOCK 1             ; X coordinate of the missile, this never changes once a missile is running
 _missile_explosion_cycle_count:             BLOCK 1             ; Count of cycles remaining to display missile explosion
 _can_fire:                                  BLOCK 1             ; Firing enabled?  Values from TRUE_VALUE/FALSE_VALUE
+
+_MISSILE_GLOBAL_STATE_ACTIVE_VALUE:         EQU 0b00000001
+_MISSILE_GLOBAL_STATE_PAUSED_VALUE:         EQU 0b00000010
+
+; _MISSILE_GLOBAL_STATE_ACTIVE_BIT:           EQU 0
+; _MISSILE_GLOBAL_STATE_PAUSED_BIT:           EQU 1
+
+; _missile_global_state:                      BLOCK 1

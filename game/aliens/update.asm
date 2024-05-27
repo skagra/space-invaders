@@ -29,7 +29,7 @@ _pack_right:                            BLOCK 1
 
 ; State governing pack when an alien is exploding
 _exploding_alien:                       BLOCK 2
-_pack_halted:                           BLOCK 1
+;_pack_halted:                           BLOCK 1
 
 ; Current number of aliens
 _alien_count:                           BLOCK 1
@@ -218,36 +218,6 @@ _update_pack_bounds:
 
     RET
 
-event_alien_explosion_done:
-    PUSH AF,HL
-
-    ; Done exploding - erase the explosion
-    LD HL,(_exploding_alien)                           
-    LD IX,HL
-
-    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
-    PUSH HL
-
-    LD HL, sprites.ALIEN_EXPLOSION
-    PUSH HL
-
-    LD L,utils.TRUE_VALUE
-    PUSH HL
-
-    CALL fast_draw.draw_sprite_16x8
-    
-    POP HL  
-    POP HL
-    POP HL 
-
-    ; Start the pack moving again
-    LD A,utils.FALSE_VALUE
-    LD (_pack_halted),A
-
-    POP HL,AF
-
-    RET
-
 ;------------------------------------------------------------------------------
 ;
 ; Update the current alien coordinates and state
@@ -267,8 +237,10 @@ update:
     PUSH AF,DE,HL,IX
 
     ; Is the pack still globally halted?
-    LD A,(_pack_halted)
-    BIT utils.TRUE_BIT,A
+    ; LD A,(_pack_halted)
+    ; BIT utils.TRUE_BIT,A
+    LD A,(_alien_pack_state)
+    BIT _ALIEN_PACK_STATE_PAUSED_BIT,A
     JR NZ,.done
 
 .not_exploding
@@ -331,8 +303,10 @@ update:
 next_alien:
     PUSH AF,DE,HL,IX
 
-    LD A,(_pack_halted)
-    BIT utils.TRUE_BIT,A
+    ; LD A,(_pack_halted)
+    ; BIT utils.TRUE_BIT,A
+    LD A,(_alien_pack_state)
+    BIT _ALIEN_PACK_STATE_PAUSED_BIT,A
     JR NZ,.done
 
     LD HL,(_current_alien_lookup_ptr) 

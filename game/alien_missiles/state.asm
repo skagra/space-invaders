@@ -59,4 +59,12 @@ _ALIEN_MISSILE_TYPE_COUNT:                              EQU 3
 _ALIEN_MISSILE_DELTA_Y:                                 EQU 3
 
 ; Pointer to the current missile struct
-_current_alien_missile_ptr: BLOCK 2
+_current_alien_missile_ptr:                             BLOCK 2
+
+_ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_VALUE:              EQU 0b00000001
+_ALIEN_MISSILES_GLOBAL_STATE_PAUSED_VALUE:              EQU 0b00000010
+
+_ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_BIT:                EQU 0
+_ALIEN_MISSILES_GLOBAL_STATE_PAUSED_BIT:                EQU 1
+
+_alien_missiles_global_state:                           BLOCK 1

@@ -16,6 +16,10 @@
 update:
     PUSH AF,DE,HL,IX
 
+    LD A, (_alien_missiles_global_state)
+    BIT _ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_BIT,A
+    JP Z,.done
+
     LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missle struct
 
     LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)                   ; Get the missile state

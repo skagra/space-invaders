@@ -85,15 +85,58 @@ event_missiles_collided:
 
     RET
 
-event_alien_missile_hit_player:
-    PUSH AF,IX
+event_alien_missile_hit_player_begin:
+    PUSH AF,DE,HL,IX
 
-    LD A,_ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE
-    LD IX,(_current_alien_missile_ptr) 
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A
+    LD A, _ALIEN_MISSILES_GLOBAL_STATE_PAUSED_VALUE
+    LD (_alien_missiles_global_state),A
 
-    POP IX,AF
+    LD IX,_ALIEN_MISSILE_0
+    BIT _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT,(IX+_ALIEN_MISSILE_OFFSET_STATE)
+    JR NZ,.skip_0
+
+    LD DE,_ALIEN_MISSILE_0
+    LD HL,_current_alien_missile_ptr
+    LD (HL),DE
+    
+    CALL blank
+
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
+
+.skip_0
+    LD IX,_ALIEN_MISSILE_1
+    BIT _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT,(IX+_ALIEN_MISSILE_OFFSET_STATE)
+    JR NZ,.skip_1
+
+    LD DE,_ALIEN_MISSILE_1
+    LD HL,_current_alien_missile_ptr
+    LD (HL),DE
+    
+    CALL blank
+
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
+
+.skip_1
+    LD IX,_ALIEN_MISSILE_2
+    BIT _ALIEN_MISSILE_STATE_NOT_ACTIVE_BIT,(IX+_ALIEN_MISSILE_OFFSET_STATE)
+    JR NZ,.skip_2
+
+    LD DE,_ALIEN_MISSILE_2
+    LD HL,_current_alien_missile_ptr
+    LD (HL),DE
+    
+    CALL blank
+
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
+
+.skip_2
+    POP IX,HL,DE,AF
 
     RET
     
+event_alien_missile_hit_player_end:
+    LD A, _ALIEN_MISSILES_GLOBAL_STATE_ACTIVE_VALUE
+    LD (_alien_missiles_global_state),A
+
+    RET
     

@@ -1,4 +1,4 @@
-event_life_lost:
+event_alien_missile_hit_player:
     PUSH AF,HL
 
     LD HL,player_lives_1

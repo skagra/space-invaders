@@ -32,8 +32,11 @@ init:
     LD A,_ALIEN_PACK_SIZE
     LD (_pack_loop_counter),A
 
-    LD A,utils.FALSE_VALUE
-    LD (_pack_halted),A
+    ; LD A,utils.FALSE_VALUE
+    ; LD (_pack_halted),A
+
+    LD A,_ALIEN_PACK_STATE_ACTIVE_VALUE
+    LD (_alien_pack_state),A
 
     ; Pack extremeties
     ; TODO We need a proper way of setting initial values (perhaps they can just be set to their opposite min/max's)
