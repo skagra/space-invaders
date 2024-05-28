@@ -4,6 +4,10 @@ event_player_missile_hit_alien:
     
     PUSH AF,HL,IX,IY
 
+    LD A,(_game_state)
+    BIT _GAME_STATE_LIFE_LOST_PAUSING_BIT,A
+    JR NZ,.done
+
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP  
 
@@ -32,6 +36,7 @@ event_player_missile_hit_alien:
     LD A,.ALIEN_EPLOSION_PERSISTENCE
     LD (_alien_exploding_count_down),A
 
+.done
     POP IY,IX,HL,AF
 
     RET

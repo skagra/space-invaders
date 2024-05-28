@@ -15,7 +15,7 @@ event_alien_missile_hit_player_begin:
     CALL blank
 
     LD A,_MISSILE_STATE_NO_MISSILE
-    LD (_tos_sub_state),A
+    LD (_missile_state),A
 
     POP AF
 

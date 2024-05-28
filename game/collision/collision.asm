@@ -214,43 +214,43 @@ handle_collision:
 .done_checking:
     LD A,(.collisions)
     
+    ; CP .FIRE_ALIEN_MISSILE_HIT_PLAYER
+    BIT .ALIEN_MISSILE_HIT_PLAYER_BIT,A
+    JR Z,.next_1
+    CALL global_state.event_alien_missile_hit_player
+    JR .next_2
+    
+.next_1
     ; Did the player missile hit an alien?
     CP .FIRE_PLAYER_HIT_ALIEN
-    JR NZ,.next_1
+    JR NZ,.next_2
     LD HL,(.alien_hit_by_player_missile)
     PUSH HL
     CALL global_state.event_player_missile_hit_alien
     POP HL
     ; Fall through
 
-.next_1
+.next_2
     CP .FIRE_PLAYER_HIT_SHIELD
-    JR NZ,.next_2
+    JR NZ,.next_3
     CALL global_state.event_player_missile_hit_shield 
     ; Fall through
 
-.next_2
+.next_3
     CP .FIRE_ALIEN_HIT_SHIELD
-    JR NZ,.next_3
+    JR NZ,.next_4
     CALL global_state.event_alien_missile_hit_shield
     ; Fall through
 
-.next_3
+.next_4
     CP .FIRE_MISSILES_COLLIDED
-    JR NZ,.next_4
+    JR NZ,.next_5
     LD HL,(.alien_missile_hit)
     PUSH HL
     CALL global_state.event_missile_hit_missile
     POP HL
-    ; Fall through
-
-.next_4
-    ; CP .FIRE_ALIEN_MISSILE_HIT_PLAYER
-    BIT .ALIEN_MISSILE_HIT_PLAYER_BIT,A
-    JR Z,.next_5
-    CALL global_state.event_alien_missile_hit_player
-
-    ; Fall through
+    
+    JR .next_5
 
 .next_5
 

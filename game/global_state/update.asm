@@ -3,7 +3,7 @@ update:
 
     LD A,(_game_state)                                  ; Grab the current game state
     
-    BIT _GAME_STATE_LIFE_LOST_PAUSING_BIT,A
+    BIT _GAME_STATE_LIFE_LOST_PAUSING_BIT,A             ; BUG - there's an issue where multiple events happen "concurrently"
     JR NZ,.life_lost_pausing
 
     BIT _GAME_STATE_ALIEN_EXPLODING_BIT,A               ; Is an alien exploding?
