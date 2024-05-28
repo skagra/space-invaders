@@ -44,22 +44,29 @@ update:
     BIT _MISSILE_STATE_ACTIVE_BIT,A
     JR NZ,.active
 
-    ; Are we at the top of the screen?
-    BIT _MISSILE_STATE_REACHED_TOP_OF_SCREEN_BIT,A
-    JR NZ,.reached_top_of_screen 
-
-    ; Are we in the loop keep the missile explosion displayed?
-    BIT _MISSILE_STATE_AT_TOP_OF_SCREEN_BIT,A
-    JR NZ,.at_top_of_screen 
-
-    ; Are we done expoding the missile at top of screen?
-    BIT _MISSILE_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
-    JP NZ,.done_at_top_of_screen 
-
     ; Hit a base?
     BIT _MISSILE_STATE_HIT_A_SHIELD_BIT,A
     JP NZ,.missile_state_hit_a_shield
 
+    ; Top of screen?
+    BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
+    JR Z,.not_tos
+
+    LD A,(_tos_sub_state)
+
+    ; Reached the top of the screen?
+    BIT _TOS_SUB_STATE_REACHED_TOP_OF_SCREEN_BIT,A
+    JR NZ,.reached_top_of_screen 
+
+    ; Are we in the loop keep the missile explosion displayed?
+    BIT _TOS_SUB_STATE_AT_TOP_OF_SCREEN_BIT,A
+    JR NZ,.at_top_of_screen 
+
+    ; Are we done expoding the missile at top of screen?
+    BIT _TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
+    JP NZ,.done_at_top_of_screen 
+
+.not_tos:
     ; This should never be reached!
     ; ASSERTION This code should never be reached
 
@@ -112,16 +119,20 @@ update:
     JR .done
 
 .active_reached_top_of_screen:
-    LD HL,_missile_state                                                 
-    LD (HL),_MISSILE_STATE_REACHED_TOP_OF_SCREEN
+    LD A,_MISSILE_STATE_TOP_OF_SCREEN                                          
+    LD (_missile_state),A
+
+    LD A,_TOS_SUB_STATE_REACHED_TOP_OF_SCREEN
+    LD (_tos_sub_state),A
 
     JR .done
 
 .reached_top_of_screen:
-    LD HL,_missile_state                                                 
-    LD (HL),_MISSILE_STATE_AT_TOP_OF_SCREEN
-    LD HL, _missile_explosion_cycle_count
-    LD (HL),_MISSILE_EXPLOSION_CYCLES
+    LD A,_TOS_SUB_STATE_AT_TOP_OF_SCREEN
+    LD (_tos_sub_state),A                                                
+
+    LD A,_MISSILE_EXPLOSION_CYCLES
+    LD (_missile_explosion_cycle_count),A
 
     JR .done
 
@@ -130,26 +141,27 @@ update:
     DEC A
     LD (_missile_explosion_cycle_count),A
     JR NZ,.done
-    LD HL,_missile_state                                                 
-    LD (HL),_MISSILE_STATE_DONE_AT_TOP_OF_SCREEN
+
+    LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN                                                 
+    LD (_tos_sub_state),A
 
     JR .done
 
 .done_at_top_of_screen:
-    LD HL,_missile_state
-    LD (HL),_MISSILE_STATE_NO_MISSILE
+    LD A,_MISSILE_STATE_NO_MISSILE
+    LD (_missile_state),A
 
     JR .done
 
 .hit_an_alien
-    LD HL,_missile_state
-    LD (HL),_MISSILE_STATE_NO_MISSILE
+    LD A,_MISSILE_STATE_NO_MISSILE
+    LD (_missile_state),A
 
     JR .done
 
-.missile_state_hit_a_shield
-    LD HL,_missile_state
-    LD (HL),_MISSILE_STATE_NO_MISSILE
+.missile_state_hit_a_shield:
+    LD A,_MISSILE_STATE_NO_MISSILE
+    LD (_missile_state),A
 
     JR .done
 

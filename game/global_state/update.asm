@@ -3,12 +3,12 @@ update:
 
     LD A,(_game_state)                                  ; Grab the current game state
     
-    BIT _GAME_STATE_ALIEN_EXPLODING_BIT,A               ; Is an alien exploding?
-    JR NZ,.state_alien_exploding                        ; Y - handle it
-    
     BIT _GAME_STATE_LIFE_LOST_PAUSING_BIT,A
     JR NZ,.life_lost_pausing
 
+    BIT _GAME_STATE_ALIEN_EXPLODING_BIT,A               ; Is an alien exploding?
+    JR NZ,.state_alien_exploding                        ; Y - handle it
+    
     JR .done                                            ; N - all done
 
 .state_alien_exploding                                  ; An alien is exploding

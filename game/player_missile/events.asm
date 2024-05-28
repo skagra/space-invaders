@@ -5,17 +5,17 @@ event_alien_missile_hit_player_begin:
     LD (_can_fire),A
 
     LD A,(_missile_state)
-    AND _MISSILE_STATE_AT_TOP_OF_SCREEN | _MISSILE_STATE_REACHED_TOP_OF_SCREEN  
+    BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
     JR Z,.not_at_top
 
-    LD A,_MISSILE_STATE_DONE_AT_TOP_OF_SCREEN_BIT
+    LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_BIT
     LD (_missile_state),A
 
 .not_at_top
     CALL blank
 
     LD A,_MISSILE_STATE_NO_MISSILE
-    LD (_missile_state),A
+    LD (_tos_sub_state),A
 
     POP AF
 
