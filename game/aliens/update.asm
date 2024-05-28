@@ -27,13 +27,6 @@ _pack_tr_coords:
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
-; State governing pack when an alien is exploding
-_exploding_alien:                       BLOCK 2
-;_pack_halted:                           BLOCK 1
-
-; Current number of aliens
-_alien_count:                           BLOCK 1
-
 _adjust_alien_pack_direction:
     PUSH AF,HL
 
@@ -236,15 +229,11 @@ _update_pack_bounds:
 update:
     PUSH AF,DE,HL,IX
 
-    ; Is the pack still globally halted?
-    ; LD A,(_pack_halted)
-    ; BIT utils.TRUE_BIT,A
-    LD A,(_alien_pack_state)
-    BIT _ALIEN_PACK_STATE_PAUSED_BIT,A
-    JR NZ,.done
+    LD A,(_alien_pack_moving)
+    BIT utils.TRUE_BIT,A
+    JR Z,.done
 
 .not_exploding
-
     ; Point IX at the state structure for the current alien
     LD HL,(_current_alien_lookup_ptr)
     LD DE,(HL)
@@ -303,11 +292,9 @@ update:
 next_alien:
     PUSH AF,DE,HL,IX
 
-    ; LD A,(_pack_halted)
-    ; BIT utils.TRUE_BIT,A
-    LD A,(_alien_pack_state)
-    BIT _ALIEN_PACK_STATE_PAUSED_BIT,A
-    JR NZ,.done
+    LD A,(_alien_pack_moving)
+    BIT utils.TRUE_BIT,A
+    JR Z,.done
 
     LD HL,(_current_alien_lookup_ptr) 
 .loop
@@ -334,7 +321,6 @@ next_alien:
     LD (_pack_loop_counter),A
 
 .done
-
     POP IX,DE,HL,AF
     
     RET

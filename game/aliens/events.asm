@@ -1,4 +1,4 @@
-event_alien_hit_by_player_missile:
+event_alien_hit_by_player_missile_begin:
 
 .PARAM_ALIEN_STATE_PTR EQU 8 
 
@@ -15,11 +15,12 @@ event_alien_hit_by_player_missile:
     LD (_exploding_alien),HL
 
     ; Halt the pack during the explosion
-    ; LD A,utils.TRUE_VALUE
-    ; LD (_pack_halted),A
+    LD A,utils.FALSE_VALUE
+    LD (_alien_pack_moving),A
 
-    LD A,_ALIEN_PACK_STATE_PAUSED_VALUE
-    LD (_alien_pack_state),A
+    ; Flag that an alien is exploding
+    LD A,utils.TRUE_VALUE
+    LD (_alien_is_exploding),A
 
     ; Set the alien state to be dead
     LD IY,HL
@@ -77,31 +78,7 @@ event_alien_hit_by_player_missile:
     
     RET
 
-; .EXPLODING_ALIEN_DELAY EQU  15
-
-event_alien_missile_hit_player_begin:
-    PUSH AF
-
-  ;  CALL event_alien_explosion_done        ; TODO I need to know there is an explosion first
-                                            ; BUG to be able to blank from alien missile hit player
-    LD A,_ALIEN_PACK_STATE_PAUSED_VALUE     ; Explosion is not undrawn as we are overloading PAUSED
-    LD (_alien_pack_state),A
-
-    POP AF
-
-    RET
-
-event_alien_missile_hit_player_end:
-    PUSH AF
-
-    LD A,_ALIEN_PACK_STATE_ACTIVE_VALUE
-    LD (_alien_pack_state),A
-
-    POP AF
-
-    RET
-
-event_alien_explosion_done:
+event_alien_hit_by_player_missile_end:
     PUSH AF,HL
 
     ; Done exploding - erase the explosion
@@ -123,13 +100,44 @@ event_alien_explosion_done:
     POP HL
     POP HL 
 
-    ; Start the pack moving again
-    ; LD A,utils.FALSE_VALUE
-    ; LD (_pack_halted),A
+    ; Flag that there is no alien exploding
+    LD A,utils.FALSE_VALUE
+    LD (_alien_is_exploding),A
 
-    LD A,_ALIEN_PACK_STATE_ACTIVE_VALUE
-    LD (_alien_pack_state),A
+    LD A,utils.TRUE_VALUE
+    LD (_alien_pack_moving),A
 
     POP HL,AF
 
     RET
+event_alien_missile_hit_player_begin:
+    PUSH AF
+
+    ; Is there a missile exploding?
+    LD A,(_alien_is_exploding)
+    BIT utils.TRUE_BIT,A
+    JR Z,.none_exploding
+    
+    ; Blank the explosion and reset explosion state
+    CALL event_alien_hit_by_player_missile_end        
+    
+.none_exploding:
+    ; Stop the pack moving
+    LD A,utils.FALSE_VALUE                          
+    LD (_alien_pack_moving),A
+
+    POP AF
+
+    RET
+
+event_alien_missile_hit_player_end:
+    PUSH AF
+
+    ; Start the pack moving again
+    LD A,utils.TRUE_VALUE
+    LD (_alien_pack_moving),A
+
+    POP AF
+
+    RET
+

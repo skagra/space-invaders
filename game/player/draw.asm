@@ -45,7 +45,7 @@ draw:
     LD E, layout.PLAYER_Y
     PUSH DE
       
-    LD DE,(_player_explosion_current_variant_sprite)    ; Sprite    
+    LD DE,(_player_explosion_variant_sprite)            ; Sprite    
     PUSH DE
 
     LD E,utils.FALSE_VALUE                              ; Drawing
@@ -69,6 +69,9 @@ blank:
     BIT _PLAYER_STATE_EXPLODING_BIT,A
     JR NZ,.blank_explosion
 
+    BIT _PLAYER_STATE_DONE_EXPLODING_BIT,A
+    JR NZ,.blank_explosion
+
     ; Erase the player base sprite
     LD A, (player_x)                                    ; Coords
     LD D,A
@@ -78,7 +81,7 @@ blank:
     LD DE,sprites.PLAYER                                ; Sprite    
     PUSH DE
 
-    LD E,utils.TRUE_VALUE                               ; Blanking
+    LD E,utils.TRUE_VALUE                               ; Blanking (not drawing)
     PUSH DE 
 
     CALL fast_draw.draw_sprite_16x8                     ; Erase the player base sprite
@@ -95,10 +98,10 @@ blank:
     LD E, layout.PLAYER_Y
     PUSH DE
       
-    LD DE,(_player_explosion_current_variant_sprite)    ; Sprite    
+    LD DE,(_player_explosion_variant_sprite)            ; Sprite    
     PUSH DE
 
-    LD E,utils.TRUE_VALUE                               ; Drawing
+    LD E,utils.TRUE_VALUE                               ; Blanking (not drawing)
     PUSH DE
 
     CALL fast_draw.draw_sprite_16x8                     ; Draw the player base sprite

@@ -63,4 +63,5 @@ _ALIEN_MISSILE_DELTA_Y:                                 EQU 3
 ; Pointer to the current missile struct
 _current_alien_missile_ptr:                             BLOCK 2
 
+; Is firing of missiles enabled?
 _enabled:                                               BLOCK 1

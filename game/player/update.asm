@@ -20,9 +20,6 @@ update:
     BIT _PLAYER_STATE_ACTIVE_BIT,A
     JR NZ,.active
 
-    ; BIT _PLAYER_STATE_HIT_BIT,A
-    ; JR NZ,.hit
-
     BIT _PLAYER_STATE_EXPLODING_BIT,A
     JR NZ,.exploding
 
@@ -60,38 +57,29 @@ update:
 
     JR .done
 
-; .hit:
-;     LD A,_PLAYER_STATE_EXPLODING_VALUE
-;     LD (player_state),A
-;     LD A,10                                             ; TODO Cycles to explode for
-;     LD (.exploding_count),A
-
-;     JR .done
-
 .exploding:
-    LD A,(_player_explosion_current_variant_toggle)
-    XOR 0x01
-    LD (_player_explosion_current_variant_toggle),A
+    LD A,(_player_explosion_variant_cycle_count)
+    DEC A
+    LD (_player_explosion_variant_cycle_count),A
+    JR NZ,.done
 
-    JR Z,.variant_0
-    LD DE,sprites.PLAYER_EXPLOSION_VARIANT_1
-    LD HL,_player_explosion_current_variant_sprite
+    LD A,_PLAYER_EXPLOSION_VARIANT_SWITCH_MAX
+    LD (_player_explosion_variant_cycle_count),A
+
+    LD DE,sprites.PLAYER_EXPLOSION_VARIANT_0
+    LD HL,(_player_explosion_variant_sprite)
+    SUB HL,DE
+    JR Z,.switch_to_variant_1
+
+    LD DE,sprites.PLAYER_EXPLOSION_VARIANT_0
+    LD HL,_player_explosion_variant_sprite
     LD (HL),DE
-
-    ; LD A, (.exploding_count)
-    ; DEC A
-    ; LD (.exploding_count),A
-
-    ; JR NZ,.done
-
-    ; LD A,_PLAYER_STATE_DONE_EXPLODING_VALUE
-    ; LD (player_state),A
 
     JR .done
 
-.variant_0:
-    LD DE,sprites.PLAYER_EXPLOSION_VARIANT_0
-    LD HL,_player_explosion_current_variant_sprite
+.switch_to_variant_1:
+    LD DE,sprites.PLAYER_EXPLOSION_VARIANT_1
+    LD HL,_player_explosion_variant_sprite
     LD (HL),DE
 
     JR .done
@@ -106,6 +94,5 @@ update:
     POP HL,DE,AF
 
     RET
-    
-;.exploding_count:   BLOCK 1
+
 

@@ -1,29 +1,33 @@
 event_alien_missile_hit_player_begin:
-    PUSH AF
+    PUSH AF,DE,HL
 
-    LD A,(player_state)
-    BIT _PLAYER_STATE_EXPLODING_BIT,A
-    JR Z,.not_exploding
-
-    LD A,_PLAYER_STATE_DONE_EXPLODING_VALUE
-    LD (player_state),A
-
-.not_exploding
     CALL blank
 
     LD A,_PLAYER_STATE_EXPLODING_VALUE
     LD (player_state),A
 
-    POP AF
+    LD A,_PLAYER_EXPLOSION_VARIANT_SWITCH_MAX
+    LD (_player_explosion_variant_cycle_count),A
+
+    LD HL,_player_explosion_variant_sprite
+    LD DE,sprites.PLAYER_EXPLOSION_VARIANT_0
+    LD (HL),DE
+
+    POP HL,DE,AF
 
     RET
 
 event_alien_missile_hit_player_end:
     PUSH AF
     
-    CALL blank
+    CALL blank ; TODO Not clear where this is needed
+
     LD A,_PLAYER_STATE_DONE_EXPLODING_VALUE
     LD (player_state),A
 
+    LD A,layout.PLAYER_START_X
+    LD (player_x),A
+
     POP AF
+
     RET

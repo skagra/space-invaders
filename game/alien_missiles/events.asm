@@ -65,36 +65,39 @@ event_missiles_collided:
 
     MACRO REMOVE_ALIEN_MISSILE num
 
-        LD IX,_ALIEN_MISSILE_num
+        LD IX,_ALIEN_MISSILE_num                            ; The missile    
         LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)
-        AND _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_VALUE | _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE
-        JR Z,.dont_modify
 
+        ; Is the missile exploding at the bottom of the screen?
+        AND _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_VALUE | _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE
+        JR Z,.dont_modify                                   ; No - nothing to modify
+
+        ; Change missile state such that the explosion will be erased
         LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_VALUE
 
 .dont_modify:
-        LD DE,_ALIEN_MISSILE_num
+        LD DE,_ALIEN_MISSILE_num                            ; Make the missile the current missile
         LD HL,_current_alien_missile_ptr
         LD (HL),DE
         
-        CALL blank
+        CALL blank                                          ; Erase it from the screen
 
+        ; Flag missile as nolonger active
         LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
         
+        ; And reset its step count
         LD A,0x00
         LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A 
 
-.skip
-
     ENDM
-
 
 event_alien_missile_hit_player_begin:
     PUSH AF,DE,HL,IX
 
-    LD A,utils.FALSE_VALUE
+    LD A,utils.FALSE_VALUE                                  ; Disable missiles
     LD (_enabled),A
-
+    
+    ; Remove each of the alien missiles from the screen
     REMOVE_ALIEN_MISSILE 0
     REMOVE_ALIEN_MISSILE 1
     REMOVE_ALIEN_MISSILE 2
@@ -104,7 +107,7 @@ event_alien_missile_hit_player_begin:
     RET
     
 event_alien_missile_hit_player_end:
-    LD A,utils.TRUE_VALUE
+    LD A,utils.TRUE_VALUE                                   ; Enable missiles
     LD (_enabled),A
 
     RET

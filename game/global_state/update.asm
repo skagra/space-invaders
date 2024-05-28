@@ -18,7 +18,7 @@ update:
     JR NZ,.done                                         ; Done exploding? N then done.
     
     ; Alien done exploding
-    CALL aliens.event_alien_explosion_done              ; Inform the alien pack  
+    CALL aliens.event_alien_hit_by_player_missile_end   ; Inform the alien pack  
     CALL player_missile.event_alien_explosion_done      ; Inform the player missile
     
     LD A,_GAME_STATE_RUNNING_VALUE                      ; Update global state to nominal running
@@ -42,6 +42,7 @@ update:
     LD (_game_state),A
 
     JR .done
+    
 .done
     POP AF
 

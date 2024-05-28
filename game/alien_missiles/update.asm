@@ -138,7 +138,7 @@ update:
 
     RET
 
-.ALIEN_MISSILE_EXPLOSION_CYCLES: EQU 3                                      ; How long to display a missile explosion
+.ALIEN_MISSILE_EXPLOSION_CYCLES: EQU 3                      ; How long to display a missile explosion
 
 ;------------------------------------------------------------------------------
 ;
@@ -158,7 +158,6 @@ update:
 next:
     PUSH AF,IX
 
-    ; TODO - just track current missile there's now a type value in the struct
     LD IX,(_current_alien_missile_ptr)
     LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                     ; Get the current alient type
 
@@ -354,15 +353,14 @@ _fire_if_ready:
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE), _ALIEN_MISSILE_STATE_ACTIVE_VALUE    ; Activate the missile
     LD IY,HL                                                ; Alien pointer
     LD HL,(IY+aliens._STATE_OFFSET_DRAW_COORDS)             ; Alien coords
-    LD D,0x04                                               ; Adjust firing coords to bottom middle of alien
-    LD E,0x08                                               ; TODO - This should be moved out to a defined constant
+    LD DE,layout.ALIEN_MISSILE_OFFSET_COORDS                ; Adjust firing coords to bottom middle of alien
     ADD HL,DE
     LD (IX+_ALIEN_MISSILE_OFFSET_COORDS),HL
 
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0x01    ; One step taken (required for reload algorithm)
     ; Fall through 
 
-.update_to_next_col:                                        ; TODO Don't do this for type 1
+.update_to_next_col:                                        ; TODO Don't need to do this for type 1 missile (as targetted at player)
     LD A,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)       ; Update location in column table,
     INC A                                                   ; if either we've fired or there were no aliens in the selected column
     CP .SHOT_COLUMNS_COUNT                                  ; Has the end of the column lookup table been reached?

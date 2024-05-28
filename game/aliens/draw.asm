@@ -47,7 +47,7 @@ blank:
 .variant_selected:
     PUSH HL                                             ; Sprite/mask is in HL
 
-    LD L,utils.TRUE_VALUE                               ; Blanking
+    LD L,utils.TRUE_VALUE                               ; Blanking (not drawing)
     PUSH HL 
     
     CALL fast_draw.draw_sprite_16x8
@@ -87,10 +87,10 @@ draw:
     LD DE,(HL)
     LD IX,DE
     
-    ; Is the deferred alien active pr new
+    ; Do we need to draw the current alien?
     LD A,(IX+_STATE_OFFSET_STATE)
     AND _ALIEN_STATE_ACTIVE_VALUE|_ALIEN_STATE_NEW_VALUE,A    
-    JR Z,.done                                          ; Dead 
+    JR Z,.done                                          
 
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL  
@@ -116,7 +116,7 @@ draw:
 
 .variant_selected:
 
-    LD L,utils.FALSE_VALUE                              ; Drawing
+    LD L,utils.FALSE_VALUE                              ; Drawing (not blanking)
     PUSH HL 
     
     CALL fast_draw.draw_sprite_16x8

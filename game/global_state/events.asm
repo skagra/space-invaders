@@ -13,7 +13,7 @@ event_player_missile_hit_alien:
     ; Inform the alien pack 
     LD HL,(IX+.PARAM_TARGET_ALIEN)
     PUSH HL
-    CALL aliens.event_alien_hit_by_player_missile
+    CALL aliens.event_alien_hit_by_player_missile_begin
     POP HL
 
     ; Inform scoring 
@@ -39,7 +39,6 @@ event_player_missile_hit_alien:
 .ALIEN_EPLOSION_PERSISTENCE:    EQU 15
 
 event_player_missile_hit_shield:
-
     ; Inform the player missile that it has hit a shield
     CALL player_missile.event_player_missile_hit_shield 
     

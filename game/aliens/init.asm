@@ -32,24 +32,23 @@ init:
     LD A,_ALIEN_PACK_SIZE
     LD (_pack_loop_counter),A
 
-    ; LD A,utils.FALSE_VALUE
-    ; LD (_pack_halted),A
+    LD A,utils.TRUE_VALUE
+    LD (_alien_pack_moving),A
 
-    LD A,_ALIEN_PACK_STATE_ACTIVE_VALUE
-    LD (_alien_pack_state),A
+    LD A,utils.FALSE_VALUE
+    LD (_alien_is_exploding),A
 
     ; Pack extremeties
-    ; TODO We need a proper way of setting initial values (perhaps they can just be set to their opposite min/max's)
-    LD A,0x20
+    LD A,(_alien_state+_STATE_OFFSET_DRAW_COORDS_Y)
     LD (_pack_bottom),A  
 
-    LD A,0x10
+    LD A,(_alien_state+_STATE_OFFSET_DRAW_COORDS_X)
     LD (_pack_left),A
     
-    LD A,0x60
+    LD A,(_alien_state+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_Y)
     LD (_pack_top),A
     
-    LD A,0xB0
+    LD A,(_alien_state+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_X)
     LD (_pack_right),A                      
 
     LD A,_ALIEN_PACK_SIZE

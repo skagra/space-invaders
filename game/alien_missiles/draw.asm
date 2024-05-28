@@ -34,7 +34,7 @@ draw:
     PUSH DE
     
     LD DE,sprites.ALIEN_MISSILE_0_VARIANT_0_DIMS            ; Dimensions
-    PUSH DE                                                 ; TODO Dimensions should really be pulled from the actual variant!
+    PUSH DE                                                 ; TODO Ideally Dimensions should really be pulled from the actual variant!
 
     ; Which variant are we dealing with?                    
     LD D,0x00                                               ; Current alien missile variant
@@ -117,8 +117,8 @@ blank:
     BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active?
     JR NZ,.blank_missile                                    ; Y - handle it
 
-    BIT _ALIEN_MISSILE_STATE_MISSILES_COLLIDED_BIT,A
-    JR NZ,.blank_missile
+    BIT _ALIEN_MISSILE_STATE_MISSILES_COLLIDED_BIT,A        ; Alien and player missiles collided?
+    JR NZ,.blank_missile                                    ; Y - Handle it
     
     BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A ; Finished blowing up at the bottom of the screen?
     JR NZ,.blank_explosion                                  ; Y - handle it

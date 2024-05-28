@@ -35,7 +35,7 @@ blank:
 
     ; If the missile is active, has reach the top of the screen or has collided with something
     ; then there is a missile to erase
-    AND _MISSILE_STATE_ACTIVE | _MISSILE_STATE_REACHED_TOP_OF_SCREEN | _MISSILE_STATE_NEW ; | _MISSILE_STATE_COLLIDED |
+    AND _MISSILE_STATE_ACTIVE | _MISSILE_STATE_REACHED_TOP_OF_SCREEN | _MISSILE_STATE_NEW 
     JR NZ,.missile
 
     JR .done

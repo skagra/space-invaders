@@ -21,12 +21,12 @@ init:
     LD A,_PLAYER_STATE_ACTIVE_VALUE
     LD (player_state),A
 
-    LD A,0x00
-    LD (_player_explosion_current_variant_toggle),A
+    ; LD A,0x00
+    ; LD (_player_explosion_current_variant_toggle),A
 
-    LD DE,sprites.PLAYER_EXPLOSION_VARIANT_0
-    LD HL,_player_explosion_current_variant_sprite
-    LD (HL),DE
+    ; LD DE,sprites.PLAYER_EXPLOSION_VARIANT_0
+    ; LD HL,_player_explosion_current_variant_sprite
+    ; LD (HL),DE
 
     POP HL,DE,AF
 

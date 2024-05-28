@@ -31,12 +31,12 @@ _ALIEN_TYPE_0:                          EQU 0
 _ALIEN_TYPE_1:                          EQU 1
 _ALIEN_TYPE_2:                          EQU 2
 
-_ALIEN_PACK_STATE_ACTIVE_VALUE:         EQU 0b00000001
-_ALIEN_PACK_STATE_PAUSED_VALUE:         EQU 0b00000010
+_alien_pack_moving:                     BLOCK 1
+_alien_is_exploding:                    BLOCK 1
+_exploding_alien:                       BLOCK 2
 
-_ALIEN_PACK_STATE_ACTIVE_BIT:           EQU 0
-_ALIEN_PACK_STATE_PAUSED_BIT:           EQU 1
-_alien_pack_state:                      BLOCK 1
+; Current number of aliens
+_alien_count:                           BLOCK 1
 
 ; Alien pack as per _STATE_OFFSET_* constants
 _alien_state:
