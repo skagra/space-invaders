@@ -94,13 +94,13 @@ event_alien_missile_hit_player:
     LD A,_GAME_STATE_LIFE_LOST_PAUSING_VALUE
     LD (_game_state),A
 
-    ; LD A,(player_lives.player_lives_1)                ; Game over?
-    ; AND A
-    ; JR NZ,.done
+    LD A,(player_lives.player_lives_1)                ; Game over?
+    AND A
+    JR NZ,.done
 
-    ; LD A,_GAME_STATE_GAME_OVER_VALUE
-    ; LD (_game_state),A
-    ; CALL game_screen.print_game_over
+    LD A,_GAME_STATE_GAME_OVER_VALUE
+    LD (_game_state),A
+    CALL game_screen.print_game_over
     
 .done
     POP AF
