@@ -9,7 +9,7 @@ event_alien_missile_hit_player_begin:
     JR Z,.not_at_top
 
     LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_BIT
-    LD (_missile_state),A
+    LD (_tos_sub_state),A
 
 .not_at_top
     CALL blank
