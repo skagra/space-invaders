@@ -1,16 +1,41 @@
 # Building
 
-The project is built using the `sjasmplus` assembler.  
+The project is built using the `sjasmplus` assembler, optionally via GNU `make`.
 
 `Sjasmplus` may be downloaded [here](https://github.com/z00m128/sjasmplus), it is available for Windows, MacOS and Linux.
 
-Once installed the project is built as follows:
+GNU `make` is native on Linux and ports are available for Windows.
+
+The project is built as follows:
+
+```
+make all
+```
+
+Or if you don't have `make` available, a release version may be built directly using the assembler.
 
 ```
 sjasmplus main.asm
 ```
 
-The build may be configured via the following settings, specified with the `-D` flag on the `sjasmplus` command line:
+# Makefile Targets
+
+The `Makefile` contains the following targets:
+
+* `all` - Build everything.
+* `debug` - Build a debug version.
+* `release` - Build a release version.
+* `clean` - Clean all build files.
+* `run-cspect-debug` - Run a debug build in the `CSpect` emulator.
+* `run-cspect-release` - Run a release build in the `CSpect` emulator.
+* `run-mame-debug` - Run a debug build in `MAME`.
+* `run-mame-release` - Run a release build in `MAME`.
+
+**Note** that `all`, `debug` and `release` require that `sjasmplus` is in your `PATH`, `run-cspect-*` require that `CSpect.exe` is your `PATH` and `run-mame-*` require that both `mame` is in your `PATH` and that the `spectrum` ROM has been added (see [running](running.md)).  The `clean` target requires that `OS` environment variable is set correctly, `Windows_NT` for Windows and `Linux` for Linux.
+
+# Configuring the Build
+
+The build may be configured via the following settings, specified with the `-D` flag on the `sjasmplus` command line, or my editing `DEBUG_DEFINES` in `game/Makefile`
 
 * `DEBUG` - Enable various diagnostics.
 * `IGNORE_VSYNC` - Don't wait for the vertical sync to begin copying the off-screen buffer to screen memory.
@@ -21,6 +46,8 @@ The build may be configured via the following settings, specified with the `-D` 
 * `INVINCIBLE` - Player is invulnerable to alien missiles.
  
 For a standard *release* build specify none of the above.
+
+# Output Files
 
 The build will generate the following files:
 
