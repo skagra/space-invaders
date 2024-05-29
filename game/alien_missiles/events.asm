@@ -69,7 +69,7 @@ event_missiles_collided:
         LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)
 
         ; Is the missile exploding at the bottom of the screen?
-        AND _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_VALUE | _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE
+        AND _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE | _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_VALUE
         JR Z,.dont_modify                                   ; No - nothing to modify
 
         ; Change missile state such that the explosion will be erased
