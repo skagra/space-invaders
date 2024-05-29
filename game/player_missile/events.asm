@@ -64,12 +64,13 @@ event_player_missile_hit_shield:
 
     POP HL
     
-    RET 
+    RET
+
 event_missiles_collided:
     PUSH HL
     
-    LD HL,_missile_state                               
-    LD (HL),_MISSILE_STATE_HIT_A_SHIELD                ; TODO State model should be extended to handle missile-missile collision
+    LD A,_MISSILE_STATE_MISSILES_COLLIDED                            
+    LD (_missile_state),A              
 
     POP HL
     

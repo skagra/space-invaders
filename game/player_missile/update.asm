@@ -48,6 +48,10 @@ update:
     BIT _MISSILE_STATE_HIT_A_SHIELD_BIT,A
     JP NZ,.missile_state_hit_a_shield
 
+    ; Collided with other missile?
+    BIT _MISSILE_STATE_MISSILES_COLLIDED_BIT,A
+    JP NZ,.missiles_collided
+
     ; Top of screen?
     BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
     JR Z,.not_tos
@@ -160,6 +164,12 @@ update:
     JR .done
 
 .missile_state_hit_a_shield:
+    LD A,_MISSILE_STATE_NO_MISSILE
+    LD (_missile_state),A
+
+    JR .done
+
+.missiles_collided:
     LD A,_MISSILE_STATE_NO_MISSILE
     LD (_missile_state),A
 

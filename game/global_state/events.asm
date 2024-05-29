@@ -56,6 +56,7 @@ event_alien_missile_hit_shield:
 
 event_missile_hit_missile:
 .PARAM_ALIEN_MISSILE: EQU 4
+
     PUSH HL
     
     LD  IX,0                                            ; Point IX to the stack

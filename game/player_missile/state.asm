@@ -8,6 +8,7 @@ _MISSILE_STATE_NEW:                         EQU 0b00000010      ; A new missile
 _MISSILE_STATE_ACTIVE:                      EQU 0b00000100      ; Active missile travelling up the screen
 _MISSILE_STATE_TOP_OF_SCREEN:               EQU 0b00001000      ; Bullet has reached the top of the screen
 _MISSILE_STATE_HIT_A_SHIELD:                EQU 0b00010000      ; The missile has collided with a shield
+_MISSILE_STATE_MISSILES_COLLIDED:           EQU 0b00100000
 
 ; Bullet state mask bit positions
 _MISSILE_STATE_NO_MISSILE_BIT:              EQU 0                   
@@ -15,6 +16,7 @@ _MISSILE_STATE_NEW_BIT:                     EQU 1
 _MISSILE_STATE_ACTIVE_BIT:                  EQU 2                   
 _MISSILE_STATE_TOP_OF_SCREEN_BIT:           EQU 3                  
 _MISSILE_STATE_HIT_A_SHIELD_BIT:            EQU 4
+_MISSILE_STATE_MISSILES_COLLIDED_BIT:       EQU 5
 
 _TOS_SUB_STATE_REACHED_TOP_OF_SCREEN:       EQU 0b00000001      ; Bullet has reached the top of the screen
 _TOS_SUB_STATE_AT_TOP_OF_SCREEN:            EQU 0b00000010      ; Retain expoding image at top of screen
