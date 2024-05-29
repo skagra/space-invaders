@@ -55,9 +55,9 @@ event_alien_missile_hit_shield:
     RET
 
 event_missile_hit_missile:
-.PARAM_ALIEN_MISSILE: EQU 4
+.PARAM_ALIEN_MISSILE: EQU 6
 
-    PUSH HL
+    PUSH HL,IX
     
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP  
@@ -69,7 +69,7 @@ event_missile_hit_missile:
     CALL alien_missiles.event_missiles_collided
     POP HL
     
-    POP HL
+    POP IX,HL
 
     RET
 
@@ -104,7 +104,6 @@ event_alien_missile_hit_player:
     
 .done
     POP AF
-
 
     RET
 

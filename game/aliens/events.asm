@@ -79,7 +79,7 @@ event_alien_hit_by_player_missile_begin:
     RET
 
 event_alien_hit_by_player_missile_end:
-    PUSH AF,HL
+    PUSH AF,HL,IX
 
     ; Done exploding - erase the explosion
     LD HL,(_exploding_alien)                           
@@ -88,7 +88,7 @@ event_alien_hit_by_player_missile_end:
     LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
     PUSH HL
 
-    LD HL, sprites.ALIEN_EXPLOSION
+    LD HL,sprites.ALIEN_EXPLOSION
     PUSH HL
 
     LD L,utils.TRUE_VALUE
@@ -107,9 +107,10 @@ event_alien_hit_by_player_missile_end:
     LD A,utils.TRUE_VALUE
     LD (_alien_pack_moving),A
 
-    POP HL,AF
+    POP IX,HL,AF
 
     RET
+
 event_alien_missile_hit_player_begin:
     PUSH AF
 

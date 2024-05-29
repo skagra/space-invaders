@@ -46,7 +46,7 @@ event_alien_missile_hit_shield:
 
 event_missiles_collided:
 
-.PARAM_ALIEN_MISSILE: EQU 10
+.PARAM_ALIEN_MISSILE: EQU 8
 
     PUSH HL,IX,IY
 
