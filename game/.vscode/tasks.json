@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "make",
             "args": [
-                "all"
+                "debug"
             ],
             "problemMatcher": {
                 "owner": "sjasmplus",
