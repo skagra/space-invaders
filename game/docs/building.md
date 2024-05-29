@@ -35,7 +35,7 @@ The `Makefile` contains the following targets:
 
 # Configuring the Build
 
-The build may be configured via the following settings, specified with the `-D` flag on the `sjasmplus` command line, or my editing `DEBUG_DEFINES` in `game/Makefile`
+The build may be configured via the following settings, specified with the `-D` flag on the `sjasmplus` command line, or by editing `DEBUG_DEFINES` in `game/Makefile`
 
 * `DEBUG` - Enable various diagnostics.
 * `IGNORE_VSYNC` - Don't wait for the vertical sync to begin copying the off-screen buffer to screen memory.
@@ -53,10 +53,9 @@ The build will generate the following files:
 
 If `DEBUG` is **not** defined then output will be written to:
 * `bin/space-invaders-release.sna` - Snapshot file.
-* `bin/space-invaders-release.tap` - Tap file.
-* 
+
 If `DEBUG` is defined then output will be written to:
 * `bin/space-invaders-debug.sna` - Snapshot file.
-* `bin/space-invaders-debug.tap` - Tap file.     
+ 
 
 

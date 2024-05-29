@@ -25,5 +25,5 @@ A faithful reproduction of the original arcade Space Invaders game, as released 
 
 # Status
 
-Most of the major game elements are now in place, though there is significant work remaining, for example.
+Most of the major game elements are now in place, though there is significant work remaining.
 
