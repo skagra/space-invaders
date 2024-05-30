@@ -136,7 +136,7 @@ update:
 ;------------------------------------------------------------------------------
 
 next:
-    PUSH AF,IX
+    PUSH AF,DE,HL,IX
 
     LD IX,(_current_alien_missile_ptr)
     LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                     ; Get the current alient type
@@ -163,7 +163,7 @@ next:
     LD HL,_current_alien_missile_ptr
     LD (HL),DE
 
-    POP IX,AF
+    POP IX,DE,HL,AF
 
     RET
 
