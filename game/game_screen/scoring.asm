@@ -53,7 +53,6 @@ flash_score_player_1:
 .SCORE_BLANK_STRING:        BYTE "    ",0
 .FLASH_PLAYER_SCORE_CYCLES: EQU 22
 
-
 print_score_player_2:
     PUSH HL
 

@@ -57,6 +57,7 @@
     INCLUDE "memory_map/module.asm"
     INCLUDE "debug/module.asm"
     INCLUDE "sprites/module.asm"
+    INCLUDE "character_set/module.asm"
     
     ; Off-screen buffer
     ORG draw_common.OFF_SCREEN_BUFFER_START
@@ -79,7 +80,6 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "game_screen/module.asm"
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
-    INCLUDE "character_set/module.asm"
     INCLUDE "alien_missiles/module.asm"
     INCLUDE "player_lives/module.asm"
 
@@ -113,12 +113,13 @@ main:
     CALL game_screen.draw_pre_play
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
-    CALL game_screen.draw_play
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
 
-    ; Draw the player's score
-    CALL game_screen.print_score_player_1 
+    CALL game_screen.draw_intro_screen
+
+    CALL game_screen.draw_get_ready
+    CALL game_screen.draw_play
 
 .animation_loop:
     ; Reset all collisions

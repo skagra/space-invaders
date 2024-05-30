@@ -48,15 +48,6 @@ draw_pre_play:
     POP HL
     CALL draw.flush_buffer_to_screen
 
-    LD HL,.PLAY_PLAYER_1_TEXT
-    PUSH HL
-    LD HL,10                                            ; TODO Pull out hard coded value
-    PUSH HL
-    CALL print.print_string
-    POP HL
-    POP HL
-    CALL draw.flush_buffer_to_screen
-
     LD HL,.LIVES_AND_CREDS_TEXT
     PUSH HL
     LD HL,draw_common.SCREEN_HEIGHT_CHARS-1
@@ -67,9 +58,10 @@ draw_pre_play:
     CALL draw.flush_buffer_to_screen
 
     CALL draw_bases                                     ; Reserved bases
-    CALL game_screen.print_score_high                   ; High score
-    CALL game_screen.print_credits                      ; Credits
-    CALL game_screen.print_bases_count                  ; Count of remanining bases
+    CALL print_score_high                               ; High score
+    CALL print_score_player_1  
+    CALL print_credits                                  ; Credits
+    CALL print_bases_count                              ; Count of remanining bases
    
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
@@ -111,6 +103,27 @@ draw_pre_play:
         POP HL
     ENDIF
 
+    CALL draw.flush_buffer_to_screen
+
+    POP HL
+
+    RET
+
+.SCORE_LINE_0_TEXT:         BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
+.LIVES_AND_CREDS_TEXT:      BYTE "                    CREDIT   ",0
+
+draw_get_ready:
+    PUSH HL
+
+    LD HL,.PLAY_PLAYER_1_TEXT
+    PUSH HL
+    LD HL,10                                            ; TODO Pull out hard coded value
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+    CALL draw.flush_buffer_to_screen
+
     CALL flash_score_player_1
 
     LD HL,.PLAY_PLAYER_1_BLANK
@@ -126,18 +139,15 @@ draw_pre_play:
     POP HL
 
     RET
-
-.SCORE_LINE_0_TEXT:         BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
-.LIVES_AND_CREDS_TEXT:      BYTE "                    CREDIT   ",0
 .PLAY_PLAYER_1_TEXT:        BYTE "         PLAY PLAYER<1>      ",0
-.PLAY_PLAYER_1_BLANK        BYTE "                             ",0
+.PLAY_PLAYER_1_BLANK:       BYTE "                             ",0
 
 draw_play:
 
     CALL draw_horizontal_line                           ; Line towards the bottom of the screen
     CALL draw.flush_buffer_to_screen
     IFNDEF NO_SHIELDS
-        CALL game_screen.draw_shields                       ; Shields
+        CALL game_screen.draw_shields                   ; Shields
     ENDIF
     CALL draw.flush_buffer_to_screen
 

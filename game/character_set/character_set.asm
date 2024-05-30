@@ -158,6 +158,19 @@ CHAR_GT:    BYTE 0b00000000
             BYTE 0b00010000
             BYTE 0b00100000
 
+
+    ; 63/0x3F
+    ORG CHARACTER_SET_BASE+31*8
+
+CHAR_QM:    BYTE 0b00000000
+            BYTE 0b00111000
+            BYTE 0b01000100
+            BYTE 0b00001000
+            BYTE 0b00010000
+            BYTE 0b00010000
+            BYTE 0b00000000
+            BYTE 0b00010000
+
     ; 65/0x41
     ORG CHARACTER_SET_BASE+33*8
 CHAR_A:     BYTE 0b00000000
@@ -402,5 +415,4 @@ CHAR_IY:    BYTE 0b00000000
             BYTE 0b00101000
             BYTE 0b01000100
             BYTE 0b01000100
-
 

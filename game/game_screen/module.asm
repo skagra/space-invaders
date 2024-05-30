@@ -11,6 +11,7 @@ _module_start:
     INCLUDE "player_lives.asm"
     INCLUDE "horizontal_line.asm"
     INCLUDE "game_over.asm"
+    INCLUDE "intro_screen.asm"
         
     MEMORY_USAGE "game screen     ",_module_start
     
