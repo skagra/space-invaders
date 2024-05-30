@@ -21,7 +21,7 @@ event_alien_missile_hit_shield:
     LD IX,(_current_alien_missile_ptr)                     
 
     ; Set state
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_HIT_SHIELD_VALUE  ; TODO - Not sure this should be a state - just blank and move on?
     
     POP IX
 
@@ -46,9 +46,9 @@ event_alien_missile_hit_shield:
 
 event_missiles_collided:
 
-.PARAM_ALIEN_MISSILE: EQU 8
+.PARAM_ALIEN_MISSILE: EQU 10
 
-    PUSH HL,IX,IY
+    PUSH DE,HL,IX,IY
 
     LD  IX,0                                                ; Point IX to the stack
     ADD IX,SP  
@@ -56,12 +56,31 @@ event_missiles_collided:
     LD HL,(IX+.PARAM_ALIEN_MISSILE)                         ; Grab the alien missile involved in the collision
     LD IY,HL      
     
-    ; Flag it as collided
-    LD (IY+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_MISSILES_COLLIDED_VALUE 
+    LD HL,(_current_alien_missile_ptr)                      
+    LD (.current_alien_missile_ptr_copy),HL
 
-    POP IY,IX,HL
+    LD (_current_alien_missile_ptr),IY
+
+    CALL blank
+
+    LD HL,(.current_alien_missile_ptr_copy) 
+    LD (_current_alien_missile_ptr),HL
+
+    ; Flag it as not active
+    LD (IY+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
+
+    ; Reset its count
+    LD (IY+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0
+
+    LD HL,(IY+_ALIEN_MISSILE_OFFSET_COORDS)
+
+    ; LOGPOINT [ALIEN_MISSILES_COLLIDED] Alien missile X=${H} Y=${L}
+    ; LOGPOINT [ALIEN_MISSILES_COLLIDED] Player missile X=${(player_missile._missile_x)} Y+${(player_missile._missile_y)}
+
+    POP IY,IX,HL,DE
 
     RET
+.current_alien_missile_ptr_copy: BLOCK 2
 
     MACRO REMOVE_ALIEN_MISSILE num
 

@@ -13,7 +13,7 @@ debug: $(BIN)/$(SNA_DEBUG).sna
 
 release: $(BIN)/$(SNA_RELEASE).sna
 
-DEBUG_DEFINES=-DDEBUG 
+DEBUG_DEFINES=-DDEBUG -DINVINCIBLE
 # -DDIRECT_DRAW 
 # -DIGNORE_VSYNC 
 # -DAUTO_FLUSH
@@ -21,7 +21,7 @@ DEBUG_DEFINES=-DDEBUG
 # -DNO_SHIELDS
 # -DINVINCIBLE
 
-$(BIN)/$(SNA_DEBUG).sna: $(BIN) $(MAIN_ASM).asm */*.asm
+$(BIN)/$(SNA_DEBUG).sna: $(BIN) $(MAIN_ASM).asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
@@ -29,7 +29,7 @@ $(BIN)/$(SNA_DEBUG).sna: $(BIN) $(MAIN_ASM).asm */*.asm
 		   $(DEBUG_DEFINES) \
 		   $(MAIN_ASM).asm
 
-$(BIN)/$(SNA_RELEASE).sna: $(BIN) $(MAIN_ASM).asm */*.asm
+$(BIN)/$(SNA_RELEASE).sna: $(BIN) $(MAIN_ASM).asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \

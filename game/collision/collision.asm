@@ -80,7 +80,7 @@ reset:
 ;------------------------------------------------------------------------------
 
 handle_collision:
-    PUSH AF,BC,DE,HL,IX
+    PUSH AF,BC,DE,HL,IX,IY
 
     ; ---> Reset collision flags
     LD A,0x00
@@ -254,7 +254,7 @@ handle_collision:
 
 .next_5
 
-    POP IX,HL,DE,BC,AF
+    POP IY,IX,HL,DE,BC,AF
     
     RET
 

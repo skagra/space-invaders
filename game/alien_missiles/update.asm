@@ -42,9 +42,6 @@ update:
     BIT _ALIEN_MISSILE_STATE_HIT_SHIELD_BIT,A               ; Hit a shield?
     JR NZ,.hit_shield                                       ; Handle it.
 
-    BIT _ALIEN_MISSILE_STATE_MISSILES_COLLIDED_BIT,A
-    JR NZ,.missiles_collided
-
     ; This should never be reached!
     ; ASSERTION This code should never be reached
 
@@ -88,10 +85,8 @@ update:
     JR .done
 
 .reached_bottom_of_screen:                                  ; Reached the bottom of the screen
-    LD A,_ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE     ; Set state 
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A
-    LD A,.ALIEN_MISSILE_EXPLOSION_CYCLES                    ; Set counter for explosion cycles
-    LD (IX+_ALIEN_MISSILE_OFFSET_EXPLOSION_COUNT_DOWN),A
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE
+    LD (IX+_ALIEN_MISSILE_OFFSET_EXPLOSION_COUNT_DOWN),.ALIEN_MISSILE_EXPLOSION_CYCLES
 
     JR .done
     
@@ -107,29 +102,14 @@ update:
     JR .done
     
 .done_at_bottom_of_screen:                                  ; Finished exploding at bottom of screen
-    LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                   ; State
-
-    LD A,0x00
-    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A       ; Reset step count used as part of reload algorithm
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE                   ; State
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0       ; Reset step count used as part of reload algorithm
 
     JR .done
 
 .hit_shield
-    LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE              ; Missile has hit a shield
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                   ; Move it to a not active state
-
-    LD A,0x00
-    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A       ; Reset step count used as part of reload algorithm
-
-    JR .done
-
-.missiles_collided:
-    LD A,_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE              
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),A                   ; Move it to a not active state
-
-    LD A,0x00
-    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A       ; Reset step count used as part of reload algorithm
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE                   ; Move it to a not active state
+    LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0       ; Reset step count used as part of reload algorithm
 
     JR .done
 

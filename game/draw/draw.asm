@@ -132,14 +132,15 @@ flush_buffer_to_screen:
 
 draw_sprite:
 
-.PARAM_COORDS:            EQU 20                        ; Sprite coordinates
-.PARAM_DIMS:              EQU 18                        ; Sprite dimensions
-.PARAM_SPRITE_DATA:       EQU 16                        ; Sprite pre-shifted data lookup table
-.PARAM_BLANKING:          EQU 14                        ; Drawing or blanking?                   
-.PARAM_COLLISION_STRUCT:  EQU 12
+.PARAM_COORDS:            EQU 22                        ; Sprite coordinates
+.PARAM_DIMS:              EQU 20                        ; Sprite dimensions
+.PARAM_SPRITE_DATA:       EQU 18                        ; Sprite pre-shifted data lookup table
+.PARAM_BLANKING:          EQU 16                        ; Drawing or blanking?                   
+.PARAM_COLLISION_STRUCT:  EQU 14
+
     DI 
 
-    PUSH AF,BC,DE,HL,IX
+    PUSH AF,BC,DE,HL,IX,IY
 
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP                                                   
@@ -275,7 +276,7 @@ draw_sprite:
 .done
     LD SP,(.stack_ptr)                                  ; Restore the original SP
 
-    POP IX,HL,DE,BC,AF   
+    POP IY,IX,HL,DE,BC,AF   
 
     EI
     

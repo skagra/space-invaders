@@ -116,9 +116,6 @@ blank:
 
     BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active?
     JR NZ,.blank_missile                                    ; Y - handle it
-
-    BIT _ALIEN_MISSILE_STATE_MISSILES_COLLIDED_BIT,A        ; Alien and player missiles collided?
-    JR NZ,.blank_missile                                    ; Y - Handle it
     
     BIT _ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_BIT,A ; Finished blowing up at the bottom of the screen?
     JR NZ,.blank_explosion                                  ; Y - handle it

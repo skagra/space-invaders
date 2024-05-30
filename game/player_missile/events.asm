@@ -60,7 +60,7 @@ event_player_missile_hit_shield:
     PUSH HL
     
     LD HL,_missile_state                                ; Player missile has hit a shield, set state appropriately
-    LD (HL),_MISSILE_STATE_HIT_A_SHIELD
+    LD (HL),_MISSILE_STATE_HIT_A_SHIELD                 ; TODO Not sure this should be a state?  Blank explosion and move on?
 
     POP HL
     
