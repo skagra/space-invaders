@@ -116,7 +116,7 @@ main:
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
 
-    CALL game_screen.draw_intro_screen
+   ; CALL game_screen.draw_intro_screen
 
     CALL game_screen.draw_get_ready
     CALL game_screen.draw_play
