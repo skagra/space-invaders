@@ -35,7 +35,7 @@ The `Makefile` contains the following targets:
 
 # Configuring the Build
 
-The build may be configured via the following settings, specified with the `-D` flag on the `sjasmplus` command line, or by editing `DEBUG_DEFINES` in `game/Makefile`
+The build may be configured via the following settings, specified with the `-D` flag on the `sjasmplus` command line, or by editing `DEBUG_FLAGS` in `game/Makefile`
 
 * `DEBUG` - Enable various diagnostics.
 * `IGNORE_VSYNC` - Don't wait for the vertical sync to begin copying the off-screen buffer to screen memory.

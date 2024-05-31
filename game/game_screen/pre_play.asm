@@ -1,17 +1,3 @@
-;------------------------------------------------------------------------------
-;
-; Draw the initial screen.
-; 
-; Usage:
-;   CALL init_screen
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;------------------------------------------------------------------------------
-
 draw_pre_play:
     PUSH HL
 
@@ -112,44 +98,6 @@ draw_pre_play:
 .SCORE_LINE_0_TEXT:         BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
 .LIVES_AND_CREDS_TEXT:      BYTE "                    CREDIT   ",0
 
-draw_get_ready:
-    PUSH HL
 
-    LD HL,.PLAY_PLAYER_1_TEXT
-    PUSH HL
-    LD HL,10                                            ; TODO Pull out hard coded value
-    PUSH HL
-    CALL print.print_string
-    POP HL
-    POP HL
-    CALL draw.flush_buffer_to_screen
 
-    CALL flash_score_player_1
-
-    LD HL,.PLAY_PLAYER_1_BLANK
-    PUSH HL
-    LD HL,layout.PLAY_PLAYER_COORDS
-    PUSH HL
-    CALL print.print_string
-    POP HL
-    POP HL
-
-    CALL draw.flush_buffer_to_screen
-
-    POP HL
-
-    RET
-.PLAY_PLAYER_1_TEXT:        BYTE "         PLAY PLAYER<1>      ",0
-.PLAY_PLAYER_1_BLANK:       BYTE "                             ",0
-
-draw_play:
-
-    CALL draw_horizontal_line                           ; Line towards the bottom of the screen
-    CALL draw.flush_buffer_to_screen
-    IFNDEF NO_SHIELDS
-        CALL game_screen.draw_shields                   ; Shields
-    ENDIF
-    CALL draw.flush_buffer_to_screen
-
-    RET
 

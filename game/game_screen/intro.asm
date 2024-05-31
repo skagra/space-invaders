@@ -1,10 +1,24 @@
 draw_intro_screen:
+    PUSH HL
+
+    LD HL,.TAITO_TEXT
+    PUSH HL
+    LD HL,.TAITO_COORDS
+    PUSH HL
+    CALL print.print_string
+    CALL draw.flush_buffer_to_screen
+    POP HL
+    POP HL
+
     LD HL,.PLAY_TEXT
     PUSH HL
     LD HL,.PLAY_COORDS
     PUSH HL
-    CALL print.print_string
+    LD HL,print.slow_print_null_callback
+    PUSH HL
+    CALL print.slow_print_string
     CALL draw.flush_buffer_to_screen
+    POP HL
     POP HL
     POP HL
 
@@ -12,50 +26,17 @@ draw_intro_screen:
     PUSH HL
     LD HL,.SPACE_INVADERS_COORDS
     PUSH HL
-    CALL print.print_string
+    LD HL,print.slow_print_null_callback
+    PUSH HL
+    CALL print.slow_print_string
     CALL draw.flush_buffer_to_screen
+    POP HL
     POP HL
     POP HL
 
     LD HL,.SCORE_TABLE_TITLE
     PUSH HL
     LD HL,.SCORE_TABLE_TITLE_COORDS
-    PUSH HL
-    CALL print.print_string
-    CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-
-    LD HL,.SAUCER_TEXT
-    PUSH HL
-    LD HL,.SAUCER_COORDS
-    PUSH HL
-    CALL print.print_string
-    CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-
-    LD HL,.ALIEN_TYPE_2_TEXT
-    PUSH HL
-    LD HL,.ALIEN_TYPE_2_COORDS
-    PUSH HL
-    CALL print.print_string
-    CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-
-    LD HL,.ALIEN_TYPE_1_TEXT
-    PUSH HL
-    LD HL,.ALIEN_TYPE_1_COORDS
-    PUSH HL
-    CALL print.print_string
-    CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-
-    LD HL,.ALIEN_TYPE_0_TEXT
-    PUSH HL
-    LD HL,.ALIEN_TYPE_0_COORDS
     PUSH HL
     CALL print.print_string
     CALL draw.flush_buffer_to_screen
@@ -119,7 +100,62 @@ draw_intro_screen:
     POP HL
     CALL draw.flush_buffer_to_screen
 
+    LD HL,.SAUCER_TEXT
+    PUSH HL
+    LD HL,.SAUCER_COORDS
+    PUSH HL
+    LD HL,print.slow_print_null_callback
+    PUSH HL
+    CALL print.slow_print_string
+    CALL draw.flush_buffer_to_screen
+    POP HL
+    POP HL
+    POP HL
+
+    LD HL,.ALIEN_TYPE_2_TEXT
+    PUSH HL
+    LD HL,.ALIEN_TYPE_2_COORDS
+    PUSH HL
+    LD HL,print.slow_print_null_callback
+    PUSH HL
+    CALL print.slow_print_string
+    CALL draw.flush_buffer_to_screen
+    POP HL
+    POP HL
+    POP HL
+
+    LD HL,.ALIEN_TYPE_1_TEXT
+    PUSH HL
+    LD HL,.ALIEN_TYPE_1_COORDS
+    PUSH HL
+    LD HL,print.slow_print_null_callback
+    PUSH HL
+    CALL print.slow_print_string
+    CALL draw.flush_buffer_to_screen
+    POP HL
+    POP HL
+    POP HL
+
+    LD HL,.ALIEN_TYPE_0_TEXT
+    PUSH HL
+    LD HL,.ALIEN_TYPE_0_COORDS
+    PUSH HL
+    LD HL,print.slow_print_null_callback
+    PUSH HL
+    CALL print.slow_print_string
+    CALL draw.flush_buffer_to_screen
+    POP HL
+    POP HL
+    POP HL
+
+    POP HL
+    
     RET
+
+.TAITO_TEXT:                    BYTE "*TAITO CORPORATION*",0
+.TAITO_X:                       EQU 7
+.TAITO_Y:                       EQU 21
+.TAITO_COORDS:                  EQU (.TAITO_X<<8) + .TAITO_Y
 
 .PLAY_TEXT:                     BYTE "PLAY",0
 .PLAY_X:                        EQU 14

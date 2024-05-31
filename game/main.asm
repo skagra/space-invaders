@@ -58,25 +58,24 @@
     INCLUDE "debug/module.asm"
     INCLUDE "sprites/module.asm"
     INCLUDE "character_set/module.asm"
-    
+    INCLUDE "utils/module.asm"
+    INCLUDE "draw_common/module.asm"
+    INCLUDE "draw/module.asm"
+    INCLUDE "fast_draw/module.asm"
+    INCLUDE "keyboard/module.asm"
+    INCLUDE "print/module.asm"
+
     ; Off-screen buffer
     ORG draw_common.OFF_SCREEN_BUFFER_START
 DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
     MEMORY_USAGE "double buffer   ", DRAW_BUFFER
 
-    ; Most of the code is after the screen buffer - to allow space for sprites
-    INCLUDE "utils/module.asm"
     INCLUDE "layout/module.asm"
     INCLUDE "global_state/module.asm"
-    INCLUDE "draw_common/module.asm"
-    INCLUDE "draw/module.asm"
-    INCLUDE "fast_draw/module.asm"
-    INCLUDE "keyboard/module.asm"
     INCLUDE "player/module.asm"
     INCLUDE "player_missile/module.asm"
     INCLUDE "aliens/module.asm"
-    INCLUDE "print/module.asm"
     INCLUDE "game_screen/module.asm"
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
@@ -116,7 +115,12 @@ main:
     CALL draw.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
 
-   ; CALL game_screen.draw_intro_screen
+    CALL game_screen.draw_intro_screen
+
+    HALT
+    CALL draw_common.wipe_screen
+    CALL game_screen.draw_pre_play
+    CALL draw.flush_buffer_to_screen
 
     CALL game_screen.draw_get_ready
     CALL game_screen.draw_play
