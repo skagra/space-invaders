@@ -6,9 +6,9 @@ draw_intro_screen:
     LD HL,.TAITO_COORDS
     PUSH HL
     CALL print.print_string
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
 
     LD HL,.PLAY_TEXT
     PUSH HL
@@ -17,10 +17,10 @@ draw_intro_screen:
     LD HL,print.slow_print_null_callback
     PUSH HL
     CALL print.slow_print_string
+    POP HL
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-    POP HL
 
     LD HL,.SPACE_INVADERS_TEXT
     PUSH HL
@@ -29,19 +29,19 @@ draw_intro_screen:
     LD HL,print.slow_print_null_callback
     PUSH HL
     CALL print.slow_print_string
+    POP HL
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-    POP HL
 
     LD HL,.SCORE_TABLE_TITLE
     PUSH HL
     LD HL,.SCORE_TABLE_TITLE_COORDS
     PUSH HL
     CALL print.print_string
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
 
     LD HL,.ALIEN_TYPE_2_SPRITE_COORDS
     PUSH HL
@@ -77,7 +77,6 @@ draw_intro_screen:
     POP HL
     POP HL
     POP HL
-
     CALL fast_draw.flush_buffer_to_screen_16x8
 
     LD HL,.SAUCER_SPRITE_COORDS
@@ -90,9 +89,7 @@ draw_intro_screen:
     PUSH HL
     LD HL,collision.dummy_collision
     PUSH HL
-    
     CALL draw.draw_sprite
-
     POP HL
     POP HL
     POP HL
@@ -107,10 +104,10 @@ draw_intro_screen:
     LD HL,print.slow_print_null_callback
     PUSH HL
     CALL print.slow_print_string
+    POP HL
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-    POP HL
 
     LD HL,.ALIEN_TYPE_2_TEXT
     PUSH HL
@@ -119,10 +116,10 @@ draw_intro_screen:
     LD HL,print.slow_print_null_callback
     PUSH HL
     CALL print.slow_print_string
+    POP HL
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-    POP HL
 
     LD HL,.ALIEN_TYPE_1_TEXT
     PUSH HL
@@ -131,10 +128,10 @@ draw_intro_screen:
     LD HL,print.slow_print_null_callback
     PUSH HL
     CALL print.slow_print_string
+    POP HL
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-    POP HL
 
     LD HL,.ALIEN_TYPE_0_TEXT
     PUSH HL
@@ -143,10 +140,10 @@ draw_intro_screen:
     LD HL,print.slow_print_null_callback
     PUSH HL
     CALL print.slow_print_string
+    POP HL
+    POP HL
+    POP HL
     CALL draw.flush_buffer_to_screen
-    POP HL
-    POP HL
-    POP HL
 
     POP HL
     
@@ -207,9 +204,3 @@ draw_intro_screen:
 .ALIEN_TYPE_0_SPRITE_X:         EQU ((.ALIEN_TYPE_0_X-2)*8)
 .ALIEN_TYPE_0_SPRITE_Y:         EQU (.ALIEN_TYPE_0_Y*8)
 .ALIEN_TYPE_0_SPRITE_COORDS:    EQU (.ALIEN_TYPE_0_SPRITE_X<<8) + .ALIEN_TYPE_0_SPRITE_Y
-
-
-
-
-
-

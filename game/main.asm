@@ -81,6 +81,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "scoring/module.asm"
     INCLUDE "alien_missiles/module.asm"
     INCLUDE "player_lives/module.asm"
+    INCLUDE "credits/module.asm"
 
     MODULE main
 
@@ -107,6 +108,7 @@ main:
     CALL scoring.init
     CALL alien_missiles.init
     CALL player_lives.init
+    CALL credits.init
 
     ; Draw the initial screen
     CALL game_screen.draw_pre_play
