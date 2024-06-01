@@ -83,7 +83,6 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "player_lives/module.asm"
 
     MODULE main
-
 main:
     ; Set up stack
     DI                          
@@ -232,10 +231,8 @@ STACK_TOP: EQU $-1
     ; Save snapshot for spectrum emulator
     IFDEF DEBUG
         SAVESNA "bin/space-invaders-debug.sna",main.main
-;       SAVETAP "bin/space-invaders-debug.tap",main.main
     ELSE
         SAVESNA "bin/space-invaders-release.sna",main.main
-;       SAVETAP "bin/space-invaders-release.tap",main.main
     ENDIF
    
     

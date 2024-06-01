@@ -1,18 +1,32 @@
-;------------------------------------------------------------------------------
-;
-; Scan the keyboard and return a bit map indicating which of left, right and
-; fire was pressed.  
-;  
-; Usage:
-;   CALL get_movement_keys
-;   
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-;------------------------------------------------------------------------------
+    MACRO DEBOUNCE keyboard_test_bit, pressed_last_time, result_value
+        ; Key pressed?
+        BIT keyboard_test_bit,A   
+        ; No so done - and fire flag will be reset                              
+        JR NZ,.not_pressed                                 
+
+        ; Pressed - but was it pressed last time?         
+        LD A,(pressed_last_time)
+        BIT utils.TRUE_BIT,A
+        JR NZ,.done
+
+        ; Fire pressed and not pressed last time so flag in result
+        LD A,E                                              
+        OR result_value
+        LD E,A
+
+        ; Flag we read that the key is down 
+        LD HL,pressed_last_time
+        LD (HL),utils.TRUE_VALUE                                        
+
+        JR .done
+
+.not_pressed:
+        ; Key not down so reset record 
+        LD HL,pressed_last_time
+        LD (HL),utils.FALSE_VALUE
+
+.done
+    ENDM
 
 get_keys:
     PUSH AF,BC,DE,HL
@@ -53,27 +67,16 @@ get_keys:
     LD BC,.FIRE_PORT                                    ; Fire port
     IN A,(C)                                            ; Read the port into the accumulator
 
-    BIT .FIRE_KEY_BIT,A                                 ; Fire key pressed?
-    JR NZ,.fire_not_pressed                             ; No so done - and fire flag will be reset
+    DEBOUNCE .FIRE_KEY_BIT, _fire_already_pressed, FIRE_KEY_DOWN_MASK
+    ; Fall through
 
-    ; Fire was pressed but was it down last time?
-    LD HL,_fire_already_pressed             
-    LD A,(HL)
-    CP A,0x01
-    JR Z,.done
+.credits_and_play:
+    LD BC,.CREDS_PLAY_PORT                                   
+    IN A,(C)  
 
-    LD A,E                                              ; Fire pressed so flag in result and not down last time
-    OR FIRE_KEY_DOWN_MASK
-    LD E,A
-
-    LD HL,_fire_already_pressed  
-    LD (HL),0x01                                        ; Flag we read that fire is down
-
-    JR .done
-
-.fire_not_pressed:
-    LD HL,_fire_already_pressed  
-    LD (HL),0x00                                        ; Flag we read that fire is down
+    DEBOUNCE .P1_KEY_BIT, _p1_already_pressed, P1_KEY_DOWN_MASK
+    DEBOUNCE .P2_KEY_BIT, _p2_already_pressed, P2_KEY_DOWN_MASK
+    DEBOUNCE .CRED_KEY_BIT, _creds_already_pressed, CREDS_KEY_DOWN_MASK
 
 .done:
 
@@ -81,29 +84,7 @@ get_keys:
         LD BC,.PAUSE_PORT                                 
         IN A,(C)                                            
 
-        BIT .PAUSE_KEY_BIT,A                                
-        JR NZ,.pauseable_not_pressed                             
-
-        LD HL,_pause_already_pressed             
-        LD A,(HL)
-        CP A,0x01
-        JR Z,.pause_done
-
-        LD A,E                                             
-        OR PAUSE_KEY_DOWN_MASK
-        LD E,A
-
-        LD HL,_pause_already_pressed  
-        LD (HL),0x01                                        
-
-        JR .pause_done
-
-.pauseable_not_pressed:
-        LD HL,_pause_already_pressed  
-        LD (HL),0x00      
-
-.pause_done
-
+        DEBOUNCE .PAUSE_KEY_BIT, _pause_already_pressed, PAUSE_KEY_DOWN_MASK
     ENDIF
 
     LD HL,keys_down
@@ -114,13 +95,18 @@ get_keys:
     RET
 
 .LEFT_RIGHT_PORT:  EQU 0xFDFE
-.LEFT_KEY_BIT:     EQU 0   
-.RIGHT_KEY_BIT:    EQU 1
+.LEFT_KEY_BIT:     EQU 0                ; A key
+.RIGHT_KEY_BIT:    EQU 1                ; S key
 
 .FIRE_PORT:        EQU 0xBFFE
-.FIRE_KEY_BIT:     EQU 0
+.FIRE_KEY_BIT:     EQU 0                ; Enter key
+
+.CREDS_PLAY_PORT:  EQU 0xF7FE
+.P1_KEY_BIT:       EQU 0                ; 1 key
+.P2_KEY_BIT:       EQU 1                ; 2 key
+.CRED_KEY_BIT:     EQU 4                ; 5 key
 
     IFDEF PAUSEABLE
-.PAUSE_PORT:     EQU 0x7FFE
+.PAUSE_PORT:     EQU 0x7FFE             ; Space bar
 .PAUSE_KEY_BIT:  EQU 0
     ENDIF
