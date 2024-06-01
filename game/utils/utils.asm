@@ -41,3 +41,22 @@ fill_mem:
     POP  IX,HL,DE,BC,AF
     RET
 
+copy_mem:
+.PARAM_SOURCE:  EQU 14
+.PARAM_DEST:    EQU 12
+.PARAM_COUNT:   EQU 10
+
+    PUSH BC,DE,HL,IX
+
+    LD  IX,0                                            ; Point IX to the stack
+    ADD IX,SP 
+
+    LD HL,(IX+.PARAM_SOURCE)
+    LD DE,(IX+.PARAM_DEST)
+    LD BC,(IX+.PARAM_COUNT)
+
+    LDIR
+
+    POP IX,HL,DE,BC
+    
+    RET

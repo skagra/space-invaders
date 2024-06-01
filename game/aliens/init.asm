@@ -1,19 +1,6 @@
-;------------------------------------------------------------------------------
-;
-; Initialise the module
-;
-; Usage:
-;   CALL init
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-;------------------------------------------------------------------------------
-
 init:
+    RET
+new_game:
     PUSH AF,DE,HL
 
     ; Alien pack direction
@@ -53,6 +40,17 @@ init:
 
     LD A,_ALIEN_PACK_SIZE
     LD (_alien_count),A
+
+    LD HL,_alien_state_init
+    PUSH HL
+    LD HL,_alien_state
+    PUSH HL
+    LD HL,_ALIENS_SIZE
+    PUSH HL
+    CALL utils.copy_mem
+    POP HL
+    POP HL
+    POP HL
 
     POP HL,DE,AF
 

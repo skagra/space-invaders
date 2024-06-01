@@ -14,7 +14,10 @@
 ;------------------------------------------------------------------------------
 
 init:
-    PUSH AF
+    RET
+
+new_game:
+    PUSH AF,HL
 
     ; Start will the first missile
     LD HL,_current_alien_missile_ptr
@@ -25,6 +28,44 @@ init:
     LD A,utils.TRUE_VALUE
     LD (_enabled),A
 
-    POP AF
+    ; Copy initialization values into active values
+    LD HL,_ALIEN_MISSILE_0_INIT
+    PUSH HL
+    LD HL,_ALIEN_MISSILE_0
+    PUSH HL
+    LD HL,_ALIEN_MISSILE_STRUCT_SIZE
+    PUSH HL
+    CALL utils.copy_mem
+    POP HL
+    POP HL
+    POP HL
+    
+    LD HL,_ALIEN_MISSILE_1_INIT
+    PUSH HL
+    LD HL,_ALIEN_MISSILE_1
+    PUSH HL
+    LD HL,_ALIEN_MISSILE_STRUCT_SIZE
+    PUSH HL
+    CALL utils.copy_mem
+    POP HL
+    POP HL
+    POP HL
+
+    LD HL,_ALIEN_MISSILE_2_INIT
+    PUSH HL
+    LD HL,_ALIEN_MISSILE_2
+    PUSH HL
+    LD HL,_ALIEN_MISSILE_STRUCT_SIZE
+    PUSH HL
+    CALL utils.copy_mem
+    POP HL
+    POP HL
+    POP HL
+
+    POP HL,AF
 
     RET
+
+
+
+

@@ -13,6 +13,9 @@
 ;------------------------------------------------------------------------------
 
 init:
+    RET
+
+new_game:
     PUSH HL
 
     ; No missile
@@ -24,5 +27,4 @@ init:
     LD (HL),utils.TRUE_VALUE
 
     POP HL
-
-    RET
+    

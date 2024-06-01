@@ -2,6 +2,14 @@ main_game_loop:
 
     PUSH AF,HL
 
+    CALL global_state.new_game
+    CALL player.new_game
+    CALL player_missile.new_game
+    CALL scoring.new_game
+    CALL player_lives.new_game
+    CALL aliens.new_game
+    CALL alien_missiles.new_game
+
 .animation_loop:
     ; Reset all collisions
     CALL collision.reset

@@ -1,4 +1,7 @@
 init:
+    RET
+
+new_game:
     PUSH AF
 
     LD A,0x03                       ; TODO
