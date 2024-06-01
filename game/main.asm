@@ -82,6 +82,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "alien_missiles/module.asm"
     INCLUDE "player_lives/module.asm"
     INCLUDE "credits/module.asm"
+    INCLUDE "interrupts/module.asm"
 
     MODULE main
 main:
@@ -108,6 +109,9 @@ main:
     CALL alien_missiles.init
     CALL player_lives.init
     CALL credits.init
+    CALL interrupts.init
+
+    CALL interrupts.setup
 
     ; Draw the initial screen
     CALL game_screen.draw_pre_play
@@ -121,6 +125,19 @@ main:
     HALT
     CALL draw_common.wipe_screen
     CALL game_screen.draw_pre_play
+    CALL game_screen.draw_ready_screen
+
+.wait_for_one:
+    LD A, (keyboard.keys_down)
+    BIT keyboard.P1_KEY_DOWN_BIT,A
+    JR Z,.wait_for_one
+
+    CALL credits.event_credit_used
+    CALL game_screen.print_credits
+
+    HALT
+    CALL draw_common.wipe_screen
+    CALL game_screen.draw_pre_play
     CALL draw.flush_buffer_to_screen
 
     CALL game_screen.draw_get_ready
@@ -129,9 +146,6 @@ main:
 .animation_loop:
     ; Reset all collisions
     CALL collision.reset
-
-    ; Read keyboard
-    CALL keyboard.get_keys
 
     ; Erase player base
     CALL player.blank
@@ -228,8 +242,12 @@ STACK_TOP: EQU $-1
     
     ENDMODULE
 
+    ORG interrupts.INTERRUPT_VECTOR_TABLE
+    BLOCK 257
+    MEMORY_USAGE "interrupt_vector ",interrupts.INTERRUPT_VECTOR_TABLE
+
     TOTAL_MEMORY_USAGE
-  
+
     ; Save snapshot for spectrum emulator
     IFDEF DEBUG
         SAVESNA "bin/space-invaders-debug.sna",main.main

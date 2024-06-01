@@ -14,7 +14,8 @@ _module_start:
     INCLUDE "get_ready.asm"
     INCLUDE "play.asm"
     INCLUDE "pre_play.asm"
-        
+    INCLUDE "ready.asm"
+    
     MEMORY_USAGE "game screen     ",_module_start
     
     ENDMODULE

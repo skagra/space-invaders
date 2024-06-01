@@ -14,7 +14,7 @@ draw_intro_screen:
     PUSH HL
     LD HL,.PLAY_COORDS
     PUSH HL
-    LD HL,print.slow_print_null_callback
+    LD HL,cred_callback
     PUSH HL
     CALL print.slow_print_string
     POP HL
@@ -26,7 +26,7 @@ draw_intro_screen:
     PUSH HL
     LD HL,.SPACE_INVADERS_COORDS
     PUSH HL
-    LD HL,print.slow_print_null_callback
+    LD HL,cred_callback
     PUSH HL
     CALL print.slow_print_string
     POP HL
@@ -101,7 +101,7 @@ draw_intro_screen:
     PUSH HL
     LD HL,.SAUCER_COORDS
     PUSH HL
-    LD HL,print.slow_print_null_callback
+    LD HL,cred_callback
     PUSH HL
     CALL print.slow_print_string
     POP HL
@@ -113,7 +113,7 @@ draw_intro_screen:
     PUSH HL
     LD HL,.ALIEN_TYPE_2_COORDS
     PUSH HL
-    LD HL,print.slow_print_null_callback
+    LD HL,cred_callback
     PUSH HL
     CALL print.slow_print_string
     POP HL
@@ -125,7 +125,7 @@ draw_intro_screen:
     PUSH HL
     LD HL,.ALIEN_TYPE_1_COORDS
     PUSH HL
-    LD HL,print.slow_print_null_callback
+    LD HL,cred_callback
     PUSH HL
     CALL print.slow_print_string
     POP HL
@@ -137,7 +137,7 @@ draw_intro_screen:
     PUSH HL
     LD HL,.ALIEN_TYPE_0_COORDS
     PUSH HL
-    LD HL,print.slow_print_null_callback
+    LD HL,cred_callback
     PUSH HL
     CALL print.slow_print_string
     POP HL
@@ -204,3 +204,28 @@ draw_intro_screen:
 .ALIEN_TYPE_0_SPRITE_X:         EQU ((.ALIEN_TYPE_0_X-2)*8)
 .ALIEN_TYPE_0_SPRITE_Y:         EQU (.ALIEN_TYPE_0_Y*8)
 .ALIEN_TYPE_0_SPRITE_COORDS:    EQU (.ALIEN_TYPE_0_SPRITE_X<<8) + .ALIEN_TYPE_0_SPRITE_Y
+
+cred_callback:
+
+.RTN_VALUE: EQU 6
+
+    PUSH AF,IX
+
+    LD IX,0                                             ; Get the stack pointer
+    ADD IX,SP
+
+    LD A,(credits.credits)
+    CP 0x00
+    JR Z,.continue
+
+    LD (IX+.RTN_VALUE),utils.FALSE_VALUE                
+
+    JR .done
+
+.continue
+    LD (IX+.RTN_VALUE),utils.TRUE_VALUE  
+
+.done
+    POP IX,AF
+
+    RET

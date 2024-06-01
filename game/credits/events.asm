@@ -4,6 +4,8 @@ event_credit_added:
     LD A,(credits)
     CP .MAX_CREDITS
     JR Z,.done
+    OR A                                                ; Ensure the half carry is reset
+
     INC A
     DAA
     LD (credits),A
