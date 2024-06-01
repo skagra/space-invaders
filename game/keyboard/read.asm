@@ -1,6 +1,6 @@
     MACRO DEBOUNCE keyboard_test_bit, pressed_last_time, result_value
         ; Key pressed?
-        BIT keyboard_test_bit,A   
+        BIT keyboard_test_bit,B  
         ; No so done - and fire flag will be reset                              
         JR NZ,.not_pressed                                 
 
@@ -65,14 +65,14 @@ get_keys:
 .fire:
     ; Fire key
     LD BC,.FIRE_PORT                                    ; Fire port
-    IN A,(C)                                            ; Read the port into the accumulator
+    IN B,(C)                                            ; Read the port into the accumulator
 
     DEBOUNCE .FIRE_KEY_BIT, _fire_already_pressed, FIRE_KEY_DOWN_MASK
     ; Fall through
 
 .credits_and_play:
     LD BC,.CREDS_PLAY_PORT                                   
-    IN A,(C)  
+    IN B,(C)  
 
     DEBOUNCE .P1_KEY_BIT, _p1_already_pressed, P1_KEY_DOWN_MASK
     DEBOUNCE .P2_KEY_BIT, _p2_already_pressed, P2_KEY_DOWN_MASK
@@ -92,21 +92,23 @@ get_keys:
 
     POP HL,DE,BC,AF
 
+    ; LOGPOINT [KEYBOARD] Keys down=${(keyboard.keys_down):hex}
+
     RET
 
-.LEFT_RIGHT_PORT:  EQU 0xFDFE
-.LEFT_KEY_BIT:     EQU 0                ; A key
-.RIGHT_KEY_BIT:    EQU 1                ; S key
+.LEFT_RIGHT_PORT:   EQU 0xFDFE
+.LEFT_KEY_BIT:      EQU 0               ; A key
+.RIGHT_KEY_BIT:     EQU 1               ; S key
 
-.FIRE_PORT:        EQU 0xBFFE
-.FIRE_KEY_BIT:     EQU 0                ; Enter key
+.FIRE_PORT:         EQU 0xBFFE
+.FIRE_KEY_BIT:      EQU 0               ; Enter key
 
-.CREDS_PLAY_PORT:  EQU 0xF7FE
-.P1_KEY_BIT:       EQU 0                ; 1 key
-.P2_KEY_BIT:       EQU 1                ; 2 key
-.CRED_KEY_BIT:     EQU 4                ; 5 key
+.CREDS_PLAY_PORT:   EQU 0xF7FE
+.P1_KEY_BIT:        EQU 0               ; 1 key
+.P2_KEY_BIT:        EQU 1               ; 2 key
+.CRED_KEY_BIT:      EQU 4               ; 5 key
 
     IFDEF PAUSEABLE
-.PAUSE_PORT:     EQU 0x7FFE             ; Space bar
-.PAUSE_KEY_BIT:  EQU 0
+.PAUSE_PORT:        EQU 0x7FFE        
+.PAUSE_KEY_BIT:     EQU 0               ; Space bar
     ENDIF

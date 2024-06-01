@@ -9,6 +9,8 @@ handler:
     BIT keyboard.CREDS_KEY_DOWN_BIT,A
     JR Z,.done
 
+    ; LOGPOINT [INTERRUPTS] Keys=${A:hex}
+
     CALL credits.event_credit_added
     CALL game_screen.print_credits
 
@@ -16,7 +18,7 @@ handler:
 
 .done
     POP AF
-
+    
     EI
  
     RET

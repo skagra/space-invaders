@@ -64,6 +64,7 @@
     INCLUDE "fast_draw/module.asm"
     INCLUDE "keyboard/module.asm"
     INCLUDE "print/module.asm"
+    INCLUDE "main_game_loop.asm"
 
     ; Off-screen buffer
     ORG draw_common.OFF_SCREEN_BUFFER_START
@@ -111,125 +112,53 @@ main:
     CALL credits.init
     CALL interrupts.init
 
+    ; Set up interrupt handling (keyboard and credits)
     CALL interrupts.setup
 
-    ; Draw the initial screen
+.score_table:
+    ; Draw the pre-play screen (score table)
     CALL game_screen.draw_pre_play
-    CALL draw.flush_buffer_to_screen
-    CALL fast_draw.flush_buffer_to_screen_16x8
-    CALL draw.flush_buffer_to_screen
-    CALL fast_draw.flush_buffer_to_screen_16x8
-
     CALL game_screen.draw_intro_screen
 
-    HALT
+.wait_for_credit:
+    LD A,(credits.credits)
+    CP 0x00
+    JR Z,.wait_for_credit
+
+.push_player_one:
+    ; Push player one button
     CALL draw_common.wipe_screen
     CALL game_screen.draw_pre_play
     CALL game_screen.draw_ready_screen
 
-.wait_for_one:
-    LD A, (keyboard.keys_down)
-    BIT keyboard.P1_KEY_DOWN_BIT,A
-    JR Z,.wait_for_one
+    ; Wait for payer one button
+    LD L,keyboard.P1_KEY_DOWN_MASK
+    PUSH HL
+    CALL keyboard.wait
+    POP HL
 
+    ; Update credits
     CALL credits.event_credit_used
     CALL game_screen.print_credits
 
-    HALT
+    ; Ready player 1
     CALL draw_common.wipe_screen
     CALL game_screen.draw_pre_play
     CALL draw.flush_buffer_to_screen
-
     CALL game_screen.draw_get_ready
+
+    ; Main game screen
     CALL game_screen.draw_play
 
-.animation_loop:
-    ; Reset all collisions
-    CALL collision.reset
+    ; Main game loop
+    CALL main_game_loop
 
-    ; Erase player base
-    CALL player.blank
+    ; Any credits?
+    LD A,(credits.credits)
+    CP 0x00
+    JR Z,.score_table
 
-    ; Erase the current alien
-    CALL aliens.blank
-
-    ; Blank current alien missile in cycle 
-    CALL alien_missiles.blank
-
-    ; Erase current player missile
-    CALL player_missile.blank
-
-    ; Calcate new coordinates for the player base
-    CALL player.update
-
-    ; Calculate new coordinates and variant for current alien  
-    CALL aliens.update  
-
-    ; Update current alien missile
-    CALL alien_missiles.update
-
-    ; Calculate new coordinates and handle state changes for the player missile               
-    CALL player_missile.update
-
-    ; Draw the current alien
-    CALL aliens.draw
-
-    ; Draw the player base
-    CALL player.draw
-
-    ; Draw current alien missile
-    CALL alien_missiles.draw
-
-    ; Draw player missile if there is one
-    CALL player_missile.draw
-
-    ; Process collisions  
-    CALL collision.handle_collision
-
-    ; Update global state information
-    CALL global_state.update
-
-    ; Move on to next alien
-    CALL aliens.next_alien
-
-    ; Next alien missile
-    CALL alien_missiles.next
-
-    IFNDEF IGNORE_VSYNC
-        ; Wait for Vsync
-        HALT 
-    ENDIF
-    
-    ; Copy off screen buffers to screen memory
-    CALL draw.flush_buffer_to_screen
-    CALL fast_draw.flush_buffer_to_screen_16x8
-
-    IFDEF PAUSEABLE
-.pause_key_down:
-        LD A, (keyboard.keys_down)
-        BIT keyboard.PAUSE_KEY_DOWN_BIT,A
-        JR Z,.pause_key_not_down
-.await_pause_key_up:
-        CALL keyboard.get_keys
-        LD A, (keyboard.keys_down)
-        BIT keyboard.PAUSE_KEY_DOWN_BIT,A
-        JR NZ,.await_pause_key_up
-.await_pause_key_down:
-        CALL keyboard.get_keys
-        LD A, (keyboard.keys_down)
-        BIT keyboard.PAUSE_KEY_DOWN_BIT,A
-        JR Z,.await_pause_key_down
-.pause_key_not_down:
-    ENDIF
-
-    DEBUG_VTRACE_FLASH
-
-    LD A,(global_state._game_state)
-    BIT global_state._GAME_STATE_GAME_OVER_BIT,A
-    JP Z,.animation_loop           
-
-.forever:   
-    JR .forever
+    JR .push_player_one
 
     MEMORY_USAGE "main            ", main
 
