@@ -7,11 +7,15 @@ print_game_over:
     LD HL,layout.GAME_OVER_COORDS
     PUSH HL
 
-    CALL print.print_string
+    LD HL,print.slow_print_null_callback
+    PUSH HL
+
+    CALL print.slow_print_string
     
     POP HL
     POP HL
-
+    POP HL
+    
     POP HL
 
     RET

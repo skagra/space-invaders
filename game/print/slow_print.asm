@@ -9,7 +9,7 @@ slow_print_string:
     LD  IX,0                                            ; Get the stack pointer
     ADD IX,SP
 
-    LD HL,(IX+.PARAM_CALLBACK)
+    LD HL,(IX+.PARAM_CALLBACK)                          ; Self modifying code to call the callback
     LD (.cb),HL
 
     ; Calculate memory location from coords
@@ -23,9 +23,8 @@ slow_print_string:
     LD DE,(IX+.PARAM_STRING_PTR)                        ; Pointer to current character
 
 .character_loop:
-    ; Get character to print
-    LD A,(DE)                                           ; Have we hit the end of the string?
-    AND A
+    LD A,(DE)                                           ; Get character to print
+    AND A                                               ; Have we hit the end of the string?
     JR Z,.ps_done
 
     LD B,0x00                                           ; Character to print
@@ -44,19 +43,19 @@ slow_print_string:
 
     CALL draw.flush_buffer_to_screen 
     
-    LD B,.PRINT_DELAY
+    LD B,.PRINT_DELAY                                   ; Number of loops to delay for
 
 .delay_loop:
-    PUSH HL
-    PUSH HL
+    PUSH HL                                             ; Save HL
+    PUSH HL                                             ; Make space for the return value
 .cb+1:   
-     CALL 0x0000
-     POP HL
-     BIT utils.TRUE_BIT,L
-     POP HL
-     JR Z,.ps_done
+     CALL 0x0000                                        ; Address modified to point to callback
+     POP HL                                             ; Return value
+     BIT utils.TRUE_BIT,L                               ; Continue?
+     POP HL                                             ; Restore HL
+     JR Z,.ps_done                                      ; Done if callback flagged done
 
-    HALT
+    HALT                                                ; Delay for a one VSYNC
     
     DJNZ .delay_loop
 
@@ -67,7 +66,7 @@ slow_print_string:
 
     RET
 
-.PRINT_DELAY: EQU 10
+.PRINT_DELAY: EQU 5
 
 slow_print_null_callback:
 
@@ -75,10 +74,10 @@ slow_print_null_callback:
 
     PUSH IX
 
-    LD IX,0; Get the stack pointer
+    LD IX,0                                             ; Get the stack pointer
     ADD IX,SP
 
-    LD (IX+.RTN_VALUE),utils.TRUE_VALUE
+    LD (IX+.RTN_VALUE),utils.TRUE_VALUE                 ; Always continue
 
     POP IX
 
