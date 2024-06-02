@@ -26,24 +26,24 @@ new_game:
     LD (_alien_is_exploding),A
 
     ; Pack extremeties
-    LD A,(_alien_state+_STATE_OFFSET_DRAW_COORDS_Y)
+    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_Y)
     LD (_pack_bottom),A  
 
-    LD A,(_alien_state+_STATE_OFFSET_DRAW_COORDS_X)
+    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_X)
     LD (_pack_left),A
     
-    LD A,(_alien_state+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_Y)
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_Y)
     LD (_pack_top),A
     
-    LD A,(_alien_state+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_X)
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_X)
     LD (_pack_right),A                      
 
     LD A,_ALIEN_PACK_SIZE
-    LD (_alien_count),A
+    LD (alien_count),A
 
-    LD HL,_alien_state_init
+    LD HL,_ALIENS_INIT
     PUSH HL
-    LD HL,_alien_state
+    LD HL,_aliens
     PUSH HL
     LD HL,_ALIENS_SIZE
     PUSH HL

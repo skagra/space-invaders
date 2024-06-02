@@ -143,7 +143,7 @@ _move_current_alien:
     INC D
 
     ; If there is just one alien left then it moves more quickly when travelling right
-    LD A,(_alien_count)
+    LD A,(alien_count)
     CP 0x01
     JR NZ,.more_than_one_alien
 

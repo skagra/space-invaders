@@ -45,6 +45,44 @@ wipe_screen:
 
     RET
 
+; TODO - This is VERY inefficient!  Too ineficient
+wipe_band:
+
+.PARAM_START_CHAR_Y:    EQU 12
+.PARAM_CHAR_ROWS:       EQU 10
+
+    PUSH BC,DE,HL,IX   
+
+    LD  IX,0                                            ; Get the stack pointer
+    ADD IX,SP
+
+    CALL draw.flush_buffer_to_screen
+
+    LD B,(IX+.PARAM_CHAR_ROWS)
+    LD D,0
+    LD E,(IX+.PARAM_START_CHAR_Y)
+
+.loop
+    LD HL,.LINE_OF_SPACES
+    PUSH HL
+    PUSH DE
+    
+    CALL print.print_string
+    
+    POP HL
+    POP HL
+
+    CALL draw.flush_buffer_to_screen
+    INC E
+    DJNZ .loop
+
+    POP IX,HL,DE,BC
+
+    RET
+
+.LINE_OF_SPACES: BYTE "                                ",0
+;.LINE_OF_SPACES: BYTE "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",0
+
 ;------------------------------------------------------------------------------
 ;
 ; Fill screen with given colour attributes

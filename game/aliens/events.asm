@@ -72,9 +72,9 @@ event_alien_hit_by_player_missile_begin:
     POP IY,IX,HL
 
     ; Decrease the count of aliens
-    LD A,(_alien_count)
+    LD A,(alien_count)
     DEC A
-    LD (_alien_count),A
+    LD (alien_count),A                                 ; LOGPOINT [ALIENS] alien_count=${A}
     
     RET
 

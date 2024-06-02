@@ -19,7 +19,7 @@ _ALIEN_STATE_NEW_BIT:                   EQU 0
 _ALIEN_STATE_ACTIVE_BIT:                EQU 1
 _ALIEN_STATE_DEAD_BIT:                  EQU 2
 
-; Current alien variant for walking animation
+; Alien variant for walking animation
 _ALIEN_VARIANT_0_VALUE:                 EQU 0b00000001
 _ALIEN_VARIANT_1_VALUE:                 EQU 0b00000010
 
@@ -36,32 +36,33 @@ _alien_is_exploding:                    BLOCK 1
 _exploding_alien:                       BLOCK 2
 
 ; Current number of aliens
-_alien_count:                           BLOCK 1
+alien_count:                           BLOCK 1
 
 ; Lookup table into _alien_state table
 _ALIEN_LOOKUP:
     ; Row 0 (bottom of pack)
-    WORD _alien_state+_AS_SIZE*0, _alien_state+_AS_SIZE*1, _alien_state+_AS_SIZE*2, _alien_state+_AS_SIZE*3, _alien_state+_AS_SIZE*4 
-    WORD _alien_state+_AS_SIZE*5, _alien_state+_AS_SIZE*6, _alien_state+_AS_SIZE*7, _alien_state+_AS_SIZE*8, _alien_state+_AS_SIZE*9, _alien_state+_AS_SIZE*10
+    WORD _aliens+_AS_SIZE*0, _aliens+_AS_SIZE*1, _aliens+_AS_SIZE*2, _aliens+_AS_SIZE*3, _aliens+_AS_SIZE*4 
+    WORD _aliens+_AS_SIZE*5, _aliens+_AS_SIZE*6, _aliens+_AS_SIZE*7, _aliens+_AS_SIZE*8, _aliens+_AS_SIZE*9, _aliens+_AS_SIZE*10
     ; Row 1
-    WORD _alien_state+_AS_SIZE*11, _alien_state+_AS_SIZE*12, _alien_state+_AS_SIZE*13, _alien_state+_AS_SIZE*14, _alien_state+_AS_SIZE*15
-    WORD _alien_state+_AS_SIZE*16, _alien_state+_AS_SIZE*17, _alien_state+_AS_SIZE*18, _alien_state+_AS_SIZE*19, _alien_state+_AS_SIZE*20,_alien_state+_AS_SIZE*21
+    WORD _aliens+_AS_SIZE*11, _aliens+_AS_SIZE*12, _aliens+_AS_SIZE*13, _aliens+_AS_SIZE*14, _aliens+_AS_SIZE*15
+    WORD _aliens+_AS_SIZE*16, _aliens+_AS_SIZE*17, _aliens+_AS_SIZE*18, _aliens+_AS_SIZE*19, _aliens+_AS_SIZE*20,_aliens+_AS_SIZE*21
     ; Row 2
-    WORD _alien_state+_AS_SIZE*22, _alien_state+_AS_SIZE*23, _alien_state+_AS_SIZE*24, _alien_state+_AS_SIZE*25, _alien_state+_AS_SIZE*26 
-    WORD _alien_state+_AS_SIZE*27, _alien_state+_AS_SIZE*28, _alien_state+_AS_SIZE*29, _alien_state+_AS_SIZE*30, _alien_state+_AS_SIZE*31, _alien_state+_AS_SIZE*32
+    WORD _aliens+_AS_SIZE*22, _aliens+_AS_SIZE*23, _aliens+_AS_SIZE*24, _aliens+_AS_SIZE*25, _aliens+_AS_SIZE*26 
+    WORD _aliens+_AS_SIZE*27, _aliens+_AS_SIZE*28, _aliens+_AS_SIZE*29, _aliens+_AS_SIZE*30, _aliens+_AS_SIZE*31, _aliens+_AS_SIZE*32
     ; Row 3
-    WORD _alien_state+_AS_SIZE*33, _alien_state+_AS_SIZE*34, _alien_state+_AS_SIZE*35, _alien_state+_AS_SIZE*36, _alien_state+_AS_SIZE*37 
-    WORD _alien_state+_AS_SIZE*38, _alien_state+_AS_SIZE*39, _alien_state+_AS_SIZE*40, _alien_state+_AS_SIZE*41, _alien_state+_AS_SIZE*42, _alien_state+_AS_SIZE*43  
+    WORD _aliens+_AS_SIZE*33, _aliens+_AS_SIZE*34, _aliens+_AS_SIZE*35, _aliens+_AS_SIZE*36, _aliens+_AS_SIZE*37 
+    WORD _aliens+_AS_SIZE*38, _aliens+_AS_SIZE*39, _aliens+_AS_SIZE*40, _aliens+_AS_SIZE*41, _aliens+_AS_SIZE*42, _aliens+_AS_SIZE*43  
     ; Row 4
-    WORD _alien_state+_AS_SIZE*44, _alien_state+_AS_SIZE*45, _alien_state+_AS_SIZE*46, _alien_state+_AS_SIZE*47, _alien_state+_AS_SIZE*48 
-    WORD _alien_state+_AS_SIZE*49, _alien_state+_AS_SIZE*50, _alien_state+_AS_SIZE*51, _alien_state+_AS_SIZE*52, _alien_state+_AS_SIZE*53, _alien_state+_AS_SIZE*54
+    WORD _aliens+_AS_SIZE*44, _aliens+_AS_SIZE*45, _aliens+_AS_SIZE*46, _aliens+_AS_SIZE*47, _aliens+_AS_SIZE*48 
+    WORD _aliens+_AS_SIZE*49, _aliens+_AS_SIZE*50, _aliens+_AS_SIZE*51, _aliens+_AS_SIZE*52, _aliens+_AS_SIZE*53, _aliens+_AS_SIZE*54
 
 ; Number of aliens in total in new pack
 _ALIEN_PACK_SIZE:                       EQU ($-_ALIEN_LOOKUP)/2
 _ALIEN_PACK_ROW_COUNT:                  EQU 5
 _ALIEN_PACK_COLUMN_COUNT:               EQU 11
 
-_alien_state_init:
+; Initialization values for a new sheet of aliens
+_ALIENS_INIT:
     ; Bottom row - Row 0
     WORD 0x1060,sprites.ALIEN_0_VARIANT_0,sprites.ALIEN_0_VARIANT_1
     BYTE _ALIEN_STATE_NEW_VALUE,_ALIEN_VARIANT_0_VALUE,_ALIEN_TYPE_0
@@ -182,6 +183,8 @@ _alien_state_init:
     WORD 0xB020,sprites.ALIEN_2_VARIANT_0,sprites.ALIEN_2_VARIANT_1
     BYTE _ALIEN_STATE_NEW_VALUE,_ALIEN_VARIANT_0_VALUE,_ALIEN_TYPE_2
 
-_ALIENS_SIZE:  EQU $-_alien_state_init
+; Size of the aliens array in bytes
+_ALIENS_SIZE:  EQU $-_ALIENS_INIT
 
-_alien_state: BLOCK _ALIENS_SIZE
+; Current sheet of aliens
+_aliens: BLOCK _ALIENS_SIZE

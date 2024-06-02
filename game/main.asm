@@ -127,7 +127,8 @@ main:
 
 .push_player_one:
     ; Push player one button
-    CALL draw_common.wipe_screen
+    ;CALL draw_common.wipe_screen
+    CALL game_screen.wipe_play_area
     CALL game_screen.draw_pre_play
     CALL game_screen.draw_ready_screen
 
@@ -142,7 +143,8 @@ main:
     CALL game_screen.print_credits
 
     ; Ready player 1
-    CALL draw_common.wipe_screen
+    ; CALL draw_common.wipe_screen
+    CALL game_screen.wipe_play_area
     CALL game_screen.draw_pre_play
     CALL draw.flush_buffer_to_screen
     CALL game_screen.draw_get_ready

@@ -22,7 +22,7 @@ draw_pre_play:
     POP HL
 
     ; Clear the screen
-    call draw_common.wipe_screen
+    call game_screen.wipe_play_area
 
     ; Draw static screen labels
     LD HL,.SCORE_LINE_0_TEXT
