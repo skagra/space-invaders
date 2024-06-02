@@ -47,6 +47,8 @@ wipe_screen:
 
 ; TODO - This is VERY inefficient!  Too ineficient
 wipe_band:
+    CALL wipe_screen
+    RET
 
 .PARAM_START_CHAR_Y:    EQU 12
 .PARAM_CHAR_ROWS:       EQU 10
