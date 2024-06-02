@@ -1,9 +1,9 @@
 wipe_play_area:
     PUSH HL
 
-    LD L,4
+    LD L,2
     PUSH HL
-    LD L,18
+    LD L,20
     PUSH HL
     CALL draw_common.wipe_band
     POP HL

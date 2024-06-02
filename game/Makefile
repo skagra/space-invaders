@@ -27,9 +27,9 @@ $(BIN)/$(SNA_DEBUG).sna: $(BIN) $(MAIN_ASM).asm */*.asm Makefile
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
-		   -DDEBUG \
-		   $(DEBUG_FLAGS) \
-		   $(MAIN_ASM).asm
+           -DDEBUG \
+           $(DEBUG_FLAGS) \
+           $(MAIN_ASM).asm
 
 $(BIN)/$(SNA_RELEASE).sna: $(BIN) $(MAIN_ASM).asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
