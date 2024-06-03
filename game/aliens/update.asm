@@ -135,7 +135,7 @@ _move_current_alien:
     JR .done_moving
 
 .not_moving_left:
-    CP _PACK_DIRECTION_RIGHT_VALUE                            ; Is the pack moving right
+    CP _PACK_DIRECTION_RIGHT_VALUE                      ; Is the pack moving right
     JR NZ,.moving_down                                  ; No
 
     ; Moving right
