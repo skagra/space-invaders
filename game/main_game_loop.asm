@@ -2,21 +2,18 @@ main_game_loop:
 
     PUSH AF,HL
 
-    CALL scoring.new_game
-
 .new_sheet:
-    ;CALL draw_common.wipe_screen
-    CALL game_screen.wipe_play_area
-    ;CALL game_screen.draw_pre_play
-    CALL draw.flush_buffer_to_screen
-    CALL game_screen.draw_play
+    CALL draw_common.wipe_screen
+    CALL game_screen.print_scores_section
+    CALL game_screen.draw_player_lives_section
+    CALL game_screen.draw_credits_section
+    CALL game_screen.draw_shields
+    CALL game_screen.draw_horizontal_line
 
-    CALL player_missile.new_game
-    CALL global_state.new_game
-    CALL player.new_game
-    CALL player_lives.new_game
-    CALL aliens.new_game
-    CALL alien_missiles.new_game
+    CALL player_missile.new_sheet
+    CALL player.new_sheet
+    CALL aliens.new_sheet
+    CALL alien_missiles.new_sheet
 
 .animation_loop:
     ; Reset all collisions

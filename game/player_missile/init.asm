@@ -15,7 +15,7 @@
 init:
     RET
 
-new_game:
+new_sheet:
     PUSH HL
 
     ; No missile

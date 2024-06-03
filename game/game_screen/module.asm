@@ -6,15 +6,14 @@ _module_start:
     INCLUDE "scoring.asm"
     INCLUDE "credits.asm"
     INCLUDE "shields.asm"
-    INCLUDE "gels.asm"
+    INCLUDE "background.asm"
     INCLUDE "player_lives.asm"
     INCLUDE "horizontal_line.asm"
     INCLUDE "game_over.asm"
-    INCLUDE "intro.asm"
+    INCLUDE "score_table.asm"
     INCLUDE "get_ready.asm"
     INCLUDE "play.asm"
-    INCLUDE "pre_play.asm"
-    INCLUDE "ready.asm"
+    INCLUDE "push_player_1.asm"
     INCLUDE "utils.asm"
     
     MEMORY_USAGE "game screen     ",_module_start

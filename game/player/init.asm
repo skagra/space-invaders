@@ -1,7 +1,7 @@
 init:
     RET
 
-new_game:
+new_sheet:
     PUSH AF,DE,HL
 
     LD A,layout.PLAYER_START_X

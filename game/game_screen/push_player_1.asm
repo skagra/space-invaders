@@ -1,4 +1,4 @@
-draw_ready_screen:
+draw_push_player_1_section:
 
     PUSH HL
 

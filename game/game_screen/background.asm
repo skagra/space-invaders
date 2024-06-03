@@ -1,5 +1,11 @@
-draw_gels:
+set_colours:
     PUSH HL
+
+    ; Most of the screen is white on black
+    LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_WHITE
+    PUSH HL
+    CALL draw_common.fill_screen_attributes
+    POP HL
 
     ; Green gel to cover active player base and defences
     LD H,layout.BOTTOM_GEL_TOP_LEFT_Y                        ; Top left X
@@ -34,6 +40,51 @@ draw_gels:
     CALL draw_common.fill_screen_attribute_stripe
     POP HL
     POP HL
+
+    POP HL
+
+    RET
+
+set_border:
+    PUSH HL
+
+    ; Set the screen border
+    IFNDEF DEBUG
+        LD HL,draw_common.BORDER_BLACK
+    ELSE
+        LD HL,draw_common.BORDER_BLUE
+    ENDIF
+    PUSH HL
+    CALL draw_common.set_border    
+    POP HL
+
+    ; For debugging indicate the border section of the screen that is out of bounds
+    IFDEF DEBUG
+        LD HL,0x0000
+        PUSH HL
+        LD H,layout.INSET_X_CHARS
+        LD L,draw_common.SCREEN_HEIGHT_CHARS
+        PUSH HL
+        LD HL,draw_common.CA_BG_BLUE
+        PUSH HL
+        CALL draw_common.fill_screen_attributes_rect
+        POP HL
+        POP HL
+        POP HL
+
+        LD H,draw_common.SCREEN_WIDTH_CHARS-layout.INSET_X_CHARS
+        LD L,0x00
+        PUSH HL
+        LD H,layout.INSET_X_CHARS
+        LD L,draw_common.SCREEN_HEIGHT_CHARS
+        PUSH HL
+        LD HL,draw_common.CA_BG_BLUE
+        PUSH HL
+        CALL draw_common.fill_screen_attributes_rect
+        POP HL
+        POP HL
+        POP HL
+    ENDIF
 
     POP HL
 

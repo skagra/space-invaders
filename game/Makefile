@@ -22,7 +22,7 @@ DEBUG_FLAGS=
 # -DNO_SHIELDS
 # -DINVINCIBLE
 
-$(BIN)/$(SNA_DEBUG).sna: $(BIN) $(MAIN_ASM).asm */*.asm Makefile
+$(BIN)/$(SNA_DEBUG).sna: $(BIN) *.asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
@@ -31,7 +31,7 @@ $(BIN)/$(SNA_DEBUG).sna: $(BIN) $(MAIN_ASM).asm */*.asm Makefile
            $(DEBUG_FLAGS) \
            $(MAIN_ASM).asm
 
-$(BIN)/$(SNA_RELEASE).sna: $(BIN) $(MAIN_ASM).asm */*.asm Makefile
+$(BIN)/$(SNA_RELEASE).sna: $(BIN) *.asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \

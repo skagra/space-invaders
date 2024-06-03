@@ -33,6 +33,17 @@ update:
 
     JR NZ,.done                                             ; Not zero?  Then done.
 
+    LD A,(player_lives.player_lives_1)                      ; Game over?
+    AND A
+    JR NZ,.continue                                         ; No then continue playing
+
+    LD A,_GAME_STATE_GAME_OVER_VALUE                        ; Game over
+    LD (_game_state),A
+    CALL game_screen.print_game_over
+
+    JR .done
+
+.continue:
     CALL player.event_alien_missile_hit_player_end          ; Done pausing, inform game objects
     CALL player_missile.event_alien_missile_hit_player_end
     CALL alien_missiles.event_alien_missile_hit_player_end

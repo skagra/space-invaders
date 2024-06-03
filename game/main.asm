@@ -86,7 +86,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "interrupts/module.asm"
 
     MODULE main
-main:
+main: 
     ; Set up stack
     DI                          
     LD SP,STACK_TOP
@@ -115,24 +115,37 @@ main:
     ; Set up interrupt handling (keyboard and credits)
     CALL interrupts.setup
 
-.score_table:
-    ; Draw the pre-play screen (score table)
-    CALL game_screen.draw_pre_play
-    CALL game_screen.draw_intro_screen
+    ; One time screen initialization
+    CALL draw_common.wipe_screen
+    CALL game_screen.set_border
+    CALL game_screen.set_colours
 
+.score_table:
+    ; Draw the score table
+    CALL draw_common.wipe_screen
+    CALL game_screen.print_scores_section
+    CALL game_screen.draw_credits_section
+    CALL game_screen.draw_score_table_section
+   
 .wait_for_credit:
     LD A,(credits.credits)
     CP 0x00
     JR Z,.wait_for_credit
 
 .push_player_one:
-    ; Push player one button
-    ;CALL draw_common.wipe_screen
-    CALL game_screen.wipe_play_area
-    CALL game_screen.draw_pre_play
-    CALL game_screen.draw_ready_screen
+    ; Initialize game state
+    CALL player_lives.new_game
+    CALL scoring.new_game
+    CALL global_state.new_game
 
-    ; Wait for payer one button
+    ; Push player one button
+    CALL draw_common.wipe_screen
+    CALL game_screen.print_scores_section
+    CALL game_screen.draw_push_player_1_section
+    CALL game_screen.draw_player_lives_section
+    CALL game_screen.draw_credits_section
+
+    ; Wait for player one button
     LD L,keyboard.P1_KEY_DOWN_MASK
     PUSH HL
     CALL keyboard.wait
@@ -140,17 +153,13 @@ main:
 
     ; Update credits
     CALL credits.event_credit_used
-    CALL game_screen.print_credits
 
-    ; Ready player 1
-    ; CALL draw_common.wipe_screen
-    CALL game_screen.wipe_play_area
-    CALL game_screen.draw_pre_play
-    CALL draw.flush_buffer_to_screen
+    ; Ready 1player 1
+    CALL draw_common.wipe_screen
+    CALL game_screen.print_scores_section
+    CALL game_screen.draw_player_lives_section
+    CALL game_screen.draw_credits_section
     CALL game_screen.draw_get_ready
-
-    ; Main game screen
-    CALL game_screen.draw_play
 
     ; Main game loop
     CALL main_game_loop

@@ -108,3 +108,14 @@ print_bases_count:
     POP HL,AF
 
     RET
+
+draw_player_lives_section:
+    ; Draw count of remaining bases
+    CALL print_bases_count
+    CALL draw.flush_buffer_to_screen
+
+    ; Draw graphic of remaining bases                              
+    CALL draw_bases                                     
+    CALL draw.flush_buffer_to_screen
+    
+    RET

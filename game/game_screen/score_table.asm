@@ -1,4 +1,4 @@
-draw_intro_screen:
+draw_score_table_section:
     PUSH HL
 
     LD HL,.TAITO_TEXT

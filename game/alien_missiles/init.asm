@@ -16,7 +16,7 @@
 init:
     RET
 
-new_game:
+new_sheet:
     PUSH AF,HL
 
     ; Start will the first missile

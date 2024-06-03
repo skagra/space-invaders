@@ -1,6 +1,6 @@
 init:
     RET
-new_game:
+new_sheet:
     PUSH AF,DE,HL
 
     ; Alien pack direction

@@ -82,3 +82,32 @@ print_score_high:
     POP HL
 
     RET
+
+print_scores:
+    CALL print_score_high                               ; High score
+    CALL print_score_player_1  
+    
+    RET
+
+print_scores_section:
+    PUSH HL
+
+    ; Draw static screen labels
+    LD HL,.SCORE_LINE_0_TEXT
+    PUSH HL
+    LD HL,0x0000
+    PUSH HL
+    CALL print.print_string
+    POP HL
+    POP HL
+    CALL draw.flush_buffer_to_screen
+
+    ; Draw the scores
+    CALL print_scores
+    CALL draw.flush_buffer_to_screen
+
+    POP HL
+
+    RET
+
+.SCORE_LINE_0_TEXT:         BYTE "   SCORE<1> HI-SCORE SCORE<2>",0
