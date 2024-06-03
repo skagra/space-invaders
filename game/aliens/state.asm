@@ -36,7 +36,7 @@ _alien_is_exploding:                    BLOCK 1
 _exploding_alien:                       BLOCK 2
 
 ; Current number of aliens
-alien_count:                           BLOCK 1
+alien_count:                            BLOCK 1
 
 ; Lookup table into _alien_state table
 _ALIEN_LOOKUP:
@@ -188,3 +188,8 @@ _ALIENS_SIZE:  EQU $-_ALIENS_INIT
 
 ; Current sheet of aliens
 _aliens: BLOCK _ALIENS_SIZE
+
+current_sheet: BLOCK 0
+
+_ALIENS_ADJUST_FOR_SHEET: BYTE 0x60,0x6A,0x74,0x7E,0x7E,0x7E,0x88,0x88,0x88
+_ALIENS_ADJUST_FOR_SHEET_COUNT: EQU $-_ALIENS_ADJUST_FOR_SHEET

@@ -1,5 +1,15 @@
 init:
     RET
+
+new_game:
+    PUSH AF
+
+    LD A,0x00
+    LD (current_sheet),A
+
+    POP AF
+
+    RET
 new_sheet:
     PUSH AF,DE,HL
 
@@ -51,6 +61,12 @@ new_sheet:
     POP HL
     POP HL
     POP HL
+
+    ; Update alien Y position ...
+
+    LD A,(current_sheet)                ; TODO Loop at ?
+    INC A
+    LD (current_sheet),A
 
     POP HL,DE,AF
 
