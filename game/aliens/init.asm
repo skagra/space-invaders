@@ -5,13 +5,13 @@ new_game:
     PUSH AF
 
     LD A,0x00
-    LD (current_sheet),A
+    LD (_aliens_adjust_index),A
 
     POP AF
 
     RET
 new_sheet:
-    PUSH AF,DE,HL
+    PUSH AF,BC,DE,HL,IX
 
     ; Alien pack direction
     LD A,_PACK_DIRECTION_RIGHT_VALUE
@@ -64,10 +64,38 @@ new_sheet:
 
     ; Update alien Y position ...
 
-    LD A,(current_sheet)                ; TODO Loop at ?
-    INC A
-    LD (current_sheet),A
+    ; Get the required offset in to C
+    LD HL,_ALIENS_ADJUST_FOR_SHEET
+    LD D,0x00
+    LD A,(_aliens_adjust_index)
+    LD E,A
+    ADD HL,DE
+    LD C,(HL)                               
 
-    POP HL,DE,AF
+     ; Alien lookup table
+    LD HL,_ALIEN_LOOKUP 
+
+    ; Number of aliens                                      
+    LD B,_ALIEN_PACK_SIZE                               
+.loop
+    LD DE,(HL)                              ; Pointer to current alien
+    LD IX,DE
+    LD A,(IX+_STATE_OFFSET_DRAW_COORDS_Y)   ; Increment Y by required offset
+    ADD C
+    LD (IX+_STATE_OFFSET_DRAW_COORDS_Y),A
+    INC HL                                  ; Next alien
+    INC HL
+    DJNZ .loop
+
+    LD A,(_aliens_adjust_index)             
+    INC A
+    CP _ALIENS_ADJUST_FOR_SHEET_COUNT
+    JR NZ,.dont_reset
+    LD A,0x00
+
+.dont_reset:
+    LD (_aliens_adjust_index),A
+
+    POP IX,HL,DE,BC,AF
 
     RET

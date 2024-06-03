@@ -137,6 +137,7 @@ main:
     CALL player_lives.new_game
     CALL scoring.new_game
     CALL global_state.new_game
+    CALL aliens.new_game
 
     ; Push player one button
     CALL draw_common.wipe_screen
