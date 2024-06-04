@@ -99,4 +99,29 @@ event_alien_missile_hit_player:
 
     RET
 
+alien_landed_begin:
+    PUSH AF
 
+    CALL player.event_alien_landed_begin
+    CALL player_missile.event_alien_landed_begin
+    CALL alien_missiles.event_alien_landed_begin
+    CALL aliens.event_alien_landed_begin
+
+    IFNDEF INVINCIBLE
+        CALL player_lives.event_alien_landed_begin
+    ENDIF
+
+    CALL game_screen.draw_bases
+    CALL game_screen.print_bases_count
+
+    LD A,40                                             ; TODO This should be configurable
+    LD (_life_lost_pause_count_down),A
+
+    LD A,utils.TRUE_VALUE
+    LD (_life_lost_pausing),A
+    LD (_alien_landed),A
+
+.done:  
+    POP AF
+
+    RET

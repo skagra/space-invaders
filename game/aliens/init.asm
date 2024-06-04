@@ -33,20 +33,7 @@ new_sheet:
     LD (_alien_pack_moving),A
 
     LD A,utils.FALSE_VALUE
-    LD (_alien_is_exploding),A
-
-    ; Pack extremities
-    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_Y)
-    LD (_pack_bottom),A  
-
-    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_X)
-    LD (_pack_left),A
-    
-    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_Y)
-    LD (_pack_top),A
-    
-    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_X)
-    LD (_pack_right),A                      
+    LD (_alien_is_exploding),A           
 
     LD A,_ALIEN_PACK_SIZE
     LD (alien_count),A
@@ -71,6 +58,19 @@ new_sheet:
     LD E,A
     ADD HL,DE
     LD C,(HL)                               
+
+    ; Pack extremities
+    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_Y)
+    LD (_pack_bottom),A  
+
+    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_X)
+    LD (_pack_left),A
+    
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_Y)
+    LD (_pack_top),A
+    
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_X)
+    LD (_pack_right),A           
 
      ; Alien lookup table
     LD HL,_ALIEN_LOOKUP 

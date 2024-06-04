@@ -1,3 +1,4 @@
+event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF
 
@@ -21,6 +22,7 @@ event_alien_missile_hit_player_begin:
 
     RET
 
+event_alien_landed_end:
 event_alien_missile_hit_player_end:
     PUSH AF
 
@@ -40,7 +42,7 @@ event_player_missile_hit_alien:
     LD (HL),_MISSILE_STATE_NO_MISSILE
 
     LD A,utils.FALSE_VALUE                              ; Can't fire another missile while an alien is exploding
-    LD (_can_fire),A
+    LD (_can_fire),A                                    ; TODO - Move to orchestration?
 
     POP HL,AF
     

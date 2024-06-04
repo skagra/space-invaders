@@ -110,7 +110,7 @@ event_alien_hit_by_player_missile_end:
     POP IX,HL,AF
 
     RET
-
+event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF
 
@@ -131,6 +131,7 @@ event_alien_missile_hit_player_begin:
 
     RET
 
+event_alien_landed_end:
 event_alien_missile_hit_player_end:
     PUSH AF
 

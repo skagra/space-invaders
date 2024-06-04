@@ -1,3 +1,4 @@
+event_alien_landed_begin:
 event_alien_missile_hit_player:
     PUSH AF,HL
 

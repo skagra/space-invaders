@@ -110,6 +110,7 @@ event_missiles_collided:
 
     ENDM
 
+event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF,DE,HL,IX
 
@@ -124,7 +125,8 @@ event_alien_missile_hit_player_begin:
     POP IX,HL,DE,AF
 
     RET
-    
+
+event_alien_landed_end:   
 event_alien_missile_hit_player_end:
     LD A,utils.TRUE_VALUE                                   ; Enable missiles
     LD (_enabled),A

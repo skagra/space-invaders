@@ -18,6 +18,7 @@ new_sheet:
     
     LD (_alien_exploding),A
     LD (_life_lost_pausing),A
+    LD (_alien_landed),A
 
     POP AF
 

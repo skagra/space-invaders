@@ -161,6 +161,12 @@ _move_current_alien:
     LD E,A
     LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
 
+    ; Alien landed?
+    CP draw_common.SCREEN_HEIGHT_PIXELS-4*8+1
+    JR C,.done_moving
+
+    CALL orchestration.alien_landed_begin
+
 .done_moving:
     POP IX,HL,DE,AF
 

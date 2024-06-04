@@ -40,18 +40,30 @@ update:
     LD A,utils.FALSE_VALUE                                  ; Game over
     LD (_game_running),A
 
-    CALL game_screen.print_game_over
-
     JR .done
 
 .continue:
+    LD A,(_alien_landed)
+    BIT utils.TRUE_BIT,A
+    JR Z,.not_landed
+
+    CALL player.event_alien_landed_end          
+    CALL player_missile.event_alien_landed_end
+    CALL alien_missiles.event_alien_landed_end
+    CALL aliens.event_alien_landed_end
+
+    JR .reset
+
+.not_landed:
     CALL player.event_alien_missile_hit_player_end          ; Done pausing, inform game objects
     CALL player_missile.event_alien_missile_hit_player_end
     CALL alien_missiles.event_alien_missile_hit_player_end
     CALL aliens.event_alien_missile_hit_player_end
 
+.reset
     LD A,utils.FALSE_VALUE                                  ; Update global state to nominal running
     LD (_alien_exploding),A
+    LD (_life_lost_pausing),A
 
     JR .done
     
