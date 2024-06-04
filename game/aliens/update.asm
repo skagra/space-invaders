@@ -161,6 +161,12 @@ _move_current_alien:
     LD E,A
     LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
 
+    ; LOGPOINT [ALIENS] Y=${A}
+    CP draw_common.SCREEN_HEIGHT_PIXELS-48
+    JR C,.done_moving
+    
+    ;global alien landed xxx
+
 .done_moving:
     POP IX,HL,DE,AF
 
@@ -297,6 +303,7 @@ next_alien:
     JR Z,.done
 
     LD HL,(_current_alien_lookup_ptr) 
+
 .loop
     ; Move to next alien in the lookup table
     LD A,(_pack_loop_counter)
