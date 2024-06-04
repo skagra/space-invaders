@@ -91,14 +91,14 @@ blank:
     BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
     LD A,(_missile_y)
     JR NZ,.explosion_at_top_of_screen
-    DEC A                                               ; TODO Hack to get shield descruction working!
+    DEC A                                               ; TODO Hack to get shield destruction working!
     DEC A                                               ; But breaks top of screen erasure - Must be a better solution
 
 .explosion_at_top_of_screen:
     LD E,A                                              ; than branching on state here?
     PUSH DE
          
-    LD DE, sprites.PLAYER_MISSILE_EXPLOSION_DIMS        ; Dimensioons
+    LD DE, sprites.PLAYER_MISSILE_EXPLOSION_DIMS        ; Dimensions
     PUSH DE
 
     LD DE,sprites.PLAYER_MISSILE_EXPLOSION              ; Sprite mask  

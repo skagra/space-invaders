@@ -31,7 +31,7 @@ main_game_loop:
     ; Erase current player missile
     CALL player_missile.blank
 
-    ; Calcate new coordinates for the player base
+    ; Calculate new coordinates for the player base
     CALL player.update
 
     ; Calculate new coordinates and variant for current alien  

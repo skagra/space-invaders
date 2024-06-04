@@ -66,7 +66,7 @@ update:
     BIT _TOS_SUB_STATE_AT_TOP_OF_SCREEN_BIT,A
     JR NZ,.at_top_of_screen 
 
-    ; Are we done expoding the missile at top of screen?
+    ; Are we done exploding the missile at top of screen?
     BIT _TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
     JP NZ,.done_at_top_of_screen 
 

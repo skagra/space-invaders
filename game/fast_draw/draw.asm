@@ -68,7 +68,7 @@ flush_buffer_to_screen_16x8:
     SRL B                                               ; Divide the result by two to give number of loops to                                 
     RR C                                                ; run as we are dealing with word chunks on the stack 
 
-    LD H,B                                              ; Tripple BC - As only the first address of each 3 byte
+    LD H,B                                              ; Triple BC - As only the first address of each 3 byte
     LD L,C                                              ; row was added to the draw stack
     ADD HL,BC
     ADD HL,BC

@@ -16,11 +16,11 @@
 draw:
     PUSH DE,HL,IX
 
-    LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missle struct
+    LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missile struct
 
     LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)                   ; Current missile state
 
-    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active? Draw the missle.
+    BIT _ALIEN_MISSILE_STATE_ACTIVE_BIT,A                   ; Active? Draw the missile.
     JR NZ,.draw_missile
 
     BIT _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_BIT,A ; Reached the bottom of the screen? Draw the missile exploding.
@@ -110,7 +110,7 @@ draw:
 blank:
     PUSH AF,DE,HL,IX
 
-    LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missle struct
+    LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missile struct
 
     LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)                   ; Grab current missile state
 

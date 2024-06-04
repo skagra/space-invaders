@@ -98,7 +98,7 @@ fill_screen_attributes:
 ; 
 ; Usage:
 ;   PUSH rr                             ; Cell coords of top left X MSB, Y LSB
-;   PUSH rr                             ; Rectange dimensions X MSB, Y LSB
+;   PUSH rr                             ; Rectangle dimensions X MSB, Y LSB
 ;   PUSH rr                             ; Colour attribute in LSB
 ;   CALL fill_screen_attributes_rect
 ;   POP rr                              ; Ditch the supplied parameters

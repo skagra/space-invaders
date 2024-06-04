@@ -4,7 +4,7 @@
 ; 
 ; Usage:
 ;   PUSH rr  ; Pointer to the null terminated string
-;   PUSH rr  ; Character cell coordiates (X in high byte, Y in low byte)
+;   PUSH rr  ; Character cell coordinates (X in high byte, Y in low byte)
 ;   CALL print_string
 ;   POP rr   ; Ditch the supplied parameters
 ;   POP rr    
@@ -253,7 +253,7 @@ _print_char_at_screen_mem:
 ; 
 ; Usage:
 ;   PUSH rr  ; Character to print in LSB
-;   PUSH rr  ; Character cell coordiates (X in high byte, Y in low byte)
+;   PUSH rr  ; Character cell coordinates (X in high byte, Y in low byte)
 ;   CALL print_char
 ;   POP rr   ; Ditch the supplied parameters
 ;   POP rr    

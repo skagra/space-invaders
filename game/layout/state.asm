@@ -67,7 +67,7 @@ RESERVE_BASE_Y:                 EQU draw_common.SCREEN_HEIGHT_PIXELS-8-1
 RESERVE_BASE_START_X:           EQU layout.INSET_X_PIXELS+3*8
 RESERVE_BASE_OFFSET_X:          EQU ((sprites.PLAYER_DIM_X_BYTES-1)*8)
 
-; Horizonal line towards the bottom of the screen
+; Horizontal line towards the bottom of the screen
 HORIZONTAL_LINE_Y:              EQU draw_common.SCREEN_HEIGHT_PIXELS-10
 
 ; PLAY PLAYER <x> message

@@ -33,7 +33,7 @@ event_player_missile_hit_alien:
     ; Set global state to indicate an alien is exploding
     LD A,_GAME_STATE_ALIEN_EXPLODING_VALUE
     LD (_game_state),A
-    LD A,.ALIEN_EPLOSION_PERSISTENCE
+    LD A,.ALIEN_EXPLOSION_PERSISTENCE
     LD (_alien_exploding_count_down),A
 
 .done
@@ -41,7 +41,7 @@ event_player_missile_hit_alien:
 
     RET
 
-.ALIEN_EPLOSION_PERSISTENCE:    EQU 15
+.ALIEN_EXPLOSION_PERSISTENCE:    EQU 15
 
 event_player_missile_hit_shield:
     ; Inform the player missile that it has hit a shield

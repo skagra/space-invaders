@@ -20,7 +20,7 @@ update:
     BIT utils.TRUE_BIT,A
     JP Z,.done
 
-    LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missle struct
+    LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missile struct
 
     LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)                   ; Get the missile state
 
@@ -48,7 +48,7 @@ update:
     JR .done
 
 .not_active:
-    CALL _fire_if_ready                                     ; Fire a new missle if it's time to do so
+    CALL _fire_if_ready                                     ; Fire a new missile if it's time to do so
     JR .done
 
 .active:
@@ -139,7 +139,7 @@ next:
     PUSH AF,DE,HL,IX
 
     LD IX,(_current_alien_missile_ptr)
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                     ; Get the current alient type
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                     ; Get the current alien type
 
     CP _ALIEN_MISSILE_TYPE_0                                ; Type 0?
     JR Z,.type_0                                            ; Handle it.
@@ -197,7 +197,7 @@ next:
 _fire_if_ready:
     PUSH AF,BC,DE,HL,IX,IY
 
-    ; Point IX to current missle struct
+    ; Point IX to current missile struct
     LD IX,(_current_alien_missile_ptr)                      
 
     ; Get the step count of the other two missiles

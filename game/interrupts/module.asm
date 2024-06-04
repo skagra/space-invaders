@@ -6,7 +6,7 @@ _module_start:
     INCLUDE "handler.asm"
     INCLUDE "setup.asm"
 
-    MEMORY_USAGE "interupts       ",_module_start
+    MEMORY_USAGE "interrupts       ",_module_start
     
     ENDMODULE
     

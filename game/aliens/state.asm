@@ -6,7 +6,7 @@ _STATE_OFFSET_VAR_0_SPRITE:             EQU 2           ; First variant sprite
 _STATE_OFFSET_VAR_1_SPRITE:             EQU 4           ; Second variant sprite
 _STATE_OFFSET_STATE:                    EQU 6           ; Status of sprite from _ALIEN_STATE_* values
 _STATE_OFFSET_VARIANT:                  EQU 7           ; Current sprite variant from _ALIEN_VARIANT_? values
-_STATE_OFFSET_TYPE:                     EQU 8           ; Alient type from _ALIEN_TYPE_? values
+_STATE_OFFSET_TYPE:                     EQU 8           ; Alien type from _ALIEN_TYPE_? values
 
 _AS_SIZE:                               EQU 9           ; Size of the alien sprite structure
 

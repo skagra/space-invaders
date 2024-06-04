@@ -84,7 +84,7 @@ flush_buffer_to_screen:
     OR L
     JP Z,.done                                          ; Yes - done
 
-    DEC HL                                              ; No - decrase the counter
+    DEC HL                                              ; No - decrease the counter
 
 .more
     POP DE                                              ; Get the address written to in the off screen buffer
@@ -209,7 +209,7 @@ draw_sprite:
     LD E,A
     LD (.mem_write_ptr), DE
     
-    ; We can increase .y_lookup_table_ptr now as we won't referr to it again until next loop
+    ; We can increase .y_lookup_table_ptr now as we won't refer to it again until next loop
     INC HL
     INC HL
     LD (.y_lookup_table_ptr),HL

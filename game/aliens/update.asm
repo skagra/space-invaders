@@ -15,7 +15,7 @@ _ALIEN_Y_OFFSET:                        EQU 0x10
 
 _current_alien_lookup_ptr:              BLOCK 2         ; Pointer to the current alien in the lookup table     
 _current_pack_variant_flag:             BLOCK 1         ; Current variant for walking animation taken from _ALIEN_VARIANT_* constants
-_pack_direction:                        BLOCK 1         ; Current direction of alient pack taken from _PACK_DIRECTION_* constants
+_pack_direction:                        BLOCK 1         ; Current direction of alien pack taken from _PACK_DIRECTION_* constants
 _pack_loop_counter:                     BLOCK 1         ; Loop counter decremented as each alien is processed so we know when to go back to start of the pack
 
 ; Pack bounds
@@ -45,7 +45,7 @@ _adjust_alien_pack_direction:
     CP _PACK_DIRECTION_DOWN_AT_RIGHT_VALUE
     JR Z,.currently_moving_down_at_right
 
-    ; Movin down, pack is at LHS of the screen
+    ; Moving down, pack is at LHS of the screen
     LD A,_PACK_DIRECTION_RIGHT_VALUE                    ; Switch to moving right
     LD (_pack_direction),A
 

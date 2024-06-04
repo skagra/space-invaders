@@ -35,7 +35,7 @@ new_sheet:
     LD A,utils.FALSE_VALUE
     LD (_alien_is_exploding),A
 
-    ; Pack extremeties
+    ; Pack extremities
     LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_Y)
     LD (_pack_bottom),A  
 

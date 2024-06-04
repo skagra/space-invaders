@@ -91,7 +91,7 @@ handle_collision:
     LD IX,player_missile_collision
 
     ; TODO Should we check that the player missile is active here?
-    ; Has there been a collision with the player missle?
+    ; Has there been a collision with the player missile?
     BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
     JP Z,.check_alien_missile_collisions                    ; No collision so done
 

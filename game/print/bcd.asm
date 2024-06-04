@@ -43,34 +43,34 @@ print_bcd_word:
 
     ; First (most significant) digit
     LD HL,.buffer
-    LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significat 2 digits
+    LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significant 2 digits
     SRL A                                               ; Shift down the top 4 bits
     SRL A
     SRL A
     SRL A
-    ADD '0'                                             ; Numberic characters are based at '0'
+    ADD '0'                                             ; Numeric characters are based at '0'
     LD (HL),A
   
     ; Second digit
     INC HL                                              ; Next position in buffer
-    LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significat 2 digits
+    LD A,(IX+.PARAM_NUMBER_MS)                          ; Get the most significant 2 digits
     AND 0x0F                                            ; AND out the top 4 bits
     ADD '0'                                             ; Numeric characters are based at '0'
     LD (HL),A
 
     ; 3rd digit
     INC HL                                              ; Next position in buffer
-    LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the least significat 2 digits
+    LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the least significant 2 digits
     SRL A                                               ; Shift down the top 4 bits
     SRL A
     SRL A
     SRL A
-    ADD '0'                                             ; Numberic characters are based at '0'
+    ADD '0'                                             ; Numeric characters are based at '0'
     LD (HL),A
 
     ; 4th
     INC HL                                              ; Next position in buffer
-    LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the most significat 2 digits
+    LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the most significant 2 digits
     AND 0x0F                                            ; AND out the top 4 bits
     ADD '0'                                             ; Numeric characters are based at '0'
     LD (HL),A
@@ -101,17 +101,17 @@ print_bcd_byte:
 
     ; First (most significant) digit
     LD HL,.buffer
-    LD A,(IX+.PARAM_NUMBER)                             ; Get the most significat 2 digits
+    LD A,(IX+.PARAM_NUMBER)                             ; Get the most significant 2 digits
     SRL A                                               ; Shift down the top 4 bits
     SRL A
     SRL A
     SRL A
-    ADD '0'                                             ; Numberic characters are based at '0'
+    ADD '0'                                             ; Numeric characters are based at '0'
     LD (HL),A
   
     ; Second digit
     INC HL                                              ; Next position in buffer
-    LD A,(IX+.PARAM_NUMBER)                             ; Get the most significat 2 digits
+    LD A,(IX+.PARAM_NUMBER)                             ; Get the most significant 2 digits
     AND 0x0F                                            ; AND out the top 4 bits
     ADD '0'                                             ; Numeric characters are based at '0'
     LD (HL),A

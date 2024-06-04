@@ -49,7 +49,7 @@ flash_score_player_1:
 
     RET
 
-; Arcade machine flashes ~22 times over a peroid of  ~4 seconds
+; Arcade machine flashes ~22 times over a period of  ~4 seconds
 .SCORE_BLANK_STRING:        BYTE "    ",0
 .FLASH_PLAYER_SCORE_CYCLES: EQU 22
 

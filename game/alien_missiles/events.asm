@@ -17,7 +17,7 @@
 event_alien_missile_hit_shield:
     PUSH IX
 
-    ; Point IX to current missle struct
+    ; Point IX to current missile struct
     LD IX,(_current_alien_missile_ptr)                     
 
     ; Set state
@@ -101,7 +101,7 @@ event_missiles_collided:
         
         CALL blank                                          ; Erase it from the screen
 
-        ; Flag missile as nolonger active
+        ; Flag missile as no longer active
         LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
         
         ; And reset its step count
