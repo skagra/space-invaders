@@ -1,4 +1,4 @@
-    MODULE global_state
+    MODULE orchestration
 
 _module_start:
 

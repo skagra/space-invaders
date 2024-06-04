@@ -14,6 +14,7 @@ main_game_loop:
     CALL player.new_sheet
     CALL aliens.new_sheet
     CALL alien_missiles.new_sheet
+    CALL orchestration.new_sheet
 
 .animation_loop:
     ; Reset all collisions
@@ -59,7 +60,7 @@ main_game_loop:
     CALL collision.handle_collision
 
     ; Update global state information
-    CALL global_state.update
+    CALL orchestration.update
 
     ; Move on to next alien
     CALL aliens.next_alien
@@ -93,9 +94,9 @@ main_game_loop:
     CP 0x00
     JR Z,.new_sheet
 
-    LD A,(global_state._game_state)
-    BIT global_state._GAME_STATE_GAME_OVER_BIT,A
-    JP Z,.animation_loop  
+    LD A,(orchestration._game_running)
+    BIT utils.TRUE_BIT,A
+    JP NZ,.animation_loop  
 
     POP HL,AF 
 

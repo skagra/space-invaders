@@ -4,8 +4,8 @@ event_player_missile_hit_alien:
     
     PUSH AF,HL,IX,IY
 
-    LD A,(_game_state)
-    BIT _GAME_STATE_LIFE_LOST_PAUSING_BIT,A
+    LD A,(_life_lost_pausing)                           ; If player is exploding ignore this event
+    BIT utils.TRUE_BIT,A
     JR NZ,.done
 
     LD  IX,0                                            ; Point IX to the stack
@@ -30,9 +30,9 @@ event_player_missile_hit_alien:
     ; Draw the player's score                           ; TODO - Maybe this should be sending an event?
     CALL game_screen.print_score_player_1 
 
-    ; Set global state to indicate an alien is exploding
-    LD A,_GAME_STATE_ALIEN_EXPLODING_VALUE
-    LD (_game_state),A
+    LD A,utils.TRUE_VALUE
+    LD (_alien_exploding),A
+
     LD A,.ALIEN_EXPLOSION_PERSISTENCE
     LD (_alien_exploding_count_down),A
 
@@ -91,9 +91,9 @@ event_alien_missile_hit_player:
     LD A,40                                             ; TODO This should be configurable
     LD (_life_lost_pause_count_down),A
 
-    LD A,_GAME_STATE_LIFE_LOST_PAUSING_VALUE
-    LD (_game_state),A
-    
+    LD A,utils.TRUE_VALUE
+    LD (_life_lost_pausing),A
+
 .done
     POP AF
 

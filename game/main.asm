@@ -73,7 +73,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     MEMORY_USAGE "double buffer   ", DRAW_BUFFER
 
     INCLUDE "layout/module.asm"
-    INCLUDE "global_state/module.asm"
+    INCLUDE "orchestration/module.asm"
     INCLUDE "player/module.asm"
     INCLUDE "player_missile/module.asm"
     INCLUDE "aliens/module.asm"
@@ -94,7 +94,7 @@ main:
 
     ; Initialise all modules
     CALL debug.init
-    CALL global_state.init
+    CALL orchestration.init
     CALL utils.init
     CALL layout.init
     CALL draw.init
@@ -136,7 +136,7 @@ main:
     ; Initialize game state
     CALL player_lives.new_game
     CALL scoring.new_game
-    CALL global_state.new_game
+    CALL orchestration.new_game
     CALL aliens.new_game
 
     ; Push player one button
