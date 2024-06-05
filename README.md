@@ -12,6 +12,8 @@ A faithful reproduction of the original arcade Space Invaders game, as released 
 * [Building](game/docs/building.md) - How to build the project.
 * [Running](game/docs/running.md) - How to run the project.
 * [Playing](game/docs/playing.md) - How to play the come (controls).
+* [Code Overview](game/docs/code.md) - An overview of the structure of the code base.
+* [References](game/docs/references) - Links to various reference material I found useful in developing this project.
 * [Screen-lookup-table](screen-lookup-table) - A utility to generate a lookup table to resolve coordinates to the corresponding screen memory address.
 * [Shift-sprites](shift-sprites) - A utility to generate "pre-shifted" versions of sprite data for efficient rendering.
 
@@ -39,7 +41,7 @@ Here are some of the details - some you will have noticed, others maybe not:
   *  [ ] One of the missile types is disabled.
 * [ ] The seeker missile fires only every other time it is eligible to fire.
 * [ ] Alien missiles move at 4 pixels on each animation cycle until there are 8 or fewer aliens remaining at which point this changes to 5 pixels.
-* [x] Although the arcade machine was monochrome, gels were applied to the CRT to add some colour.
+* [x]  Although the arcade machine was monochrome, gels were applied to the CRT to add some colour.
 
 Much of this detail was revealed via the excellent ROM disassembly work on the [Computer Archeology](https://www.computerarcheology.com/Arcade/SpaceInvaders/) site.
 
