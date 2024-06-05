@@ -71,7 +71,7 @@ Most of the major game elements are now in place, though some work remains:
 * Alien destroying an extra C in "COIN" on the insert coin screen.
 * Various delays e.g. before the player appears when a new sheet is rendered.
 * 2 Player mode.
-* 
+
 # What's Next
 
 Once the outstanding features have been implemented the next step is to consider sound support via the AY-3-8912 chip which was available on later ZX Spectrum models.
