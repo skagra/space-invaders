@@ -23,7 +23,7 @@ Here are some of the details - some you will have noticed, others maybe not:
 
 ##  Big
 
-* Sprites and font are an exact match to the originals.
+* Sprites and font are a pixel-perfect match to the originals.
 * There are 55 aliens - 5 rows of 11, and three different types of alien.
 * Overall layout - including strange spacing in places - is matched as closely as is possible.
 * The game runs at 50 fps and is entirely flicker-free.
@@ -39,6 +39,7 @@ Here are some of the details - some you will have noticed, others maybe not:
   *  One of the missile types is disabled.
 * The seeker missile fires only every other time it is eligible to fire.
 * Alien missiles move at 4 pixels on each animation cycle until there are 8 or fewer aliens remaining at which point this changes to 5 pixels.
+* Although the arcade machine was monochrome gels were applied to the CRT to add some colour.
 
 Much of this detail was revealed via the excellent ROM disassembly work on the [Computer Archeology](https://www.computerarcheology.com/Arcade/SpaceInvaders/) site.
 
