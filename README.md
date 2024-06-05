@@ -13,7 +13,7 @@ A faithful reproduction of the original arcade Space Invaders game, as released 
 * [Running](game/docs/running.md) - How to run the project.
 * [Playing](game/docs/playing.md) - How to play the come (controls).
 * [Code Overview](game/docs/code.md) - An overview of the structure of the code base.
-* [References](game/docs/references) - Links to various reference material I found useful in developing this project.
+* [References](game/docs/references.md) - Links to various reference material I found useful in developing this project.
 * [Screen-lookup-table](screen-lookup-table) - A utility to generate a lookup table to resolve coordinates to the corresponding screen memory address.
 * [Shift-sprites](shift-sprites) - A utility to generate "pre-shifted" versions of sprite data for efficient rendering.
 
