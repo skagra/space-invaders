@@ -23,23 +23,23 @@ Here are some of the details - some you will have noticed, others maybe not:
 
 ##  Big
 
-* Sprites and font are a pixel-perfect match to the originals.
-* There are 55 aliens - 5 rows of 11, and three different types of alien.
-* Overall layout - including strange spacing in places - is matched as closely as is possible.
-* The game runs at 50 fps and is entirely flicker-free.
-* Only one alien moves on each animation cycle - this produces both the characteristic "rolling" update as well as the increased movement speed as aliens are destroyed.
-* There are three varieties of alien missiles - two of which fire on a schedule but the third "seeker missile" targets the player.
-* The frequency at which aliens fire increases as the player's score increases.
-* Each new sheet of aliens starts lower down the screen, until the they eventually start touching the shields.  The starting offset recycles after 10 sheets.
+* [x] Sprites and font are a pixel-perfect match to the originals.
+* [x] There are 55 aliens - 5 rows of 11, and three different types of alien.
+* [x] Overall layout - including strange spacing in places - is matched as closely as is possible.
+* [x] The game runs at 50 fps and is entirely flicker-free.
+* [x] Only one alien moves on each animation cycle - this produces both the characteristic "rolling" update as well as the increased movement speed as aliens are destroyed.
+* [x] There are three varieties of alien missiles - two of which fire on a schedule but the third "seeker missile" targets the player.
+* [ ] The frequency at which aliens fire increases as the player's score increases.
+* [x] Each new sheet of aliens starts lower down the screen, until the they eventually start touching the shields.  The starting offset recycles after 10 sheets.
 
 ## Small
 
 * When there is only one alien remaining:
-  *  It moves more quickly when travelling to the right than when travelling to the left.
-  *  One of the missile types is disabled.
-* The seeker missile fires only every other time it is eligible to fire.
-* Alien missiles move at 4 pixels on each animation cycle until there are 8 or fewer aliens remaining at which point this changes to 5 pixels.
-* Although the arcade machine was monochrome gels were applied to the CRT to add some colour.
+  *  [x] It moves more quickly when travelling to the right than when travelling to the left.
+  *  [ ] One of the missile types is disabled.
+* [ ] The seeker missile fires only every other time it is eligible to fire.
+* [ ] Alien missiles move at 4 pixels on each animation cycle until there are 8 or fewer aliens remaining at which point this changes to 5 pixels.
+* [x] Although the arcade machine was monochrome, gels were applied to the CRT to add some colour.
 
 Much of this detail was revealed via the excellent ROM disassembly work on the [Computer Archeology](https://www.computerarcheology.com/Arcade/SpaceInvaders/) site.
 
