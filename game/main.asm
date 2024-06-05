@@ -182,10 +182,14 @@ STACK_TOP: EQU $-1
     MEMORY_USAGE "stack           ", STACK_START
     
     ENDMODULE
+                                        
+    ORG interrupts.INTERRUPT_JUMP
+    BLOCK 3
+    MEMORY_USAGE "interrupt jump   ",interrupts.INTERRUPT_JUMP
 
     ORG interrupts.INTERRUPT_VECTOR_TABLE
     BLOCK 257
-    MEMORY_USAGE "interrupt_vector ",interrupts.INTERRUPT_VECTOR_TABLE
+    MEMORY_USAGE "interrupt vector ",interrupts.INTERRUPT_VECTOR_TABLE
 
     TOTAL_MEMORY_USAGE
 

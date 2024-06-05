@@ -1,0 +1,1 @@
+ALIEN_HAS_LANDED_Y:             EQU draw_common.SCREEN_HEIGHT_PIXELS-24
