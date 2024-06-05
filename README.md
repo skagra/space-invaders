@@ -72,4 +72,4 @@ Most of the major game elements are now in place, though some work remains:
 
 # What's Next
 
-Once the outstanding features have been implemented next step is to consider sound support via the AY-3-8912 chip which was available on later ZX Spectrum models.
+Once the outstanding features have been implemented the next step is to consider sound support via the AY-3-8912 chip which was available on later ZX Spectrum models.
