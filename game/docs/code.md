@@ -33,7 +33,7 @@ The following naming conventions are used throughout the code base:
 
 # Modules
 
-* `alien_missiles` - Missiles fired by aliens.
+* [`alien_missiles`](../alien_missiles) - Missiles fired by aliens.
 * `aliens` -  The pack of aliens.
 * `character_set` - Bitmaps of the character font.
 * `collision` - Collision detection routines.
