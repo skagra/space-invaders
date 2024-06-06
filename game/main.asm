@@ -73,7 +73,7 @@
     ORG double_buffer.OFF_SCREEN_BUFFER_START
 DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
-    MEMORY_USAGE "double buffer   ", DRAW_BUFFER
+    MEMORY_USAGE "off-screen buffer ", DRAW_BUFFER
 
     INCLUDE "layout/module.asm"
     INCLUDE "orchestration/module.asm"
