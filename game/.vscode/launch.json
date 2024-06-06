@@ -128,7 +128,7 @@
             },
             "sjasmplus": [
                 {
-                    "path": "bin/test_draw.sld"
+                    "path": "bin/tests.sld"
                 }
             ],
             "history": {
@@ -136,11 +136,11 @@
                 "spotCount": 10,
                 "codeCoverageEnabled": true
             },
-            "startAutomatically": false,
+            "startAutomatically": true,
             "commandsAfterLaunch": [],
             "rootFolder": "${workspaceFolder}",
             "topOfStack": "main.STACK_TOP",
-            "load": "bin/test_draw.sna",
+            "load": "bin/tests.sna",
             "smallValuesMaximum": 513,
             "tmpDir": "bin"
         },

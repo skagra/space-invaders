@@ -1,52 +1,5 @@
 ;------------------------------------------------------------------------------
 ;
-; Erase the screen
-;
-; Usage:
-;   CALL wipe_screen
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;------------------------------------------------------------------------------
-
-wipe_screen:
-    PUSH HL,IX    
-
-    ; Set up call to utils.fill_mem
-    LD HL,0x0000                                        ; Fill with zero values (blank)
-    PUSH HL
-    LD HL,memory_map.SCREEN_START                       ; Start of screen area
-    PUSH HL
-    LD HL,memory_map.SCREEN_SIZE                        ; Length of screen area
-    PUSH HL
-    CALL utils.fill_mem                                 ; Erase the screen
-    POP HL                                              ; Ditch the supplied parameters
-    POP HL
-    POP HL
-
-    IFNDEF DIRECT_DRAW
-         ; Set up call to utils.fill_mem
-        LD HL,0x0000                                    ; Fill with zero values (blank)
-        PUSH HL
-        LD HL,OFF_SCREEN_BUFFER_START                   ; Start of off-screen buffer
-        PUSH HL
-        LD HL,memory_map.SCREEN_SIZE                    ; Length of screen area
-        PUSH HL
-        CALL utils.fill_mem                             ; Erase the screen
-        POP HL                                          ; Ditch the supplied parameters
-        POP HL
-        POP HL 
-    ENDIF
-
-    POP IX,HL
-
-    RET
-
-;------------------------------------------------------------------------------
-;
 ; Fill screen with given colour attributes
 ;
 ; Usage:
@@ -156,7 +109,7 @@ fill_screen_attributes_rect:
     ; Calculate line step bytes
     LD A,(.dim_width)                                  ; Subtract the width of the block 
     LD B,A                                              ; from bytes in a line
-    LD A, SCREEN_WIDTH_CHARS
+    LD A, screen.SCREEN_WIDTH_CHARS
     SUB B
     LD (.line_step_bytes),A                            ; Store away line step update
     
@@ -230,7 +183,7 @@ fill_screen_attribute_stripe:
     PUSH DE
 
     ; XY Dimensions
-    LD D,SCREEN_WIDTH_CHARS                             ; X dimension full screen width
+    LD D,screen.SCREEN_WIDTH_CHARS                      ; X dimension full screen width
     LD E,L                                              ; Y dimension as supplied
     PUSH DE
 
@@ -245,4 +198,3 @@ fill_screen_attribute_stripe:
     POP  IX,HL,DE,BC  
 
     RET
-

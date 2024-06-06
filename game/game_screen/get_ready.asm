@@ -8,11 +8,11 @@ draw_get_ready:
     CALL print.print_string
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     CALL flash_score_player_1
     CALL print_score_player_1
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
     
     LD HL,.PLAY_PLAYER_1_BLANK
     PUSH HL
@@ -22,7 +22,7 @@ draw_get_ready:
     POP HL
     POP HL
 
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     POP HL
 

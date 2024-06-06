@@ -11,12 +11,12 @@ handler:
 
     ; LOGPOINT [INTERRUPTS] Keys=${A:hex}
 
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     CALL credits.event_credit_added
     CALL game_screen.print_credits          ; TODO Could cause flicker!s
 
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
 .done
     POP AF

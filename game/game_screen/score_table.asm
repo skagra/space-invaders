@@ -8,7 +8,7 @@ draw_score_table_section:
     CALL print.print_string
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.PLAY_TEXT
     PUSH HL
@@ -20,7 +20,7 @@ draw_score_table_section:
     POP HL
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.SPACE_INVADERS_TEXT
     PUSH HL
@@ -32,7 +32,7 @@ draw_score_table_section:
     POP HL
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.SCORE_TABLE_TITLE
     PUSH HL
@@ -41,7 +41,7 @@ draw_score_table_section:
     CALL print.print_string
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.ALIEN_TYPE_2_SPRITE_COORDS
     PUSH HL
@@ -95,7 +95,7 @@ draw_score_table_section:
     POP HL
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.SAUCER_TEXT
     PUSH HL
@@ -107,7 +107,7 @@ draw_score_table_section:
     POP HL
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.ALIEN_TYPE_2_TEXT
     PUSH HL
@@ -119,7 +119,7 @@ draw_score_table_section:
     POP HL
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.ALIEN_TYPE_1_TEXT
     PUSH HL
@@ -131,7 +131,7 @@ draw_score_table_section:
     POP HL
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.ALIEN_TYPE_0_TEXT
     PUSH HL
@@ -143,7 +143,7 @@ draw_score_table_section:
     POP HL
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     POP HL
     

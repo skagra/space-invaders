@@ -11,7 +11,7 @@ _vtrace_flash:
 
     LD HL,_VTRACE_BYTE
     LD A,(HL)
-    XOR draw_common.CA_BG_WHITE
+    XOR colours.CA_BG_WHITE
     LD (HL),A
 
 .done:
@@ -30,7 +30,7 @@ _cycle_flash:
 
     LD HL,_CYCLE_BYTE
     LD A,(HL)
-    XOR draw_common.CA_BG_MAGENTA
+    XOR colours.CA_BG_MAGENTA
     LD (HL),A
 
     POP AF,HL
@@ -54,7 +54,7 @@ _flag_error:
 
     ; Set colour attribute
     LD HL,_FLAG_ERROR_BYTE                              
-    LD (HL),draw_common.CA_BG_RED|draw_common.CA_FG_WHITE
+    LD (HL),colours.CA_BG_RED|colours.CA_FG_WHITE
 
     ; Draw the error indicator character
     LD HL,(IX+._PARAM_CHAR)

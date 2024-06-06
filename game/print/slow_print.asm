@@ -41,7 +41,7 @@ slow_print_string:
     INC DE                                              ; Move to the next character
     INC HL                                              ; Next screen address
 
-    CALL draw.flush_buffer_to_screen 
+    CALL double_buffer.flush_buffer_to_screen 
     
     LD B,.PRINT_DELAY                                   ; Number of loops to delay for
 

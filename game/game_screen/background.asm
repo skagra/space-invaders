@@ -2,18 +2,18 @@ set_colours:
     PUSH HL
 
     ; Most of the screen is white on black
-    LD L,draw_common.CA_BG_BLACK | draw_common.CA_FG_WHITE
+    LD L,colours.CA_BG_BLACK | colours.CA_FG_WHITE
     PUSH HL
-    CALL draw_common.fill_screen_attributes
+    CALL colours.fill_screen_attributes
     POP HL
 
     ; Green gel to cover active player base and defences
     LD H,layout.BOTTOM_GEL_TOP_LEFT_Y                        ; Top left X
     LD L,layout.BOTTOM_GEL_HEIGHT                            ; Height
     PUSH HL
-    LD HL,draw_common.CA_FG_GREEN                       ; Green fg attribute
+    LD HL,colours.CA_FG_GREEN                                ; Green fg attribute
     PUSH HL
-    CALL draw_common.fill_screen_attribute_stripe
+    CALL colours.fill_screen_attribute_stripe
     POP HL
     POP HL
 
@@ -24,9 +24,9 @@ set_colours:
     LD H,layout.BASES_GEL_WIDTH                              ; Width
     LD L,layout.BASES_GEL_HEIGHT                             ; Height
     PUSH HL
-    LD HL,draw_common.CA_FG_GREEN                       ; Green fg attribute
+    LD HL,colours.CA_FG_GREEN                                ; Green fg attribute
     PUSH HL
-    CALL draw_common.fill_screen_attributes_rect
+    CALL colours.fill_screen_attributes_rect
     POP HL
     POP HL
     POP HL
@@ -35,9 +35,9 @@ set_colours:
     LD H,layout.SPACESHIP_GEL_LEFT_Y                         ; Top left X
     LD L,layout.SPACESHIP_GEL_HEIGHT                         ; Height
     PUSH HL
-    LD HL,draw_common.CA_FG_RED                         ; Red fg attribute
+    LD HL,colours.CA_FG_RED                                  ; Red fg attribute
     PUSH HL
-    CALL draw_common.fill_screen_attribute_stripe
+    CALL colours.fill_screen_attribute_stripe
     POP HL
     POP HL
 
@@ -50,12 +50,12 @@ set_border:
 
     ; Set the screen border
     IFNDEF DEBUG
-        LD HL,draw_common.BORDER_BLACK
+        LD HL,colours.BORDER_BLACK
     ELSE
-        LD HL,draw_common.BORDER_BLUE
+        LD HL,colours.BORDER_BLUE
     ENDIF
     PUSH HL
-    CALL draw_common.set_border    
+    CALL colours.set_border    
     POP HL
 
     ; For debugging indicate the border section of the screen that is out of bounds
@@ -63,24 +63,24 @@ set_border:
         LD HL,0x0000
         PUSH HL
         LD H,layout.INSET_X_CHARS
-        LD L,draw_common.SCREEN_HEIGHT_CHARS
+        LD L,screen.SCREEN_HEIGHT_CHARS
         PUSH HL
-        LD HL,draw_common.CA_BG_BLUE
+        LD HL,colours.CA_BG_BLUE
         PUSH HL
-        CALL draw_common.fill_screen_attributes_rect
+        CALL colours.fill_screen_attributes_rect
         POP HL
         POP HL
         POP HL
 
-        LD H,draw_common.SCREEN_WIDTH_CHARS-layout.INSET_X_CHARS
+        LD H,screen.SCREEN_WIDTH_CHARS-layout.INSET_X_CHARS
         LD L,0x00
         PUSH HL
         LD H,layout.INSET_X_CHARS
-        LD L,draw_common.SCREEN_HEIGHT_CHARS
+        LD L,screen.SCREEN_HEIGHT_CHARS
         PUSH HL
-        LD HL,draw_common.CA_BG_BLUE
+        LD HL,colours.CA_BG_BLUE
         PUSH HL
-        CALL draw_common.fill_screen_attributes_rect
+        CALL colours.fill_screen_attributes_rect
         POP HL
         POP HL
         POP HL

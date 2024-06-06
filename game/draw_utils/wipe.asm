@@ -1,13 +1,26 @@
-wipe_play_area:
+;------------------------------------------------------------------------------
+;
+; Erase the screen
+;
+; Usage:
+;   CALL wipe_screen
+;
+; Return values:
+;   -
+;
+; Registers modified:
+;   -
+;------------------------------------------------------------------------------
 
+wipe_screen:
     PUSH HL,IX    
 
     ; Set up call to utils.fill_mem
     LD HL,0x0000                                        ; Fill with zero values (blank)
     PUSH HL
-    LD HL,memory_map.SCREEN_START+screen.SCREEN_WIDTH_PIXELS*1 ; Start of screen area + 2 rows
+    LD HL,memory_map.SCREEN_START                       ; Start of screen area
     PUSH HL
-    LD HL,memory_map.SCREEN_SIZE-screen.SCREEN_WIDTH_PIXELS*1                       ; Length of screen area
+    LD HL,memory_map.SCREEN_SIZE                        ; Length of screen area
     PUSH HL
     CALL utils.fill_mem                                 ; Erase the screen
     POP HL                                              ; Ditch the supplied parameters
@@ -18,9 +31,9 @@ wipe_play_area:
          ; Set up call to utils.fill_mem
         LD HL,0x0000                                    ; Fill with zero values (blank)
         PUSH HL
-        LD HL,double_buffer.OFF_SCREEN_BUFFER_START+screen.SCREEN_WIDTH_PIXELS*1    ; Start of off-screen buffer + 2 rows
+        LD HL,double_buffer.OFF_SCREEN_BUFFER_START     ; Start of off-screen buffer
         PUSH HL
-        LD HL,memory_map.SCREEN_SIZE-screen.SCREEN_WIDTH_PIXELS*1                   ; Length of screen area
+        LD HL,memory_map.SCREEN_SIZE                    ; Length of screen area
         PUSH HL
         CALL utils.fill_mem                             ; Erase the screen
         POP HL                                          ; Ditch the supplied parameters
@@ -31,3 +44,6 @@ wipe_play_area:
     POP IX,HL
 
     RET
+
+
+

@@ -58,8 +58,11 @@
     INCLUDE "debug/module.asm"
     INCLUDE "sprites/module.asm"
     INCLUDE "character_set/module.asm"
+    INCLUDE "screen/module.asm"
     INCLUDE "utils/module.asm"
-    INCLUDE "draw_common/module.asm"
+    INCLUDE "double_buffer/module.asm"
+    INCLUDE "colours/module.asm"
+    INCLUDE "draw_utils/module.asm"
     INCLUDE "draw/module.asm"
     INCLUDE "fast_draw/module.asm"
     INCLUDE "keyboard/module.asm"
@@ -67,7 +70,7 @@
     INCLUDE "main_game_loop.asm"
 
     ; Off-screen buffer
-    ORG draw_common.OFF_SCREEN_BUFFER_START
+    ORG double_buffer.OFF_SCREEN_BUFFER_START
 DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
     MEMORY_USAGE "double buffer   ", DRAW_BUFFER
@@ -97,6 +100,10 @@ main:
     CALL orchestration.init
     CALL utils.init
     CALL layout.init
+    CALL screen.init
+    CALL colours.init
+    CALL double_buffer.init
+    CALL draw_utils.init
     CALL draw.init
     CALL fast_draw.init
     CALL print.init
@@ -116,13 +123,13 @@ main:
     CALL interrupts.setup
 
     ; One time screen initialization
-    CALL draw_common.wipe_screen
+    CALL draw_utils.wipe_screen
     CALL game_screen.set_border
     CALL game_screen.set_colours
 
 .score_table:
     ; Draw the score table
-    CALL draw_common.wipe_screen
+    CALL draw_utils.wipe_screen
     CALL game_screen.print_scores_section
     CALL game_screen.draw_credits_section
     CALL game_screen.draw_score_table_section
@@ -140,7 +147,7 @@ main:
     CALL aliens.new_game
 
     ; Push player one button
-    CALL draw_common.wipe_screen
+    CALL draw_utils.wipe_screen
     CALL game_screen.print_scores_section
     CALL game_screen.draw_push_player_1_section
     CALL game_screen.draw_player_lives_section
@@ -156,7 +163,7 @@ main:
     CALL credits.event_credit_used
 
     ; Ready 1player 1
-    CALL draw_common.wipe_screen
+    CALL draw_utils.wipe_screen
     CALL game_screen.print_scores_section
     CALL game_screen.draw_player_lives_section
     CALL game_screen.draw_credits_section

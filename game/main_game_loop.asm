@@ -3,7 +3,7 @@ main_game_loop:
     PUSH AF,HL
 
 .new_sheet:
-    CALL draw_common.wipe_screen
+    CALL draw_utils.wipe_screen
     CALL game_screen.print_scores_section
     CALL game_screen.draw_player_lives_section
     CALL game_screen.draw_credits_section
@@ -74,7 +74,7 @@ main_game_loop:
     ENDIF
     
     ; Copy off screen buffers to screen memory
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
     CALL fast_draw.flush_buffer_to_screen_16x8
 
     IFDEF PAUSEABLE

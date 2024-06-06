@@ -24,11 +24,11 @@ draw_credits_section:
     CALL print.print_string
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     ; Print credits
     CALL print_credits
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     POP HL
 
@@ -36,5 +36,5 @@ draw_credits_section:
 
 .CREDS_TEXT:      BYTE "CREDIT",0
 .CREDS_X:         EQU 20
-.CREDS_Y:         EQU draw_common.SCREEN_HEIGHT_CHARS-1
+.CREDS_Y:         EQU screen.SCREEN_HEIGHT_CHARS-1
 .CREDS_COORDS:    EQU (.CREDS_X<<8) + .CREDS_Y

@@ -26,7 +26,7 @@ flash_score_player_1:
     HALT
     HALT
     HALT
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.SCORE_BLANK_STRING
     PUSH HL
@@ -41,7 +41,7 @@ flash_score_player_1:
     HALT
     HALT
     HALT
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     DJNZ .flash_loop
 
@@ -100,11 +100,11 @@ print_scores_section:
     CALL print.print_string
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     ; Draw the scores
     CALL print_scores
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     POP HL
 

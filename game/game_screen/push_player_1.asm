@@ -9,7 +9,7 @@ draw_push_player_1_section:
     CALL print.print_string
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     LD HL,.ONLY_1_PLAYER_TEXT
     PUSH HL
@@ -18,7 +18,7 @@ draw_push_player_1_section:
     CALL print.print_string
     POP HL
     POP HL
-    CALL draw.flush_buffer_to_screen
+    CALL double_buffer.flush_buffer_to_screen
 
     POP HL
     

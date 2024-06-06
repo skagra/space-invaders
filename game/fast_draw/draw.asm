@@ -290,7 +290,7 @@ draw_sprite_16x8:
     LD C,A
     SLA C                                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, draw_common._Y_MEM_ROW_LOOKUP                ; Base of lookup table in HL
+    LD HL, draw_utils._Y_MEM_ROW_LOOKUP                 ; Base of lookup table in HL
     ADD HL,BC                                           ; Location of the row start in the lookup table
     LD BC,HL
 
