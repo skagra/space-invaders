@@ -18,8 +18,6 @@ _p1_already_pressed:    BLOCK 1
 _p2_already_pressed:    BLOCK 1
 _creds_already_pressed: BLOCK 1
 
-    IFDEF PAUSEABLE
-PAUSE_KEY_DOWN_MASK:    EQU 0b1000000
+PAUSE_KEY_DOWN_MASK:    EQU 0b10000000
 PAUSE_KEY_DOWN_BIT:     EQU 7
 _pause_already_pressed: BLOCK 1
-    ENDIF

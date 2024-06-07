@@ -78,15 +78,13 @@ get_keys:
     DEBOUNCE .P2_KEY_BIT, _p2_already_pressed, P2_KEY_DOWN_MASK
     DEBOUNCE .CRED_KEY_BIT, _creds_already_pressed, CREDS_KEY_DOWN_MASK
 
-.done:
+    ; Fall through
+    LD BC,.PAUSE_PORT                                 
+    IN B,(C)                                            
 
-    IFDEF PAUSEABLE
-        LD BC,.PAUSE_PORT                                 
-        IN A,(C)                                            
-
-        DEBOUNCE .PAUSE_KEY_BIT, _pause_already_pressed, PAUSE_KEY_DOWN_MASK
-    ENDIF
-
+    DEBOUNCE .PAUSE_KEY_BIT, _pause_already_pressed, PAUSE_KEY_DOWN_MASK
+ 
+    ; Record result
     LD HL,keys_down
     LD (HL),E      
 
@@ -108,7 +106,6 @@ get_keys:
 .P2_KEY_BIT:        EQU 1               ; 2 key
 .CRED_KEY_BIT:      EQU 4               ; 5 key
 
-    IFDEF PAUSEABLE
 .PAUSE_PORT:        EQU 0x7FFE        
 .PAUSE_KEY_BIT:     EQU 0               ; Space bar
-    ENDIF
+ 

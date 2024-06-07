@@ -196,7 +196,7 @@ _print_char_at_screen_mem:
     LD (.print_mem_ptr),HL                              
 
     ; Find the bitmap for the required character
-    LD HL,character_set.CHARACTER_SET_BASE-(32*8)       ; Then the char data is at character code * 8 offset
+    LD HL,(character_set)                               ; Then the char data is at character code * 8 offset
     LD DE,(IX+.PARAM_CHAR)                              ; Get the char to draw
     SLA E                                               ; Multiply char code by 8
     RL D

@@ -1,7 +1,6 @@
-    INCLUDE "../collision_state/partial.asm"
-    
-    MODULE collision
+     MODULE collision
 
+    INCLUDE "../collision_state/state.asm"
 _module_start:
     INCLUDE "init.asm"
     INCLUDE "collision.asm"

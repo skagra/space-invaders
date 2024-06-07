@@ -68,6 +68,10 @@
     INCLUDE "keyboard/module.asm"
     INCLUDE "print/module.asm"
     INCLUDE "main_game_loop.asm"
+    INCLUDE "layout/module.asm"
+    INCLUDE "orchestration/module.asm"
+    INCLUDE "player/module.asm"
+    INCLUDE "player_missile/module.asm"
 
     ; Off-screen buffer
     ORG double_buffer.OFF_SCREEN_BUFFER_START
@@ -75,17 +79,15 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
     MEMORY_USAGE "off-screen buffer ", DRAW_BUFFER
 
-    INCLUDE "layout/module.asm"
-    INCLUDE "orchestration/module.asm"
-    INCLUDE "player/module.asm"
-    INCLUDE "player_missile/module.asm"
     INCLUDE "aliens/module.asm"
     INCLUDE "game_screen/module.asm"
+    INCLUDE "splash_screen/module.asm"
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
     INCLUDE "alien_missiles/module.asm"
     INCLUDE "player_lives/module.asm"
     INCLUDE "credits/module.asm"
+    INCLUDE "handler.asm"
     INCLUDE "interrupts/module.asm"
 
     MODULE main
@@ -120,12 +122,30 @@ main:
     CALL interrupts.init
 
     ; Set up interrupt handling (keyboard and credits)
+    LD HL,splash_screen.interrupt_handler
+    PUSH HL
+    CALL interrupts.set_interrupt_handler
+    POP HL
     CALL interrupts.setup
+
+    CALL splash_screen.draw_splash_screen
+    CALL splash_screen.draw_controls_screen
 
     ; One time screen initialization
     CALL draw_utils.wipe_screen
     CALL game_screen.set_border
     CALL game_screen.set_colours
+
+    LD HL,handler
+    PUSH HL
+    CALL interrupts.set_interrupt_handler
+    POP HL
+
+    ; Use the Space Invaders
+    LD HL,print.CHARACTER_SET_SPACE_INVADERS
+    PUSH HL
+    CALL print.set_font
+    POP HL
 
 .score_table:
     ; Draw the score table
@@ -162,7 +182,7 @@ main:
     ; Update credits
     CALL credits.event_credit_used
 
-    ; Ready 1player 1
+    ; Ready player 1
     CALL draw_utils.wipe_screen
     CALL game_screen.print_scores_section
     CALL game_screen.draw_player_lives_section

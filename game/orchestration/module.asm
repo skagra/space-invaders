@@ -7,7 +7,7 @@ _module_start:
     INCLUDE "events.asm"
     INCLUDE "update.asm"
 
-    MEMORY_USAGE "global_state    ",_module_start
+    MEMORY_USAGE "orchestration   ",_module_start
     
     ENDMODULE
     

@@ -19,10 +19,7 @@ init:
     LD (_p1_already_pressed),A
     LD (_p2_already_pressed),A
     LD (_creds_already_pressed),A
-
-    IFDEF PAUSEABLE
-        LD (_pause_already_pressed),A
-    ENDIF
+    LD (_pause_already_pressed),A
 
     POP HL
 

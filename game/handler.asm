@@ -1,3 +1,5 @@
+    MODULE main
+
 handler:
     DI
 
@@ -14,7 +16,7 @@ handler:
     CALL double_buffer.flush_buffer_to_screen
 
     CALL credits.event_credit_added
-    CALL game_screen.print_credits          ; TODO Could cause flicker!s
+    CALL game_screen.print_credits          
 
     CALL double_buffer.flush_buffer_to_screen
 
@@ -24,3 +26,5 @@ handler:
     EI
  
     RET
+
+    ENDMODULE
