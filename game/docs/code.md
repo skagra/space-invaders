@@ -41,7 +41,7 @@ The following naming conventions are used throughout the code base:
 * [`colours`](../colours) - Colour and border attribute routines.
 * [`credits`](../credits) - Handling of player credits.
 * [`debug`](../debug) - Debug routines.
-* [`double_buffer](../double_buffer) - Off-screen buffer for flicker free screen updates.
+* [`double_buffer`](../double_buffer) - Off-screen buffer for flicker free screen updates.
 * [`draw`](../draw) - Generic double-buffered sprite drawing.
 * [`draw_utils`](../draw_common) - Shared drawing routines.
 * [`fast_draw`](../fast_draw) - Optimized fixed size double-buffered sprite drawing.
