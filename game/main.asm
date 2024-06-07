@@ -7,52 +7,7 @@
     ; Skip past contended memory
     ORG 0x8000 
 
-    DISPLAY "Build settings"
-    DISPLAY " "
-
-    IFDEF DEBUG
-        DISPLAY "DEBUG **ENABLED**"
-    ELSE
-        DISPLAY "DEBUG disabled"
-    ENDIF
-
-    IFDEF IGNORE_VSYNC
-        DISPLAY "IGNORE_VSYNC **ENABLED**"
-    ELSE
-        DISPLAY "IGNORE_VSYNC disabled"
-    ENDIF
-
-    IFDEF AUTO_FLUSH
-        DISPLAY "AUTO_FLUSH **ENABLED**"
-    ELSE
-        DISPLAY "AUTO_FLUSH disabled"
-    ENDIF
-
-    IFDEF DIRECT_DRAW
-        DISPLAY "DIRECT_DRAW **ENABLED**"
-    ELSE
-        DISPLAY "DIRECT_DRAW disabled"
-    ENDIF
-
-    IFDEF PAUSEABLE
-        DISPLAY "PAUSEABLE **ENABLED**"
-    ELSE
-        DISPLAY "PAUSEABLE disabled"
-    ENDIF
-
-    IFDEF NO_SHIELDS
-        DISPLAY "NO_SHIELDS **ENABLED**"
-    ELSE
-        DISPLAY "NO_SHIELDS disabled"
-    ENDIF
-    
-    IFDEF INVINCIBLE
-        DISPLAY "INVINCIBLE **ENABLED**"
-    ELSE
-        DISPLAY "INVINCIBLE disabled"
-    ENDIF
-
-    DISPLAY " "
+    INCLUDE "build_settings_display.asm"
 
     INCLUDE "memory_map/module.asm"
     INCLUDE "debug/module.asm"
