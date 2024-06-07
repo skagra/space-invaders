@@ -5,7 +5,6 @@ This document describes the overall structure of the code base.
 # Main
 
 * [`main.asm`](../main.asm) - Main entry point.
-* [`main_game_loop.asm`](../main_game_loop.asm) - The main game play animation loop.
   
 # Module Structure
 
