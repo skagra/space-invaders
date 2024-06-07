@@ -46,7 +46,7 @@ The following naming conventions are used throughout the code base:
 * [`draw_utils`](../draw_common) - Shared drawing routines.
 * [`fast_draw`](../fast_draw) - Optimized fixed size double-buffered sprite drawing.
 * [`game`](../game) - Main game play loop.
-* [`game_screen`](../game_screen) - All games screen "chrome".
+* [`game_screen`](../game_screen) - Game screens "chrome".
 * [`interrupts`](../interrupts) - Interrupt handling setup.
 * [`keyboard`](../keyboard) - Keyboard scanning.
 * [`layout`](../layout) - All layout configuration - pixel and character coordinates.
