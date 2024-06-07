@@ -3,6 +3,13 @@ setup:
     PUSH AF,DE,HL
 
     DI                                                  ; Disable interrupts
+
+    ; Initial null interrupt handler
+    LD HL,null_interrupt_handler
+    PUSH HL
+    CALL set_interrupt_handler
+    POP HL
+
     LD DE, INTERRUPT_VECTOR_TABLE                       ; The IM2 vector table - must be on a page boundary
     LD HL, INTERRUPT_JUMP                               ; Pointer for 3-byte interrupt handler
 
@@ -56,4 +63,8 @@ set_interrupt_handler:
 
     EI
 
+    RET
+
+
+null_interrupt_handler:
     RET

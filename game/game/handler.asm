@@ -1,5 +1,3 @@
-    MODULE main
-
 handler:
     DI
 
@@ -27,4 +25,14 @@ handler:
  
     RET
 
-    ENDMODULE
+setup_interrupt_handler:
+    PUSH HL
+
+    LD HL,game.handler
+    PUSH HL
+    CALL interrupts.set_interrupt_handler
+    POP HL
+
+    POP HL
+
+    RET

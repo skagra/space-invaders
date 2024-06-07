@@ -56,13 +56,13 @@ clean-Linux:
 	rm -r $(BIN)
 
 run-cspect-debug: debug
-	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(DEBUG_FLAGS).sna 
+	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_DEBUG).sna 
 
 run-cspect-release: release
 	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_RELEASE).sna 
 
 run-mame-debug: debug
-	$(MAME) $(MAME_FLAGS) -dump $(BIN)/$(DEBUG_FLAGS).sna 
+	$(MAME) $(MAME_FLAGS) -dump $(BIN)/$(SNA_DEBUG).sna 
 
 run-mame-release: release
 	$(MAME) $(MAME_FLAGS) -dump $(BIN)/$(SNA_RELEASE).sna 

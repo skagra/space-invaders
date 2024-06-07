@@ -67,7 +67,6 @@
     INCLUDE "fast_draw/module.asm"
     INCLUDE "keyboard/module.asm"
     INCLUDE "print/module.asm"
-    INCLUDE "main_game_loop.asm"
     INCLUDE "layout/module.asm"
     INCLUDE "orchestration/module.asm"
     INCLUDE "player/module.asm"
@@ -87,8 +86,8 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "alien_missiles/module.asm"
     INCLUDE "player_lives/module.asm"
     INCLUDE "credits/module.asm"
-    INCLUDE "handler.asm"
     INCLUDE "interrupts/module.asm"
+    INCLUDE "game/module.asm"
 
     MODULE main
 main: 
@@ -121,27 +120,23 @@ main:
     CALL credits.init
     CALL interrupts.init
 
-    ; Set up interrupt handling (keyboard and credits)
-    LD HL,splash_screen.interrupt_handler
-    PUSH HL
-    CALL interrupts.set_interrupt_handler
-    POP HL
+    ; Set up interrupt handling vector
     CALL interrupts.setup
 
+    ; Splash and control screens
+    CALL splash_screen.setup_interrupt_handler
     CALL splash_screen.draw_splash_screen
     CALL splash_screen.draw_controls_screen
 
-    ; One time screen initialization
+    ; One game screen initialization
     CALL draw_utils.wipe_screen
     CALL game_screen.set_border
     CALL game_screen.set_colours
 
-    LD HL,handler
-    PUSH HL
-    CALL interrupts.set_interrupt_handler
-    POP HL
+    ; Credits and keyboard interrupt handling
+    CALL game.setup_interrupt_handler
 
-    ; Use the Space Invaders
+    ; Use the Space Invaders font
     LD HL,print.CHARACTER_SET_SPACE_INVADERS
     PUSH HL
     CALL print.set_font
@@ -190,7 +185,7 @@ main:
     CALL game_screen.draw_get_ready
 
     ; Main game loop
-    CALL main_game_loop
+    CALL game.main_game_loop
 
     ; Any credits?
     LD A,(credits.credits)

@@ -37,13 +37,17 @@ The following naming conventions are used throughout the code base:
 * [`aliens`](../aliens) -  The pack of aliens.
 * [`character_set`](../character_set) - Bitmaps of the character font.
 * [`collision`](../collision) - Collision detection routines.
+* [`collision_state`](../collision_state) - Collision state partial module, to allow inclusion of draw routines avoiding coupling through the collision routines.
+* [`colours`](../colours) - Colour and border attribute routines.
 * [`credits`](../credits) - Handling of player credits.
 * [`debug`](../debug) - Debug routines.
+* [`double_buffer](../double_buffer) - Off-screen buffer for flicker free screen updates.
 * [`draw`](../draw) - Generic double-buffered sprite drawing.
-* [`draw_common`](../draw_common) - Shared drawing routines.
+* [`draw_utils`](../draw_common) - Shared drawing routines.
 * [`fast_draw`](../fast_draw) - Optimized fixed size double-buffered sprite drawing.
+* [`game`](../game) - Make game play loop.
 * [`game_screen`](../game_screen) - All games screen "chrome".
-* [`interrupts`](../interrupts) - Interrupt handling, to read the keyboard and added credits.
+* [`interrupts`](../interrupts) - Interrupt handling setup.
 * [`keyboard`](../keyboard) - Keyboard scanning.
 * [`layout`](../layout) - All layout configuration - pixel and character coordinates.
 * [`memory_map`](../memory_map) - ZX Spectrum memory map.
@@ -53,8 +57,14 @@ The following naming conventions are used throughout the code base:
 * [`player_missile`](../player_missile) - Missile fired by the player.
 * [`print`](../print) - Generic text printing.
 * [`scoring`](../scoring) - BCD scoring.
+* [`screen`](../screen) - Screen dimensions constants.
+* [`splash_screen`](../splash_screen) - Introductory splash screens.
 * [`sprites`](../sprites) - Pre-shifted sprites.
-* [`sprites_source`](../sprites_source) - Sprite images processed to create pre-shifted sprites in the [`sprites`](../sprites) module.
 * [`utils.asm`](../utils) - Various generic utility routines.
   
-  
+  # Other Directories
+
+* [`sprites_source`](../sprites_source) - Sprite images processed to create pre-shifted sprites in the [`sprites`](../sprites) module.
+* [`docs`](../docs) - Documentation.
+* [scripts](../scripts) - Scripts to run `dotnet` projects to create shifted sprites and to calculate screen memory lookup table.
+* [`tests`](../tests) - Code tests.
