@@ -40,7 +40,7 @@ Here are some of the details - some you will have noticed, others maybe not:
   *  [x] It moves more quickly when travelling to the right than when travelling to the left.
   *  [ ] One of the missile types is disabled.
 * [ ] The seeker missile fires only every other time it is eligible to fire.
-* [ ] Alien missiles move at 4 pixels on each animation cycle until there are 8 or fewer aliens remaining at which point this changes to 5 pixels.
+* [x] Alien missiles move at 4 pixels on each animation cycle until there are 8 or fewer aliens remaining at which point this changes to 5 pixels.
 * [x]  Although the arcade machine was monochrome, gels were applied to the CRT to add some colour.
 
 Much of this detail was revealed via the excellent ROM disassembly work on the [Computer Archeology](https://www.computerarcheology.com/Arcade/SpaceInvaders/) site.

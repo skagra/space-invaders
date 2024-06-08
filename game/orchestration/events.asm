@@ -36,6 +36,12 @@ event_player_missile_hit_alien:
     LD A,.ALIEN_EXPLOSION_PERSISTENCE
     LD (_alien_exploding_count_down),A
 
+    ; Inform alien missiles if the pack has dropped to 8 aliens
+    LD A,(aliens.alien_count)
+    CP 0x08
+    JR NZ,.done
+    CALL alien_missiles.event_8_aliens
+
 .done
     POP IY,IX,HL,AF
 

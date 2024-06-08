@@ -28,6 +28,10 @@ new_sheet:
     LD A,utils.TRUE_VALUE
     LD (_enabled),A
 
+    ; Set missile delta
+    LD A,_MISSILE_DELTA_Y_NOMINAL
+    LD (_missile_delta),A
+
     ; Copy initialization values into active values
     LD HL,_ALIEN_MISSILE_0_INIT
     PUSH HL

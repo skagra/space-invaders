@@ -59,11 +59,15 @@ _ALIEN_MISSILE_TYPE_2:                                  EQU 2
 
 _ALIEN_MISSILE_TYPE_COUNT:                              EQU 3
 
-; Nominal number of pixels to move a missile each cycle
-_ALIEN_MISSILE_DELTA_Y:                                 EQU 3
-
 ; Pointer to the current missile struct
 _current_alien_missile_ptr:                             BLOCK 2
 
 ; Is firing of missiles enabled?
 _enabled:                                               BLOCK 1
+
+; Missile deltas
+_MISSILE_DELTA_Y_NOMINAL:                               EQU 4                   ; Nominal value
+
+_MISSILE_DELTA_Y_8_OR_FEWER_ALIENS:                     EQU 5                   ; Value to use when 8 or fewer aliens remain
+
+_missile_delta:                                         BLOCK 1                 ; Current missile delta

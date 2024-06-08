@@ -57,8 +57,9 @@ update:
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),A
 
     LD HL,(IX+_ALIEN_MISSILE_OFFSET_COORDS)                 ; Current coords
-    LD DE,0x0004                                            ; Move missile 4 pixels down 
-    ADD HL,DE                                               ; TODO This should change to 5 when there are 5 or fewer aliens
+    LD A,(_missile_delta)                                   ; Move missile down the screen 
+    ADD L
+    LD L,A
     LD (IX+_ALIEN_MISSILE_OFFSET_COORDS),HL
 
     ; Have we hit the bottom of the screen
@@ -102,13 +103,13 @@ update:
     JR .done
     
 .done_at_bottom_of_screen:                                  ; Finished exploding at bottom of screen
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE                   ; State
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE ; State
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0       ; Reset step count used as part of reload algorithm
 
     JR .done
 
 .hit_shield
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE                   ; Move it to a not active state
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE ; Move it to a not active state
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0       ; Reset step count used as part of reload algorithm
 
     JR .done

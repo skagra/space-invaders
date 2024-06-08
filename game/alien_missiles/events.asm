@@ -133,3 +133,12 @@ event_alien_missile_hit_player_end:
 
     RET
     
+event_8_aliens:
+    PUSH AF
+
+    LD A,_MISSILE_DELTA_Y_8_OR_FEWER_ALIENS
+    LD (_missile_delta),A
+
+    POP AF
+
+    RET
