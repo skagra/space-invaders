@@ -214,7 +214,7 @@ _fire_if_ready:
     GET_RELOAD_STEP_COUNT 0,0
     GET_RELOAD_STEP_COUNT 1,1
 
-    LD DE,.SHOT_COLUMNS_2
+    LD DE,.SHOT_COLUMNS_1
     LD HL,.alien_missile_shot_col_table_ptr
     LD (HL),DE
 
@@ -291,7 +291,7 @@ _fire_if_ready:
 .fire
     LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)
     CP _ALIEN_MISSILE_TYPE_1
-    JP Z,.target_missile_type_1
+    JP Z,.target_missile_type_2
 
     ; Which column to fire from?
     LD HL,(.alien_missile_shot_col_table_ptr)               ; LOGPOINT [ALIEN_MISSILES] Firing
@@ -313,7 +313,7 @@ _fire_if_ready:
     JR Z,.update_to_next_col
     JR .firing_alien_found
 
-.target_missile_type_1:                                     ; Type 1 missile directly targets the player
+.target_missile_type_2:                                     ; Type 1 missile directly targets the player
     LD A,(player.player_x)                                  ; X coord of player base
     LD H,A                                 
     LD L,0x00 
@@ -342,7 +342,7 @@ _fire_if_ready:
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0x01    ; One step taken (required for reload algorithm)
     ; Fall through 
 
-.update_to_next_col:                                        ; TODO Don't need to do this for type 1 missile (as targetted at player)
+.update_to_next_col:                                        ; TODO Don't need to do this for type 2 missile (as targetted at player)
     LD A,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)       ; Update location in column table,
     INC A                                                   ; if either we've fired or there were no aliens in the selected column
     CP .SHOT_COLUMNS_COUNT                                  ; Has the end of the column lookup table been reached?
@@ -361,7 +361,7 @@ _fire_if_ready:
 
 ; Tables of alien columns from which to launch missiles
 .SHOT_COLUMNS_0: BYTE 0x00,0x06,0x00,0x00,0x00,0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07
-.SHOT_COLUMNS_2: BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
+.SHOT_COLUMNS_1: BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
 .SHOT_COLUMNS_COUNT: EQU 16
 
 .alien_missile_shot_col_table_ptr:  BLOCK 2                 ; Shot column table for the current alien missiles
