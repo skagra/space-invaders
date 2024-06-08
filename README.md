@@ -66,7 +66,7 @@ The following tooling was used to create the project.
 
 Most of the major game elements are now in place, though some work remains:
 
-* Adding the Saucer ship.
+* Saucer ship.
 * The "insert coin" screen.
 * Two demo screens.
 * Alien correcting an inverted "Y" in "PLAY" on the score table screen.
