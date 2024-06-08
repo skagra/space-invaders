@@ -282,10 +282,11 @@ _fire_if_ready:
     LD A,(.alien_missile_step_count_0)                      ; LOGPOINT [ALIEN_MISSILES] step_count_1_is_zero
     JR .test_reload_threshold
 
-.test_reload_threshold                                      ; TODO This should be a variable reload rate
-    LD B,14                                                 ; LOGPOINT [ALIEN_MISSILES] Testing step count ${A} against threshold 14
-    CP B                                                
-    JR C,.done                                              ; Not time to reload yet
+.test_reload_threshold:                                      
+    LD B,A
+    LD A,(_reload_rate)                                     
+    CP B                                                    ; LOGPOINT [ALIEN_MISSILES] Testing step count ${B} against threshold ${A}       
+    JR NC,.done 
 
 .fire
     LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)

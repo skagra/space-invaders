@@ -66,6 +66,9 @@ new_sheet:
     POP HL
     POP HL
 
+    LD A,(_RELOAD_RATES)
+    LD (_reload_rate),A
+
     POP HL,AF
 
     RET

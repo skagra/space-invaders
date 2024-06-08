@@ -31,7 +31,7 @@ Here are some of the details - some you will have noticed, others maybe not:
 * [x] The game runs at 50 fps and is entirely flicker-free.
 * [x] Only one alien moves on each animation cycle - this produces both the characteristic "rolling" update as well as the increased movement speed as aliens are destroyed.
 * [x] There are three varieties of alien missiles - two of which fire on a schedule but the third "seeker missile" targets the player.
-* [ ] The frequency at which aliens fire increases as the player's score increases.
+* [x] The frequency at which aliens fire increases as the player's score increases.
 * [x] Each new sheet of aliens starts lower down the screen, until the they eventually start touching the shields.  The starting offset recycles after 10 sheets.
 
 ## Small

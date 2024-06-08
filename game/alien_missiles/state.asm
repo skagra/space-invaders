@@ -71,3 +71,12 @@ _MISSILE_DELTA_Y_NOMINAL:                               EQU 4                   
 _MISSILE_DELTA_Y_8_OR_FEWER_ALIENS:                     EQU 5                   ; Value to use when 8 or fewer aliens remain
 
 _missile_delta:                                         BLOCK 1                 ; Current missile delta
+
+; Reload rate
+
+_RELOAD_SCORE_BOUNDARIES:   BYTE 0x02,0x10,0x20,0x30        ; Score boundaries (BCD) at which to increase reload rate
+_RELOAD_RATES:              BYTE 0x30,0x10,0x0B,0x08        ; Reload rate to use based on score
+
+_NUM_RELOAD_RATES:          EQU $-_RELOAD_RATES             ; Number of reload rates
+_MAX_RELOAD_RATE:           EQU 0x07                        ; Reload rate to use once the table is exhausted
+_reload_rate:               BLOCK 1                         ; Current reload rate

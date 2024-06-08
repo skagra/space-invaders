@@ -142,3 +142,52 @@ event_8_aliens:
     POP AF
 
     RET
+
+event_score_updated:
+
+.PARAM_SCORE:   EQU 10
+
+    PUSH AF,BC,DE,HL
+
+    LD  IX,0                                                    ; Point IX to the stack
+    ADD IX,SP 
+
+    LD DE,(IX+.PARAM_SCORE)
+    LD B,D                                                      ; Score MSB in B
+
+    LD HL,_RELOAD_SCORE_BOUNDARIES                              ; Pointer to reload score boundaries
+    LD C,0x00                                                   ; Offset in to reload score boundaries 
+
+.loop
+    ; Score > current boundary?
+    LD A,(HL)                                                   ; Current score boundary
+    CP B                                                        ; Compare with MSB of score
+    JR C,.outside                                               ; MSB of score is greater than boundary so next
+    JR Z,.outside
+
+    ; Get required reload rate from table
+    LD HL,_RELOAD_RATES                                         ; Base of reload rates table
+    LD B,0x00                                                   ; MSB of offset = 0, LSB is in C
+    ADD HL,BC                                                   ; Update pointer to required reload value
+    LD A,(HL)                                                   ; Grab the reload value
+    LD (_reload_rate),A                                         ; Store it in the reload rate
+    JR .done                                                    ; All done
+
+.outside                                                        ; The score MSB was greater than the current boundary
+    INC C                                                       ; Increase the offset count
+    LD A,C                                                      ; Have we reached the end of the table?
+    CP _NUM_RELOAD_RATES
+    JR Z,.max_reload_rate                                       ; Yes - so use the fastest reload rate
+    INC HL                                                      ; No - move to next entry in score lookup table
+    JR .loop
+
+.max_reload_rate:                                               ; Use fastest reload rate
+    LD A,_MAX_RELOAD_RATE
+    LD (_reload_rate),A                                         
+    ; Fall through to done
+
+.done:
+    ; LOGPOINT [RELOAD_RATE] Reload rate=${A}
+    POP HL,DE,BC,AF
+
+    RET
