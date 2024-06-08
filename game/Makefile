@@ -7,7 +7,7 @@ all: sprites all-asm
 all-asm: $(BIN) $(TARGETS)
 
 bin: 
-    mkdir $(BIN)
+	mkdir $(BIN)
 
 debug: $(BIN)/$(SNA_DEBUG).sna
 
@@ -25,7 +25,7 @@ DEBUG_FLAGS=
 # -DINVINCIBLE
 
 $(BIN)/$(SNA_DEBUG).sna: $(BIN) *.asm */*.asm Makefile
-    $(ASM) --sld=$(basename $@).sld \
+	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
@@ -34,14 +34,14 @@ $(BIN)/$(SNA_DEBUG).sna: $(BIN) *.asm */*.asm Makefile
            $(MAIN_ASM).asm
 
 $(BIN)/$(SNA_RELEASE).sna: $(BIN) *.asm */*.asm Makefile
-    $(ASM) --sld=$(basename $@).sld \
+	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
            $(MAIN_ASM).asm
 
 $(BIN)/$(SNA_TESTS).sna: $(BIN) *.asm */*.asm Makefile
-    $(ASM) --sld=$(basename $@).sld \
+	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
@@ -49,27 +49,27 @@ $(BIN)/$(SNA_TESTS).sna: $(BIN) *.asm */*.asm Makefile
            tests/$(SNA_TESTS).asm
 
 sprites:: 
-    $(MKSPRITES) $(SPRITES_SRC) $(SPRITES_OUT) 
+	$(MKSPRITES) $(SPRITES_SRC) $(SPRITES_OUT) 
 
 clean: clean-$(OS)
 
 clean-Windows_NT:
-    rmdir /S /Q $(BIN) $(SPRITES_OUT)
+	rmdir /S /Q $(BIN) $(SPRITES_OUT)
 
 clean-Linux:
-    rm -r $(BIN) $(SPRITES_OUT)
+	rm -r $(BIN) $(SPRITES_OUT)
 
 run-cspect-debug: debug
-    $(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_DEBUG).sna 
+	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_DEBUG).sna 
 
 run-cspect-release: release
-    $(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_RELEASE).sna 
+	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_RELEASE).sna 
 
 run-mame-debug: debug
-    $(MAME) $(MAME_FLAGS) -dump $(BIN)/$(SNA_DEBUG).sna 
+	$(MAME) $(MAME_FLAGS) -dump $(BIN)/$(SNA_DEBUG).sna 
 
 run-mame-release: release
-    $(MAME) $(MAME_FLAGS) -dump $(BIN)/$(SNA_RELEASE).sna 
+	$(MAME) $(MAME_FLAGS) -dump $(BIN)/$(SNA_RELEASE).sna 
 
 run-cspect-tests: tests
-    $(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_TESTS).sna 
+	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_TESTS).sna 
