@@ -69,6 +69,9 @@ new_sheet:
     LD A,(_RELOAD_RATES)
     LD (_reload_rate),A
 
+    LD A,utils.TRUE_VALUE
+    LD (_missile_1_enabled),A
+
     POP HL,AF
 
     RET

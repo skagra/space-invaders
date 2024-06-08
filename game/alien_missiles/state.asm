@@ -80,3 +80,6 @@ _RELOAD_RATES:              BYTE 0x30,0x10,0x0B,0x08        ; Reload rate to use
 _NUM_RELOAD_RATES:          EQU $-_RELOAD_RATES             ; Number of reload rates
 _MAX_RELOAD_RATE:           EQU 0x07                        ; Reload rate to use once the table is exhausted
 _reload_rate:               BLOCK 1                         ; Current reload rate
+
+; Missile type 1 is disabled when there is only 1 alien remaining
+_missile_1_enabled:         BLOCK 1

@@ -132,22 +132,12 @@ event_alien_missile_hit_player_end:
     LD (_enabled),A
 
     RET
-    
-event_8_aliens:
-    PUSH AF
+event_player_missile_hit_alien:
 
-    LD A,_MISSILE_DELTA_Y_8_OR_FEWER_ALIENS
-    LD (_missile_delta),A
+.PARAM_ALIEN_COUNT: EQU 14
+.PARAM_SCORE:       EQU 12
 
-    POP AF
-
-    RET
-
-event_score_updated:
-
-.PARAM_SCORE:   EQU 10
-
-    PUSH AF,BC,DE,HL
+    PUSH AF,BC,DE,HL,IX
 
     LD  IX,0                                                    ; Point IX to the stack
     ADD IX,SP 
@@ -171,7 +161,7 @@ event_score_updated:
     ADD HL,BC                                                   ; Update pointer to required reload value
     LD A,(HL)                                                   ; Grab the reload value
     LD (_reload_rate),A                                         ; Store it in the reload rate
-    JR .done                                                    ; All done
+    JR .check_alien_delta                                       ; Check alien count
 
 .outside                                                        ; The score MSB was greater than the current boundary
     INC C                                                       ; Increase the offset count
@@ -184,10 +174,28 @@ event_score_updated:
 .max_reload_rate:                                               ; Use fastest reload rate
     LD A,_MAX_RELOAD_RATE
     LD (_reload_rate),A                                         
+    ; Fall through to check_alien_delta
+
+.check_alien_delta:
+    ; LOGPOINT [ALIEN_MISSILES_EVENTS] Reload rate=${A}
+
+    LD A,(IX+.PARAM_ALIEN_COUNT)                                ; Remaining aliens
+    CP 0x08                                                     ; Are we down to 8?
+    JR NZ,.check_disable_missile                                ; No - nothing to do
+    LD A,_MISSILE_DELTA_Y_8_OR_FEWER_ALIENS                     ; Yes - increase the missile speed
+    LD (_missile_delta),A                                       ; LOGPOINT [ALIEN_MISSILES_EVENTS] Delta Y=${A}
+    ; Fall through to check disable missile
+
+.check_disable_missile:
+    LD A,(IX+.PARAM_ALIEN_COUNT)                                ; Remaining aliens
+    CP 0x01                                                     ; Done to last alien?
+    JR NZ,.done                                                 ; No - Done
+    
+    LD A,utils.FALSE_VALUE                                      ; Yes - Disable missile type 1
+    LD (_missile_1_enabled),A                                   ; LOGPOINT [ALIEN_MISSILES_EVENTS] Missile type 1 disabled
     ; Fall through to done
 
 .done:
-    ; LOGPOINT [RELOAD_RATE] Reload rate=${A}
-    POP HL,DE,BC,AF
+    POP IX,HL,DE,BC,AF
 
     RET

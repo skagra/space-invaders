@@ -214,10 +214,6 @@ _fire_if_ready:
     GET_RELOAD_STEP_COUNT 0,0
     GET_RELOAD_STEP_COUNT 1,1
 
-    LD DE,.SHOT_COLUMNS_1
-    LD HL,.alien_missile_shot_col_table_ptr
-    LD (HL),DE
-
     JR .fire_test
 
 .type_0:
@@ -231,8 +227,16 @@ _fire_if_ready:
     JR .fire_test
 
 .type_1:
+    LD A,(_missile_1_enabled)
+    BIT utils.TRUE_BIT,A
+    JP Z,.done
+
     GET_RELOAD_STEP_COUNT 0,0
     GET_RELOAD_STEP_COUNT 2,1
+
+    LD DE,.SHOT_COLUMNS_1
+    LD HL,.alien_missile_shot_col_table_ptr
+    LD (HL),DE
 
     JR .fire_test
 
@@ -290,7 +294,7 @@ _fire_if_ready:
 
 .fire
     LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)
-    CP _ALIEN_MISSILE_TYPE_1
+    CP _ALIEN_MISSILE_TYPE_2
     JP Z,.target_missile_type_2
 
     ; Which column to fire from?

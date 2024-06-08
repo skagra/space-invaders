@@ -36,17 +36,26 @@ event_player_missile_hit_alien:
     LD A,.ALIEN_EXPLOSION_PERSISTENCE
     LD (_alien_exploding_count_down),A
 
-    ; Inform alien missiles of updated score
+    LD A,(aliens.alien_count)
+    LD L,A
+    PUSH HL
     LD HL,(scoring.score_player_1)
     PUSH HL
-    CALL alien_missiles.event_score_updated
+    CALL alien_missiles.event_player_missile_hit_alien
+    POP HL
     POP HL
 
-    ; Inform alien missiles if the pack has dropped to 8 aliens
-    LD A,(aliens.alien_count)
-    CP 0x08
-    JR NZ,.done
-    CALL alien_missiles.event_8_aliens
+    ; ; Inform alien missiles of updated score
+    ; LD HL,(scoring.score_player_1)
+    ; PUSH HL
+    ; CALL alien_missiles.event_score_updated
+    ; POP HL
+
+    ; ; Inform alien missiles if the pack has dropped to 8 aliens
+    ; LD A,(aliens.alien_count)
+    ; CP 0x08
+    ; JR NZ,.done
+    ; CALL alien_missiles.event_8_aliens
 
 .done
     POP IY,IX,HL,AF
