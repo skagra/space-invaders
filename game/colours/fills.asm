@@ -27,9 +27,9 @@ fill_screen_attributes:
     ; Set up call to utils.fill_mem
     LD HL, (ix+.PARAM_ATTRIBUTE)                        ; Get the colour attribute
     PUSH HL                             
-    LD HL,memory_map.SCREEN_ATTR_START                        ; Start of the screen attribute area
+    LD HL,memory_map.SCREEN_ATTR_START                  ; Start of the screen attribute area
     PUSH HL
-    LD HL,memory_map.SCREEN_ATTR_SIZE                         ; Length of the screen attribute area
+    LD HL,memory_map.SCREEN_ATTR_SIZE                   ; Length of the screen attribute area
     PUSH HL
     CALL utils.fill_mem                                 ; Fill the screen attribute area
     POP HL                                              ; Ditch the supplied parameters
@@ -87,12 +87,12 @@ fill_screen_attributes_rect:
     LD (.dim),HL
 
     ; Calculate the starting address
-    LD DE, memory_map.SCREEN_ATTR_START                ; Base address of attribute map
-    LD A,(.x)                                          ; Set low order byte from x coord
+    LD DE, memory_map.SCREEN_ATTR_START                 ; Base address of attribute map
+    LD A,(.x)                                           ; Set low order byte from x coord
     LD E,A 
     
-    LD H,0x00                                          ; Take Y coord
-    LD A,(.y)                                          ; Multiple x32
+    LD H,0x00                                           ; Take Y coord
+    LD A,(.y)                                           ; Multiple x32
     LD L,A             
     SLA L
     RL H
@@ -107,21 +107,21 @@ fill_screen_attributes_rect:
     ADD DE,HL                                           ; DE will track memory to write                       
 
     ; Calculate line step bytes
-    LD A,(.dim_width)                                  ; Subtract the width of the block 
+    LD A,(.dim_width)                                   ; Subtract the width of the block 
     LD B,A                                              ; from bytes in a line
     LD A, screen.SCREEN_WIDTH_CHARS
     SUB B
-    LD (.line_step_bytes),A                            ; Store away line step update
+    LD (.line_step_bytes),A                             ; Store away line step update
     
-    LD A,(.dim_height)                                 ; Set y loop counter (B) from height
+    LD A,(.dim_height)                                  ; Set y loop counter (B) from height
     LD B,A
 
 .y_loop:
-    LD A,(.dim_width)                                  ; Set x loop counter (C) from width
+    LD A,(.dim_width)                                   ; Set x loop counter (C) from width
     LD C,A
 
 ._x_loop:
-    LD A, (.attribute)                                 ; Get the screen attribute
+    LD A, (.attribute)                                  ; Get the screen attribute
     LD (DE),A                                           ; Store at current screen map location
     INC DE                                              ; Move to next screen map location
 

@@ -50,10 +50,10 @@ event_missiles_collided:
 
     PUSH DE,HL,IX,IY
 
-    LD  IX,0                                                ; Point IX to the stack
+    LD  IX,0                                                    ; Point IX to the stack
     ADD IX,SP  
 
-    LD HL,(IX+.PARAM_ALIEN_MISSILE)                         ; Grab the alien missile involved in the collision
+    LD HL,(IX+.PARAM_ALIEN_MISSILE)                             ; Grab the alien missile involved in the collision
     LD IY,HL      
     
     LD HL,(_current_alien_missile_ptr)                      
@@ -84,22 +84,22 @@ event_missiles_collided:
 
     MACRO REMOVE_ALIEN_MISSILE num
 
-        LD IX,_ALIEN_MISSILE_num                            ; The missile    
+        LD IX,_ALIEN_MISSILE_num                                ; The missile    
         LD A,(IX+_ALIEN_MISSILE_OFFSET_STATE)
 
         ; Is the missile exploding at the bottom of the screen?
         AND _ALIEN_MISSILE_STATE_AT_BOTTOM_OF_SCREEN_VALUE | _ALIEN_MISSILE_STATE_REACHED_BOTTOM_OF_SCREEN_VALUE
-        JR Z,.dont_modify                                   ; No - nothing to modify
+        JR Z,.dont_modify                                       ; No - nothing to modify
 
         ; Change missile state such that the explosion will be erased
         LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_DONE_AT_BOTTOM_OF_SCREEN_VALUE
 
 .dont_modify:
-        LD DE,_ALIEN_MISSILE_num                            ; Make the missile the current missile
+        LD DE,_ALIEN_MISSILE_num                                ; Make the missile the current missile
         LD HL,_current_alien_missile_ptr
         LD (HL),DE
         
-        CALL blank                                          ; Erase it from the screen
+        CALL blank                                              ; Erase it from the screen
 
         ; Flag missile as no longer active
         LD (IX+_ALIEN_MISSILE_OFFSET_STATE),_ALIEN_MISSILE_STATE_NOT_ACTIVE_VALUE
@@ -114,7 +114,7 @@ event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF,DE,HL,IX
 
-    LD A,utils.FALSE_VALUE                                  ; Disable missiles
+    LD A,utils.FALSE_VALUE                                      ; Disable missiles
     LD (_enabled),A
     
     ; Remove each of the alien missiles from the screen
@@ -128,7 +128,7 @@ event_alien_missile_hit_player_begin:
 
 event_alien_landed_end:   
 event_alien_missile_hit_player_end:
-    LD A,utils.TRUE_VALUE                                   ; Enable missiles
+    LD A,utils.TRUE_VALUE                                       ; Enable missiles
     LD (_enabled),A
 
     RET

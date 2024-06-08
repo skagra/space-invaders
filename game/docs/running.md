@@ -21,7 +21,7 @@ MAME first needs a ZX Spectrum ROM, this may be downloaded [here](https://wowrom
 Then run as follows:
 
 ```
-mame spectrum -rompath <roms> -dump space-invaders-release.sna -ui_active -effect scanlines -window -ka -waitvsync
+mame.exe spectrum -rompath <roms> -dump space-invaders-release.sna -ui_active -effect scanlines -window -ka -waitvsync -aspect 7:3
 ```
 
 * `<roms>` - Must be set to the directory under which MAME can find `spectrum/spectrum.rom`.  This parameter may be omitted if running from MAME's installation directory.
