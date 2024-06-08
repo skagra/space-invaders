@@ -16,3 +16,7 @@ SNA_STEM=space-invaders
 SNA_DEBUG=$(SNA_STEM)-debug
 SNA_RELEASE=$(SNA_STEM)-release
 SNA_TESTS=tests
+
+SPRITES_SRC=sprites_source
+SPRITES_OUT=sprites
+MKSPRITES=../shift-sprites/bin/Debug/net8.0/shift-sprites.exe

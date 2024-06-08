@@ -1,1 +1,0 @@
-..\screen-lookup-table\bin\Debug\net8.0\screen-lookup-table.exe .

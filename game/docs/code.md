@@ -65,5 +65,4 @@ The following naming conventions are used throughout the code base:
 
 * [`sprites_source`](../sprites_source) - Sprite images processed to create pre-shifted sprites in the [`sprites`](../sprites) module.
 * [`docs`](../docs) - Documentation.
-* [`scripts`](../scripts) - Scripts to run `dotnet` projects to create shifted sprites and to calculate screen memory lookup table.
 * [`tests`](../tests) - Code tests.

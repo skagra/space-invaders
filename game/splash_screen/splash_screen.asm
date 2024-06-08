@@ -53,9 +53,9 @@ draw_splash_screen:
 
     RET
 
-.MESSAGE_TEXT_0: BYTE "A clone of retro Space Invaders ",0
-.MESSAGE_TEXT_1: BYTE "  as released in 1978 by Taito. ",0
-.MESSAGE_TEXT_2: BYTE "    For the ZX Spectrum 48K.    ",0
+.MESSAGE_TEXT_0: BYTE " An authentic clone of Taito's  ",0
+.MESSAGE_TEXT_1: BYTE "   1978 Space Invaders game.    ",0
+.MESSAGE_TEXT_2: BYTE "   For the ZX Spectrum 48K.     ",0
 .MESSAGE_TEXT_3: BYTE "           By Skagra            ",0
 .MESSAGE_TEXT_4: BYTE "   https://github.com/skagra/   ",0
 
