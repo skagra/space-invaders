@@ -83,3 +83,6 @@ _reload_rate:               BLOCK 1                         ; Current reload rat
 
 ; Missile type 1 is disabled when there is only 1 alien remaining
 _missile_1_enabled:         BLOCK 1
+
+; Seeker shoots every other time it is eligible
+_seeker_missile_toggle:     BLOCK 1

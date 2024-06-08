@@ -318,6 +318,11 @@ _fire_if_ready:
     JR .firing_alien_found
 
 .target_missile_type_2:                                     ; Type 1 missile directly targets the player
+    LD A,(_seeker_missile_toggle)                           ; Fires only every other time it is eligable
+    XOR 0x01
+    LD (_seeker_missile_toggle),A
+    JR Z,.done
+
     LD A,(player.player_x)                                  ; X coord of player base
     LD H,A                                 
     LD L,0x00 

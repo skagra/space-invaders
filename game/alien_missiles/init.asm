@@ -72,6 +72,9 @@ new_sheet:
     LD A,utils.TRUE_VALUE
     LD (_missile_1_enabled),A
 
+    LD A,0x00
+    LD (_seeker_missile_toggle),A
+    
     POP HL,AF
 
     RET
