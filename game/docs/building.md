@@ -24,13 +24,16 @@ The `Makefile` contains the following targets:
 
 * `all` - Build everything.
 * `debug` - Build a debug version.
+* `tests` - Build tests.
+* `sprites` - Rebuild "shifted" sprites from source version.  This target requires that `dotnet` be installed and in your path.
 * `release` - Build a release version.
 * `clean` - Clean all build files.
 * `run-cspect-debug` - Run a debug build in the `CSpect` emulator.
 * `run-cspect-release` - Run a release build in the `CSpect` emulator.
 * `run-mame-debug` - Run a debug build in `MAME`.
 * `run-mame-release` - Run a release build in `MAME`.
-
+* `run-cspect-tests` - Run tests in the `CSpect` emulator.
+* 
 **Note** that `all`, `debug` and `release` require that `sjasmplus` is in your `PATH`, `run-cspect-*` require that `CSpect.exe` is your `PATH` and `run-mame-*` require that both `mame` is in your `PATH` and that the `spectrum` ROM has been added (see [running](running.md)).  The `clean` target requires that `OS` environment variable is set correctly, `Windows_NT` for Windows and `Linux` for Linux.
 
 # Configuring the Build
