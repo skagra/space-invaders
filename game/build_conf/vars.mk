@@ -19,4 +19,6 @@ SNA_TESTS=tests
 
 SPRITES_SRC=sprites_source
 SPRITES_OUT=sprites
-MKSPRITES=../shift-sprites/bin/Debug/net8.0/shift-sprites.exe
+
+DOTNET=dotnet
+MKSPRITES_PROJ=../shift-sprites

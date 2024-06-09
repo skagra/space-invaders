@@ -49,7 +49,7 @@ $(BIN)/$(SNA_TESTS).sna: $(BIN) *.asm */*.asm Makefile
            tests/$(SNA_TESTS).asm
 
 sprites:: 
-	$(MKSPRITES) $(SPRITES_SRC) $(SPRITES_OUT) 
+	$(DOTNET) run --project $(MKSPRITES_PROJ) -- $(SPRITES_SRC) $(SPRITES_OUT) 
 
 clean: clean-$(OS)
 
