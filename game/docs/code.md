@@ -42,7 +42,7 @@ The following naming conventions are used throughout the code base:
 * [`debug`](../debug) - Debug routines.
 * [`double_buffer`](../double_buffer) - Off-screen buffer for flicker free screen updates.
 * [`draw`](../draw) - Generic double-buffered sprite drawing.
-* [`draw_utils`](../draw_common) - Shared drawing routines.
+* [`draw_utils`](../draw_utils) - Shared drawing routines.
 * [`fast_draw`](../fast_draw) - Optimized fixed size double-buffered sprite drawing.
 * [`game`](../game) - Main game play loop.
 * [`game_screen`](../game_screen) - Game screens "chrome".
