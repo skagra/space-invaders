@@ -318,7 +318,7 @@ _fire_if_ready:
     JR .firing_alien_found
 
 .target_missile_type_2:                                     ; Type 1 missile directly targets the player
-    LD A,(_seeker_missile_toggle)                           ; Fires only every other time it is eligable
+    LD A,(_seeker_missile_toggle)                           ; Fires only every other time it is eligible
     XOR 0x01
     LD (_seeker_missile_toggle),A
     JR Z,.done

@@ -142,6 +142,12 @@ main:
     ; Main game loop
     CALL game.main_game_loop
 
+    ; Short delay before continuing
+    LD HL,0x80                                          ; TODO Pull out into a configurable constant
+    PUSH HL
+    CALL utils.delay
+    POP HL
+
     ; Any credits?
     LD A,(credits.credits)
     CP 0x00

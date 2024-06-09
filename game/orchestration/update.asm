@@ -1,5 +1,5 @@
 update:
-    PUSH AF
+    PUSH AF,HL
 
     LD A,(_life_lost_pausing)
     BIT utils.TRUE_BIT,A                                    ; Is the game paused due to player being hit?
@@ -30,8 +30,17 @@ update:
     LD A,(_life_lost_pause_count_down)                      ; Reduce pause counter
     DEC A
     LD (_life_lost_pause_count_down),A
-
     JR NZ,.done                                             ; Not zero?  Then done.
+
+    ; Immediately blank the explosion
+    CALL player.blank
+    CALL fast_draw.flush_buffer_to_screen_16x8
+
+    ; Short delay before continuing
+    LD HL,0x40                                              ; TODO Pull out into a configurable constant
+    PUSH HL
+    CALL utils.delay
+    POP HL
 
     LD A,(player_lives.player_lives_1)                      ; Game over?
     AND A
@@ -68,7 +77,7 @@ update:
     JR .done
     
 .done
-    POP AF
+    POP HL,AF
 
     RET
 
