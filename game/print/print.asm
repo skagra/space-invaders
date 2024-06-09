@@ -221,12 +221,12 @@ _print_char_at_screen_mem:
 
     IFNDEF DIRECT_DRAW
         ; Record that we are writing to the double buffer
-        LD HL,(double_buffer._buffer_stack_top)         ; Top of stack address
+        LD HL,(double_buffer.buffer_stack_top)          ; Top of stack address
         LD DE,(.print_mem_ptr)       
         LD (HL),DE                                      ; Write screen buffer address at top of stack            
         INC HL                                          ; Increase the stack top pointer +2 as a word was written
         INC HL
-        LD (double_buffer._buffer_stack_top),HL
+        LD (double_buffer.buffer_stack_top),HL
     ENDIF
 
     LD HL,(.print_mem_ptr)

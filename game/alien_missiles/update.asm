@@ -341,15 +341,15 @@ _fire_if_ready:
     ; Fall through
 
 .firing_alien_found
-    LD (IX+_ALIEN_MISSILE_OFFSET_STATE), _ALIEN_MISSILE_STATE_ACTIVE_VALUE    ; Activate the missile
+    LD (IX+_ALIEN_MISSILE_OFFSET_STATE), _ALIEN_MISSILE_STATE_ACTIVE_VALUE ; Activate the missile
     LD IY,HL                                                ; Alien pointer
-    LD HL,(IY+aliens._STATE_OFFSET_DRAW_COORDS)             ; Alien coords
+    LD HL,(IY+aliens.STATE_OFFSET_DRAW_COORDS)              ; Alien coords
     LD DE,layout.ALIEN_MISSILE_OFFSET_COORDS                ; Adjust firing coords to bottom middle of alien
     ADD HL,DE
     LD (IX+_ALIEN_MISSILE_OFFSET_COORDS),HL
 
     LD (IX+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0x01    ; One step taken (required for reload algorithm)
-    ; Fall through 
+    ; Fall through to update_to_next_col
 
 .update_to_next_col:                                        ; TODO Don't need to do this for type 2 missile (as targetted at player)
     LD A,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)       ; Update location in column table,

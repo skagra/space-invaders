@@ -15,7 +15,7 @@
 update:
     PUSH AF,DE,HL
 
-    LD A,(player_state)
+    LD A,(_player_state)
 
     BIT _PLAYER_STATE_ACTIVE_BIT,A
     JR NZ,.active
@@ -86,7 +86,7 @@ update:
 
 .done_exploding:
     LD A,_PLAYER_STATE_ACTIVE_VALUE
-    LD (player_state),A
+    LD (_player_state),A
 
     JR .done
 

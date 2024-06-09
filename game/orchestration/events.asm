@@ -22,7 +22,7 @@ event_player_missile_hit_alien:
 
     ; Inform scoring 
     LD IY,HL
-    LD HL,(IY+aliens._STATE_OFFSET_TYPE)                                      
+    LD HL,(IY+aliens.STATE_OFFSET_TYPE)                                      
     PUSH HL
     CALL scoring.event_alien_hit_by_player_missile
     POP HL

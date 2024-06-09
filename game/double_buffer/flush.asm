@@ -10,7 +10,7 @@ flush_buffer_to_screen:
     LD (.stack_stash),SP                                ; Store current SP to restore at end
 
     LD SP,_BUFFER_STACK                                 ; Subtract start of stack area (low mem)
-    LD HL,(_buffer_stack_top)                           ; from current stack pointer (first free byte)
+    LD HL,(buffer_stack_top)                            ; from current stack pointer (first free byte)
     LD A,L
     SUB low _BUFFER_STACK
     LD L,A
@@ -39,7 +39,7 @@ flush_buffer_to_screen:
 
 .done
     LD HL,_BUFFER_STACK                                 ; Reset the stack
-    LD (_buffer_stack_top),HL
+    LD (buffer_stack_top),HL
     
     LD SP,(.stack_stash)                                ; Restore the original SP
 

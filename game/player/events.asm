@@ -5,7 +5,7 @@ event_alien_missile_hit_player_begin:
     CALL blank
 
     LD A,_PLAYER_STATE_EXPLODING_VALUE
-    LD (player_state),A
+    LD (_player_state),A
 
     LD A,_PLAYER_EXPLOSION_VARIANT_SWITCH_MAX
     LD (_player_explosion_variant_cycle_count),A
@@ -25,7 +25,7 @@ event_alien_missile_hit_player_end:
     CALL blank ; TODO Not clear where this is needed
 
     LD A,_PLAYER_STATE_DONE_EXPLODING_VALUE
-    LD (player_state),A
+    LD (_player_state),A
 
     LD A,layout.PLAYER_START_X
     LD (player_x),A

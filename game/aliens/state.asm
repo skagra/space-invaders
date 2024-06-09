@@ -1,12 +1,12 @@
 ; Offsets into structure representing an alien
-_STATE_OFFSET_DRAW_COORDS:              EQU 0           ; Coords
-_STATE_OFFSET_DRAW_COORDS_Y:            EQU _STATE_OFFSET_DRAW_COORDS
-_STATE_OFFSET_DRAW_COORDS_X:            EQU _STATE_OFFSET_DRAW_COORDS+1
-_STATE_OFFSET_VAR_0_SPRITE:             EQU 2           ; First variant sprite
-_STATE_OFFSET_VAR_1_SPRITE:             EQU 4           ; Second variant sprite
-_STATE_OFFSET_STATE:                    EQU 6           ; Status of sprite from _ALIEN_STATE_* values
-_STATE_OFFSET_VARIANT:                  EQU 7           ; Current sprite variant from _ALIEN_VARIANT_? values
-_STATE_OFFSET_TYPE:                     EQU 8           ; Alien type from _ALIEN_TYPE_? values
+STATE_OFFSET_DRAW_COORDS:               EQU 0           ; Coords
+STATE_OFFSET_DRAW_COORDS_Y:             EQU STATE_OFFSET_DRAW_COORDS
+STATE_OFFSET_DRAW_COORDS_X:             EQU STATE_OFFSET_DRAW_COORDS+1
+STATE_OFFSET_VAR_0_SPRITE:              EQU 2           ; First variant sprite
+STATE_OFFSET_VAR_1_SPRITE:              EQU 4           ; Second variant sprite
+STATE_OFFSET_STATE:                     EQU 6           ; Status of sprite from _ALIEN_STATE_* values
+STATE_OFFSET_VARIANT:                   EQU 7           ; Current sprite variant from _ALIEN_VARIANT_? values
+STATE_OFFSET_TYPE:                      EQU 8           ; Alien type from _ALIEN_TYPE_? values
 
 _AS_SIZE:                               EQU 9           ; Size of the alien sprite structure
 

@@ -23,26 +23,26 @@ blank:
     LD DE,(HL)
     LD IX,DE
     
-    LD A,(IX+_STATE_OFFSET_STATE)                       ; State of current alien
+    LD A,(IX+STATE_OFFSET_STATE)                       ; State of current alien
 
     ; Is the current alien dead or new
     AND _ALIEN_STATE_DEAD_VALUE | _ALIEN_STATE_NEW_VALUE,A
     JR NZ,.done                                         ; Dead or new so nothing to do
 
     ; Blank old sprite position
-    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    LD HL,(IX+STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL     
 
     ; Select sprite and mask based on variant
-    LD A,(IX+_STATE_OFFSET_VARIANT)        
+    LD A,(IX+STATE_OFFSET_VARIANT)        
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)                
+    LD HL,(IX+STATE_OFFSET_VAR_0_SPRITE)                
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE)                
+    LD HL,(IX+STATE_OFFSET_VAR_1_SPRITE)                
 
 .variant_selected:
     PUSH HL                                             ; Sprite/mask is in HL
@@ -88,11 +88,11 @@ draw:
     LD IX,DE
     
     ; Do we need to draw the current alien?
-    LD A,(IX+_STATE_OFFSET_STATE)
+    LD A,(IX+STATE_OFFSET_STATE)
     AND _ALIEN_STATE_ACTIVE_VALUE|_ALIEN_STATE_NEW_VALUE,A    
     JR Z,.done                                          
 
-    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    LD HL,(IX+STATE_OFFSET_DRAW_COORDS)                ; Coords
     PUSH HL  
 
     ; Select sprite and mask based on variant
@@ -101,18 +101,18 @@ draw:
     JR NZ,.variant_1_is_current                         
 
     ; Using variant 0                         
-    LD HL,(IX+_STATE_OFFSET_VAR_0_SPRITE)
+    LD HL,(IX+STATE_OFFSET_VAR_0_SPRITE)
     PUSH HL 
 
-    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_0_VALUE 
+    LD (IX+STATE_OFFSET_VARIANT),_ALIEN_VARIANT_0_VALUE 
     JR .variant_selected
 
 .variant_1_is_current:   
     ; Using variant 1
-    LD HL,(IX+_STATE_OFFSET_VAR_1_SPRITE) 
+    LD HL,(IX+STATE_OFFSET_VAR_1_SPRITE) 
     PUSH HL
 
-    LD (IX+_STATE_OFFSET_VARIANT),_ALIEN_VARIANT_1_VALUE
+    LD (IX+STATE_OFFSET_VARIANT),_ALIEN_VARIANT_1_VALUE
 
 .variant_selected:
 

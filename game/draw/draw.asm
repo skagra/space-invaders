@@ -134,7 +134,7 @@ draw_sprite:
     LD C,A
     SLA C                                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL,draw_utils._Y_MEM_ROW_LOOKUP                  ; Base of lookup table in HL
+    LD HL,draw_utils.Y_MEM_ROW_LOOKUP                   ; Base of lookup table in HL
     ADD HL,BC                                           ; Location of the row start in the lookup table
     LD (.y_lookup_table_ptr), HL
 
@@ -164,11 +164,11 @@ draw_sprite:
 .x_loop:
     IFNDEF DIRECT_DRAW
         ; Record that we are writing to the double buffer
-        LD HL,(double_buffer._buffer_stack_top)         ; Top of stack address        
+        LD HL,(double_buffer.buffer_stack_top)          ; Top of stack address        
         LD (HL),DE                                      ; Write screen buffer address at top of stack            
         INC HL                                          ; Increase the stack top pointer +2 as a word was written
         INC HL
-        LD (double_buffer._buffer_stack_top),HL
+        LD (double_buffer.buffer_stack_top),HL
     ENDIF
 
     ; First word of mask/data

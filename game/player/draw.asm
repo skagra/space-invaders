@@ -15,7 +15,7 @@
 draw:
     PUSH AF,DE
 
-    LD A,(player_state)
+    LD A,(_player_state)
     BIT _PLAYER_STATE_EXPLODING_BIT,A
     JR NZ,.draw_explosion
 
@@ -65,7 +65,7 @@ draw:
 blank:
     PUSH AF,DE
 
-    LD A,(player_state)
+    LD A,(_player_state)
     BIT _PLAYER_STATE_EXPLODING_BIT,A
     JR NZ,.blank_explosion
 

@@ -8,7 +8,7 @@ new_sheet:
     LD (player_x),A
 
     LD A,_PLAYER_STATE_ACTIVE_VALUE
-    LD (player_state),A
+    LD (_player_state),A
 
     POP HL,DE,AF
 

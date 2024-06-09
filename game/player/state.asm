@@ -1,5 +1,5 @@
-player_x:     BLOCK 1
-player_state: BLOCK 1
+player_x:                               BLOCK 1
+_player_state:                          BLOCK 1
 
 _PLAYER_STATE_START_DELAY_VALUE:        EQU 0b00000001
 _PLAYER_STATE_ACTIVE_VALUE:             EQU 0b00000010

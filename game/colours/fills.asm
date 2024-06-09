@@ -120,13 +120,13 @@ fill_screen_attributes_rect:
     LD A,(.dim_width)                                   ; Set x loop counter (C) from width
     LD C,A
 
-._x_loop:
+.x_loop:
     LD A, (.attribute)                                  ; Get the screen attribute
     LD (DE),A                                           ; Store at current screen map location
     INC DE                                              ; Move to next screen map location
 
     DEC C                                               ; Any more to do in this line?
-    JR NZ,._x_loop                   
+    JR NZ,.x_loop                   
 
     LD H,0x00                                           ; Move to next line
     LD A,(.line_step_bytes)

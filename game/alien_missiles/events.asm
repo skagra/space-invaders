@@ -56,14 +56,14 @@ event_missiles_collided:
     LD HL,(IX+.PARAM_ALIEN_MISSILE)                             ; Grab the alien missile involved in the collision
     LD IY,HL      
     
-    LD HL,(_current_alien_missile_ptr)                      
-    LD (.current_alien_missile_ptr_copy),HL
+    LD HL,(_current_alien_missile_ptr)                          ; Stash the current alien missile pointer                     
+    LD (.current_alien_missile_ptr_copy),HL                     
 
-    LD (_current_alien_missile_ptr),IY
+    LD (_current_alien_missile_ptr),IY                          ; Set current alien missile ptr to that involved in the collision
 
-    CALL blank
+    CALL blank                                                  ; Erase the missile
 
-    LD HL,(.current_alien_missile_ptr_copy) 
+    LD HL,(.current_alien_missile_ptr_copy)                     ; Reset current missile ptr
     LD (_current_alien_missile_ptr),HL
 
     ; Flag it as not active

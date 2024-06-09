@@ -45,7 +45,7 @@ _cycle_flash:
 
 _flag_error:
 
-._PARAM_CHAR: EQU 8
+.PARAM_CHAR: EQU 8
 
     PUSH AF,HL,IX
 
@@ -57,7 +57,7 @@ _flag_error:
     LD (HL),colours.CA_BG_RED|colours.CA_FG_WHITE
 
     ; Draw the error indicator character
-    LD HL,(IX+._PARAM_CHAR)
+    LD HL,(IX+.PARAM_CHAR)
     PUSH HL
     LD HL,0x0217
     PUSH HL
@@ -79,7 +79,7 @@ _FLAG_ERROR_BYTE:       EQU _CYCLE_BYTE+1
             PUSH HL
             LD HL,code
             PUSH HL
-            CALL debug._flag_error
+            CALL _flag_error
             POP HL
             POP HL
         ENDIF

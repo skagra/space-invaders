@@ -107,7 +107,7 @@ flush_buffer_to_screen_16x8:
 ; off-screen buffer
 ;
 ; Usage:
-;   ._x_offset - X offset within the Y row
+;   .x_offset - X offset within the Y row
 ;   BC - Address in the off-screen buffer at the start of the Y row
 ;   SP - Location of the sprite/mask data (only the mask is used)
 ;
@@ -169,7 +169,7 @@ flush_buffer_to_screen_16x8:
 ; off-screen buffer
 ;
 ; Usage:
-;   ._x_offset - X offset within the Y row
+;   .x_offset - X offset within the Y row
 ;   BC - Address in the off-screen buffer at the start of the Y row
 ;   SP - Location of the sprite/mask data
 ;
@@ -290,7 +290,7 @@ draw_sprite_16x8:
     LD C,A
     SLA C                                               ; Double Y to get offset in table (as table contains words)
     RL B
-    LD HL, draw_utils._Y_MEM_ROW_LOOKUP                 ; Base of lookup table in HL
+    LD HL,draw_utils.Y_MEM_ROW_LOOKUP                   ; Base of lookup table in HL
     ADD HL,BC                                           ; Location of the row start in the lookup table
     LD BC,HL
 

@@ -24,22 +24,22 @@ event_alien_hit_by_player_missile_begin:
 
     ; Set the alien state to be dead
     LD IY,HL
-    LD (IY+aliens._STATE_OFFSET_STATE),_ALIEN_STATE_DEAD_VALUE 
+    LD (IY+STATE_OFFSET_STATE),_ALIEN_STATE_DEAD_VALUE 
 
     ; Blank out the alien
-    LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    LD HL,(IY+STATE_OFFSET_DRAW_COORDS)                 ; Coords
     PUSH HL     
 
     ; Select sprite mask based on variant
-    LD A,(IY+_STATE_OFFSET_VARIANT)                     
+    LD A,(IY+STATE_OFFSET_VARIANT)                     
     BIT _ALIEN_VARIANT_1_BIT,A
     JR NZ,.variant_1_is_current                         
                              
-    LD HL,(IY+_STATE_OFFSET_VAR_0_SPRITE)               ; Use sprite as mask 
+    LD HL,(IY+STATE_OFFSET_VAR_0_SPRITE)                ; Use sprite as mask 
     JR .variant_selected
 
 .variant_1_is_current:   
-    LD HL,(IY+_STATE_OFFSET_VAR_1_SPRITE)               ; Use sprite as mask 
+    LD HL,(IY+STATE_OFFSET_VAR_1_SPRITE)                ; Use sprite as mask 
 
 .variant_selected:
     PUSH HL                                             ; Mask is in HL
@@ -54,7 +54,7 @@ event_alien_hit_by_player_missile_begin:
     POP DE
 
     ; Draw alien explosion
-    LD HL,(IY+_STATE_OFFSET_DRAW_COORDS)                ; Coords
+    LD HL,(IY+STATE_OFFSET_DRAW_COORDS)                 ; Coords
     PUSH HL  
 
     LD HL,sprites.ALIEN_EXPLOSION;                      ; Sprite
@@ -85,7 +85,7 @@ event_alien_hit_by_player_missile_end:
     LD HL,(_exploding_alien)                           
     LD IX,HL
 
-    LD HL,(IX+_STATE_OFFSET_DRAW_COORDS)
+    LD HL,(IX+STATE_OFFSET_DRAW_COORDS)
     PUSH HL
 
     LD HL,sprites.ALIEN_EXPLOSION

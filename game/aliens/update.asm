@@ -120,7 +120,7 @@ _move_current_alien:
     LD IX,DE
     
     ; Get current draw coords
-    LD DE,(IX+_STATE_OFFSET_DRAW_COORDS)
+    LD DE,(IX+STATE_OFFSET_DRAW_COORDS)
 
     ; Is the pack moving left, right or down
     LD A,(_pack_direction)
@@ -130,7 +130,7 @@ _move_current_alien:
     ; Moving left
     DEC D                                               ; Decrease the X coord by 2
     DEC D
-    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
+    LD (IX+STATE_OFFSET_DRAW_COORDS),DE                 ; Store new coords
 
     JR .done_moving
 
@@ -150,7 +150,7 @@ _move_current_alien:
     INC D
 
 .more_than_one_alien
-    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
+    LD (IX+STATE_OFFSET_DRAW_COORDS),DE                 ; Store new coords
 
     JR .done_moving
 
@@ -159,7 +159,7 @@ _move_current_alien:
     LD A,8                                              ; Increase Y by 8
     ADD A,E
     LD E,A
-    LD (IX+_STATE_OFFSET_DRAW_COORDS),DE                ; Store new coords
+    LD (IX+STATE_OFFSET_DRAW_COORDS),DE                 ; Store new coords
 
     ; Alien landed?
     CP layout.ALIEN_HAS_LANDED_Y
@@ -174,7 +174,7 @@ _move_current_alien:
 
 _update_pack_bounds:
     PUSH AF,DE
-    LD DE,(IX+_STATE_OFFSET_DRAW_COORDS)                ; New x,y coords
+    LD DE,(IX+STATE_OFFSET_DRAW_COORDS)                 ; New x,y coords
 
     ; What direction is the pack travelling
     LD A,(_pack_direction)
@@ -246,7 +246,7 @@ update:
     LD IX,DE
 
     ; Get current aliens state
-    LD A,(IX+_STATE_OFFSET_STATE)
+    LD A,(IX+STATE_OFFSET_STATE)
 
     ; If the alien is dead then there is nothing to do
     BIT _ALIEN_STATE_DEAD_BIT,A
@@ -265,7 +265,7 @@ update:
     JR .done
 
 .new:
-    LD (IX+_STATE_OFFSET_STATE),_ALIEN_STATE_ACTIVE_VALUE
+    LD (IX+STATE_OFFSET_STATE),_ALIEN_STATE_ACTIVE_VALUE
     JR .done
 
 .active:
@@ -314,7 +314,7 @@ next_alien:
     INC HL
     LD DE,(HL)
     LD IX,DE
-    LD A,(IX+_STATE_OFFSET_STATE)
+    LD A,(IX+STATE_OFFSET_STATE)
     BIT _ALIEN_STATE_DEAD_BIT,A
     JR NZ,.loop
 

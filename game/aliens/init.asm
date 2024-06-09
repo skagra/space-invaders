@@ -60,16 +60,16 @@ new_sheet:
     LD C,(HL)                               
 
     ; Pack extremities
-    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_Y)
+    LD A,(_aliens+STATE_OFFSET_DRAW_COORDS_Y)
     LD (_pack_bottom),A  
 
-    LD A,(_aliens+_STATE_OFFSET_DRAW_COORDS_X)
+    LD A,(_aliens+STATE_OFFSET_DRAW_COORDS_X)
     LD (_pack_left),A
     
-    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_Y)
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+STATE_OFFSET_DRAW_COORDS_Y)
     LD (_pack_top),A
     
-    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+_STATE_OFFSET_DRAW_COORDS_X)
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+STATE_OFFSET_DRAW_COORDS_X)
     LD (_pack_right),A           
 
      ; Alien lookup table
@@ -80,9 +80,9 @@ new_sheet:
 .loop
     LD DE,(HL)                              ; Pointer to current alien
     LD IX,DE
-    LD A,(IX+_STATE_OFFSET_DRAW_COORDS_Y)   ; Increment Y by required offset
+    LD A,(IX+STATE_OFFSET_DRAW_COORDS_Y)    ; Increment Y by required offset
     ADD C
-    LD (IX+_STATE_OFFSET_DRAW_COORDS_Y),A
+    LD (IX+STATE_OFFSET_DRAW_COORDS_Y),A
     INC HL                                  ; Next alien
     INC HL
     DJNZ .loop
