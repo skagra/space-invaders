@@ -1,21 +1,20 @@
 update:
-    update:
     PUSH AF,BC,DE,HL
 
     ; Grab the current missile state
     LD A,(_saucer_state)
 
-    BIT _SAUCER_STATE_NO_SAUCER_VALUE,A
-    JR NZ,.
+    BIT _SAUCER_STATE_NO_SAUCER_BIT,A
+    JR NZ,.no_saucer
     
-    BIT _SAUCER_STATE_ACTIVE_VALUE,A
-    JR NZ,.
+    BIT _SAUCER_STATE_ACTIVE_BIT,A
+    JR NZ,.active
 
-    BIT _SAUCER_STATE_EXPLODING_VALUE,A
-    JR NZ,.
+    BIT _SAUCER_STATE_EXPLODING_BIT,A
+    JR NZ,.exploding
 
-    BIT _SAUCER_STATE_DONE_EXPLODING_VALUE,A
-    JR NZ,.
+    BIT _SAUCER_STATE_DONE_EXPLODING_BIT,A
+    JR NZ,.done_exploding
 
     ; ASSERT This code should never be reached
 
