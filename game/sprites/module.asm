@@ -31,6 +31,7 @@ _module_start:
 	INCLUDE "sprites/player_missile.asm"
 	INCLUDE "sprites/player_missile_explosion.asm"
 	INCLUDE "sprites/saucer.asm"
+	INCLUDE "sprites/saucer_explosion.asm"
 	INCLUDE "sprites/shield.asm"
 	INCLUDE "sprites/square.asm"
 	INCLUDE "sprites/test_card.asm"

@@ -136,7 +136,7 @@ blank:
     ; Which variant are we dealing with?                    ; Sprite/mask
     LD D,0x00                                               ; Current alien sprite variant
     LD E,(IX+_ALIEN_MISSILE_OFFSET_CURRENT_VARIANT)
-    SLA E                                                   ; Double it - as there are WORDs in this part of the alien struct
+    SLA E                                                   ; Double it - as there are WORDs in this part of the alien missile struct
     LD HL,_ALIEN_MISSILE_OFFSET_SPRITE_VARIANT_0            ; Add on the offset for the first variant
     ADD HL,DE                                               ; HL now contains the offset of the address of the variant (offset from IX)
     LD DE,IX                                                ; Offset from the base address

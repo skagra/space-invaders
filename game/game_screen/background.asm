@@ -32,8 +32,8 @@ set_colours:
     POP HL
 
     ; Red gel just below scores - for spaceship and exploding player missiles
-    LD H,layout.SPACESHIP_GEL_LEFT_Y                         ; Top left X
-    LD L,layout.SPACESHIP_GEL_HEIGHT                         ; Height
+    LD H,layout.SAUCER_GEL_LEFT_Y                           ; Top left X
+    LD L,layout.SAUCER_GEL_HEIGHT                           ; Height
     PUSH HL
     LD HL,colours.CA_FG_RED                                  ; Red fg attribute
     PUSH HL

@@ -3,7 +3,7 @@
 ; Draw the player base
 ; 
 ; Usage:
-;   CALL process_player
+;   CALL draw
 ;
 ; Return values:
 ;   -

@@ -29,7 +29,7 @@ event_alien_missile_hit_shield:
 
 ;------------------------------------------------------------------------------
 ;
-; The player missile has collided with an alien missile
+; The player missile has collided with an alien missile.
 ; 
 ; Usage:
 ;   PUSH rr - The alien missile struct collided with

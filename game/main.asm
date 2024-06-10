@@ -23,9 +23,6 @@
     INCLUDE "keyboard/module.asm"
     INCLUDE "print/module.asm"
     INCLUDE "layout/module.asm"
-    INCLUDE "orchestration/module.asm"
-    INCLUDE "player/module.asm"
-    INCLUDE "player_missile/module.asm"
 
     ; Off-screen buffer
     ORG double_buffer.OFF_SCREEN_BUFFER_START
@@ -33,6 +30,10 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
     MEMORY_USAGE "off-screen buffer ", DRAW_BUFFER
 
+    INCLUDE "saucer/module.asm"
+    INCLUDE "orchestration/module.asm"
+    INCLUDE "player/module.asm"
+    INCLUDE "player_missile/module.asm"
     INCLUDE "aliens/module.asm"
     INCLUDE "game_screen/module.asm"
     INCLUDE "splash_screen/module.asm"
@@ -65,6 +66,7 @@ main:
     CALL print.init
     CALL keyboard.init
     CALL game_screen.init
+    CALL saucer.init
     CALL player.init
     CALL player_missile.init
     CALL aliens.init

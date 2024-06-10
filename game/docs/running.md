@@ -26,4 +26,8 @@ mame.exe spectrum -rompath <roms> -dump space-invaders-release.sna -ui_active -e
 
 * `<roms>` - Must be set to the directory under which MAME can find `spectrum/spectrum.rom`.  This parameter may be omitted if running from MAME's installation directory.
 
+## JSSpeccy 3
 
+JSSpeccy is an online ZX Spectrum emulator found [here](https://www.jsspeccy.zxdemo.org/).
+
+Click on the *folder* icon (bottom left), select your `space-invaders-release.sna` and you are good to go.

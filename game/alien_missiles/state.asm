@@ -37,7 +37,6 @@ _ALIEN_MISSILE_VARIANT_3:                               EQU 3
 _ALIEN_MISSILE_VARIANT_COUNT:                           EQU 4
 
 ; Three alien missiles
-
 _ALIEN_MISSILE_0: BLOCK _ALIEN_MISSILE_STRUCT_SIZE
 _ALIEN_MISSILE_1: BLOCK _ALIEN_MISSILE_STRUCT_SIZE
 _ALIEN_MISSILE_2: BLOCK _ALIEN_MISSILE_STRUCT_SIZE
@@ -73,7 +72,6 @@ _MISSILE_DELTA_Y_8_OR_FEWER_ALIENS:                     EQU 5                   
 _missile_delta:                                         BLOCK 1                 ; Current missile delta
 
 ; Reload rate
-
 _RELOAD_SCORE_BOUNDARIES:   BYTE 0x02,0x10,0x20,0x30        ; Score boundaries (BCD) at which to increase reload rate
 _RELOAD_RATES:              BYTE 0x30,0x10,0x0B,0x08        ; Reload rate to use based on score
 

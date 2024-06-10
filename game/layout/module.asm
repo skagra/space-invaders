@@ -15,6 +15,7 @@ _module_start:
     INCLUDE "screen.asm"
     INCLUDE "shields.asm"
     INCLUDE "gels.asm"
+    INCLUDE "saucer.asm"
     INCLUDE "init.asm"
         
     MEMORY_USAGE "layout          ",_module_start
