@@ -1,3 +1,5 @@
+
+; Boolean values
 TRUE_VALUE:   EQU 0b00000001
 FALSE_VALUE:  EQU 0b00000010
 

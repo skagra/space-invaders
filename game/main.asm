@@ -4,19 +4,22 @@
     ; Source debugging settings
     SLDOPT COMMENT WPMEM, LOGPOINT, ASSERTION
 
+    ; Contended memory 
+    ORG memory_map.FREE_MEMORY_START
+    INCLUDE "build_settings_display.asm"
+    INCLUDE "memory_map/module.asm"
+    INCLUDE "debug/module.asm"
+    INCLUDE "screen/module.asm"
+    INCLUDE "splash_screen/module.asm"
+    INCLUDE "colours/module.asm"
+
     ; Skip past contended memory
     ORG 0x8000 
 
-    INCLUDE "build_settings_display.asm"
-
-    INCLUDE "memory_map/module.asm"
-    INCLUDE "debug/module.asm"
     INCLUDE "sprites/module.asm"
     INCLUDE "character_set/module.asm"
-    INCLUDE "screen/module.asm"
     INCLUDE "utils/module.asm"
     INCLUDE "double_buffer/module.asm"
-    INCLUDE "colours/module.asm"
     INCLUDE "draw_utils/module.asm"
     INCLUDE "draw/module.asm"
     INCLUDE "fast_draw/module.asm"
@@ -30,13 +33,14 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
     MEMORY_USAGE "off-screen buffer ", DRAW_BUFFER
 
+    
     INCLUDE "saucer/module.asm"
     INCLUDE "orchestration/module.asm"
     INCLUDE "player/module.asm"
     INCLUDE "player_missile/module.asm"
     INCLUDE "aliens/module.asm"
     INCLUDE "game_screen/module.asm"
-    INCLUDE "splash_screen/module.asm"
+    
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
     INCLUDE "alien_missiles/module.asm"
@@ -117,6 +121,7 @@ main:
     CALL scoring.new_game
     CALL orchestration.new_game
     CALL aliens.new_game
+    CALL alien_missiles.new_game
 
     ; Push player one button
     CALL draw_utils.wipe_screen
@@ -180,9 +185,9 @@ STACK_TOP: EQU $-1
 
     ; Save snapshot for spectrum emulator
     IFDEF DEBUG
-        SAVESNA "bin/space-invaders-debug.sna",main.main
+        SAVESNA "bin/space-invaders-debug.sna",main.main    ; sna48-ok
     ELSE
-        SAVESNA "bin/space-invaders-release.sna",main.main
+        SAVESNA "bin/space-invaders-release.sna",main.main  ; sna48-ok
     ENDIF
    
     

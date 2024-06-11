@@ -1,5 +1,18 @@
+;------------------------------------------------------------------------------
+; Initialise the module
+; 
+; Usage:
+;   CALL init
+;------------------------------------------------------------------------------
 init:
     RET
+
+;------------------------------------------------------------------------------
+; Initialise for a new game
+; 
+; Usage:
+;   CALL new_game
+;------------------------------------------------------------------------------
 
 new_game:
     PUSH AF
@@ -10,6 +23,14 @@ new_game:
     POP AF
 
     RET
+
+;------------------------------------------------------------------------------
+; Initialise for a new sheet of aliens
+; 
+; Usage:
+;   CALL new_sheet
+;------------------------------------------------------------------------------
+
 new_sheet:
     PUSH AF,BC,DE,HL,IX
 
@@ -76,7 +97,8 @@ new_sheet:
     LD HL,_ALIEN_LOOKUP 
 
     ; Number of aliens                                      
-    LD B,_ALIEN_PACK_SIZE                               
+    LD B,_ALIEN_PACK_SIZE     
+                              
 .loop
     LD DE,(HL)                              ; Pointer to current alien
     LD IX,DE

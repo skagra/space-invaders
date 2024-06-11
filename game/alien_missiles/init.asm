@@ -1,20 +1,37 @@
 ;------------------------------------------------------------------------------
-;
 ; Initialise the module
 ; 
 ; Usage:
 ;   CALL init
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 init:
     RET
+
+;------------------------------------------------------------------------------
+; Initialise for a new game
+; 
+; Usage:
+;   CALL new_game
+;------------------------------------------------------------------------------
+
+new_game:
+    PUSH AF
+
+    ; Reset missile load rates
+    LD A,(_RELOAD_RATES)
+    LD (_reload_rate),A
+
+    POP AF
+
+    RET
+
+;------------------------------------------------------------------------------
+; Initialise for a new sheet of aliens
+; 
+; Usage:
+;   CALL new_sheet
+;------------------------------------------------------------------------------
 
 new_sheet:
     PUSH AF,HL
@@ -32,7 +49,7 @@ new_sheet:
     LD A,_MISSILE_DELTA_Y_NOMINAL
     LD (_missile_delta),A
 
-    ; Copy initialization values into active values
+    ; Copy missile initialization values into active values
     LD HL,_ALIEN_MISSILE_0_INIT
     PUSH HL
     LD HL,_ALIEN_MISSILE_0
@@ -66,12 +83,11 @@ new_sheet:
     POP HL
     POP HL
 
-    LD A,(_RELOAD_RATES)
-    LD (_reload_rate),A
-
+    ; Enable missile 1 (would have been disabled when down to 1 alien)
     LD A,utils.TRUE_VALUE
     LD (_missile_1_enabled),A
 
+    ; Initialize toggle for seeker missile (fires every other time it is eligable)
     LD A,0x00
     LD (_seeker_missile_toggle),A
     

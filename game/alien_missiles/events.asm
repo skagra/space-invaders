@@ -1,17 +1,9 @@
 
 ;------------------------------------------------------------------------------
-;
 ; Current alien missile has hit a shield
 ; 
 ; Usage:
 ;   CALL event_alien_missile_hit_shield
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 event_alien_missile_hit_shield:
@@ -28,20 +20,12 @@ event_alien_missile_hit_shield:
     RET
 
 ;------------------------------------------------------------------------------
-;
 ; The player missile has collided with an alien missile.
 ; 
 ; Usage:
 ;   PUSH rr - The alien missile struct collided with
 ;   CALL event_alien_missile_hit_shield
 ;   POP rr
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 event_missiles_collided:
@@ -72,14 +56,10 @@ event_missiles_collided:
     ; Reset its count
     LD (IY+_ALIEN_MISSILE_OFFSET_RELOAD_STEP_COUNT),0
 
-    LD HL,(IY+_ALIEN_MISSILE_OFFSET_COORDS)
-
-    ; LOGPOINT [ALIEN_MISSILES_COLLIDED] Alien missile X=${H} Y=${L}
-    ; LOGPOINT [ALIEN_MISSILES_COLLIDED] Player missile X=${(player_missile._missile_x)} Y+${(player_missile._missile_y)}
-
     POP IY,IX,HL,DE
 
     RET
+
 .current_alien_missile_ptr_copy: BLOCK 2
 
     MACRO REMOVE_ALIEN_MISSILE num
@@ -110,6 +90,15 @@ event_missiles_collided:
 
     ENDM
 
+;------------------------------------------------------------------------------
+; Either an alien has landed or an alien missile has hit the player
+; 
+; Usage:
+;   CALL event_alien_landed_begin
+;   or
+;   CALL event_alien_missile_hit_player_begin
+;------------------------------------------------------------------------------
+
 event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF,DE,HL,IX
@@ -126,12 +115,33 @@ event_alien_missile_hit_player_begin:
 
     RET
 
+;------------------------------------------------------------------------------
+; Either an alien landed or an alien missile hit the player period 
+; (pause/explosion) has completed.
+; 
+; Usage:
+;   CALL event_alien_landed_end
+;   or
+;   CALL event_alien_missile_hit_player_end
+;------------------------------------------------------------------------------
+
 event_alien_landed_end:   
 event_alien_missile_hit_player_end:
     LD A,utils.TRUE_VALUE                                       ; Enable missiles
     LD (_enabled),A
 
     RET
+
+;------------------------------------------------------------------------------
+; The player missile has hit an alien
+; 
+; Usage:
+;   PUSH rr - Alien count in LSB
+;   POP rr - Player score 
+;   CALL event_player_missile_hit_alien
+;   POP rr,rr
+;------------------------------------------------------------------------------
+
 event_player_missile_hit_alien:
 
 .PARAM_ALIEN_COUNT: EQU 14

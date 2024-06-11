@@ -1,5 +1,6 @@
     MODULE splash_screen
 _module_start:
+    ; INCLUDE "colour_cycle.asm"                        ; Not currently used
     INCLUDE "splash_screen.asm"
     INCLUDE "interrupt_handler.asm"
     INCLUDE "header.asm"

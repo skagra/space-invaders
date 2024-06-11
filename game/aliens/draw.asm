@@ -1,18 +1,8 @@
 ;------------------------------------------------------------------------------
-;
 ; Erase current alien
 ; 
 ; Usage:
-;
-;   CALL draw_alien
-;
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   CALL blank
 ;------------------------------------------------------------------------------
 
 blank:
@@ -23,14 +13,14 @@ blank:
     LD DE,(HL)
     LD IX,DE
     
-    LD A,(IX+STATE_OFFSET_STATE)                       ; State of current alien
+    LD A,(IX+STATE_OFFSET_STATE)                        ; State of current alien
 
     ; Is the current alien dead or new
     AND _ALIEN_STATE_DEAD_VALUE | _ALIEN_STATE_NEW_VALUE,A
     JR NZ,.done                                         ; Dead or new so nothing to do
 
     ; Blank old sprite position
-    LD HL,(IX+STATE_OFFSET_DRAW_COORDS)                ; Coords
+    LD HL,(IX+STATE_OFFSET_DRAW_COORDS)                 ; Coords
     PUSH HL     
 
     ; Select sprite and mask based on variant
@@ -57,26 +47,15 @@ blank:
     POP DE
 
 .done
-
     POP IX,HL,DE,AF
 
     RET
 
 ;------------------------------------------------------------------------------
-;
 ; Draw current alien
 ; 
 ; Usage:
-;
 ;   CALL draw_alien
-;
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 draw:
@@ -92,7 +71,7 @@ draw:
     AND _ALIEN_STATE_ACTIVE_VALUE|_ALIEN_STATE_NEW_VALUE,A    
     JR Z,.done                                          
 
-    LD HL,(IX+STATE_OFFSET_DRAW_COORDS)                ; Coords
+    LD HL,(IX+STATE_OFFSET_DRAW_COORDS)                 ; Coords
     PUSH HL  
 
     ; Select sprite and mask based on variant

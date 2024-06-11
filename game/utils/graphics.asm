@@ -1,17 +1,33 @@
-is_point_in_box:
-.PARAM_RETURN:              EQU 8
+;------------------------------------------------------------------------------
+;
+; Determine whether a point is within a box 
+;
+; Usage:
+;   PUSH rr                 ; Target x,y
+;   PUSH rr                 ; Top left of box
+;   PUSH rr                 ; Bottom right of box
+;   PUSH rr                 ; Space for return value
+;   CALL copy_mem
+;   POP rr                  ; Result TRUE_VALUE/FALSE_VALUE in LSB
+;   POP rr,rr,rr
+;
+;------------------------------------------------------------------------------
 
-.PARAM_BOX_BOTTOM_RIGHT:    EQU 10
-.PARAM_BOX_BOTTOM:          EQU 10
-.PARAM_BOX_RIGHT:           EQU 11
+is_point_in_box:
+
+.PARAM_TARGET_COORDS:       EQU 14
+.PARAM_TARGET_Y:            EQU 14
+.PARAM_TARGET_X:            EQU 15
 
 .PARAM_BOX_TOP_LEFT_COORDS: EQU 12
 .PARAM_BOX_TOP:             EQU 12
 .PARAM_BOX_LEFT:            EQU 13
 
-.PARAM_TARGET_COORDS:       EQU 14
-.PARAM_TARGET_Y:            EQU 14
-.PARAM_TARGET_X:            EQU 15
+.PARAM_BOX_BOTTOM_RIGHT:    EQU 10
+.PARAM_BOX_BOTTOM:          EQU 10
+.PARAM_BOX_RIGHT:           EQU 11
+
+.PARAM_RETURN:              EQU 8
 
     PUSH AF,BC,IX
 
@@ -50,11 +66,9 @@ is_point_in_box:
     JR C,.done                                              ; Target Y (B) > box bottom (A) => outside                            
 
     LD A,utils.TRUE_VALUE                                   ; Return success
-    LD (IX+.PARAM_RETURN),A   
-    ; LOGPOINT [IS_POINT_IN_BOX] Point is within box
+    LD (IX+.PARAM_RETURN),A                                 ; LOGPOINT [IS_POINT_IN_BOX] Point is within box
 
 .done
-    POP IX,BC,AF  
-    ; LOGPOINT [IS_POINT_IN_BOX] <--- is_point_in_box
+    POP IX,BC,AF                                            ; LOGPOINT [IS_POINT_IN_BOX] <--- is_point_in_box
 
     RET

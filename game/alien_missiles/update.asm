@@ -1,24 +1,16 @@
 ;------------------------------------------------------------------------------
-;
 ; Update the state of the current alien missile
 ; 
 ; Usage:
 ;   CALL update
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 update:
     PUSH AF,DE,HL,IX
 
-    LD A,(_enabled)
-    BIT utils.TRUE_BIT,A
-    JP Z,.done
+    LD A,(_enabled)                                         ; Currently enabled? e.g disabled while player explodes
+    BIT utils.TRUE_BIT,A                                    ; No - so done
+    JP Z,.done                                              ; Enabled
 
     LD IX,(_current_alien_missile_ptr)                      ; Point IX to current missile struct
 
@@ -122,18 +114,10 @@ update:
 .ALIEN_MISSILE_EXPLOSION_CYCLES: EQU 3                      ; How long to display a missile explosion
 
 ;------------------------------------------------------------------------------
-;
-; Move onto the next missile type
+; Move onto the next alien missile
 ; 
 ; Usage:
 ;   CALL next
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 next:
@@ -175,24 +159,34 @@ next:
     ENDM
 
 ;------------------------------------------------------------------------------
-;
-; Fire a new missile if its time
+; Fire a new missile if it is time
 ; 
 ; Usage:
 ;   CALL _fire_if_ready
 ;
-; Firing algorithm
+; Firing algorithm for current missile.
+;
+; Are both of the other step counts zero?
+; or 
+; Is the lowest non zero of the other two step counts > reload threshold?
+;   yes => continue
+;   no => done
 ;
 ; Is there an alien in the currently selected column?
 ;   yes => continue
 ;   no => update to next value in column lookup table and done
 ;
-; Are both of the other step counts zero?
-; or 
-; Is the lowest non zero of the other two step counts > reload threshold?
-;   yes => fire and update to next value in column lookup table
-;   no => done
+; Which type of missile are we dealing with?
 ;
+; 0 or 1
+;   Lookup in relevant column firing table which column to fire from
+;   Find the lowest alien in that column
+;       found => fire missile
+;   Update missile pointer into column firing table
+;       
+; 2 (seeker)
+;   Find the lowest alien directly above the player
+;       found => fire missile
 ;------------------------------------------------------------------------------
 
 _fire_if_ready:
@@ -338,7 +332,7 @@ _fire_if_ready:
     LD A,H                                                  ; 0xFF in high byte => no match
     CP H,0xFF
     JR Z,.done
-    ; Fall through
+    ; Fall through to firing_alien_found
 
 .firing_alien_found
     LD (IX+_ALIEN_MISSILE_OFFSET_STATE), _ALIEN_MISSILE_STATE_ACTIVE_VALUE ; Activate the missile
@@ -357,10 +351,12 @@ _fire_if_ready:
     CP .SHOT_COLUMNS_COUNT                                  ; Has the end of the column lookup table been reached?
     JR NZ,.dont_reset_col_lookup                            ; No - so we are good
     LD A,0x00                                               ; Yes - reset to the start
+    ; Fall through
 
 .dont_reset_col_lookup:
     LD (IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX),A       ; Store the new location in column lookup table
-
+    ; Fall through
+    
 .done:
     POP IY,IX,HL,DE,BC,AF
 
@@ -369,9 +365,9 @@ _fire_if_ready:
     RET
 
 ; Tables of alien columns from which to launch missiles
-.SHOT_COLUMNS_0: BYTE 0x00,0x06,0x00,0x00,0x00,0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07
-.SHOT_COLUMNS_1: BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
-.SHOT_COLUMNS_COUNT: EQU 16
+.SHOT_COLUMNS_0:                    BYTE 0x00,0x06,0x00,0x00,0x00,0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07
+.SHOT_COLUMNS_1:                    BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
+.SHOT_COLUMNS_COUNT:                EQU 16
 
 .alien_missile_shot_col_table_ptr:  BLOCK 2                 ; Shot column table for the current alien missiles
 .alien_missile_step_count_0:        BLOCK 1                 ; Step count for one of the "other" two alien missiles

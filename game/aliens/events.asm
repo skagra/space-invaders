@@ -1,3 +1,10 @@
+;------------------------------------------------------------------------------
+; Handle an alien being bit by a player missile (starting)
+; 
+; Usage:
+;   CALL event_alien_hit_by_player_missile_begin
+;------------------------------------------------------------------------------
+
 event_alien_hit_by_player_missile_begin:
 
 .PARAM_ALIEN_STATE_PTR EQU 8 
@@ -77,6 +84,13 @@ event_alien_hit_by_player_missile_begin:
     LD (alien_count),A                                 ; LOGPOINT [ALIENS] alien_count=${A}
     
     RET
+
+;------------------------------------------------------------------------------
+; Handle an alien being bit by a player missile (ending)
+; 
+; Usage:
+;   CALL event_alien_hit_by_player_missile_end
+;------------------------------------------------------------------------------
 
 event_alien_hit_by_player_missile_end:
     PUSH AF,HL,IX
