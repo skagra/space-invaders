@@ -27,6 +27,13 @@ _pack_tr_coords:
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 
+;------------------------------------------------------------------------------
+; Adjust the alien pack direction if needed e.g. if moving right and has hit
+; the RHS of the screen.
+;
+; Usage:
+;   CALL _adjust_alien_pack_direction
+;------------------------------------------------------------------------------
 _adjust_alien_pack_direction:
     PUSH AF,HL
 
@@ -97,18 +104,10 @@ _adjust_alien_pack_direction:
 .PACK_MIN_LEFT:                         EQU layout.INSET_X_PIXELS
 
 ;------------------------------------------------------------------------------
-;
-; Update the location of the current alien
+; Update the location of the current alien.
 ;
 ; Usage:
-;   CALL _calc_current_alien_new_coords
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   CALL _move_current_alien
 ;------------------------------------------------------------------------------
 
 _move_current_alien:
@@ -172,6 +171,13 @@ _move_current_alien:
 
     RET
 
+;------------------------------------------------------------------------------
+; Update the record of the extremities of the alien pack.
+;
+; Usage:
+;   CALL _update_pack_bounds
+;------------------------------------------------------------------------------
+
 _update_pack_bounds:
     PUSH AF,DE
     LD DE,(IX+STATE_OFFSET_DRAW_COORDS)                 ; New x,y coords
@@ -218,18 +224,10 @@ _update_pack_bounds:
     RET
 
 ;------------------------------------------------------------------------------
-;
-; Update the current alien coordinates and state
+; Update the current alien coordinates and state.
 ;
 ; Usage:
-;   CALL update_current_alien
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   CALL update
 ;------------------------------------------------------------------------------
 
 update:
@@ -281,18 +279,10 @@ update:
     RET
 
 ;------------------------------------------------------------------------------
-;
-; Move on to the next alien in the pack
+; Move on to the next alien in the pack.
 ;
 ; Usage:
 ;   CALL next_alien
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 next_alien:
@@ -332,18 +322,10 @@ next_alien:
     RET
 
 ;------------------------------------------------------------------------------
-;
-; Finished a complete cycle of drawing the pack, set up for next cycle
+; Finished a complete cycle of drawing the pack, set up for next cycle.
 ;
 ; Usage:
 ;   CALL _next_pack_cycle
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 _next_pack_cycle:

@@ -87,7 +87,7 @@ new_sheet:
     LD A,utils.TRUE_VALUE
     LD (_missile_1_enabled),A
 
-    ; Initialize toggle for seeker missile (fires every other time it is eligable)
+    ; Initialize toggle for seeker missile (fires every other time it is eligible)
     LD A,0x00
     LD (_seeker_missile_toggle),A
     

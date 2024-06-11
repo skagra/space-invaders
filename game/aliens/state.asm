@@ -189,8 +189,9 @@ _ALIENS_SIZE:  EQU $-_ALIENS_INIT
 ; Current sheet of aliens
 _aliens: BLOCK _ALIENS_SIZE
 
-_aliens_adjust_index: BLOCK 1
+; Y offsets to start alien pack (based on sheet number)
+_aliens_adjust_index: BLOCK 1                                                   ; Current index into alien offsets
 
-_ALIENS_ADJUST_FOR_SHEET: BYTE 0x00,0x08,0x10,0x18,0x18,0x18,0x20,0x20,0x28
+_ALIENS_ADJUST_FOR_SHEET: BYTE 0x00,0x08,0x10,0x18,0x18,0x18,0x20,0x20,0x28     ; Y offsets 
 
-_ALIENS_ADJUST_FOR_SHEET_COUNT: EQU $-_ALIENS_ADJUST_FOR_SHEET
+_ALIENS_ADJUST_FOR_SHEET_COUNT: EQU $-_ALIENS_ADJUST_FOR_SHEET                  ; Number of Y offsets

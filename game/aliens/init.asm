@@ -50,15 +50,19 @@ new_sheet:
     LD A,_ALIEN_PACK_SIZE
     LD (_pack_loop_counter),A
 
+    ; Allow pack to move
     LD A,utils.TRUE_VALUE
     LD (_alien_pack_moving),A
 
+    ; No alien is exploding
     LD A,utils.FALSE_VALUE
     LD (_alien_is_exploding),A           
 
+    ; Initialise count of aliens
     LD A,_ALIEN_PACK_SIZE
     LD (alien_count),A
 
+    ; Copy the initial alien state over to working copy
     LD HL,_ALIENS_INIT
     PUSH HL
     LD HL,_aliens
@@ -70,35 +74,21 @@ new_sheet:
     POP HL
     POP HL
 
-    ; Update alien Y position ...
-
-    ; Get the required offset in to C
+    ; Get the required pack Y offset 
     LD HL,_ALIENS_ADJUST_FOR_SHEET
     LD D,0x00
     LD A,(_aliens_adjust_index)
     LD E,A
     ADD HL,DE
-    LD C,(HL)                               
+    LD C,(HL)                               ; Y offset is in C
 
-    ; Pack extremities
-    LD A,(_aliens+STATE_OFFSET_DRAW_COORDS_Y)
-    LD (_pack_bottom),A  
-
-    LD A,(_aliens+STATE_OFFSET_DRAW_COORDS_X)
-    LD (_pack_left),A
-    
-    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+STATE_OFFSET_DRAW_COORDS_Y)
-    LD (_pack_top),A
-    
-    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+STATE_OFFSET_DRAW_COORDS_X)
-    LD (_pack_right),A           
-
-     ; Alien lookup table
+    ; Alien lookup table
     LD HL,_ALIEN_LOOKUP 
 
     ; Number of aliens                                      
     LD B,_ALIEN_PACK_SIZE     
-                              
+
+    ; Update all aliens with Y offset         
 .loop
     LD DE,(HL)                              ; Pointer to current alien
     LD IX,DE
@@ -117,6 +107,19 @@ new_sheet:
 
 .dont_reset:
     LD (_aliens_adjust_index),A
+
+    ; Set pack extremities
+    LD A,(_aliens+STATE_OFFSET_DRAW_COORDS_Y)
+    LD (_pack_bottom),A  
+
+    LD A,(_aliens+STATE_OFFSET_DRAW_COORDS_X)
+    LD (_pack_left),A
+    
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+STATE_OFFSET_DRAW_COORDS_Y)
+    LD (_pack_top),A
+    
+    LD A,(_aliens+((_ALIEN_PACK_SIZE-1)*_AS_SIZE)+STATE_OFFSET_DRAW_COORDS_X)
+    LD (_pack_right),A   
 
     POP IX,HL,DE,BC,AF
 

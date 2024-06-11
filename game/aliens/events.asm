@@ -118,12 +118,21 @@ event_alien_hit_by_player_missile_end:
     LD A,utils.FALSE_VALUE
     LD (_alien_is_exploding),A
 
+    ; Allow the pack to restart movement
     LD A,utils.TRUE_VALUE
     LD (_alien_pack_moving),A
 
     POP IX,HL,AF
 
     RET
+
+;------------------------------------------------------------------------------
+; Handle an alien landing/alien missile hitting player (starting)
+; 
+; Usage:
+;   CALL event_alien_landed_begin/event_alien_missile_hit_player_begin
+;------------------------------------------------------------------------------
+
 event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF
@@ -144,6 +153,13 @@ event_alien_missile_hit_player_begin:
     POP AF
 
     RET
+
+;------------------------------------------------------------------------------
+; Handle an alien landing/alien missile hitting player (completed)
+; 
+; Usage:
+;   CALL event_alien_landed_end/event_alien_missile_hit_player_end
+;------------------------------------------------------------------------------
 
 event_alien_landed_end:
 event_alien_missile_hit_player_end:

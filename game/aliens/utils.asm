@@ -1,6 +1,22 @@
+;------------------------------------------------------------------------------
+; Find alien at the given coords.
+;   PUSH rr                     ; Target coordinates
+;   PUSH rr                     ; Space for return value
+;   CALL get_alien_at_coords 
+;   POP rr                      ; Return value
+;   POP rr                      
+;
+; Usage:
+;   CALL get_alien_at_coords
+;
+; Return value:
+;   MSB 0xFF => not found
+;   else     => points to the appropriate alien struct
+;------------------------------------------------------------------------------
+
 get_alien_at_coords:
 
-.PARAM_COORDS: EQU 16                                   ; Coords to look for alien
+.PARAM_COORDS:  EQU 16                                  ; Coords to look for alien
 .RTN_ALIEN_PTR: EQU 14                                  ; Return value
 
     PUSH AF,BC,DE,HL,IX,IY
@@ -45,7 +61,7 @@ get_alien_at_coords:
 
     ; Is the target Y "below" to top of the alien - Y coords increase as we go down the screen
     LD A,(.target_y)                                    ; target Y coordinate
-    CP (IX+STATE_OFFSET_DRAW_COORDS_Y)                 ; Compare to top of alien
+    CP (IX+STATE_OFFSET_DRAW_COORDS_Y)                  ; Compare to top of alien
     JR C,.row_not_found                                 ; Is the top of the alien coord greater than the target coord
 
     ; Is the target Y "above" the bottom of the alien?
