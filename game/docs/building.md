@@ -56,10 +56,13 @@ For a standard *release* build specify none of the above.
 
 The build will generate the following files:
 
-If `DEBUG` is **not** defined then output will be written to:
+If `DEBUG` is **not** defined and `NO_SPLASH_SCREEN` is **not** defined then output will be written to:
 * `bin/space-invaders-release.sna` - Snapshot file.
 
-If `DEBUG` is defined then output will be written to:
+If `DEBUG` is **not** defined and `NO_SPLASH_SCREEN` **is** defined then output will be written to:
+* `bin/space-invaders-release-no-splash.sna` - Snapshot file.
+
+If `DEBUG` **is** defined then output will be written to:
 * `bin/space-invaders-debug.sna` - Snapshot file.
  
 
