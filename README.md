@@ -69,7 +69,6 @@ Most of the major game elements are now in place, though some work remains:
 
 * Saucer ship.
 * The "insert coin" screen.
-* Two demo screens.
 * Alien correcting an inverted "Y" in "PLAY" on the score table screen.
 * Alien destroying an extra "C" in "COIN" on the insert coin screen.
 * Various delays e.g. before the player appears when a new sheet is rendered.

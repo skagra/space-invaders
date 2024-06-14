@@ -1,0 +1,7 @@
+GAME_MODE_PLAY_VALUE:       EQU 0b00000001
+GAME_MODE_DEMO_VALUE:       EQU 0b00000010
+
+GAME_MODE_PLAY_BIT:         EQU 0
+GAME_MODE_DEMO_BIT:         EQU 1
+
+game_mode:                  BLOCK 1

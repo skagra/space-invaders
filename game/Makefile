@@ -2,7 +2,7 @@ include build_conf/vars.mk
 
 TARGETS = bin debug release tests
 
-all: sprites all-asm
+all: all-asm
 
 all-asm: $(BIN) $(TARGETS)
 
@@ -15,14 +15,17 @@ release: $(BIN)/$(SNA_RELEASE).sna
 
 tests: $(BIN)/$(SNA_TESTS).sna
 
-DEBUG_FLAGS=
-# -DINVINCIBLE
-# -DDIRECT_DRAW 
+DEBUG_FLAGS= 
+# -DINVINCIBLE 
+# -DDIRECT_DRAW  
 # -DIGNORE_VSYNC 
-# -DAUTO_FLUSH
-# -DPAUSEABLE
-# -DNO_SHIELDS
-# -DINVINCIBLE
+# -DAUTO_FLUSH 
+# -DPAUSEABLE 
+# -DNO_SHIELDS 
+# -DINVINCIBLE 
+
+TEST_FLAGS= -DTEST_DEMOS
+#-DTEST_SPLASH_SCREEN 
 
 $(BIN)/$(SNA_DEBUG).sna: $(BIN) *.asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
@@ -46,6 +49,7 @@ $(BIN)/$(SNA_TESTS).sna: $(BIN) *.asm */*.asm Makefile
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
            -DDEBUG \
+		   $(TEST_FLAGS) \
            tests/$(SNA_TESTS).asm
 
 sprites:: 

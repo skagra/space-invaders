@@ -6,15 +6,16 @@
 
     ; Contended memory 
     ORG memory_map.FREE_MEMORY_START
-    INCLUDE "build_settings_display.asm"
+
     INCLUDE "memory_map/module.asm"
+    INCLUDE "build/module.asm"
     INCLUDE "debug/module.asm"
     INCLUDE "screen/module.asm"
     INCLUDE "splash_screen/module.asm"
     INCLUDE "colours/module.asm"
 
     ; Skip past contended memory
-    ORG 0x8000 
+    ORG memory_map.UNCONTENDED_MEMORY_START
 
     INCLUDE "sprites/module.asm"
     INCLUDE "character_set/module.asm"
@@ -33,14 +34,13 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
 
     MEMORY_USAGE "off-screen buffer ", DRAW_BUFFER
 
-    
+    INCLUDE "demos/module.asm"
     INCLUDE "saucer/module.asm"
     INCLUDE "orchestration/module.asm"
     INCLUDE "player/module.asm"
     INCLUDE "player_missile/module.asm"
     INCLUDE "aliens/module.asm"
-    INCLUDE "game_screen/module.asm"
-    
+    INCLUDE "game_screen/module.asm" 
     INCLUDE "collision/module.asm"
     INCLUDE "scoring/module.asm"
     INCLUDE "alien_missiles/module.asm"
@@ -80,6 +80,8 @@ main:
     CALL player_lives.init
     CALL credits.init
     CALL interrupts.init
+    CALL game.init
+    CALL demos.init
 
     ; Set up interrupt handling vector
     CALL interrupts.setup
@@ -89,46 +91,58 @@ main:
     CALL splash_screen.draw_splash_screen
     CALL splash_screen.draw_controls_screen
 
-    ; One game screen initialization
+    ; One time game screen initialization
     CALL draw_utils.wipe_screen
     CALL game_screen.set_border
     CALL game_screen.set_colours
-
-    ; Credits and keyboard interrupt handling
-    CALL game.setup_interrupt_handler
 
     ; Use the Space Invaders font
     LD HL,print.CHARACTER_SET_SPACE_INVADERS
     PUSH HL
     CALL print.set_font
     POP HL
+    
+    ; Start with demo 0
+    LD A,0x00
+    LD (.demo_id),A
 
 .score_table:
     ; Draw the score table
-    CALL draw_utils.wipe_screen
-    CALL game_screen.print_scores_section
-    CALL game_screen.draw_credits_section
-    CALL game_screen.draw_score_table_section
-   
-.wait_for_credit:
+    CALL game.display_score_screen
+
     LD A,(credits.credits)
     CP 0x00
-    JR Z,.wait_for_credit
+    JR NZ,.have_credit
 
-.push_player_one:
-    ; Initialize game state
-    CALL player_lives.new_game
-    CALL scoring.new_game
-    CALL orchestration.new_game
-    CALL aliens.new_game
-    CALL alien_missiles.new_game
+    LD L,0x40                                       ; TODO Make this configurable
+    PUSH HL
+    CALL utils.delay
+    POP HL
 
+.demo
+    LD A,(.demo_id)
+    XOR 0x01
+    LD (.demo_id),A
+    LD L,A
+    PUSH HL
+    CALL demos.run_demo
+    POP HL
+
+    LD A,(credits.credits)
+    CP 0x00
+    JR NZ,.have_credit
+
+    LD L,0x40                                       ; TODO Make this configurable
+    PUSH HL
+    CALL utils.delay
+    POP HL
+
+.coin
+    JR .score_table
+
+.have_credit:
     ; Push player one button
-    CALL draw_utils.wipe_screen
-    CALL game_screen.print_scores_section
-    CALL game_screen.draw_push_player_1_section
-    CALL game_screen.draw_player_lives_section
-    CALL game_screen.draw_credits_section
+    CALL game.display_push_player_1_screen
 
     ; Wait for player one button
     LD L,keyboard.P1_KEY_DOWN_MASK
@@ -139,15 +153,8 @@ main:
     ; Update credits
     CALL credits.event_credit_used
 
-    ; Ready player 1
-    CALL draw_utils.wipe_screen
-    CALL game_screen.print_scores_section
-    CALL game_screen.draw_player_lives_section
-    CALL game_screen.draw_credits_section
-    CALL game_screen.draw_get_ready
-
     ; Main game loop
-    CALL game.main_game_loop
+    CALL game.play_game
 
     ; Short delay before continuing
     LD HL,0x80                                          ; TODO Pull out into a configurable constant
@@ -160,14 +167,16 @@ main:
     CP 0x00
     JR Z,.score_table
 
-    JR .push_player_one
+    JR .have_credit
+
+.demo_id:       BLOCK 1
 
     MEMORY_USAGE "main            ", main
 
 ; Put the stack immediately after the code
-STACK_SIZE: EQU 100*2    
-STACK_START: BLOCK STACK_SIZE, 0
-STACK_TOP: EQU $-1
+STACK_SIZE:     EQU 100*2    
+STACK_START:    BLOCK STACK_SIZE, 0
+STACK_TOP:      EQU $-1
 
     MEMORY_USAGE "stack           ", STACK_START
     

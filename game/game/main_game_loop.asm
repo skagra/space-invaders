@@ -90,6 +90,10 @@ main_game_loop:
 
     DEBUG_VTRACE_FLASH
 
+    LD A,(game_mode)
+    BIT GAME_MODE_DEMO_BIT,A
+    JR NZ,.test_demo_ended
+
     LD A,(orchestration._game_running)
     BIT utils.TRUE_BIT,A
     JP Z,.game_over 
@@ -107,13 +111,25 @@ main_game_loop:
 .not_landed:
     LD A,(aliens.alien_count)
     CP 0x00
-    JR Z,.new_sheet
+    JP Z,.new_sheet
 
     JR .animation_loop
 
 .game_over
     CALL game_screen.print_game_over
+    JR .done
+
+.test_demo_ended:
+    LD A,(credits.credits)
+    CP 0x00
+    JR NZ,.done
     
+    LD A,(demos.demo_done)
+    BIT utils.TRUE_BIT,A
+    JR Z,.animation_loop
+    ; Fall through to done
+
+.done:
     POP HL,AF 
 
     RET
