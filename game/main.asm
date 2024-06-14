@@ -11,7 +11,9 @@
     INCLUDE "build/module.asm"
     INCLUDE "debug/module.asm"
     INCLUDE "screen/module.asm"
-    INCLUDE "splash_screen/module.asm"
+    IFNDEF NO_SPLASH_SCREEN
+        INCLUDE "splash_screen/module.asm"
+    ENDIF
     INCLUDE "colours/module.asm"
 
     ; Skip past contended memory
@@ -86,10 +88,12 @@ main:
     ; Set up interrupt handling vector
     CALL interrupts.setup
 
-    ; Splash and control screens
-    CALL splash_screen.setup_interrupt_handler
-    CALL splash_screen.draw_splash_screen
-    CALL splash_screen.draw_controls_screen
+    IFNDEF NO_SPLASH_SCREEN
+        ; Splash and control screens
+        CALL splash_screen.setup_interrupt_handler
+        CALL splash_screen.draw_splash_screen
+        CALL splash_screen.draw_controls_screen
+    ENDIF
 
     ; One time game screen initialization
     CALL draw_utils.wipe_screen
@@ -207,7 +211,11 @@ STACK_TOP:      EQU $-1
     IFDEF DEBUG
         SAVESNA "bin/space-invaders-debug.sna",main.main    ; sna48-ok
     ELSE
-        SAVESNA "bin/space-invaders-release.sna",main.main  ; sna48-ok
+        IFDEF NO_SPLASH_SCREEN
+            SAVESNA "bin/space-invaders-release-no-splash.sna",main.main  ; sna48-ok
+        ELSE
+            SAVESNA "bin/space-invaders-release.sna",main.main  ; sna48-ok
+        ENDIF
     ENDIF
    
     

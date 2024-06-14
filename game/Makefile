@@ -1,6 +1,6 @@
 include build_conf/vars.mk
 
-TARGETS = bin debug release tests
+TARGETS = bin debug release no-splash tests
 
 all: all-asm
 
@@ -12,6 +12,8 @@ bin:
 debug: $(BIN)/$(SNA_DEBUG).sna
 
 release: $(BIN)/$(SNA_RELEASE).sna
+
+no-splash: $(BIN)/$(SNA_RELEASE_NO_SPLASH).sna
 
 tests: $(BIN)/$(SNA_TESTS).sna
 
@@ -43,6 +45,14 @@ $(BIN)/$(SNA_RELEASE).sna: $(BIN) *.asm */*.asm Makefile
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
            $(MAIN_ASM).asm
 
+$(BIN)/$(SNA_RELEASE_NO_SPLASH).sna: $(BIN) *.asm */*.asm Makefile
+	$(ASM) --sld=$(basename $@).sld \
+           --fullpath \
+           --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
+           --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
+		   -DNO_SPLASH_SCREEN \
+           $(MAIN_ASM).asm
+
 $(BIN)/$(SNA_TESTS).sna: $(BIN) *.asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
            --fullpath \
@@ -68,6 +78,9 @@ run-cspect-debug: debug
 
 run-cspect-release: release
 	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_RELEASE).sna 
+
+run-cspect-release-no-splash: no-splash
+	$(CSPECT) $(CSPECT_FLAGS) $(BIN)/$(SNA_RELEASE_NO_SPLASH).sna 
 
 run-mame-debug: debug
 	$(MAME) $(MAME_FLAGS) -dump $(BIN)/$(SNA_DEBUG).sna 

@@ -31,3 +31,7 @@ mame.exe spectrum -rompath <roms> -dump space-invaders-release.sna -ui_active -e
 JSSpeccy is an online ZX Spectrum emulator found [here](https://www.jsspeccy.zxdemo.org/).
 
 Click on the *folder* icon (bottom left), select your `space-invaders-release.sna` and you are good to go.
+
+# Running without Splash Screens
+
+In all of the above `space-invaders-release.sna` may be replaced with `space-invaders-release-no-splash.sna` to run a version devoid of splash screens.

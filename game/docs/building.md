@@ -27,9 +27,11 @@ The `Makefile` contains the following targets:
 * `tests` - Build tests.
 * `sprites` - Rebuild "shifted" sprites from source version.  This target requires that `dotnet` be installed and in your path.
 * `release` - Build a release version.
+* `no-splash` - Build a release version without the splash screens.
 * `clean` - Clean all build files.
 * `run-cspect-debug` - Run a debug build in the `CSpect` emulator.
 * `run-cspect-release` - Run a release build in the `CSpect` emulator.
+* `run-cspect-release-no-splash` - Run a release build without the splash screens in the `CSpect` emulator.
 * `run-mame-debug` - Run a debug build in `MAME`.
 * `run-mame-release` - Run a release build in `MAME`.
 * `run-cspect-tests` - Run tests in the `CSpect` emulator.
