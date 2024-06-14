@@ -34,6 +34,7 @@ Here are some of the details - some you will have noticed, others maybe not:
 * [x] There are three varieties of alien missiles - two of which fire on a schedule but the third "seeker missile" targets the player.
 * [x] The frequency at which aliens fire increases as the player's score increases.
 * [x] Each new sheet of aliens starts lower down the screen, until the they eventually start touching the shields.  The starting offset recycles after 10 sheets.
+* [x] Additional non-game screens - 2 demos, score table and insert coin.
 
 ## Small
 
