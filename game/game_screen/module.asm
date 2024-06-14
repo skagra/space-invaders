@@ -14,6 +14,7 @@ _module_start:
     INCLUDE "get_ready.asm"
     INCLUDE "play.asm"
     INCLUDE "push_player_1.asm"
+    INCLUDE "insert_coin.asm"
     INCLUDE "utils.asm"
     
     MEMORY_USAGE "game screen     ",_module_start

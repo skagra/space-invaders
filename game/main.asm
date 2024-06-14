@@ -138,6 +138,17 @@ main:
     POP HL
 
 .coin
+    CALL game.display_coin_screen
+
+    LD A,(credits.credits)
+    CP 0x00
+    JR NZ,.have_credit
+
+    LD L,0x40                                       ; TODO Make this configurable
+    PUSH HL
+    CALL utils.delay
+    POP HL
+    
     JR .score_table
 
 .have_credit:

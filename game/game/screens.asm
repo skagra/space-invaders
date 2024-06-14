@@ -8,6 +8,17 @@ display_score_screen:
     CALL game_screen.draw_score_table_section
 
     RET
+
+display_coin_screen:
+    CALL draw_utils.wipe_screen
+    
+    CALL setup_interrupt_handler
+
+    CALL game_screen.print_scores_section
+    CALL game_screen.draw_credits_section
+    CALL game_screen.draw_insert_coin_section
+
+    RET
    
 display_push_player_1_screen:
     CALL draw_utils.wipe_screen
