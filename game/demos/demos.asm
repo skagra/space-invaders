@@ -1,3 +1,12 @@
+;------------------------------------------------------------------------------
+; Run a demo screen
+; 
+; Usage:
+;   PUSH rr                 ; 0 or 1 to select demo script in LSB
+;   CALL run_demo
+;   POP rr
+;------------------------------------------------------------------------------
+
 run_demo:
 
 .PARAM_DEMO_NUM EQU 10

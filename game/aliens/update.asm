@@ -19,11 +19,11 @@ _pack_direction:                        BLOCK 1         ; Current direction of a
 _pack_loop_counter:                     BLOCK 1         ; Loop counter decremented as each alien is processed so we know when to go back to start of the pack
 
 ; Pack bounds
-_pack_bl_coords:
+_pack_bl_coords:                                        ; Bottom left
 _pack_bottom:                           BLOCK 1
 _pack_left:                             BLOCK 1
 
-_pack_tr_coords:
+_pack_tr_coords:                                        ; Top right
 _pack_top:                              BLOCK 1
 _pack_right:                            BLOCK 1
 

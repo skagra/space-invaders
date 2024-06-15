@@ -1,3 +1,10 @@
+;------------------------------------------------------------------------------
+; Flush the off screen buffer to screen memory
+; 
+; Usage:
+;   CALL flush_buffer_to_screen
+;------------------------------------------------------------------------------
+
 flush_buffer_to_screen:
     IFDEF DIRECT_DRAW                                   ; Nothing to do if DIRECT_DRAW is enabled
         RET

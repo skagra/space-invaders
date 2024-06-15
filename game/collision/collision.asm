@@ -1,16 +1,8 @@
 ;------------------------------------------------------------------------------
-;
 ; Reset all collision data - ready for another cycle
 ;
 ; Usage:
-;   CALL handle_collision
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;      
+;   CALL handle_collision  
 ;------------------------------------------------------------------------------
 
 reset:
@@ -64,19 +56,11 @@ reset:
     ENDM
 
 ;------------------------------------------------------------------------------
-;
 ; Processes the collision of the player missile, alien missiles, aliens,
 ; shields and player.
 ;
 ; Usage:
 ;   CALL handle_collision
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 handle_collision:

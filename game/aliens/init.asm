@@ -89,7 +89,7 @@ new_sheet:
     LD B,_ALIEN_PACK_SIZE     
 
     ; Update all aliens with Y offset         
-.loop
+.next_alien:
     LD DE,(HL)                              ; Pointer to current alien
     LD IX,DE
     LD A,(IX+STATE_OFFSET_DRAW_COORDS_Y)    ; Increment Y by required offset
@@ -97,16 +97,18 @@ new_sheet:
     LD (IX+STATE_OFFSET_DRAW_COORDS_Y),A
     INC HL                                  ; Next alien
     INC HL
-    DJNZ .loop
+    DJNZ .next_alien
 
+    ; If we've run off the end of the list of pack adjustments then reset to the start
     LD A,(_aliens_adjust_index)             
     INC A
     CP _ALIENS_ADJUST_FOR_SHEET_COUNT
     JR NZ,.dont_reset
     LD A,0x00
+    ; Fall through
 
 .dont_reset:
-    LD (_aliens_adjust_index),A
+    LD (_aliens_adjust_index),A             ; Store the updated index
 
     ; Set pack extremities
     LD A,(_aliens+STATE_OFFSET_DRAW_COORDS_Y)

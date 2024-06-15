@@ -3,16 +3,11 @@
 ; Draw a sprite and flush the off-screen buffer to the screen
 ;
 ; Usage:
-;   PUSH coords word - X high byte, Y low byte
-;   PUSH dimensions word - X dim high byte, Y dim low byte
-;   PUSH address of pre-shifted sprite lookup table
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   PUSH rr - Coords X high byte, Y low byte
+;   PUSH rr - Dimensions X dim high byte, Y dim low byte
+;   PUSH rr - Address of pre-shifted sprite data
+;   CALL draw_sprite_and_flush_buffer
+;   POP rr,rr,rr
 ;------------------------------------------------------------------------------
 
 draw_sprite_and_flush_buffer:
@@ -60,21 +55,13 @@ draw_sprite_and_flush_buffer:
 ; Draw a sprite
 ;
 ; Usage:
-;   PUSH coords word - X high byte, Y low byte
-;   PUSH dimensions word - X dim high byte, Y dim low byte
-;   PUSH address of pre-shifted sprite lookup table
-;   PUSH blanking - TRUE_VALUE or FALSE_VALUE
+;   PUSH rr - Coords  - X high byte, Y low byte
+;   PUSH rr - Dimensions  - X dim high byte, Y dim low byte
+;   PUSH rr - Sprite data
+;   PUSH rr - Blanking (or drawing) - TRUE_VALUE or FALSE_VALUE
+;   PUSH rr - Struct to record any collision found during drawing
 ;   CALL draw_sprite
-;   POP rr
-;   POP rr
-;   POP rr
-;   POP rr
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
+;   POP rr,rr,rr,rr,rr
 ;------------------------------------------------------------------------------
 
 draw_sprite:

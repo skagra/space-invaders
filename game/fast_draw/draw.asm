@@ -1,16 +1,11 @@
 ;------------------------------------------------------------------------------
-;
 ; Copies a single row of 24 bits from the off-screen buffer to screen memory
 ;
 ; Usage:
 ;   SP - Address in the draw stack which points to screen memory written
 ;
-; Return values:
-;   -
-;
 ; Registers modified:
 ;   HL,DE
-;
 ;------------------------------------------------------------------------------
 
     MACRO COPY_LINE_16
@@ -24,18 +19,10 @@
     ENDM
 
 ;------------------------------------------------------------------------------
-;
 ; Copies the off-screen buffer to screen memory
 ;
 ; Usage:
 ;   CALL fast_copy_buffer_to_screen_16x8
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 flush_buffer_to_screen_16x8:
@@ -102,7 +89,6 @@ flush_buffer_to_screen_16x8:
 .stack_ptr: BLOCK 2
 
 ;------------------------------------------------------------------------------
-;
 ; Blank a single row of a 16 bit wide (24 bits pre-shifted) sprite to the
 ; off-screen buffer
 ;
@@ -111,12 +97,8 @@ flush_buffer_to_screen_16x8:
 ;   BC - Address in the off-screen buffer at the start of the Y row
 ;   SP - Location of the sprite/mask data (only the mask is used)
 ;
-; Return values:
-;   -
-;
 ; Registers modified:
 ;   AF, DE and HL
-;
 ;------------------------------------------------------------------------------
 
     ; Modifies 
@@ -164,7 +146,6 @@ flush_buffer_to_screen_16x8:
     ENDM
 
 ;------------------------------------------------------------------------------
-;
 ; Render a single row of a 16 bit wide (24 bits pre-shifted) sprite to the
 ; off-screen buffer
 ;
@@ -173,12 +154,8 @@ flush_buffer_to_screen_16x8:
 ;   BC - Address in the off-screen buffer at the start of the Y row
 ;   SP - Location of the sprite/mask data
 ;
-; Return values:
-;   -
-;
 ; Registers modified:
 ;   AF, DE and HL
-;
 ;------------------------------------------------------------------------------
 
     ; Modifies 
@@ -229,7 +206,6 @@ flush_buffer_to_screen_16x8:
     ENDM
 
 ;------------------------------------------------------------------------------
-;
 ; Render a sprite that must be 16 wide (pre-shifted, 24 bits in total)
 ; and 8 tall into the off-screen buffer.
 ;
@@ -238,16 +214,7 @@ flush_buffer_to_screen_16x8:
 ;   PUSH address of pre-shifted sprite lookup table
 ;   PUSH blanking - TRUE_VALUE or FALSE_VALUE
 ;   CALL fast_draw_sprite_16x8
-;   POP rr
-;   POP rr
-;   POP rr
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   POP rr,rr,rr
 ;------------------------------------------------------------------------------
 
 draw_sprite_16x8:

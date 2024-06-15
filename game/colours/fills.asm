@@ -1,18 +1,10 @@
 ;------------------------------------------------------------------------------
-;
 ; Fill screen with given colour attributes
 ;
 ; Usage:
 ;   PUSH rr                             ; Attribute byte in LSB
 ;   CALL fill_screen_attributes
 ;   POP rr                              ; Ditch the supplied parameter
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 fill_screen_attributes:
@@ -41,7 +33,6 @@ fill_screen_attributes:
     RET
 
 ;------------------------------------------------------------------------------
-;
 ; Fill a rectangle with the given attribute
 ;
 ; The structure of the screen memory address is formed as follows:
@@ -57,12 +48,6 @@ fill_screen_attributes:
 ;   POP rr                              ; Ditch the supplied parameters
 ;   POP rr
 ;   POP rr
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
 ;------------------------------------------------------------------------------
 
 fill_screen_attributes_rect:
@@ -150,18 +135,11 @@ fill_screen_attributes_rect:
 .line_step_bytes:   BLOCK 1
 
 ;------------------------------------------------------------------------------
-;
 ; Fill a stripe across the screen with the given attribute
 ;
 ; Usage:
 ;   PUSH rr                             ; Top Y in MSB, Height in LSB
 ;   PUSH rr                             ; Attribute in LSB
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
 ;------------------------------------------------------------------------------
 
 fill_screen_attribute_stripe:

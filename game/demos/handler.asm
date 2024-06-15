@@ -1,3 +1,7 @@
+;------------------------------------------------------------------------------
+; Interrupt handler which plays the demo script by simulating key presses.
+;------------------------------------------------------------------------------
+
 demo_interrupt_handler:
     DI
 
@@ -6,9 +10,10 @@ demo_interrupt_handler:
     ; Allow credits to be added - credits terminate the demo
     CALL keyboard.get_keys
 
+    ; Add credit key pressed?
     LD A, (keyboard.keys_down)
     BIT keyboard.CREDS_KEY_DOWN_BIT,A
-    JR Z,.not_a_credit
+    JR Z,.not_a_credit                                          ; Credit not added so continue with script
 
     CALL credits.event_credit_added
 

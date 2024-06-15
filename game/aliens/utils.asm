@@ -1,5 +1,7 @@
 ;------------------------------------------------------------------------------
 ; Find alien at the given coords.
+;
+; Usage:
 ;   PUSH rr                     ; Target coordinates
 ;   PUSH rr                     ; Space for return value
 ;   CALL get_alien_at_coords 
@@ -11,7 +13,7 @@
 ;
 ; Return value:
 ;   MSB 0xFF => not found
-;   else     => points to the appropriate alien struct
+;   Else     => points to the appropriate alien struct
 ;------------------------------------------------------------------------------
 
 get_alien_at_coords:
@@ -168,6 +170,21 @@ get_alien_at_coords:
 .target_x:              BLOCK 1
 .alien_index:           BLOCK 1
 
+;------------------------------------------------------------------------------
+; Find lowest alien in the given column
+;
+; Usage:
+;    PUSH rr                                  ; Column to search in LSB
+;    PUSH rr                                  ; Space for return value
+;    CALL get_lowest_active_alien_in_column
+;    POP rr                                   ; Return value 
+;    POP rr
+;
+; Return values
+;    0 => Not found
+;    else => Point the appropriate alien
+;------------------------------------------------------------------------------
+
 get_lowest_active_alien_in_column:
 
 .PARAM_COL:     EQU 16                                  ; Column to search 
@@ -221,12 +238,28 @@ get_lowest_active_alien_in_column:
 
 .ALIEN_PACK_LOOKUP_ROW_DELTA: EQU _ALIEN_PACK_COLUMN_COUNT*2 ; WORD pointers 
 
+;------------------------------------------------------------------------------
+; Find lowest alien at the given x coord
+;
+; Usage:
+;    PUSH rr                        ; X coord to search for in MSB
+;    PUSH rr                        ; Space for return value
+;    CALL get_lowest_alien_at_x
+;    POP rr                         ; Return value
+;    POP rr
+;
+; Return values:
+;   0xFF in MSB => Not found
+;   Else        => pointer to the appropriate alien
+;------------------------------------------------------------------------------
+
 ; BUG Depending on the movement of the pack it is possible that due to staggering
 ; an which is not the bottom most in its column might be selected - this issue likely 
 ; exists for get lowest in column too
+; TODO Review return value for not found.
 get_lowest_alien_at_x:
 
-.PARAM_TARGET_X: EQU 17                                 ; Coords to look for alien
+.PARAM_TARGET_X: EQU 17                                 ; X coord to look for alien
 .RTN_ALIEN_PTR: EQU 14                                  ; Return value
 
     ; LOGPOINT [LOWEST_ALIEN_AT_X] --> get_lowest_alien_at_x
@@ -260,12 +293,12 @@ get_lowest_alien_at_x:
     LD IX,DE                                            ; Point IX to alien state
 
     ; Is the alien active?
-    LD A,(IX+STATE_OFFSET_STATE);                      ; Is the alien active?
+    LD A,(IX+STATE_OFFSET_STATE);                       ; Is the alien active?
     BIT _ALIEN_STATE_ACTIVE_BIT,A
     JR Z,.next                                          ; No - so skip it
    
     ; Is the target X <= alien RHS
-    LD A,(IX+STATE_OFFSET_DRAW_COORDS_X)               ; Alien X coord
+    LD A,(IX+STATE_OFFSET_DRAW_COORDS_X)                ; Alien X coord
     ADD 10                                              
     LD B,A                                              ; TODO This value should be configurable
     LD A,(.target_x)

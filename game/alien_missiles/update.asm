@@ -124,7 +124,7 @@ next:
     PUSH AF,DE,HL,IX
 
     LD IX,(_current_alien_missile_ptr)
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                     ; Get the current alien type
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                    ; Get the current alien type
 
     CP _ALIEN_MISSILE_TYPE_0                                ; Type 0?
     JR Z,.type_0                                            ; Handle it.
@@ -132,7 +132,7 @@ next:
     CP _ALIEN_MISSILE_TYPE_1                                ; Type 1?
     JR Z,.type_1                                            ; Handle it.
 
-    ; type 2
+    ; Type 2
     LD DE,_ALIEN_MISSILE_0
     JR .set_type
 
@@ -198,39 +198,39 @@ _fire_if_ready:
     ; Get the step count of the other two missiles
     LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)  
 
-    CP _ALIEN_MISSILE_TYPE_0
-    JR Z,.type_0
+    CP _ALIEN_MISSILE_TYPE_0                                ; Alien type 0?
+    JR Z,.type_0                                            ; Y - handle it
 
-    CP _ALIEN_MISSILE_TYPE_1
-    JR Z,.type_1
+    CP _ALIEN_MISSILE_TYPE_1                                ; Alien type 1?
+    JR Z,.type_1                                            ; Y - handle it
 
     ; type 2  
-    GET_RELOAD_STEP_COUNT 0,0
-    GET_RELOAD_STEP_COUNT 1,1
+    GET_RELOAD_STEP_COUNT 0,0                               ; Step count of missile 0 => slot 0
+    GET_RELOAD_STEP_COUNT 1,1                               ; Step count of missile 1 => slot 1
 
     JR .fire_test
 
 .type_0:
-    GET_RELOAD_STEP_COUNT 1,0
-    GET_RELOAD_STEP_COUNT 2,1
+    GET_RELOAD_STEP_COUNT 1,0                               ; Step count of missile 1 => slot 0
+    GET_RELOAD_STEP_COUNT 2,1                               ; Step count of missile 2 => slot 1
 
-    LD DE,.SHOT_COLUMNS_0
-    LD HL,.alien_missile_shot_col_table_ptr
-    LD (HL),DE
+    LD DE,.SHOT_COLUMNS_0                                   ; Columns to shoot from for missile 0
+    LD HL,.alien_missile_shot_col_table_ptr                 ; Stash for columns table
+    LD (HL),DE                                              ; Store shot columns table to use
 
     JR .fire_test
 
 .type_1:
-    LD A,(_missile_1_enabled)
-    BIT utils.TRUE_BIT,A
-    JP Z,.done
+    LD A,(_missile_1_enabled)                               ; Is missile 1 enabled (disabled when only 1 alien remains)
+    BIT utils.TRUE_BIT,A                                    ; Enabled?
+    JP Z,.done                                              ; No - so done
 
-    GET_RELOAD_STEP_COUNT 0,0
-    GET_RELOAD_STEP_COUNT 2,1
+    GET_RELOAD_STEP_COUNT 0,0                               ; Step count of missile 0 => slot 0
+    GET_RELOAD_STEP_COUNT 2,1                               ; Step count of missile 2 => slot 1
 
-    LD DE,.SHOT_COLUMNS_1
-    LD HL,.alien_missile_shot_col_table_ptr
-    LD (HL),DE
+    LD DE,.SHOT_COLUMNS_1                                   ; Columns to shoot from for missile 1
+    LD HL,.alien_missile_shot_col_table_ptr                 ; Stash for columns table
+    LD (HL),DE                                              ; Store shot columns table to use
 
     JR .fire_test
 
@@ -261,7 +261,7 @@ _fire_if_ready:
     LD A,(.alien_missile_step_count_1)
     CP B
 
-    JR C, .step_count_1_is_lower 
+    JR C, .step_count_1_is_lower                            ; Step count 1 is lower 
 
     LD A,(.alien_missile_step_count_0)                      ; LOGPOINT [ALIEN_MISSILES] step_count_0_is_lower
     JR .test_reload_threshold
@@ -280,23 +280,26 @@ _fire_if_ready:
     LD A,(.alien_missile_step_count_0)                      ; LOGPOINT [ALIEN_MISSILES] step_count_1_is_zero
     JR .test_reload_threshold
 
+    ; Test the lowest step count against the reload threshold
 .test_reload_threshold:                                      
     LD B,A
     LD A,(_reload_rate)                                     
     CP B                                                    ; LOGPOINT [ALIEN_MISSILES] Testing step count ${B} against threshold ${A}       
-    JR NC,.done 
+    JR NC,.done                                             ; Step count has not reach the threshold - so done
 
 .fire
-    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)
-    CP _ALIEN_MISSILE_TYPE_2
-    JP Z,.target_missile_type_2
+    LD A,(IX+_ALIEN_MISSILE_OFFSET_TYPE)                    ; Get the missile type
+    CP _ALIEN_MISSILE_TYPE_2                                ; Missile type 2?  (this directly targets the player so is handled differently)
+    JP Z,.target_missile_type_2                             ; Handle missile type 2
+
+    ; Missile types 0 and 1
 
     ; Which column to fire from?
     LD HL,(.alien_missile_shot_col_table_ptr)               ; LOGPOINT [ALIEN_MISSILES] Firing
     LD D,0x00
-    LD E,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)
-    ADD HL,DE
-    LD A,(HL)                                            
+    LD E,(IX+_ALIEN_MISSILE_OFFSET_SHOT_COLUMN_INDEX)       ; Index into column table 
+    ADD HL,DE                                               ; Add index to base of column table
+    LD A,(HL)                                               ; Get the required column from the table
 
     ; Find the lowest alien in the selected column
     LD L,A
@@ -308,14 +311,14 @@ _fire_if_ready:
 
     LD A,H                                                  ; High byte == 0 => not found
     CP 0x00
-    JR Z,.update_to_next_col
-    JR .firing_alien_found
+    JR Z,.update_to_next_col                                ; Not found - so move along to next column and done
+    JR .firing_alien_found                                  ; Fire the missile!
 
 .target_missile_type_2:                                     ; Type 1 missile directly targets the player
     LD A,(_seeker_missile_toggle)                           ; Fires only every other time it is eligible
     XOR 0x01
     LD (_seeker_missile_toggle),A
-    JR Z,.done
+    JR Z,.done                                              ; Not the cycle to fire
 
     LD A,(player.player_x)                                  ; X coord of player base
     LD H,A                                 
@@ -331,7 +334,7 @@ _fire_if_ready:
 
     LD A,H                                                  ; 0xFF in high byte => no match
     CP H,0xFF
-    JR Z,.done
+    JR Z,.done                                              ; No alien found in that can target player - so done.
     ; Fall through to firing_alien_found
 
 .firing_alien_found
@@ -369,6 +372,6 @@ _fire_if_ready:
 .SHOT_COLUMNS_1:                    BYTE 0x03,0x0A,0x00,0x05,0x02,0x00,0x00,0x0A,0x08,0x01,0x07,0x01,0x0A,0x03,0x06,0x09
 .SHOT_COLUMNS_COUNT:                EQU 16
 
-.alien_missile_shot_col_table_ptr:  BLOCK 2                 ; Shot column table for the current alien missiles
+.alien_missile_shot_col_table_ptr:  BLOCK 2                 ; Shot column table for the current alien missile
 .alien_missile_step_count_0:        BLOCK 1                 ; Step count for one of the "other" two alien missiles
 .alien_missile_step_count_1:        BLOCK 1                 ; Step count for the other of the "other" two alien missiles

@@ -1,18 +1,10 @@
 ;------------------------------------------------------------------------------
-;
 ; Set the colour of the screen border
 ;
 ; Usage:
 ;   PUSH rr          ; Colour in LSB
 ;   CALL set_border
 ;   POP rr           ; Ditch the supplied parameter
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 set_border:
