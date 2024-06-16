@@ -5,8 +5,8 @@ This page has side-by-side views of this project running under ZX Spectrum emula
 # Game/Demo Play
 
 <p align="center">
-<img src="screens/game-play.png" width="40%" height="325">
-<img src="screens/taito/game-play.png" width="40%" height="325" >
+<img src="screens/game-play.png" width="30%" height="325">
+<img src="screens/taito/game-play.png" width="30%" height="325" >
 </p>
 
 # Score Table
