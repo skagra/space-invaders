@@ -6,15 +6,7 @@
 ;   PUSH rr  ; Pointer to the null terminated string
 ;   PUSH rr  ; Character cell coordinates (X in high byte, Y in low byte)
 ;   CALL print_string
-;   POP rr   ; Ditch the supplied parameters
-;   POP rr    
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   POP rr,rr  
 ;------------------------------------------------------------------------------
 
 print_string:
@@ -65,7 +57,6 @@ print_string:
     RET
 
 ;------------------------------------------------------------------------------
-;
 ; Translate x,y in character cells to screen memory address
 ;
 ; The structure of the screen memory address is formed as follows:
@@ -79,13 +70,6 @@ print_string:
 ;   CALL char_coords_to_mem
 ;   POP rr   ; Grab the result
 ;   POP rr   ; Ditch the supplied parameter
-;
-; Return values:
-;   Address of character cell on top of stack
-;
-; Registers modified:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 char_coords_to_mem:
@@ -248,22 +232,13 @@ _print_char_at_screen_mem:
 .char_data_ptr:  BLOCK 2
 
 ;------------------------------------------------------------------------------
-;
 ; Print a single character
 ; 
 ; Usage:
 ;   PUSH rr  ; Character to print in LSB
 ;   PUSH rr  ; Character cell coordinates (X in high byte, Y in low byte)
 ;   CALL print_char
-;   POP rr   ; Ditch the supplied parameters
-;   POP rr    
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   POP rr,rr   
 ;------------------------------------------------------------------------------
 
 print_char:

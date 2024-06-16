@@ -1,5 +1,4 @@
 ;------------------------------------------------------------------------------
-;
 ; Translate x,y coordinates to a screen map memory location
 ;
 ; The structure of the screen memory address is formed as follows:
@@ -12,13 +11,9 @@
 ; Usage:
 ;   PUSH rr                             ; Coords word X MSB Y LSB
 ;   PUSH rr                             ; Space for return value
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
+;   CALL coords_to_mem
+;   POP rr                              ; Return value memory location
+;   POP rr
 ;------------------------------------------------------------------------------
 
 coords_to_mem:

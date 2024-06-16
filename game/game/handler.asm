@@ -1,3 +1,7 @@
+;------------------------------------------------------------------------------
+; Interrupt handler used during running game, reads keys and adds credits
+;------------------------------------------------------------------------------
+
 handler:
     DI
 
@@ -24,6 +28,12 @@ handler:
     EI
  
     RET
+
+;------------------------------------------------------------------------------
+; Activate the running game interrupt handler
+; Usage:
+;   CALL setup_interrupt_handler
+;------------------------------------------------------------------------------
 
 setup_interrupt_handler:
     PUSH HL

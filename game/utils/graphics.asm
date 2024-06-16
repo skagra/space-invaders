@@ -1,5 +1,4 @@
 ;------------------------------------------------------------------------------
-;
 ; Determine whether a point is within a box 
 ;
 ; Usage:
@@ -10,7 +9,6 @@
 ;   CALL copy_mem
 ;   POP rr                  ; Result TRUE_VALUE/FALSE_VALUE in LSB
 ;   POP rr,rr,rr
-;
 ;------------------------------------------------------------------------------
 
 is_point_in_box:

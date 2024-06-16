@@ -1,15 +1,8 @@
 ;------------------------------------------------------------------------------
-;
 ; Read the keyboard and move the player base based on key presses.
 ; 
 ; Usage:
 ;   CALL process_player
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
 ;------------------------------------------------------------------------------
 
 update:

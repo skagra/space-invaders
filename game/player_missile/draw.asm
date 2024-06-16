@@ -1,25 +1,9 @@
 ;------------------------------------------------------------------------------
-;
 ; Erases the current player missile or player missile explosion 
 ; based on (_missile_state).
 ;
 ; Usage:
 ;   CALL blank_missile
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-; Internal state:
-;   _missile_state - State of the missile taken from _MISSILE_STATE_*
-;   _missile_x - X coord of the missile
-;   _missile_blank_y - Y coord of the missile
-;
-; External state:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 blank:
@@ -125,27 +109,11 @@ blank:
     RET
 
 ;------------------------------------------------------------------------------
-;
 ; Draws the current player missile or player missile explosion 
 ; based on (_missile_state).
 ;
 ; Usage:
 ;   CALL draw_missile
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-; Internal state:
-;   _missile_state - Current state of the missile, values from _MISSILE_STATE_*
-;   _missile_x - X coord of the missile
-;   _missile_draw_y -Y coordinate of the missile
-;
-; External state:
-;   -
-;
 ;------------------------------------------------------------------------------
 
 draw:

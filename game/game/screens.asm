@@ -1,3 +1,10 @@
+;------------------------------------------------------------------------------
+; Draw the score screen.
+;
+; Usage:
+;   CALL display_score_screen
+;------------------------------------------------------------------------------
+
 display_score_screen:
     CALL draw_utils.wipe_screen
     
@@ -9,6 +16,13 @@ display_score_screen:
 
     RET
 
+;------------------------------------------------------------------------------
+; Draw the insert coin screen.
+;
+; Usage:
+;   CALL display_coin_screen
+;------------------------------------------------------------------------------
+
 display_coin_screen:
     CALL draw_utils.wipe_screen
     
@@ -19,7 +33,14 @@ display_coin_screen:
     CALL game_screen.draw_insert_coin_section
 
     RET
-   
+
+;------------------------------------------------------------------------------
+; Draw the push player 1 screen.
+;
+; Usage:
+;   CALL display_push_player_1_screen
+;------------------------------------------------------------------------------
+
 display_push_player_1_screen:
     CALL draw_utils.wipe_screen
 
@@ -35,6 +56,13 @@ display_push_player_1_screen:
 
     RET
 
+;------------------------------------------------------------------------------
+; Draw the ready player 1 screen.
+;
+; Usage:
+;   CALL display_ready_player_1_screen
+;------------------------------------------------------------------------------
+
 display_ready_player_1_screen:
     CALL draw_utils.wipe_screen
 
@@ -47,6 +75,12 @@ display_ready_player_1_screen:
 
     RET
 
+;------------------------------------------------------------------------------
+; Play a demo.
+;
+; Usage:
+;   CALL play_demo
+;------------------------------------------------------------------------------
 play_demo:
     CALL draw_utils.wipe_screen
 
@@ -62,6 +96,13 @@ play_demo:
     CALL demos.run_demo
 
     RET
+
+;------------------------------------------------------------------------------
+; Play the game.
+;
+; Usage:
+;   CALL play_game
+;------------------------------------------------------------------------------
 
 play_game:
     PUSH AF

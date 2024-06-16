@@ -1,29 +1,9 @@
 ;------------------------------------------------------------------------------
-;
 ; Update the missile state based on its current state, location 
-; and collision status
+; and collision status.
 ;
 ; Usage:
 ;   CALL blank_missile
-;
-; Return values:
-;   -
-;
-; Registers modified:
-;   -
-;
-; Internal state:
-;   _missile_state - Current state of the missile, values from _MISSILE_STATE_*
-;   _missile_x - X coord of the missile
-;   _missile_blank_y - Y coord to erase the missile
-;   _missile_draw_y - Y coord to draw the missile
-;   _collision_detected - Set to indicate a missile collision was detected in 
-;       the draw phase
-;
-; External state:
-;   keyboard.keys_down - To test for fire button being pressed
-;   player.player_x - X coordinate of the player base
-;
 ;------------------------------------------------------------------------------
 
 update:
