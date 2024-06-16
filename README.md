@@ -9,6 +9,7 @@ A faithful reproduction of the original arcade Space Invaders game, as released 
 # Contents
 
 * [Game](game) - The game code.
+* [Screen Dumps](docs/screens.md) - Side by side comparison screen dumps.
 * [Building](game/docs/building.md) - How to build the project.
 * [Running](game/docs/running.md) - How to run the project.
 * [Playing](game/docs/playing.md) - How to play the come (controls).
