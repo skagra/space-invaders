@@ -118,10 +118,7 @@ main:
     CP 0x00
     JR NZ,.have_credit
 
-    LD L,0x40                                       ; TODO Make this configurable
-    PUSH HL
-    CALL utils.delay
-    POP HL
+    CALL utils.delay_one_second
 
 .demo
     LD A,(.demo_id)
@@ -136,10 +133,7 @@ main:
     CP 0x00
     JR NZ,.have_credit
 
-    LD L,0x40                                       ; TODO Make this configurable
-    PUSH HL
-    CALL utils.delay
-    POP HL
+    CALL utils.delay_one_second
 
 .coin
     CALL game.display_coin_screen
@@ -148,10 +142,7 @@ main:
     CP 0x00
     JR NZ,.have_credit
 
-    LD L,0x40                                       ; TODO Make this configurable
-    PUSH HL
-    CALL utils.delay
-    POP HL
+    CALL utils.delay_one_second
     
     JR .score_table
 

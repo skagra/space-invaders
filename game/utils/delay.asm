@@ -2,42 +2,48 @@
 ; Delay loop
 ;
 ; Usage:
-;   PUSH rr                 ; Length of delay in LSB
+;   PUSH rr                 ; Length of delay in LSB in refresh cycles
 ;   CALL delay
 ;   POP rr                  
 ;------------------------------------------------------------------------------
 
 delay:
-    
-.PARAM_LEN:    EQU 8
-
-    PUSH BC,DE,IX
+.PARAM_LEN:    EQU 6
+    PUSH BC,IX
 
     LD  IX,0                                          
     ADD IX,SP
 
     LD B,(IX+.PARAM_LEN)
 
-.outer_loop:
-    LD D,0x08
+.delay_loop:
+    HALT
+    DJNZ .delay_loop
 
-.mid_loop:
-    LD E,0xFF
+    POP IX,BC
 
-.inner_loop:
-    NOP
-    NOP
-    NOP
-    NOP
+    RET
+
+delay_half_second:
+    PUSH BC
+
+    LD C,25
+    PUSH BC
+    CALL delay
+    POP BC
+
+    POP BC
     
-    DEC E
-    JR NZ,.inner_loop
+    RET
 
-    DEC D
-    JR NZ,.mid_loop
+delay_one_second:
+    PUSH BC
 
-    DJNZ .outer_loop
-
-    POP IX,DE,BC
-
+    LD C,50
+    PUSH BC
+    CALL delay
+    POP BC
+    
+    POP BC
+    
     RET

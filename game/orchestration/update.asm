@@ -37,10 +37,7 @@ update:
     CALL fast_draw.flush_buffer_to_screen_16x8
 
     ; Short delay before continuing
-    LD HL,0x40                                              ; TODO Pull out into a configurable constant
-    PUSH HL
-    CALL utils.delay
-    POP HL
+    CALL utils.delay_one_second
 
     LD A,(player_lives.player_lives_1)                      ; Game over?
     AND A
