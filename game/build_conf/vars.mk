@@ -2,7 +2,7 @@ ASM=sjasmplus
 BIN=bin
 
 CSPECT=CSpect.exe
-CSPECT_FLAGS=+tv -60 -w2 -fps -w4 -sound -analytics
+CSPECT_FLAGS=+tv -w2 -fps -w4 -sound -analytics
 
 MAME=mame.exe
 MAME_FLAGS=spectrum -ui_active -effect scanlines -ka -waitvsync -aspect 7:3

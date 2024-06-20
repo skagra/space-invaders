@@ -51,6 +51,7 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     ; Tests
     INCLUDE "test_splash_screen.asm"
     INCLUDE "test_demos.asm"
+    INCLUDE "test_coin_section.asm"
 
     MODULE main
 main:
@@ -105,6 +106,10 @@ main:
         CALL test_demos
     ENDIF
 
+    IFDEF TEST_COIN_SECTION
+        CALL test_coin_section
+    ENDIF
+    
 .animation_loop:
     DEBUG_VTRACE_FLASH 
 

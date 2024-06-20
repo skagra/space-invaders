@@ -120,7 +120,7 @@ main:
 
     CALL utils.delay_one_second
 
-.demo
+.demo:
     LD A,(.demo_id)
     XOR 0x01
     LD (.demo_id),A
@@ -135,7 +135,7 @@ main:
 
     CALL utils.delay_one_second
 
-.coin
+.coin:
     CALL game.display_coin_screen
 
     LD A,(credits.credits)

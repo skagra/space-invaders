@@ -24,14 +24,22 @@ display_score_screen:
 ;------------------------------------------------------------------------------
 
 display_coin_screen:
+    PUSH HL
+
     CALL draw_utils.wipe_screen
     
     CALL setup_interrupt_handler
 
     CALL game_screen.print_scores_section
     CALL game_screen.draw_credits_section
+    
+    LD L,utils.TRUE_VALUE
+    PUSH HL
     CALL game_screen.draw_insert_coin_section
+    POP HL
 
+    POP HL
+    
     RET
 
 ;------------------------------------------------------------------------------

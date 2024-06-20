@@ -213,7 +213,7 @@ flush_buffer_to_screen_16x8:
 ;   PUSH coords word - X high byte, Y low byte
 ;   PUSH address of pre-shifted sprite lookup table
 ;   PUSH blanking - TRUE_VALUE or FALSE_VALUE
-;   CALL fast_draw_sprite_16x8
+;   CALL draw_sprite_16x8
 ;   POP rr,rr,rr
 ;------------------------------------------------------------------------------
 

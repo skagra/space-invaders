@@ -55,7 +55,7 @@ slow_print_string:
      POP HL                                             ; Restore HL
      JR Z,.ps_done                                      ; Done if callback flagged done
 
-    HALT                                                ; Delay for a one VSYNC
+    HALT                                                 ; Delay for a one VSYNC
     
     DJNZ .delay_loop
 

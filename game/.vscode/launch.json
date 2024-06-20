@@ -70,6 +70,39 @@
         {
             "type": "dezog",
             "request": "launch",
+            "name": "Internal Simulator (test)",
+            "remoteType": "zsim",
+            "zsim": {
+                "visualMemory": true,
+                "memoryModel": "ZX48K",
+                "ulaScreen": true,
+                "zxBorderWidth": 20,
+                "vsyncInterrupt": true,
+                "zxKeyboard": true,
+                "zxBeeper": true,
+                "loadZxRom": true
+            },
+            "sjasmplus": [
+                {
+                    "path": "bin/tests.sld"
+                }
+            ],
+            "history": {
+                "reverseDebugInstructionCount": 1000000,
+                "spotCount": 10,
+                "codeCoverageEnabled": true
+            },
+            "startAutomatically": true,
+            "commandsAfterLaunch": [],
+            "rootFolder": "${workspaceFolder}",
+            "topOfStack": "main.STACK_TOP",
+            "load": "bin/tests.sna",
+            "smallValuesMaximum": 513,
+            "tmpDir": "bin"
+        },
+        {
+            "type": "dezog",
+            "request": "launch",
             "name": "CSpect (debug)",
             "remoteType": "cspect",
             "sjasmplus": [
@@ -114,18 +147,8 @@
         {
             "type": "dezog",
             "request": "launch",
-            "name": "Internal Simulator (test)",
-            "remoteType": "zsim",
-            "zsim": {
-                "visualMemory": true,
-                "memoryModel": "ZX48K",
-                "ulaScreen": true,
-                "zxBorderWidth": 20,
-                "vsyncInterrupt": true,
-                "zxKeyboard": true,
-                "zxBeeper": true,
-                "loadZxRom": true
-            },
+            "name": "CSpect (tests)",
+            "remoteType": "cspect",
             "sjasmplus": [
                 {
                     "path": "bin/tests.sld"
@@ -133,8 +156,7 @@
             ],
             "history": {
                 "reverseDebugInstructionCount": 1000000,
-                "spotCount": 10,
-                "codeCoverageEnabled": true
+                "spotCount": 10
             },
             "startAutomatically": true,
             "commandsAfterLaunch": [],
