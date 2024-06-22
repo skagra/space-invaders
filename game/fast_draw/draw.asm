@@ -219,17 +219,16 @@ flush_buffer_to_screen_16x8:
 
 draw_sprite_16x8:
 
-.PARAM_COORDS:            EQU 16                        ; Sprite coordinates
-.PARAM_SPRITE_DATA:       EQU 14                        ; Sprite pre-shifted data lookup table
-.PARAM_BLANK              EQU 12                        ; Drawing or blanking?
+.PARAM_COORDS:            EQU 4                         ; Sprite coordinates
+.PARAM_SPRITE_DATA:       EQU 2                         ; Sprite pre-shifted data lookup table
+.PARAM_BLANK              EQU 0                         ; Drawing or blanking?
 
     DI                                                  ; Disable interrupts as we'll be messing with the SP
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP                                                   
-
+    PARAMS_IX 5                                         ; Get the stack pointer
+                                               
     ; Get and store coords
     LD HL,(IX+.PARAM_COORDS)                            ; Grab the pixel coords
     LD (.coords),HL                                     ; And store for later 

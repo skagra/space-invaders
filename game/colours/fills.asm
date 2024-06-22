@@ -9,12 +9,11 @@
 
 fill_screen_attributes:
 
-.PARAM_ATTRIBUTE: EQU 6                                 ; Colour attributes
+.PARAM_ATTRIBUTE: EQU 0                                 ; Colour attributes
 
     PUSH HL,IX   
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 2                                         ; Get the stack pointer
 
     ; Set up call to utils.fill_mem
     LD HL, (ix+.PARAM_ATTRIBUTE)                        ; Get the colour attribute

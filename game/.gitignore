@@ -1,6 +1,5 @@
 *.obj
 .DS_Store
-.vscode/settings.json
 .tmp/
 *.sld
 *.sna

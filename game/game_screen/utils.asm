@@ -1,6 +1,6 @@
 wipe_play_area:
 
-    PUSH HL,IX    
+    PUSH HL    
 
     ; Set up call to utils.fill_mem
     LD HL,0x0000                                        ; Fill with zero values (blank)
@@ -28,6 +28,6 @@ wipe_play_area:
         POP HL 
     ENDIF
 
-    POP IX,HL
+    POP HL
 
     RET

@@ -58,14 +58,13 @@ draw_bases:
 
 _draw_base:
 
-.PARAM_COORDS:  EQU 8
-.PARAM_BLANK:   EQU 6
+.PARAM_COORDS:  EQU 2
+.PARAM_BLANK:   EQU 0
 
     PUSH DE,IX
 
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP  
-
+    PARAMS_IX 2                                         ; Get the stack pointer
+  
     LD DE,(IX+.PARAM_COORDS)             
     PUSH DE     
     LD DE,sprites.PLAYER_DIMS

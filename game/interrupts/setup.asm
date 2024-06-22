@@ -50,14 +50,17 @@ set_interrupt_handler:
     LD  IX,0                                            ; Point IX to the stack
     ADD IX,SP  
 
-    LD DE,(IX+.PARAM_HANDLER_ADDRESS)
+    LD E,(IX+.PARAM_HANDLER_ADDRESS)
+    LD D,(IX+.PARAM_HANDLER_ADDRESS+1)
 
     LD HL,INTERRUPT_JUMP
 
     ; Set up jump to handler instruction
     LD (HL), 0xC3                                       ; JP op code
-    INC L
-    LD (HL),DE
+    INC HL                                              ; Move to target address
+    LD (HL),E                                           ; LSB
+    INC HL                                              ; Move to MSB
+    LD (HL),D                                           ; MSB
 
     POP IX,HL,DE
 

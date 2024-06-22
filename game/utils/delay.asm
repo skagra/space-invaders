@@ -8,11 +8,11 @@
 ;------------------------------------------------------------------------------
 
 delay:
-.PARAM_LEN:    EQU 6
+.PARAM_LEN:    EQU 0
+
     PUSH BC,IX
 
-    LD  IX,0                                          
-    ADD IX,SP
+    PARAMS_IX 2                                         ; Get the stack pointer
 
     LD B,(IX+.PARAM_LEN)
 

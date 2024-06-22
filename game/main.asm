@@ -9,6 +9,7 @@
 
     INCLUDE "memory_map/module.asm"
     INCLUDE "build/module.asm"
+    INCLUDE "utils/module.asm"
     INCLUDE "debug/module.asm"
     INCLUDE "screen/module.asm"
     IFNDEF NO_SPLASH_SCREEN
@@ -21,7 +22,6 @@
 
     INCLUDE "sprites/module.asm"
     INCLUDE "character_set/module.asm"
-    INCLUDE "utils/module.asm"
     INCLUDE "double_buffer/module.asm"
     INCLUDE "draw_utils/module.asm"
     INCLUDE "draw/module.asm"

@@ -18,14 +18,12 @@
 
 get_alien_at_coords:
 
-.PARAM_COORDS:  EQU 16                                  ; Coords to look for alien
-.RTN_ALIEN_PTR: EQU 14                                  ; Return value
+.PARAM_COORDS:  EQU 2                                   ; Coords to look for alien
+.RTN_ALIEN_PTR: EQU 0                                   ; Return value
 
     PUSH AF,BC,DE,HL,IX,IY
 
-    ; Point IY to the stack
-    LD  IY,0                                            
-    ADD IY,SP   
+    PARAMS_IY 6                                          ; Point IY to the stack
 
     ; Flag hit not found
     LD (IY+.RTN_ALIEN_PTR), 0xFF                       

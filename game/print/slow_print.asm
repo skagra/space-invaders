@@ -1,13 +1,12 @@
 slow_print_string:
     
-.PARAM_STRING_PTR:  EQU 16
-.PARAM_COORDS:      EQU 14
-.PARAM_CALLBACK:    EQU 12 
+.PARAM_STRING_PTR:  EQU 4
+.PARAM_COORDS:      EQU 2
+.PARAM_CALLBACK:    EQU 0
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 5                                         ; Get the stack pointer
 
     LD HL,(IX+.PARAM_CALLBACK)                          ; Self modifying code to call the callback
     LD (.cb),HL
@@ -70,12 +69,11 @@ slow_print_string:
 
 slow_print_null_callback:
 
-.RTN_VALUE: EQU 4
+.RTN_VALUE: EQU 0
 
     PUSH IX
 
-    LD IX,0                                             ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 1                                         ; Get the stack pointer
 
     LD (IX+.RTN_VALUE),utils.TRUE_VALUE                 ; Always continue
 

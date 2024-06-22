@@ -144,13 +144,12 @@ event_alien_missile_hit_player_end:
 
 event_player_missile_hit_alien:
 
-.PARAM_ALIEN_COUNT: EQU 14
-.PARAM_SCORE:       EQU 12
+.PARAM_ALIEN_COUNT: EQU 2
+.PARAM_SCORE:       EQU 0
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                                                    ; Point IX to the stack
-    ADD IX,SP 
+    PARAMS_IX 5                                                 ; Get the stack pointer
 
     LD DE,(IX+.PARAM_SCORE)
     LD B,D                                                      ; Score MSB in B

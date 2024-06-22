@@ -8,12 +8,12 @@
 ;------------------------------------------------------------------------------
 
 set_border:
-.PARAM_BORDER_COLOUR:  EQU 8
+
+.PARAM_BORDER_COLOUR:  EQU 0
 
     PUSH AF,HL,IX
     
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 3                                          ; Get the stack pointer
 
     LD HL,(IX+.PARAM_BORDER_COLOUR)
 

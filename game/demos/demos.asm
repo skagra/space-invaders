@@ -9,12 +9,11 @@
 
 run_demo:
 
-.PARAM_DEMO_NUM EQU 10
+.PARAM_DEMO_NUM EQU 0
 
     PUSH AF,DE,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     ; Set demo mode for the main animation loop
     LD A,game.GAME_MODE_DEMO_VALUE

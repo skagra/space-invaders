@@ -11,13 +11,12 @@
 
 print_string:
     
-.PARAM_STRING_PTR: EQU 14
-.PARAM_COORDS: EQU 12
+.PARAM_STRING_PTR:  EQU 2
+.PARAM_COORDS:      EQU 0
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 5                                         ; Get the stack pointer
 
     ; Calculate memory location from coords
     LD HL,(IX+.PARAM_COORDS)
@@ -74,13 +73,12 @@ print_string:
 
 char_coords_to_mem:
 
-.PARAM_COORDS:   EQU 12                                 ; Coordinates
-.RTN_ADDR:       EQU 10                                 ; Return address
+.PARAM_COORDS:  EQU 2                                   ; Coordinates
+.RTN_ADDR:      EQU 0                                   ; Return address
 
     PUSH AF,BC,HL,IX
    
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     ; Y row
     LD BC, (IX+.PARAM_COORDS)                           ; Get coords from the stack
@@ -117,13 +115,12 @@ char_coords_to_mem:
 
 inline_print:
     
-.PARAM_CALLER EQU 8
-.PARAM_COORDS EQU 10
+.PARAM_COORDS EQU 2
+.PARAM_CALLER EQU 0
 
     PUSH AF,DE,HL,IX
    
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     LD HL,(IX+.PARAM_CALLER)                            ; Return address
     PUSH HL
@@ -168,13 +165,12 @@ inline_print:
 
 _print_char_at_screen_mem:
 
-.PARAM_CHAR:    EQU 14
-.PARAM_ADDRESS: EQU 12
+.PARAM_CHAR:    EQU 2
+.PARAM_ADDRESS: EQU 0
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 5                                         ; Get the stack pointer
 
     LD HL,(IX+.PARAM_ADDRESS)                           ; Address in screen memory
     LD (.print_mem_ptr),HL                              
@@ -243,13 +239,12 @@ _print_char_at_screen_mem:
 
 print_char:
 
-.PARAM_CHAR:   EQU 12
-.PARAM_COORDS: EQU 10
+.PARAM_CHAR:    EQU 2
+.PARAM_COORDS:  EQU 0
 
     PUSH AF,DE,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     ; Calculate memory location from coords
     LD HL,(IX+.PARAM_COORDS)

@@ -1,0 +1,37 @@
+{
+    "cmake.configureOnOpen": false,
+    "cSpell.words": [
+        "CREDS",
+        "cspect",
+        "DEFL",
+        "DJNZ",
+        "dont",
+        "ENDM",
+        "ENDMODULE",
+        "HORIZ",
+        "IFDEF",
+        "IFNDEF",
+        "LDIR",
+        "LOGPOINT",
+        "MAME",
+        "rompath",
+        "SAVESNA",
+        "scanlines",
+        "sjasmplus",
+        "Skagra",
+        "SLDOPT",
+        "Spect",
+        "STRUCT",
+        "TAITO",
+        "VSYNC",
+        "VTRACE",
+        "waitvsync",
+        "WPMEM",
+        "ZXSPECTRUM"
+    ],
+    "cSpell.enableFiletypes": [
+        "asm-collection",
+        "z80-asm-meter"
+    ],
+    "cSpell.language": "en,en-GB"
+}

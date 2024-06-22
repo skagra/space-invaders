@@ -1,11 +1,10 @@
 add_to_score:
 
-.PARAM_INCREMENT EQU 6
+.PARAM_INCREMENT EQU 0
 
     PUSH AF,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 2                                         ; Get the stack pointer
 
     LD HL,(IX+.PARAM_INCREMENT)                         ; Grab the value to add to the score
     OR A                                                ; Ensure the half carry is reset
@@ -26,12 +25,11 @@ add_to_score:
 
 event_alien_hit_by_player_missile:
 
-.PARAM_ALIEN_TYPE EQU 10
+.PARAM_ALIEN_TYPE EQU 0
 
     PUSH AF,BC,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     LD HL,ALIEN_SCORE_VALUES                            ; Alien score lookup table
     LD B,0x00                                               
@@ -46,7 +44,6 @@ event_alien_hit_by_player_missile:
     POP IX,HL,BC,AF
 
     RET
-
 
 ; Alien scores index by the alien type
 ALIEN_SCORE_VALUES: BYTE 0x10,0x20,0x30

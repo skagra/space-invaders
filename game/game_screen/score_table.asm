@@ -207,12 +207,11 @@ draw_score_table_section:
 
 cred_callback:
 
-.RTN_VALUE: EQU 6
+.RTN_VALUE: EQU 0
 
     PUSH AF,IX
 
-    LD IX,0                                             ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 2                                         ; Get the stack pointer
 
     LD A,(credits.credits)
     CP 0x00

@@ -12,14 +12,13 @@
 
 draw_sprite_and_flush_buffer:
 
-.PARAM_COORDS:            EQU 10                        ; Sprite coordinates
-.PARAM_DIMS:              EQU 8                         ; Sprite dimensions
-.PARAM_SPRITE_DATA:       EQU 6                         ; Sprite pre-shifted data lookup table
+.PARAM_COORDS:            EQU 4                         ; Sprite coordinates
+.PARAM_DIMS:              EQU 2                         ; Sprite dimensions
+.PARAM_SPRITE_DATA:       EQU 0                         ; Sprite pre-shifted data lookup table
     
     PUSH HL,IX
 
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP                                                   
+    PARAMS_IX 2                                         ; Get the stack pointer                                               
 
     ; Pass parameters onto draw_sprite
     LD HL,(IX+.PARAM_COORDS)
@@ -66,18 +65,17 @@ draw_sprite_and_flush_buffer:
 
 draw_sprite:
 
-.PARAM_COORDS:            EQU 22                        ; Sprite coordinates
-.PARAM_DIMS:              EQU 20                        ; Sprite dimensions
-.PARAM_SPRITE_DATA:       EQU 18                        ; Sprite pre-shifted data lookup table
-.PARAM_BLANKING:          EQU 16                        ; Drawing or blanking?                   
-.PARAM_COLLISION_STRUCT:  EQU 14
+.PARAM_COORDS:            EQU 8                         ; Sprite coordinates
+.PARAM_DIMS:              EQU 6                         ; Sprite dimensions
+.PARAM_SPRITE_DATA:       EQU 4                         ; Sprite pre-shifted data lookup table
+.PARAM_BLANKING:          EQU 2                         ; Drawing or blanking?                   
+.PARAM_COLLISION_STRUCT:  EQU 0
 
     DI 
 
     PUSH AF,BC,DE,HL,IX,IY
 
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP                                                   
+    PARAMS_IX 6                                         ; Get the stack pointer                                      
 
     ; Initialize the collision flag
     LD HL,(IX+.PARAM_COLLISION_STRUCT)                  

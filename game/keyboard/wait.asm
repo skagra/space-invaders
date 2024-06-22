@@ -1,10 +1,9 @@
 wait:
-.PARAM_MASK EQU 4
+.PARAM_MASK EQU 0
 
     PUSH AF
 
-    LD  IX,0                                            
-    ADD IX,SP
+    PARAMS_IX 1                                         ; Get the stack pointer
 
 .keep_waiting:
     LD A, (keyboard.keys_down)

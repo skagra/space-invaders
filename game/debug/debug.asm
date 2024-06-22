@@ -45,19 +45,20 @@ _cycle_flash:
 
 _flag_error:
 
-.PARAM_CHAR: EQU 8
+.PARAM_CHAR: EQU 0
 
     PUSH AF,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 3                                         ; Get the stack pointer
 
     ; Set colour attribute
     LD HL,_FLAG_ERROR_BYTE                              
     LD (HL),colours.CA_BG_RED|colours.CA_FG_WHITE
 
     ; Draw the error indicator character
-    LD HL,(IX+.PARAM_CHAR)
+    LD H,(IX+.PARAM_CHAR+1)
+    LD L,(IX+.PARAM_CHAR)
+
     PUSH HL
     LD HL,0x0217
     PUSH HL

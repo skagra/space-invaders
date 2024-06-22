@@ -31,13 +31,12 @@ draw_shields:
 
 draw_shield:
 
-.PARAM_COORDS:  EQU 6
+.PARAM_COORDS:  EQU 0
 
     PUSH DE,IX
 
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP  
-
+    PARAMS_IX 2                                         ; Get the stack pointer
+ 
     LD DE,(IX+.PARAM_COORDS)             
     PUSH DE     
     LD DE,sprites.SHIELD_DIMS

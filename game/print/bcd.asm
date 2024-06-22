@@ -1,12 +1,11 @@
 print_bcd_nibble:    
 
-.PARAM_COORDS EQU 8
-.PARAM_NUMBER_LS EQU 10
+.PARAM_NUMBER_LS    EQU 2
+.PARAM_COORDS       EQU 0
 
     PUSH AF,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 3                                         ; Get the stack pointer
 
     ; Get character representing the single digit
     LD A,(IX+.PARAM_NUMBER_LS)                          ; Get the digit
@@ -32,14 +31,13 @@ print_bcd_nibble:
 
 print_bcd_word:    
 
-.PARAM_COORDS EQU 10
-.PARAM_NUMBER_MS EQU 13
-.PARAM_NUMBER_LS EQU 12
+.PARAM_NUMBER_MS    EQU 3
+.PARAM_NUMBER_LS    EQU 2
+.PARAM_COORDS       EQU 0
 
     PUSH AF,BC,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     ; First (most significant) digit
     LD HL,.buffer
@@ -91,13 +89,12 @@ print_bcd_word:
 
 print_bcd_byte:    
 
-.PARAM_NUMBER EQU 12
-.PARAM_COORDS EQU 10
+.PARAM_NUMBER EQU 2
+.PARAM_COORDS EQU 0
 
     PUSH AF,BC,HL,IX
 
-    LD  IX,0                                            ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     ; First (most significant) digit
     LD HL,.buffer

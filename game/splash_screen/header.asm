@@ -23,14 +23,19 @@ draw_header:
     LD HL,.HEADER
 
 .loop:
-    LD DE,(HL)                                          ; Current line
-    LD IX,HL
+    LD E,(HL) : INC HL : LD D,(HL) : DEC HL                 ; Current line
+    PUSH HL : POP IX
 
-    LD DE,(IX+.HEADER_TEXT_OFFSET)
+    LD E,(IX+.HEADER_TEXT_OFFSET)
+    LD D,(IX+.HEADER_TEXT_OFFSET+1)
     PUSH DE
-    LD DE,(IX+.HEADER_COORDS_OFFSET)
+
+    LD E,(IX+.HEADER_COORDS_OFFSET)
+    LD D,(IX+.HEADER_COORDS_OFFSET+1)
     PUSH DE
+
     CALL draw_header_line
+
     POP DE
     POP DE
 
@@ -81,15 +86,16 @@ draw_header:
 
 draw_header_line:
 
-.PARAM_TEXT: EQU 14
-.PARAM_COORDS: EQU 12
+.PARAM_TEXT: EQU 2
+.PARAM_COORDS: EQU 0
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                            ; Point IX to the stack
-    ADD IX,SP  
+    PARAMS_IX 5                         ; Get the stack pointer
 
-    LD DE,(IX+.PARAM_COORDS)            ; Character coords
+    LD E,(IX+.PARAM_COORDS)             ; Character coords
+    LD D,(IX+.PARAM_COORDS+1)
+
     SLA D                               ; x 8 to give pixel coord X
     SLA D
     SLA D
@@ -97,7 +103,8 @@ draw_header_line:
     SLA E
     SLA E
 
-    LD HL,(IX+.PARAM_TEXT)
+    LD L,(IX+.PARAM_TEXT)
+    LD H,(IX+.PARAM_TEXT+1)
     
 .loop:
     LD A,(HL)

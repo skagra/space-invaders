@@ -1,6 +1,6 @@
 event_player_missile_hit_alien:
 
-.PARAM_TARGET_ALIEN: EQU 10                       
+.PARAM_TARGET_ALIEN: EQU 0                       
     
     PUSH AF,HL,IX,IY
 
@@ -8,8 +8,7 @@ event_player_missile_hit_alien:
     BIT utils.TRUE_BIT,A
     JR NZ,.done
 
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP  
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     ; Inform the player missile 
     CALL player_missile.event_player_missile_hit_alien
@@ -64,12 +63,11 @@ event_alien_missile_hit_shield:
     RET
 
 event_missile_hit_missile:
-.PARAM_ALIEN_MISSILE: EQU 6
+.PARAM_ALIEN_MISSILE: EQU 0
 
     PUSH HL,IX
     
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP  
+    PARAMS_IX 2                                         ; Get the stack pointer
     
     CALL player_missile.event_missiles_collided
     

@@ -1,18 +1,14 @@
 print_message:
 
-.PARAM_COUNT: EQU 12
-.PARAM_MESSAGE: EQU 10
+.PARAM_COUNT:   EQU 2
+.PARAM_MESSAGE: EQU 0
 
     PUSH BC,DE,HL,IX
 
-    LD IX,0                                             ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     LD B,(IX+.PARAM_COUNT)                              ; Loop counter
     LD HL,(IX+.PARAM_MESSAGE)        
-
-    ; LD B,.MESSAGE_LINES_COUNT                         ; Loop counter
-    ; LD HL,.MESSAGE                                    ; Message line pointer
 
     LD A,utils.FALSE_VALUE
     LD (_next_screen),A
@@ -48,12 +44,11 @@ print_message:
 
 next_screen_callback:
 
-.RTN_VALUE: EQU 6
+.RTN_VALUE: EQU 0
 
     PUSH AF,IX
 
-    LD IX,0                                             ; Get the stack pointer
-    ADD IX,SP
+    PARAMS_IX 2                                         ; Get the stack pointer
 
     LD (IX+.RTN_VALUE),utils.TRUE_VALUE                 ; Always continue
 

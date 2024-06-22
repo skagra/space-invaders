@@ -1,9 +1,9 @@
 draw_insert_coin_section:
-.PARAM_FOR_ANIMATION:   EQU 8
+.PARAM_FOR_ANIMATION:   EQU 0
+
     PUSH AF,HL,IX
 
-    LD  IX,0                                          
-    ADD IX,SP
+    PARAMS_IX 3                                         ; Get the stack pointer
 
     LD HL,.TAITO_TEXT
     PUSH HL

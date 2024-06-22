@@ -13,27 +13,26 @@
 
 is_point_in_box:
 
-.PARAM_TARGET_COORDS:       EQU 14
-.PARAM_TARGET_Y:            EQU 14
-.PARAM_TARGET_X:            EQU 15
+.PARAM_TARGET_COORDS:       EQU 6
+.PARAM_TARGET_Y:            EQU 6
+.PARAM_TARGET_X:            EQU 7
 
-.PARAM_BOX_TOP_LEFT_COORDS: EQU 12
-.PARAM_BOX_TOP:             EQU 12
-.PARAM_BOX_LEFT:            EQU 13
+.PARAM_BOX_TOP_LEFT_COORDS: EQU 4
+.PARAM_BOX_TOP:             EQU 4
+.PARAM_BOX_LEFT:            EQU 5
 
-.PARAM_BOX_BOTTOM_RIGHT:    EQU 10
-.PARAM_BOX_BOTTOM:          EQU 10
-.PARAM_BOX_RIGHT:           EQU 11
+.PARAM_BOX_BOTTOM_RIGHT:    EQU 2
+.PARAM_BOX_BOTTOM:          EQU 2
+.PARAM_BOX_RIGHT:           EQU 3
 
-.PARAM_RETURN:              EQU 8
+.PARAM_RETURN:              EQU 0
 
     PUSH AF,BC,IX
 
     ; LOGPOINT [IS_POINT_IN_BOX] ---> is_point_in_box
 
-    LD  IX,0                                                ; Point IX to the stack
-    ADD IX,SP    
-
+    PARAMS_IX 3                                             ; Get the stack pointer
+   
     LD A,FALSE_VALUE                                        ; False returned by default
     LD (IX+.PARAM_RETURN),A
 

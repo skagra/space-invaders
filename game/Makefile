@@ -37,6 +37,7 @@ $(BIN)/$(SNA_DEBUG).sna: $(BIN) *.asm */*.asm Makefile
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
            -DDEBUG \
            $(DEBUG_FLAGS) \
+		   -Wfake \
            $(MAIN_ASM).asm
 
 $(BIN)/$(SNA_RELEASE).sna: $(BIN) *.asm */*.asm Makefile

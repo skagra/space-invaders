@@ -7,14 +7,12 @@
 
 event_alien_hit_by_player_missile_begin:
 
-.PARAM_ALIEN_STATE_PTR EQU 8 
+.PARAM_ALIEN_STATE_PTR EQU 0 
 
     PUSH HL,IX,IY
 
-    ; Point IX to the stack
-    LD  IX,0                                            
-    ADD IX,SP   
-
+    PARAMS_IX 3                                         ; Get the stack pointer
+  
     ; Pointer to the collided alien
     LD HL,(IX+.PARAM_ALIEN_STATE_PTR)
 

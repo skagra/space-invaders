@@ -89,8 +89,12 @@ new_sheet:
     LD B,_ALIEN_PACK_SIZE     
 
     ; Update all aliens with Y offset         
-.next_alien:
-    LD DE,(HL)                              ; Pointer to current alien
+.next_alien:                           
+    LD E,(HL)                               ; Pointer to current alien
+    INC HL
+    LD D,(HL)
+    DEC HL
+
     LD IX,DE
     LD A,(IX+STATE_OFFSET_DRAW_COORDS_Y)    ; Increment Y by required offset
     ADD C
@@ -103,7 +107,7 @@ new_sheet:
     LD A,(_aliens_adjust_index)             
     INC A
     CP _ALIENS_ADJUST_FOR_SHEET_COUNT
-    JR NZ,.dont_reset
+    JR NZ,.dont_reset 
     LD A,0x00
     ; Fall through
 

@@ -11,14 +11,13 @@
 
 fill_mem:
 
-.PARAM_FILL_VALUE:     EQU 16
-.PARAM_START_ADDRESS:  EQU 14
-.PARAM_FILL_LENGTH:    EQU 12
+.PARAM_FILL_VALUE:     EQU 4
+.PARAM_START_ADDRESS:  EQU 2
+.PARAM_FILL_LENGTH:    EQU 0
 
     PUSH AF,BC,DE,HL,IX
 
-    LD  IX,0                                            ; Grab the stack pointer
-    ADD IX,SP
+    PARAMS_IX 5                                         ; Get the stack pointer
 
     LD BC,(IX+.PARAM_FILL_LENGTH)                       ; Set up LDIR
     LD HL,(IX+.PARAM_START_ADDRESS)
@@ -50,14 +49,13 @@ fill_mem:
 
 copy_mem:
 
-.PARAM_SOURCE:  EQU 14
-.PARAM_DEST:    EQU 12
-.PARAM_COUNT:   EQU 10
+.PARAM_SOURCE:  EQU 4
+.PARAM_DEST:    EQU 2
+.PARAM_COUNT:   EQU 0
 
     PUSH BC,DE,HL,IX
 
-    LD  IX,0                                            ; Point IX to the stack
-    ADD IX,SP 
+    PARAMS_IX 4                                         ; Get the stack pointer
 
     LD HL,(IX+.PARAM_SOURCE)                            ; Set up LDIR
     LD DE,(IX+.PARAM_DEST)
