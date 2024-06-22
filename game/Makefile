@@ -26,9 +26,12 @@ DEBUG_FLAGS=
 # -DNO_SHIELDS 
 # -DINVINCIBLE 
 
-TEST_FLAGS= -DTEST_COIN_SECTION
+TEST_FLAGS=-DTEST_COIN_SECTION
 #-DTEST_DEMOS
 #-DTEST_SPLASH_SCREEN 
+
+BUILD_FLAGS= 
+#-Wfake
 
 $(BIN)/$(SNA_DEBUG).sna: $(BIN) *.asm */*.asm Makefile
 	$(ASM) --sld=$(basename $@).sld \
@@ -37,7 +40,7 @@ $(BIN)/$(SNA_DEBUG).sna: $(BIN) *.asm */*.asm Makefile
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
            -DDEBUG \
            $(DEBUG_FLAGS) \
-		   -Wfake \
+		   $(BUILD_FLAGS) \
            $(MAIN_ASM).asm
 
 $(BIN)/$(SNA_RELEASE).sna: $(BIN) *.asm */*.asm Makefile
@@ -45,6 +48,7 @@ $(BIN)/$(SNA_RELEASE).sna: $(BIN) *.asm */*.asm Makefile
            --fullpath \
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
+		   $(BUILD_FLAGS) \
            $(MAIN_ASM).asm
 
 $(BIN)/$(SNA_RELEASE_NO_SPLASH).sna: $(BIN) *.asm */*.asm Makefile
@@ -53,6 +57,7 @@ $(BIN)/$(SNA_RELEASE_NO_SPLASH).sna: $(BIN) *.asm */*.asm Makefile
            --sym=$(basename $@)-$(SYMBOLS_SUFFIX).txt \
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
 		   -DNO_SPLASH_SCREEN \
+		   $(BUILD_FLAGS) \
            $(MAIN_ASM).asm
 
 $(BIN)/$(SNA_TESTS).sna: $(BIN) *.asm */*.asm Makefile
@@ -62,6 +67,7 @@ $(BIN)/$(SNA_TESTS).sna: $(BIN) *.asm */*.asm Makefile
            --lst=$(basename $@)-$(LISTING_SUFFIX).txt \
            -DDEBUG \
 		   $(TEST_FLAGS) \
+		   $(BUILD_FLAGS) \
            tests/$(SNA_TESTS).asm
 
 sprites:: 
