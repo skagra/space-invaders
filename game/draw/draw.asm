@@ -99,7 +99,7 @@ draw_sprite:
     LD D,0x00
     LD E,A
     ADD HL,DE                                           ; Add the offset into the table to the base of the table                 
-    LD DE, (HL)                                         ; Lookup the sprite data ptr in the table
+    LD DE,(HL)                                          ; Lookup the sprite data ptr in the table
 
     ; Point SP to the sprite data
     LD (.stack_ptr),SP                                  ; Store current SP to restore at end

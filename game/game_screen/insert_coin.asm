@@ -1,4 +1,5 @@
 draw_insert_coin_section:
+
 .PARAM_FOR_ANIMATION:   EQU 0
 
     PUSH AF,HL,IX

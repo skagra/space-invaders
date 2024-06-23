@@ -53,6 +53,15 @@ DRAW_BUFFER:    BLOCK memory_map.SCREEN_SIZE,0x00
     INCLUDE "test_demos.asm"
     INCLUDE "test_coin_section.asm"
 
+    MACRO RUN_TEST name
+        CALL name
+        LD L,keyboard.PAUSE_KEY_DOWN_MASK
+        PUSH HL
+        CALL keyboard.wait
+        POP HL
+        call draw_utils.wipe_screen
+    ENDM
+
     MODULE main
 main:
     ; Set up stack
@@ -99,17 +108,17 @@ main:
 
     ; Tests
     IFDEF TEST_SPLASH_SCREEN
-        CALL test_splash_screen
+        RUN_TEST test_splash_screen
     ENDIF
 
     IFDEF TEST_DEMOS
-        CALL test_demos
+        RUN_TEST test_demos
     ENDIF
 
     IFDEF TEST_COIN_SECTION
-        CALL test_coin_section
+        RUN_TEST test_coin_section
     ENDIF
-    
+
 .animation_loop:
     DEBUG_VTRACE_FLASH 
 

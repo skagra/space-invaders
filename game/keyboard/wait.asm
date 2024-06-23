@@ -1,4 +1,5 @@
 wait:
+
 .PARAM_MASK EQU 0
 
     PUSH AF
