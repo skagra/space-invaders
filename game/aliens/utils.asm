@@ -23,7 +23,7 @@ get_alien_at_coords:
 
     PUSH AF,BC,DE,HL,IX,IY
 
-    PARAMS_IY 6                                          ; Point IY to the stack
+    PARAMS_IY 6                                         ; Point IY to the stack
 
     ; Flag hit not found
     LD (IY+.RTN_ALIEN_PTR), 0xFF                       
