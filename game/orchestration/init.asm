@@ -12,7 +12,7 @@ new_game:
     RET
 
 new_sheet:
-    PUSH AF
+    PUSH AF,HL
 
     LD A,utils.FALSE_VALUE
     
@@ -20,7 +20,10 @@ new_sheet:
     LD (_life_lost_pausing),A
     LD (_alien_landed),A
 
-    POP AF
+    LD HL,0x0000
+    LD (game_loop_count),HL
+    
+    POP HL,AF
 
-    RET
+    RET 
 

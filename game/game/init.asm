@@ -14,3 +14,6 @@ init:
     POP AF
 
     RET
+
+new_sheet:
+    RET

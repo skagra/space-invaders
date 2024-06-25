@@ -9,7 +9,7 @@ init:
     RET
 
 new_sheet:
-    PUSH HL
+    PUSH AF,HL
 
     ; No missile
     LD HL,_missile_state                         
@@ -19,5 +19,11 @@ new_sheet:
     LD HL,_can_fire
     LD (HL),utils.TRUE_VALUE
 
-    POP HL
+    ; Initialize the shot counter
+    LD A,0x00
+    LD (shot_count),A
+
+    POP HL,AF
+
+    RET
     

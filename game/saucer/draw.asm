@@ -2,8 +2,8 @@ draw:
     PUSH AF,DE
 
     LD A,(_saucer_state)
-    BIT _SAUCER_STATE_EXPLODING_BIT,A
-    JR NZ,.draw_explosion
+    BIT _SAUCER_STATE_NO_SAUCER_BIT,A
+    JR NZ,.done
 
     ; Draw the saucer
     LD A, (saucer_x)                                    ; Saucer base coords
@@ -74,6 +74,10 @@ blank:
 
     BIT _SAUCER_STATE_DONE_EXPLODING_BIT,A
     JR NZ,.blank_explosion
+
+    LD A,(_saucer_state)
+    BIT _SAUCER_STATE_NO_SAUCER_BIT,A
+    JR NZ,.done
 
     ; Blank the saucer
     LD A, (saucer_x)                                    ; Saucer base coords

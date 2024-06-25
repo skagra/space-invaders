@@ -36,3 +36,4 @@ _missile_explosion_cycle_count:             BLOCK 1             ; Count of cycle
 
 _can_fire:                                  BLOCK 1             ; Firing enabled?  Values from TRUE_VALUE/FALSE_VALUE
 
+shot_count:                                 BLOCK 1             ; Shot count (just 8 bits worth), used to index saucer value and direction

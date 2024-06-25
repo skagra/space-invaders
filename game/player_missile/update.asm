@@ -87,6 +87,10 @@ update:
     LD HL,_missile_state                                
     LD (HL),_MISSILE_STATE_ACTIVE
 
+    LD A,(shot_count)
+    INC A
+    LD (shot_count),A
+
     JR .done
 
 .active:

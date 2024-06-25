@@ -10,10 +10,12 @@ main_game_loop:
     CALL game_screen.draw_shields
     CALL game_screen.draw_horizontal_line
 
+    CALL game.new_sheet
     CALL player_missile.new_sheet
     CALL player.new_sheet
     CALL aliens.new_sheet
     CALL alien_missiles.new_sheet
+    CALL saucer.new_sheet
     CALL orchestration.new_sheet
 
 .animation_loop:
@@ -29,6 +31,9 @@ main_game_loop:
     ; Blank current alien missile in cycle 
     CALL alien_missiles.blank
 
+    ; Blank the saucer
+    CALL saucer.blank
+
     ; Erase current player missile
     CALL player_missile.blank
 
@@ -41,6 +46,9 @@ main_game_loop:
     ; Update current alien missile
     CALL alien_missiles.update
 
+    ; Update the saucer
+    CALL saucer.update
+
     ; Calculate new coordinates and handle state changes for the player missile               
     CALL player_missile.update
 
@@ -52,6 +60,9 @@ main_game_loop:
 
     ; Draw current alien missile
     CALL alien_missiles.draw
+
+    ; Draw the saucer
+    CALL saucer.draw
 
     ; Draw player missile if there is one
     CALL player_missile.draw
@@ -106,7 +117,7 @@ main_game_loop:
     BIT utils.TRUE_BIT,A
     JR NZ,.not_landed
 
-    JR .new_sheet
+    JP .new_sheet
 
 .not_landed:
     LD A,(aliens.alien_count)
@@ -126,7 +137,7 @@ main_game_loop:
     
     LD A,(demos.demo_done)
     BIT utils.TRUE_BIT,A
-    JR Z,.animation_loop
+    JP Z,.animation_loop
     ; Fall through to done
 
 .done:

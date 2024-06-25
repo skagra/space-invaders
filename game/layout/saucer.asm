@@ -1,1 +1,1 @@
-SAUCER_Y:               EQU 2
+SAUCER_Y:               EQU 16

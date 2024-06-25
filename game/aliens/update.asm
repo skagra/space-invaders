@@ -18,15 +18,6 @@ _current_pack_variant_flag:             BLOCK 1         ; Current variant for wa
 _pack_direction:                        BLOCK 1         ; Current direction of alien pack taken from _PACK_DIRECTION_* constants
 _pack_loop_counter:                     BLOCK 1         ; Loop counter decremented as each alien is processed so we know when to go back to start of the pack
 
-; Pack bounds
-_pack_bl_coords:                                        ; Bottom left
-_pack_bottom:                           BLOCK 1
-_pack_left:                             BLOCK 1
-
-_pack_tr_coords:                                        ; Top right
-_pack_top:                              BLOCK 1
-_pack_right:                            BLOCK 1
-
 ;------------------------------------------------------------------------------
 ; Adjust the alien pack direction if needed e.g. if moving right and has hit
 ; the RHS of the screen.

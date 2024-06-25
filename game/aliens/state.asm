@@ -195,3 +195,12 @@ _aliens_adjust_index: BLOCK 1                                                   
 _ALIENS_ADJUST_FOR_SHEET: BYTE 0x00,0x08,0x10,0x18,0x18,0x18,0x20,0x20,0x28     ; Y offsets 
 
 _ALIENS_ADJUST_FOR_SHEET_COUNT: EQU $-_ALIENS_ADJUST_FOR_SHEET                  ; Number of Y offsets
+
+; Pack bounds
+_pack_bl_coords:                                        ; Bottom left
+_pack_bottom:                           BLOCK 1
+_pack_left:                             BLOCK 1
+
+_pack_tr_coords:                                        ; Top right
+_pack_top:                              BLOCK 1
+_pack_right:                            BLOCK 1

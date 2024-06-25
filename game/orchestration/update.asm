@@ -1,6 +1,49 @@
 update:
     PUSH AF,HL
 
+    ; Increment count of game loops
+    LD HL,(game_loop_count)
+    INC HL
+    LD (game_loop_count),HL
+
+    ; Process saucer launching
+
+    ; Is the pack low enough to process saucer launching?
+    LD A,(aliens._pack_bottom)
+    CP SAUCER_LAUNCH_MIN_Y
+    JR C,.disable_saucer_and_timer
+
+    ; Enable the saucer timer
+    LD A,utils.TRUE_VALUE
+    LD (saucer.timer_enabled),A
+
+    ; Do we have enough aliens left to allow launching of the saucer?
+    LD A,(aliens.alien_count)
+    CP SAUCER_LAUNCH_MIN_ALIENS 
+    JR C,.disable_saucer
+
+    ; Enable the saucer 
+    LD A,utils.TRUE_VALUE
+    LD (saucer.enabled),A
+
+    JR .saucer_done
+
+.disable_saucer:
+    ; Disable the saucer 
+    LD A,utils.FALSE_VALUE
+    LD (saucer.enabled),A
+    JR .saucer_done
+
+.disable_saucer_and_timer:
+    ; Disable the saucer timer
+    LD A,utils.FALSE_VALUE
+    LD (saucer.timer_enabled),A
+
+    ; Disable the saucer
+    LD (saucer.enabled),A
+
+.saucer_done:
+
     LD A,(_life_lost_pausing)
     BIT utils.TRUE_BIT,A                                    ; Is the game paused due to player being hit?
     JR NZ,.life_lost_pausing                                ; Y - handle it
