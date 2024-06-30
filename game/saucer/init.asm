@@ -2,7 +2,7 @@ init:
     RET
 
 new_sheet:
-    PUSH AF
+    PUSH AF,HL
 
     LD A,_SAUCER_STATE_NO_SAUCER_VALUE
     LD (_saucer_state),A
@@ -14,6 +14,6 @@ new_sheet:
     LD HL,0x0000
     LD (saucer_timer),HL
 
-    POP AF
+    POP HL,AF
     
     RET

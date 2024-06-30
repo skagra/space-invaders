@@ -35,7 +35,7 @@ The `Makefile` contains the following targets:
 * `run-mame-debug` - Run a debug build in `MAME`.
 * `run-mame-release` - Run a release build in `MAME`.
 * `run-cspect-tests` - Run tests in the `CSpect` emulator.
-* 
+
 **Note** that `all`, `debug` and `release` require that `sjasmplus` is in your `PATH`, `run-cspect-*` require that `CSpect.exe` is your `PATH` and `run-mame-*` require that both `mame` is in your `PATH` and that the `spectrum` ROM has been added (see [running](running.md)).  The `clean` target requires that `OS` environment variable is set correctly, `Windows_NT` for Windows and `Linux` for Linux.
 
 # Configuring the Build

@@ -132,3 +132,11 @@ alien_landed_begin:
     POP AF
 
     RET
+
+event_player_missile_hit_saucer:
+
+    CALL saucer.event_player_missile_hit_saucer
+
+.done
+
+    RET

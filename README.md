@@ -43,8 +43,9 @@ Here are some of the details - some you will have noticed, others maybe not:
   *  [x] It moves more quickly when travelling to the right than when travelling to the left.
   *  [x] One of the missile types is disabled.
 * [x] The seeker missile fires only every other time it is eligible to fire.
+* [x] The direction of the saucer ship is determined by the number of player shots fired.  The saucer launches on a timer, but will not launch if fewer than 8 aliens remain or if the alien pack is above a Y threshold.  The *mystery* score for destroying the saucer is determined via a lookup indexed by the number of player shots fired.
 * [x] Alien missiles move at 4 pixels on each animation cycle until there are 8 or fewer aliens remaining at which point this changes to 5 pixels.
-* [x]  Although the arcade machine was monochrome, gels were applied to the CRT to add some colour.
+* [x] Although the arcade machine was monochrome, gels were applied to the CRT to add some colour.
 
 Much of this detail was revealed via the excellent ROM disassembly work on the [Computer Archeology](https://www.computerarcheology.com/Arcade/SpaceInvaders/) site.
 
@@ -63,18 +64,16 @@ The following tooling was used to create the project.
 * [Sjasmplus](https://github.com/z00m128/sjasmplus) - Z80 Assembler.
 * [CSpect](https://mdf200.itch.io/cspect) - ZX Spectrum Emulator. 
 * [MAME](https://www.mamedev.org/) - Multi-machine Emulator.
-* [Gnu Make](https://www.gnu.org/software/make/) - Build tool, native on Linux and ports to Windows are available.
+* [Gnu Make](https://www.gnu.org/software/make/) - Build tool, native on Linux and ports to Windows and MacOS are available.
 
 # Status
 
 Most of the major game elements are now in place, though some work remains:
 
-* Saucer ship.
 * Alien correcting an inverted "Y" in "PLAY" on the score table screen.
 * Alien destroying an extra "C" in "COIN" on the insert coin screen.
-* Various delays e.g. before the player appears when a new sheet is rendered.
 * 2 Player mode.
 
 # What's Next
 
-Once the outstanding features have been implemented the next step is to consider sound support via the AY-3-8912 chip which was available on later ZX Spectrum models.
+Once the outstanding features have been implemented the next step is to consider sound support via the `AY-3-8912` chip which was available on later ZX Spectrum models.

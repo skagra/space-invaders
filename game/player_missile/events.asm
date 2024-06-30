@@ -69,11 +69,11 @@ event_player_missile_hit_shield:
     RET
 
 event_missiles_collided:
-    PUSH HL
+    PUSH AF
     
     LD A,_MISSILE_STATE_MISSILES_COLLIDED                            
     LD (_missile_state),A              
 
-    POP HL
+    POP AF
     
     RET 

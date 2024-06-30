@@ -2,9 +2,19 @@ draw:
     PUSH AF,DE
 
     LD A,(_saucer_state)
-    BIT _SAUCER_STATE_NO_SAUCER_BIT,A
-    JR NZ,.done
 
+    BIT _SAUCER_STATE_ACTIVE_BIT,A
+    JR NZ,.draw_saucer
+
+    BIT _SAUCER_STATE_EXPLODING_BIT,A
+    JR NZ,.draw_explosion
+
+    BIT _SAUCER_STATE_SHOWING_SCORE_BIT,A
+    JR NZ,.draw_score
+
+    JR .done
+
+.draw_saucer:
     ; Draw the saucer
     LD A, (saucer_x)                                    ; Saucer base coords
     LD D,A
@@ -33,7 +43,7 @@ draw:
 
     JR .done
 
-.draw_explosion
+.draw_explosion:
     LD A, (saucer_x)                                    ; Saucer coords
     LD D,A
     LD E, layout.SAUCER_Y
@@ -58,6 +68,24 @@ draw:
     POP DE
     POP DE
     POP DE
+    
+    JR .done
+
+.draw_score:
+    LD DE,(score)                                       ; Grab the current score
+    PUSH DE                                             
+    LD A, (saucer_x)                                    ; Saucer coords
+    SRL A                                           
+    SRL A
+    SRL A
+    LD D,A
+    LD E, layout.SAUCER_Y/8                             
+    PUSH DE
+    CALL print.print_bcd_word                           ; Print the score to the screen
+    POP DE
+    POP DE
+
+    ; Fall through
 
 .done
     POP DE,AF
@@ -69,16 +97,21 @@ blank:
 
     LD A,(_saucer_state)
 
-    BIT _SAUCER_STATE_EXPLODING_BIT,A
-    JR NZ,.blank_explosion
-
     BIT _SAUCER_STATE_DONE_EXPLODING_BIT,A
     JR NZ,.blank_explosion
 
-    LD A,(_saucer_state)
-    BIT _SAUCER_STATE_NO_SAUCER_BIT,A
-    JR NZ,.done
+    BIT _SAUCER_STATE_ACTIVE_BIT,A
+    JR NZ,.blank_saucer
 
+    BIT _SAUCER_LEAVING_SCREEN_BIT,A
+    JR NZ,.blank_saucer
+    
+    BIT _SAUCER_STATE_DONE_SHOWING_SCORE_BIT,A
+    JR NZ,.blank_score
+
+    JR .done
+
+.blank_saucer:
     ; Blank the saucer
     LD A, (saucer_x)                                    ; Saucer base coords
     LD D,A
@@ -133,7 +166,26 @@ blank:
     POP DE
     POP DE
 
+    JR .done
+
+.blank_score
+    LD DE,.SCORE_BLANK_STRING
+    PUSH DE
+    LD A, (saucer_x)                                    ; Saucer coords
+    SRL A                                           
+    SRL A
+    SRL A
+    LD D,A
+    LD E, layout.SAUCER_Y/8                             
+    PUSH DE
+    CALL print.print_string
+    POP DE
+    POP DE
+    ; Fall through
+
 .done
     POP DE,AF
 
     RET
+
+.SCORE_BLANK_STRING: BYTE "    ",0

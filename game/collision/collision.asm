@@ -57,7 +57,7 @@ reset:
 
 ;------------------------------------------------------------------------------
 ; Processes the collision of the player missile, alien missiles, aliens,
-; shields and player.
+; shields, saucer and player.
 ;
 ; Usage:
 ;   CALL handle_collision
@@ -71,10 +71,16 @@ handle_collision:
     LD (.collisions),A
     ; <--- Reset collision flags
 
-    ; ---> Player missile collisions 
+    ; ---> Player missile collision 
+
+    ; Check if there is an active player missile
+    LD A,(player_missile._missile_state)
+    BIT player_missile._MISSILE_STATE_ACTIVE_BIT,A
+    JP Z,.check_alien_missile_collisions 
+
+    ; Collected player missile collisions
     LD IX,player_missile_collision
 
-    ; TODO Should we check that the player missile is active here?
     ; Has there been a collision with the player missile?
     BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
     JP Z,.check_alien_missile_collisions                    ; No collision so done
@@ -92,7 +98,7 @@ handle_collision:
     JR Z,.check_player_missile_alien_missile_collision      ; No, so done here.
 
     LD A,(.collisions)                                      ; Record the collision
-    OR .PLAYER_MISSILE_HIT_ALIEN_VALUE
+    OR .PLAYER_MISSILE_HIT_ALIEN_VALUE                      ; LOGPOINT [COLLISION_CHECKS] Player missile hit an ALIEN
     LD (.collisions),A
     LD HL,.alien_hit_by_player_missile
     LD (HL),DE
@@ -103,7 +109,7 @@ handle_collision:
     CHECK_ALIEN_MISSILE 0
     BIT utils.TRUE_BIT,A
     JR Z,.not_alien_missile_0
-    LD HL,alien_missiles._ALIEN_MISSILE_0                   ; LOGPOINT [COLLISION_CHECKS] Missile hit missile 0
+    LD HL,alien_missiles._ALIEN_MISSILE_0                   ; LOGPOINT [COLLISION_CHECKS] Player missile hit ALIEN MISSILE 0
     LD (.alien_missile_hit),HL                              
     JR .alien_missile_found
 
@@ -111,40 +117,56 @@ handle_collision:
     CHECK_ALIEN_MISSILE 1
     BIT utils.TRUE_BIT,A
     JR Z,.not_alien_missile_1
-    LD HL,alien_missiles._ALIEN_MISSILE_1                   ; LOGPOINT [COLLISION_CHECKS] Missile hit missile 1
+    LD HL,alien_missiles._ALIEN_MISSILE_1                   ; LOGPOINT [COLLISION_CHECKS] Player missile hit ALIEN MISSILE 1
     LD (.alien_missile_hit),HL
     JR .alien_missile_found
 
 .not_alien_missile_1:
     CHECK_ALIEN_MISSILE 2
     BIT utils.TRUE_BIT,A
-    JR Z,.assume_player_missile_collided_with_shield        ; LOGPOINT [COLLISION_CHECKS] Missile hit missile 2
-    LD HL,alien_missiles._ALIEN_MISSILE_2
+    JR Z,.check_player_missile_saucer_collision             
+    LD HL,alien_missiles._ALIEN_MISSILE_2                   ; LOGPOINT [COLLISION_CHECKS] Player missile hit ALIEN MISSILE 2
     LD (.alien_missile_hit),HL
     ; Fall through
 
 .alien_missile_found:
-    LD A,(.collisions)                                      ; Record the collision
+    LD A,(.collisions)                                      ; Record the collision   
     OR .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE
     LD (.collisions),A
-
     JR .check_alien_missile_collisions  
 
+.check_player_missile_saucer_collision:
+    ; Do we have an active saucer
+    LD A,(saucer._saucer_state)
+    BIT saucer._SAUCER_STATE_ACTIVE_BIT,A
+    JR Z,.assume_player_missile_collided_with_shield
+
+    ; Was the collision in the Y range of the saucer?
+    LD DE,(IX+COLLISION_OFFSET_COORDS)
+    LD A,24
+    CP E
+    JR C,.assume_player_missile_collided_with_shield
+    LD A,(.collisions)                                      ; Record the collision
+    OR .PLAYER_MISSILE_HIT_SAUCER_VALUE                     ; LOGPOINT [COLLISION_CHECKS] Player missile hit SAUCER
+    LD (.collisions),A
+    JR .check_alien_missile_collisions
+
 .assume_player_missile_collided_with_shield:
-    LD A,(.collisions)                                      ; Assume the collision was with a shield
+    LD A,(.collisions)                                      ; LOGPOINT [COLLISION_CHECKS] Assume player missile hit SHIELD
     OR .PLAYER_MISSILE_HIT_SHIELD_VALUE
     LD (.collisions),A
-    ; Fall through
+    JR .check_alien_missile_collisions
 
     ; ---> Alien missile collisions (missile to missile collision already checked)
 .check_alien_missile_collisions
     LD IX,alien_missile_collision                           ; Point IX at the collision structure
     
+    ; Was there an alien missile collision?
     BIT utils.TRUE_BIT,(IX+COLLISION_OFFSET_COLLIDED)
     JP Z,.done_checking                                     ; No collision so done
 
     ; Has current alien missile hit the player
-    LD DE,(IX+COLLISION_OFFSET_COORDS)                      ; Target coords
+    LD DE,(IX+COLLISION_OFFSET_COORDS)                      ; Target coords 
     PUSH DE
 
     LD A,(player.player_x)                                  ; Coordinates of the player
@@ -152,11 +174,11 @@ handle_collision:
     LD A,layout.PLAYER_Y
     LD L,A
  
-    LD BC,0x0808
+    LD BC,0x0808                                            ; TODO Move out to constant
     SUB HL,BC                                               ; Top left   
     PUSH HL
 
-    LD BC,0x1414
+    LD BC,0x1414                                            ; TODO Move out to constant
     ADD HL,BC                                               ; Bottom right
     PUSH HL
 
@@ -172,8 +194,8 @@ handle_collision:
     BIT utils.TRUE_BIT,L
     JR Z,.check_alien_missile_shield_collision
 
-    LD A,(.collisions)                                      ; Assume the collision was with a shield
-    OR .ALIEN_MISSILE_HIT_PLAYER_VALUE                      ; LOGPOINT [COLLISION_CHECKS] Player hit but alien missile
+    LD A,(.collisions)                                      
+    OR .ALIEN_MISSILE_HIT_PLAYER_VALUE                      ; LOGPOINT [COLLISION_CHECKS] Alien missile hit PLAYER
     LD (.collisions),A
 
     JR .done_checking
@@ -188,7 +210,7 @@ handle_collision:
     JR NZ, .done_checking
 
     LD A,(.collisions)                                      ; Assume alien missile hit a shield
-    OR .ALIEN_MISSILE_HIT_SHIELD_VALUE
+    OR .ALIEN_MISSILE_HIT_SHIELD_VALUE                      ; LOGPOINT [COLLISION_CHECKS] Alien missile hit a SHIELD
     LD (.collisions),A
 
     JR .done_checking
@@ -198,46 +220,50 @@ handle_collision:
 .done_checking:
     LD A,(.collisions)
     
-    ; CP .FIRE_ALIEN_MISSILE_HIT_PLAYER
+    ; Did an alien missile hit a player?
     BIT .ALIEN_MISSILE_HIT_PLAYER_BIT,A
-    JR Z,.next_1
+    JR Z,.did_player_hit_alien
     CALL orchestration.event_alien_missile_hit_player
-    JR .next_2
+    JR .done
     
-.next_1
+.did_player_hit_alien:
     ; Did the player missile hit an alien?
-    CP .FIRE_PLAYER_HIT_ALIEN
-    JR NZ,.next_2
+    BIT .PLAYER_MISSILE_HIT_ALIEN_BIT,A
+    JR Z,.did_player_hit_shield
     LD HL,(.alien_hit_by_player_missile)
     PUSH HL
     CALL orchestration.event_player_missile_hit_alien
     POP HL
     ; Fall through
 
-.next_2
-    CP .FIRE_PLAYER_HIT_SHIELD
-    JR NZ,.next_3
+.did_player_hit_shield:
+    BIT .PLAYER_MISSILE_HIT_SHIELD_BIT,A
+    JR Z,.did_alien_hit_shield
     CALL orchestration.event_player_missile_hit_shield 
     ; Fall through
 
-.next_3
-    CP .FIRE_ALIEN_HIT_SHIELD
-    JR NZ,.next_4
+.did_alien_hit_shield:
+    BIT .ALIEN_MISSILE_HIT_SHIELD_BIT,A
+    JR Z,.did_missiles_collide
     CALL orchestration.event_alien_missile_hit_shield
     ; Fall through
 
-.next_4
-    CP .FIRE_MISSILES_COLLIDED
-    JR NZ,.next_5
+.did_missiles_collide:
+    BIT .PLAYER_MISSILE_HIT_ALIEN_MISSILE_BIT,A
+    JR Z,.did_player_hit_saucer
     LD HL,(.alien_missile_hit)
     PUSH HL
     CALL orchestration.event_missile_hit_missile
     POP HL
+    ; Fall through
     
-    JR .next_5
+.did_player_hit_saucer:
+    BIT .PLAYER_MISSILE_HIT_SAUCER_BIT,A
+    JR Z,.done
+    CALL orchestration.event_player_missile_hit_saucer
+    ; Fall through
 
-.next_5
-
+.done:
     POP IY,IX,HL,DE,BC,AF
     
     RET
@@ -245,24 +271,18 @@ handle_collision:
 .collisions:                                BLOCK 1
 .alien_missile_hit:                         BLOCK 2
 
-; TODO - Not convinced about this mechanism! Should these be masks?   We have bits that must be true and bits we don't care about?
-; Or maybe just one alien bit and one player bit or two separate variables?
-.FIRE_PLAYER_HIT_ALIEN:                     EQU .PLAYER_MISSILE_HIT_ALIEN_VALUE
-.FIRE_PLAYER_HIT_SHIELD:                    EQU .PLAYER_MISSILE_HIT_SHIELD_VALUE ; & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE) 
-.FIRE_ALIEN_HIT_SHIELD:                     EQU .ALIEN_MISSILE_HIT_SHIELD_VALUE ; & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE) & (~.PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE) 
-.FIRE_MISSILES_COLLIDED:                    EQU .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE ; & (~ .PLAYER_MISSILE_HIT_ALIEN_VALUE)     
-.FIRE_ALIEN_MISSILE_HIT_PLAYER:             EQU .ALIEN_MISSILE_HIT_PLAYER_VALUE 
-
 .PLAYER_MISSILE_HIT_ALIEN_VALUE:            EQU 0b00000001
 .PLAYER_MISSILE_HIT_SHIELD_VALUE:           EQU 0b00000010
 .PLAYER_MISSILE_HIT_ALIEN_MISSILE_VALUE:    EQU 0b00000100
 .ALIEN_MISSILE_HIT_SHIELD_VALUE:            EQU 0b00001000
 .ALIEN_MISSILE_HIT_PLAYER_VALUE:            EQU 0b00010000
+.PLAYER_MISSILE_HIT_SAUCER_VALUE            EQU 0b00100000
 
 .PLAYER_MISSILE_HIT_ALIEN_BIT:              EQU 0
 .PLAYER_MISSILE_HIT_SHIELD_BIT:             EQU 1
 .PLAYER_MISSILE_HIT_ALIEN_MISSILE_BIT:      EQU 2
 .ALIEN_MISSILE_HIT_SHIELD_BIT:              EQU 3
 .ALIEN_MISSILE_HIT_PLAYER_BIT:              EQU 4
+.PLAYER_MISSILE_HIT_SAUCER_BIT:             EQU 5
 
 .alien_hit_by_player_missile:               BLOCK 2

@@ -18,31 +18,38 @@ update:
     JR NZ,.no_saucer
     
     BIT _SAUCER_LEAVING_SCREEN_BIT,A
-    JR NZ,.leaving_screen
+    JP NZ,.leaving_screen
 
     BIT _SAUCER_STATE_ACTIVE_BIT,A
     JR NZ,.active
 
     BIT _SAUCER_STATE_EXPLODING_BIT,A
-    JR NZ,.exploding
+    JP NZ,.exploding
 
     BIT _SAUCER_STATE_DONE_EXPLODING_BIT,A
-    JR NZ,.done_exploding
+    JP NZ,.done_exploding
+
+    BIT _SAUCER_STATE_SHOWING_SCORE_BIT,A
+    JP NZ,.showing_score
+
+    BIT _SAUCER_STATE_DONE_SHOWING_SCORE_BIT,A
+    JP NZ,.done_showing_score
+
 
     ; ASSERT This code should never be reached
 
-    JR .done
+    JP .done
 
 .no_saucer:
     ; Is saucer launching enabled?
     LD A,(enabled)
     BIT utils.TRUE_BIT,A
-    JR Z,.done
+    JP Z,.done
 
     ; Is it time to launch a new saucer?   
     LD A,(saucer_timer+1)                                       
     CP SAUCER_LAUNCH_GAME_LOOP_FREQUENCY                    
-    JR C,.done
+    JP C,.done
 
     LD A,_SAUCER_STATE_ACTIVE_VALUE
     LD (_saucer_state),A
@@ -57,7 +64,7 @@ update:
     LD A,_DIRECTION_RIGHT_VALUE
     LD (_direction),A
 
-    JR .done
+    JP .done
 
 .odd
     LD A,_SAUCER_START_RIGHT
@@ -115,12 +122,55 @@ update:
     JR .done
 
 .exploding:
+    LD A,(exploding_counter)
+    DEC A
+    LD (exploding_counter),A
+
+    JR NZ,.done
+
+    LD A,_SAUCER_STATE_DONE_EXPLODING_VALUE
+    LD (_saucer_state),A
+
     JR .done
 
 .done_exploding:
+    LD A,_SAUCER_STATE_SHOWING_SCORE
+    LD (_saucer_state),A
+
+    ; LD HL,0x0000
+    ; LD (saucer_timer),HL
+
+    LD A,20
+    LD (showing_score_counter),A                ; TODO Move out to a constant
+
+    JR .done
+
+.showing_score
+    LD A,(showing_score_counter)
+    DEC A
+    LD (showing_score_counter),A
+
+    JR NZ,.done
+
+    LD A,_SAUCER_STATE_DONE_SHOWING_SCORE
+    LD (_saucer_state),A
+
+    JR .done
+
+.done_showing_score
+    LD A,_SAUCER_STATE_NO_SAUCER_VALUE
+    LD (_saucer_state),A
+
+    LD HL,0x0000
+    LD (saucer_timer),HL
+
     JR .done
 
 .done
     POP HL,DE,BC,AF
 
     RET
+
+exploding_counter: BLOCK 1
+showing_score_counter: BLOCK 1
+score:  BLOCK 2
