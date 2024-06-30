@@ -27,9 +27,7 @@ timer_enabled:                          BLOCK 1
 saucer_timer:                           BLOCK 2
 
 ; How often the saucer is launched game loops (VSYNC) MSB
-;SAUCER_LAUNCH_GAME_LOOP_FREQUENCY:      EQU 0x06
-
-SAUCER_LAUNCH_GAME_LOOP_FREQUENCY:      EQU 0x01
+SAUCER_LAUNCH_GAME_LOOP_FREQUENCY:      EQU 0x06
 
 _SAUCER_MAX_X:                          EQU screen.SCREEN_WIDTH_PIXELS-(sprites.SAUCER_DIM_X_BYTES*8)-layout.INSET_X_PIXELS
 _SAUCER_MIN_X:                          EQU layout.INSET_X_PIXELS
