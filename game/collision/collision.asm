@@ -138,7 +138,7 @@ handle_collision:
 .check_player_missile_saucer_collision:
     ; Do we have an active saucer
     LD A,(saucer._saucer_state)
-    BIT saucer._SAUCER_STATE_ACTIVE_BIT,A
+    BIT saucer._STATE_ACTIVE_BIT,A
     JR Z,.assume_player_missile_collided_with_shield
 
     ; Was the collision in the Y range of the saucer?

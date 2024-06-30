@@ -1,15 +1,22 @@
+;------------------------------------------------------------------------------
+; Draw the saucer/explosion/score
+; 
+; Usage:
+;   CALL draw
+;------------------------------------------------------------------------------
 draw:
-    PUSH AF,DE
+    PUSH AF
 
+    ; Select draw behaviour based on saucer state
     LD A,(_saucer_state)
 
-    BIT _SAUCER_STATE_ACTIVE_BIT,A
+    BIT _STATE_ACTIVE_BIT,A
     JR NZ,.draw_saucer
 
-    BIT _SAUCER_STATE_EXPLODING_BIT,A
+    BIT _STATE_EXPLODING_BIT,A
     JR NZ,.draw_explosion
 
-    BIT _SAUCER_STATE_SHOWING_SCORE_BIT,A
+    BIT _STATE_SHOWING_SCORE_BIT,A
     JR NZ,.draw_score
 
     JR .done
@@ -29,23 +36,29 @@ draw:
     ; Fall through
 
 .done
-    POP DE,AF
+    POP AF
 
     RET
 
+;------------------------------------------------------------------------------
+; Draw the score
+; 
+; Usage:
+;   CALL _draw_score
+;------------------------------------------------------------------------------
 _draw_score:
     PUSH AF,DE
 
     LD DE,(_score)                                       ; Grab the current score
     PUSH DE                                             
     LD A, (_saucer_x)                                    ; Saucer coords
-    SRL A                                           
-    SRL A
+    SRL A                                                ; Divide pixel coords by 8 
+    SRL A                                                ; to give character coords
     SRL A
     LD D,A
     LD E, layout.SAUCER_Y/8                             
     PUSH DE
-    CALL print.print_bcd_word                           ; Print the score to the screen
+    CALL print.print_bcd_word                           ; Print the score
     POP DE
     POP DE
 
@@ -53,10 +66,16 @@ _draw_score:
 
     RET
 
+;------------------------------------------------------------------------------
+; Draw the explosion
+; 
+; Usage:
+;   CALL _draw_explosion
+;------------------------------------------------------------------------------
 _draw_explosion:
     PUSH AF,DE
 
-    LD A, (_saucer_x)                                    ; Saucer coords
+    LD A, (_saucer_x)                                   ; Saucer coords
     LD D,A
     LD E, layout.SAUCER_Y
     PUSH DE
@@ -70,10 +89,10 @@ _draw_explosion:
     LD E,utils.FALSE_VALUE                              ; Drawing
     PUSH DE
 
-    LD DE,collision.dummy_collision                     ; Where to record collision data
+    LD DE,collision.dummy_collision                     ; Ignore the collision data
     PUSH DE
 
-    CALL draw.draw_sprite                               ; Draw the player base sprite
+    CALL draw.draw_sprite                               ; Draw the explosion
     
     POP DE 
     POP DE
@@ -84,15 +103,22 @@ _draw_explosion:
     POP DE,AF
 
     RET
+
+;------------------------------------------------------------------------------
+; Draw the saucer
+; 
+; Usage:
+;   CALL _draw_saucer
+;------------------------------------------------------------------------------
 _draw_saucer:
     PUSH AF,DE
 
-    LD A, (_saucer_x)                                   ; Saucer base coords
+    LD A, (_saucer_x)                                   ; Saucer coords
     LD D,A
     LD E, layout.SAUCER_Y
     PUSH DE
 
-    LD DE,sprites.SAUCER_DIMS
+    LD DE,sprites.SAUCER_DIMS                           ; Dims
     PUSH DE
 
     LD DE,sprites.SAUCER                                ; Sprite    
@@ -101,7 +127,7 @@ _draw_saucer:
     LD E,utils.FALSE_VALUE                              ; Drawing
     PUSH DE
 
-    LD DE,collision.dummy_collision                     ; Where to record collision data
+    LD DE,collision.dummy_collision                     ; Ignore collision data
     PUSH DE
 
     CALL draw.draw_sprite                               ; Draw the saucer
@@ -116,21 +142,28 @@ _draw_saucer:
 
     RET
 
+;------------------------------------------------------------------------------
+; Blank the saucer/explosion/score
+; 
+; Usage:
+;   CALL blank
+;------------------------------------------------------------------------------
 blank:
-    PUSH AF,DE
+    PUSH AF
 
+    ; Select blank behaviour based on saucer state
     LD A,(_saucer_state)
 
-    BIT _SAUCER_STATE_DONE_EXPLODING_BIT,A
+    BIT _STATE_DONE_EXPLODING_BIT,A
     JR NZ,.blank_explosion
 
-    BIT _SAUCER_STATE_ACTIVE_BIT,A
+    BIT _STATE_ACTIVE_BIT,A
     JR NZ,.blank_saucer
 
-    BIT _SAUCER_LEAVING_SCREEN_BIT,A
+    BIT _STATE_LEAVING_SCREEN_BIT,A
     JR NZ,.blank_saucer
     
-    BIT _SAUCER_STATE_DONE_SHOWING_SCORE_BIT,A
+    BIT _STATE_DONE_SHOWING_SCORE_BIT,A
     JR NZ,.blank_score
 
     JR .done
@@ -150,18 +183,25 @@ blank:
     ; Fall through
 
 .done
-    POP DE,AF
+    POP AF
 
     RET
+
+;------------------------------------------------------------------------------
+; Blank the saucer
+; 
+; Usage:
+;   CALL _blank_saucer
+;------------------------------------------------------------------------------
 _blank_saucer:
     PUSH AF,DE
 
-    LD A, (_saucer_x)                                    ; Saucer base coords
+    LD A, (_saucer_x)                                   ; Saucer coords
     LD D,A
     LD E, layout.SAUCER_Y
     PUSH DE
 
-    LD DE,sprites.SAUCER_DIMS
+    LD DE,sprites.SAUCER_DIMS                           ; Dims
     PUSH DE
 
     LD DE,sprites.SAUCER                                ; Sprite    
@@ -170,10 +210,10 @@ _blank_saucer:
     LD E,utils.TRUE_VALUE                               ; Blanking
     PUSH DE
 
-    LD DE,collision.dummy_collision                     ; Where to record collision data
+    LD DE,collision.dummy_collision                     ; Ignore collision data
     PUSH DE
 
-    CALL draw.draw_sprite                               ; Draw the saucer
+    CALL draw.draw_sprite                               ; Blank the saucer
     
     POP DE 
     POP DE
@@ -185,10 +225,16 @@ _blank_saucer:
 
     RET
 
+;------------------------------------------------------------------------------
+; Blank the explosion
+; 
+; Usage:
+;   CALL _blank_explosion
+;------------------------------------------------------------------------------
 _blank_explosion
     PUSH AF,DE
 
-    LD A, (_saucer_x)                                    ; Saucer coords
+    LD A, (_saucer_x)                                   ; Saucer coords
     LD D,A
     LD E, layout.SAUCER_Y
     PUSH DE
@@ -202,10 +248,10 @@ _blank_explosion
     LD E,utils.TRUE_VALUE                               ; Blanking
     PUSH DE
 
-    LD DE,collision.dummy_collision                     ; Where to record collision data
+    LD DE,collision.dummy_collision                     ; Ignore collision data
     PUSH DE
 
-    CALL draw.draw_sprite                               ; Draw the player base sprite
+    CALL draw.draw_sprite                               ; Blank the explosion
     
     POP DE 
     POP DE
@@ -217,6 +263,12 @@ _blank_explosion
 
     RET
 
+;------------------------------------------------------------------------------
+; Blank the score
+; 
+; Usage:
+;   CALL _blank_score
+;------------------------------------------------------------------------------
 _blank_score
     PUSH AF,DE
 

@@ -1,16 +1,22 @@
+;------------------------------------------------------------------------------
+; Handle the player missile colliding with the saucer
+; 
+; Usage:
+;   CALL event_player_missile_hit_saucer
+;------------------------------------------------------------------------------
 event_player_missile_hit_saucer:
     PUSH AF,DE,HL
 
-    LD A,_SAUCER_STATE_EXPLODING_VALUE
+    LD A,_STATE_EXPLODING_VALUE                         ; Set saucer to exploding state
     LD (_saucer_state),A
 
-    LD A,_EXPLOSION_CYCLE_COUNT                                            
-    LD (exploding_counter),A
+    LD A,_EXPLOSION_CYCLE_COUNT                         ; Initialize the count down to hold the explosion graphic                                         
+    LD (_explosion_countdown),A
 
     ; Blank the saucer
     CALL _blank_saucer
  
-    ; Set the score
+    ; Update the score
     LD A,(player_missile.shot_count)                    ; Bottom 4 bits of shot count
     AND 0x0F
     LD H,0x00
