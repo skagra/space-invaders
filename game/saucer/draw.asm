@@ -15,8 +15,79 @@ draw:
     JR .done
 
 .draw_saucer:
-    ; Draw the saucer
-    LD A, (saucer_x)                                    ; Saucer base coords
+    CALL _draw_saucer
+
+    JR .done
+
+.draw_explosion:
+    CALL _draw_explosion
+    
+    JR .done
+
+.draw_score:
+    CALL _draw_score
+    ; Fall through
+
+.done
+    POP DE,AF
+
+    RET
+
+_draw_score:
+    PUSH AF,DE
+
+    LD DE,(_score)                                       ; Grab the current score
+    PUSH DE                                             
+    LD A, (_saucer_x)                                    ; Saucer coords
+    SRL A                                           
+    SRL A
+    SRL A
+    LD D,A
+    LD E, layout.SAUCER_Y/8                             
+    PUSH DE
+    CALL print.print_bcd_word                           ; Print the score to the screen
+    POP DE
+    POP DE
+
+    POP DE,AF
+
+    RET
+
+_draw_explosion:
+    PUSH AF,DE
+
+    LD A, (_saucer_x)                                    ; Saucer coords
+    LD D,A
+    LD E, layout.SAUCER_Y
+    PUSH DE
+      
+    LD DE,sprites.SAUCER_EXPLOSION_DIMS                 ; Dimensions
+    PUSH DE
+
+    LD DE,sprites.SAUCER_EXPLOSION                      ; Sprite    
+    PUSH DE
+
+    LD E,utils.FALSE_VALUE                              ; Drawing
+    PUSH DE
+
+    LD DE,collision.dummy_collision                     ; Where to record collision data
+    PUSH DE
+
+    CALL draw.draw_sprite                               ; Draw the player base sprite
+    
+    POP DE 
+    POP DE
+    POP DE
+    POP DE
+    POP DE
+
+    POP DE,AF
+
+    RET
+_draw_saucer:
+    PUSH AF,DE
+
+    LD A, (_saucer_x)                                   ; Saucer base coords
     LD D,A
     LD E, layout.SAUCER_Y
     PUSH DE
@@ -41,53 +112,6 @@ draw:
     POP DE
     POP DE
 
-    JR .done
-
-.draw_explosion:
-    LD A, (saucer_x)                                    ; Saucer coords
-    LD D,A
-    LD E, layout.SAUCER_Y
-    PUSH DE
-      
-    LD DE,sprites.SAUCER_EXPLOSION_DIMS                 ; Dimensions
-    PUSH DE
-
-    LD DE,sprites.SAUCER_EXPLOSION                      ; Sprite    
-    PUSH DE
-
-    LD E,utils.FALSE_VALUE                              ; Drawing
-    PUSH DE
-
-    LD DE,collision.dummy_collision                     ; Where to record collision data
-    PUSH DE
-
-    CALL draw.draw_sprite                               ; Draw the player base sprite
-    
-    POP DE 
-    POP DE
-    POP DE
-    POP DE
-    POP DE
-    
-    JR .done
-
-.draw_score:
-    LD DE,(score)                                       ; Grab the current score
-    PUSH DE                                             
-    LD A, (saucer_x)                                    ; Saucer coords
-    SRL A                                           
-    SRL A
-    SRL A
-    LD D,A
-    LD E, layout.SAUCER_Y/8                             
-    PUSH DE
-    CALL print.print_bcd_word                           ; Print the score to the screen
-    POP DE
-    POP DE
-
-    ; Fall through
-
-.done
     POP DE,AF
 
     RET
@@ -112,8 +136,27 @@ blank:
     JR .done
 
 .blank_saucer:
-    ; Blank the saucer
-    LD A, (saucer_x)                                    ; Saucer base coords
+    CALL _blank_saucer
+
+    JR .done
+
+.blank_explosion
+    CALL _blank_explosion
+
+    JR .done
+
+.blank_score
+    CALL _blank_score
+    ; Fall through
+
+.done
+    POP DE,AF
+
+    RET
+_blank_saucer:
+    PUSH AF,DE
+
+    LD A, (_saucer_x)                                    ; Saucer base coords
     LD D,A
     LD E, layout.SAUCER_Y
     PUSH DE
@@ -138,10 +181,14 @@ blank:
     POP DE
     POP DE
 
-    JR .done
+    POP DE,AF
 
-.blank_explosion
-    LD A, (saucer_x)                                    ; Saucer coords
+    RET
+
+_blank_explosion
+    PUSH AF,DE
+
+    LD A, (_saucer_x)                                    ; Saucer coords
     LD D,A
     LD E, layout.SAUCER_Y
     PUSH DE
@@ -166,14 +213,18 @@ blank:
     POP DE
     POP DE
 
-    JR .done
+    POP DE,AF
 
-.blank_score
+    RET
+
+_blank_score
+    PUSH AF,DE
+
     LD DE,.SCORE_BLANK_STRING
     PUSH DE
-    LD A, (saucer_x)                                    ; Saucer coords
-    SRL A                                           
-    SRL A
+    LD A, (_saucer_x)                                    ; Saucer coords
+    SRL A                                                ; Divide by 8 to make character coords
+    SRL A   
     SRL A
     LD D,A
     LD E, layout.SAUCER_Y/8                             
@@ -181,9 +232,7 @@ blank:
     CALL print.print_string
     POP DE
     POP DE
-    ; Fall through
-
-.done
+    
     POP DE,AF
 
     RET

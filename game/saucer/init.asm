@@ -12,7 +12,7 @@ new_sheet:
     LD (timer_enabled),A
 
     LD HL,0x0000
-    LD (saucer_timer),HL
+    LD (_saucer_timer),HL
 
     POP HL,AF
     

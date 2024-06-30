@@ -4,37 +4,12 @@ event_player_missile_hit_saucer:
     LD A,_SAUCER_STATE_EXPLODING_VALUE
     LD (_saucer_state),A
 
-    LD A,30                                             ; TODO Pull out into constant
+    LD A,_EXPLOSION_CYCLE_COUNT                                            
     LD (exploding_counter),A
 
-    ; TODO Duplicate code
-
     ; Blank the saucer
-    LD A, (saucer_x)                                    ; Saucer base coords
-    LD D,A
-    LD E, layout.SAUCER_Y
-    PUSH DE
-
-    LD DE,sprites.SAUCER_DIMS
-    PUSH DE
-
-    LD DE,sprites.SAUCER                                ; Sprite    
-    PUSH DE
-
-    LD E,utils.TRUE_VALUE                               ; Blanking
-    PUSH DE
-
-    LD DE,collision.dummy_collision                     ; Where to record collision data
-    PUSH DE
-
-    CALL draw.draw_sprite                               ; Draw the saucer
-    
-    POP DE 
-    POP DE
-    POP DE
-    POP DE
-    POP DE
-
+    CALL _blank_saucer
+ 
     ; Set the score
     LD A,(player_missile.shot_count)                    ; Bottom 4 bits of shot count
     AND 0x0F
@@ -59,12 +34,12 @@ event_player_missile_hit_saucer:
     SLA A
     LD E,A                                              ; Becomes the upper nibble of the LSB
                                             
-    LD (score),DE
+    LD (_score),DE
 
     PUSH DE
-    CALL scoring.add_to_score
+    CALL scoring.add_to_score                           ; Update score
     POP DE
-    CALL game_screen.print_score_player_1
+    CALL game_screen.print_score_player_1               ; Redraw score
 
     POP HL,DE,AF
 
