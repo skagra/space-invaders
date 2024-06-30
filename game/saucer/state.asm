@@ -53,6 +53,6 @@ showing_score_counter:                  BLOCK 1
 ; Current value of "mystery" score
 _score:                                 BLOCK 2
 
-; Number of cyckes to hold explosion and score
+; Number of cycles to hold explosion and score
 _EXPLOSION_CYCLE_COUNT:                 EQU 30
 _SCORE_CYCLE_COUNT:                     EQU 30
