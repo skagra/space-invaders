@@ -31,7 +31,7 @@ is_point_in_box:
 
     ; LOGPOINT [IS_POINT_IN_BOX] ---> is_point_in_box
 
-    PARAMS_IX 3                                             ; Get the stack pointer
+    PARAMS_IX 3                                             ; Point IX to the first stack parameter
    
     LD A,FALSE_VALUE                                        ; False returned by default
     LD (IX+.PARAM_RETURN),A

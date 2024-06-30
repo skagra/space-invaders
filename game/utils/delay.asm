@@ -8,21 +8,29 @@
 ;------------------------------------------------------------------------------
 
 delay:
+
 .PARAM_LEN:    EQU 0
 
     PUSH BC,IX
 
-    PARAMS_IX 2                                         ; Get the stack pointer
+    PARAMS_IX 2                                         ; Point IX to the first stack parameter
 
-    LD B,(IX+.PARAM_LEN)
+    LD B,(IX+.PARAM_LEN)                                ; LSB is the length of the delay
 
 .delay_loop:
-    HALT
-    DJNZ .delay_loop
+    HALT                                                ; Wait for VSYNC
+    DJNZ .delay_loop                                    ; Reduce delay counter and loop if not zero
 
     POP IX,BC
 
     RET
+
+;------------------------------------------------------------------------------
+; Delay for half a second
+;
+; Usage:
+;   CALL delay_half_second
+;------------------------------------------------------------------------------
 
 delay_half_second:
     PUSH BC
@@ -35,6 +43,13 @@ delay_half_second:
     POP BC
     
     RET
+
+;------------------------------------------------------------------------------
+; Delay for one second
+;
+; Usage:
+;   CALL delay_one_second
+;------------------------------------------------------------------------------
 
 delay_one_second:
     PUSH BC
