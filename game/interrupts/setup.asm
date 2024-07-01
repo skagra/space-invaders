@@ -1,4 +1,16 @@
-; Modified from:  http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum/interrupts
+;------------------------------------------------------------------------------
+; Set up the interrupt handling vectors
+; This code is modified from: http://www.breakintoprogram.co.uk/hardware/computers/zx-spectrum/interrupts
+;
+; Interrupt vectors are written into: 0xFE00 -> 0xFF01
+; A JP instruction to the handler is held in: 0xFDFD -> 0xFDFF
+;
+; Interrupt handling is initialised to a null handler routine.
+;
+; Usage:
+;   CALL setup
+;------------------------------------------------------------------------------
+
 setup:
     PUSH AF,DE,HL
 
@@ -36,9 +48,14 @@ setup:
 
     RET
   
-INTERRUPT_JUMP:         EQU 0xFDFD                      ; 3 bytes for JP routine under IM2 table
-INTERRUPT_VECTOR_TABLE: EQU 0xFE00                      ; 256 byte page (+ 1 byte) for IM2
-
+;------------------------------------------------------------------------------
+; Set up the interrupt handler
+;
+; Usage:
+;    PUSH rr        ; Handler address
+;    CALL set_interrupt_handler
+;    POP rr
+;------------------------------------------------------------------------------
 set_interrupt_handler:
 
 .PARAM_HANDLER_ADDRESS: EQU 8
@@ -68,6 +85,9 @@ set_interrupt_handler:
 
     RET
 
+;------------------------------------------------------------------------------
+; Null interrupt handler - used as a default
+;------------------------------------------------------------------------------
 
 null_interrupt_handler:
     RET

@@ -2,6 +2,7 @@
 
 _module_start:
 
+    INCLUDE "state.asm"
     INCLUDE "init.asm"
     INCLUDE "setup.asm"
 
