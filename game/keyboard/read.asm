@@ -28,6 +28,20 @@
 .done
     ENDM
 
+;------------------------------------------------------------------------------
+; Read pressed keys in to keys_down, some keys are flagged only if they
+; have been released since last press:
+;
+; * Flagged if pressed: 
+;      LEFT_KEY_DOWN_MAS, RIGHT_KEY_DOWN_MAS, FIRE_KEY_DOWN_MASK
+;
+; * Flagged if pressed and has been released since last press: 
+;      P1_KEY_DOWN_MAS, P2_KEY_DOWN_MASK, CREDS_KEY_DOWN_MASK
+; 
+; Usage:
+;   CALL get_keys
+;------------------------------------------------------------------------------
+
 get_keys:
     PUSH AF,BC,DE,HL
 
@@ -35,7 +49,7 @@ get_keys:
 
     ; Left and right keys
     LD BC,.LEFT_RIGHT_PORT                              ; Left/Right port
-    IN A,(C)                                            ; Read the port into the accumulator
+    IN A,(C)                                            ; Read the port
     LD D,A                                              ; Store it for later
 
     ; Left key
@@ -65,24 +79,23 @@ get_keys:
 .fire:
     ; Fire key
     LD BC,.FIRE_PORT                                    ; Fire port
-    IN B,(C)                                            ; Read the port into the accumulator
+    IN B,(C)                                            ; Read the port
 
     DEBOUNCE .FIRE_KEY_BIT, _fire_already_pressed, FIRE_KEY_DOWN_MASK
     ; Fall through
 
 .credits_and_play:
-    LD BC,.CREDS_PLAY_PORT                                   
-    IN B,(C)  
+    LD BC,.CREDS_PLAY_PORT                              ; Credits and play port                                  
+    IN B,(C)                                            ; Read the port
 
     DEBOUNCE .P1_KEY_BIT, _p1_already_pressed, P1_KEY_DOWN_MASK
     DEBOUNCE .P2_KEY_BIT, _p2_already_pressed, P2_KEY_DOWN_MASK
     DEBOUNCE .CRED_KEY_BIT, _creds_already_pressed, CREDS_KEY_DOWN_MASK
 
-    ; Fall through
-    LD BC,.PAUSE_PORT                                 
-    IN B,(C)                                            
+    LD BC,.SPACE_PORT                                   ; Space key port         
+    IN B,(C)                                            ; Read the port
 
-    DEBOUNCE .PAUSE_KEY_BIT, _pause_already_pressed, PAUSE_KEY_DOWN_MASK
+    DEBOUNCE .SPACE_KEY_BIT, _space_already_pressed, SPACE_KEY_DOWN_MASK
  
     ; Record result
     LD HL,keys_down
@@ -106,6 +119,6 @@ get_keys:
 .P2_KEY_BIT:        EQU 1               ; 2 key
 .CRED_KEY_BIT:      EQU 4               ; 5 key
 
-.PAUSE_PORT:        EQU 0x7FFE        
-.PAUSE_KEY_BIT:     EQU 0               ; Space bar
+.SPACE_PORT:        EQU 0x7FFE        
+.SPACE_KEY_BIT:     EQU 0               ; Space bar
  

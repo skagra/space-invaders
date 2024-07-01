@@ -50,7 +50,7 @@ draw_splash_screen:
     JR NZ,.done
 
     ; Wait for space to be pressed
-    LD L,keyboard.PAUSE_KEY_DOWN_MASK
+    LD L,keyboard.SPACE_KEY_DOWN_MASK
     PUSH HL
     CALL keyboard.wait
     POP HL

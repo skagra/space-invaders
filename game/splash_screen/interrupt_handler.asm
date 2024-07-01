@@ -6,7 +6,7 @@ interrupt_handler:
     CALL keyboard.get_keys
 
     LD A, (keyboard.keys_down)
-    BIT keyboard.PAUSE_KEY_DOWN_BIT,A
+    BIT keyboard.SPACE_KEY_DOWN_BIT,A
     JR Z,.done
 
     LD A,utils.TRUE_VALUE
