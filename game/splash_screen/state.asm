@@ -1,1 +1,1 @@
-_next_screen:   BLOCK 1         ; Used to flag move to next screen 
+_next_screen:   BLOCK 1         ; Used to flag move to next screen from the interrupt handler

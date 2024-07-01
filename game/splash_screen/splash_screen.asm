@@ -1,3 +1,10 @@
+;------------------------------------------------------------------------------
+; Draw the splash screen 
+;
+; Usage:
+;   CALL draw_splash_screen 
+;------------------------------------------------------------------------------
+
 draw_splash_screen:
     PUSH AF,HL
 
@@ -59,6 +66,7 @@ draw_splash_screen:
 .MESSAGE_TEXT_3: BYTE "           By Skagra            ",0
 .MESSAGE_TEXT_4: BYTE "   https://github.com/skagra/   ",0
 
+; Coords and messages
 .MESSAGE: 
     WORD 0x000E, .MESSAGE_TEXT_0
     WORD 0x000F, .MESSAGE_TEXT_1
