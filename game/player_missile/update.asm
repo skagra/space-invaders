@@ -3,7 +3,7 @@
 ; and collision status.
 ;
 ; Usage:
-;   CALL blank_missile
+;   CALL update
 ;------------------------------------------------------------------------------
 
 update:
@@ -16,25 +16,19 @@ update:
     BIT _MISSILE_STATE_NO_MISSILE_BIT,A
     JR NZ,.no_missile
 
-    ; New missile?
-    BIT _MISSILE_STATE_NEW_BIT,A
-    JR NZ,.new
-
     ; Do we have an active missile?
     BIT _MISSILE_STATE_ACTIVE_BIT,A
     JR NZ,.active
-
-    ; Hit a base?
-    BIT _MISSILE_STATE_HIT_A_SHIELD_BIT,A
-    JP NZ,.missile_state_hit_a_shield
 
     ; Collided with other missile?
     BIT _MISSILE_STATE_MISSILES_COLLIDED_BIT,A
     JP NZ,.missiles_collided
 
+    ; ---> Top of screen sub states
+
     ; Top of screen?
     BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
-    JR Z,.not_tos
+    JR Z,.not_at_top_of_screen
 
     LD A,(_tos_sub_state)
 
@@ -50,7 +44,9 @@ update:
     BIT _TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_BIT,A
     JP NZ,.done_at_top_of_screen 
 
-.not_tos:
+    ; <--- Top of screen sub states
+
+.not_at_top_of_screen:
     ; This should never be reached!
     ; ASSERTION This code should never be reached
 
@@ -62,32 +58,25 @@ update:
     BIT keyboard.FIRE_KEY_DOWN_BIT,E                    ; Fire pressed?
     JP Z,.done                                          ; No
 
-    LD A,(_can_fire)
+    LD A,(_can_fire)                                    ; Is player firing enabled?
     BIT utils.TRUE_BIT,A
-    JR Z,.done
+    JR Z,.done                                          ; Disabled - so done
 
-    ; Fire pressed - init a new missile
-    LD HL,_missile_state                                 
-    LD (HL),_MISSILE_STATE_NEW
-
-    ; Calculate start x coord for missile
+    ; Set start x coord
     LD A,(player.player_x)
-    ADD A,0x04
+    ADD A,0x04                                          ; TODO Move this out to a constant value
     LD HL,_missile_x
     LD (HL),A
 
-    ; Calculate start y coord - set new and current to same values
+    ; Set start y coord 
     LD A,layout.PLAYER_MISSILE_START_Y 
     LD HL,_missile_y       
     LD (HL),A
 
-    JR .done
+    LD HL,_missile_state                                ; Flag the missile as active  
+    LD (HL),_MISSILE_STATE_ACTIVE_VALUE
 
-.new:
-    LD HL,_missile_state                                
-    LD (HL),_MISSILE_STATE_ACTIVE
-
-    LD A,(shot_count)
+    LD A,(shot_count)                                   ; Count one more missile fired
     INC A
     LD (shot_count),A
 
@@ -107,16 +96,16 @@ update:
     JR .done
 
 .active_reached_top_of_screen:
-    LD A,_MISSILE_STATE_TOP_OF_SCREEN                                          
+    LD A,_MISSILE_STATE_TOP_OF_SCREEN_VALUE                                          
     LD (_missile_state),A
 
-    LD A,_TOS_SUB_STATE_REACHED_TOP_OF_SCREEN
+    LD A,_TOS_SUB_STATE_REACHED_TOP_OF_SCREEN_VALUE
     LD (_tos_sub_state),A
 
     JR .done
 
 .reached_top_of_screen:
-    LD A,_TOS_SUB_STATE_AT_TOP_OF_SCREEN
+    LD A,_TOS_SUB_STATE_AT_TOP_OF_SCREEN_VALUE
     LD (_tos_sub_state),A                                                
 
     LD A,_MISSILE_EXPLOSION_CYCLES
@@ -130,31 +119,25 @@ update:
     LD (_missile_explosion_cycle_count),A
     JR NZ,.done
 
-    LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN                                                 
+    LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_VALUE                                                 
     LD (_tos_sub_state),A
 
     JR .done
 
 .done_at_top_of_screen:
-    LD A,_MISSILE_STATE_NO_MISSILE
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE
     LD (_missile_state),A
 
     JR .done
 
 .hit_an_alien
-    LD A,_MISSILE_STATE_NO_MISSILE
-    LD (_missile_state),A
-
-    JR .done
-
-.missile_state_hit_a_shield:
-    LD A,_MISSILE_STATE_NO_MISSILE
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE
     LD (_missile_state),A
 
     JR .done
 
 .missiles_collided:
-    LD A,_MISSILE_STATE_NO_MISSILE
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE
     LD (_missile_state),A
 
     JR .done

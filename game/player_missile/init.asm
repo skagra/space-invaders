@@ -13,7 +13,7 @@ new_sheet:
 
     ; No missile
     LD HL,_missile_state                         
-    LD (HL),_MISSILE_STATE_NO_MISSILE
+    LD (HL),_MISSILE_STATE_NO_MISSILE_VALUE
 
     ; OK to fire (no alien exploding)
     LD HL,_can_fire

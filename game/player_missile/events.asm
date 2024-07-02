@@ -1,52 +1,83 @@
+;------------------------------------------------------------------------------
+; Process start of alien landed or alien missile hitting the player.
+;
+; Usage:
+;   CALL event_alien_landed_begin / event_alien_missile_hit_player_begin
+;------------------------------------------------------------------------------
+
 event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF
 
-    LD A,utils.FALSE_VALUE
+    LD A,utils.FALSE_VALUE                              ; Disable firing
     LD (_can_fire),A
 
-    LD A,(_missile_state)
-    BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
-    JR Z,.not_at_top
+    LD A,(_missile_state)                               
+    BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A              ; At top of screen?
+    JR NZ,.explosion                                    ; Yes - handle it
 
-    LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN
-    LD (_tos_sub_state),A
+    CALL _blank_missile                                 ; No - erase the player missile
 
-.not_at_top:
-    CALL blank
+    JR .set_state
 
-    LD A,_MISSILE_STATE_NO_MISSILE
+.explosion:
+    CALL _blank_explosion                               ; Erase the missile explosion
+    ; Fall through
+
+.set_state:
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                      ; Flag there is now no missile
     LD (_missile_state),A
 
     POP AF
 
     RET
 
+;------------------------------------------------------------------------------
+; Process end of alien landed or alien missile hitting the player.
+;
+; Usage:
+;   CALL event_alien_landed_end / event_alien_missile_hit_player_end
+;------------------------------------------------------------------------------
+
 event_alien_landed_end:
 event_alien_missile_hit_player_end:
     PUSH AF
 
-    LD A,utils.TRUE_VALUE
+    LD A,utils.TRUE_VALUE                               ; Enable firing
     LD (_can_fire),A
 
     POP AF
 
     RET
 
+;------------------------------------------------------------------------------
+; Process player missile hitting an alien.
+;
+; Usage:
+;   CALL event_player_missile_hit_alien 
+;------------------------------------------------------------------------------
+
 event_player_missile_hit_alien:
-    PUSH AF,HL
+    PUSH AF
 
-    CALL blank                                          ; Blank the missile missile immediately
+    CALL _blank_missile                                 ; Blank the missile missile immediately
 
-    LD HL,_missile_state                                ; Set state to indicate we have no current missile
-    LD (HL),_MISSILE_STATE_NO_MISSILE
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                      ; Set state to indicate we have no current missile
+    LD (_missile_state),A
 
     LD A,utils.FALSE_VALUE                              ; Can't fire another missile while an alien is exploding
-    LD (_can_fire),A                                    ; TODO - Move to orchestration?
+    LD (_can_fire),A
 
-    POP HL,AF
+    POP AF
     
     RET 
+
+;------------------------------------------------------------------------------
+; Process end of alien explosion.
+;
+; Usage:
+;   CALL event_alien_explosion_done 
+;------------------------------------------------------------------------------
 
 event_alien_explosion_done:
     PUSH AF
@@ -59,19 +90,28 @@ event_alien_explosion_done:
     RET
 
 event_player_missile_hit_shield:
-    PUSH HL
+    PUSH AF
     
-    LD HL,_missile_state                                ; Player missile has hit a shield, set state appropriately
-    LD (HL),_MISSILE_STATE_HIT_A_SHIELD                 ; TODO Not sure this should be a state?  Blank explosion and move on?
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                              
+    LD (_missile_state),A
+    
+    CALL _blank_missile
 
-    POP HL
+    LD A,(_missile_y)
+    DEC A                                               ; Update Y slightly so repeated hits on shields continue to destroy sections
+    DEC A                                               
+    LD (_missile_y),A
+
+    CALL _blank_explosion
+
+    POP AF
     
     RET
 
 event_missiles_collided:
     PUSH AF
     
-    LD A,_MISSILE_STATE_MISSILES_COLLIDED                            
+    LD A,_MISSILE_STATE_MISSILES_COLLIDED_VALUE                            
     LD (_missile_state),A              
 
     POP AF

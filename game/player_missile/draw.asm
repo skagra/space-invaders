@@ -1,18 +1,19 @@
 ;------------------------------------------------------------------------------
-; Erases the current player missile or player missile explosion 
+; Erase the player missile or player missile explosion 
 ; based on (_missile_state).
 ;
 ; Usage:
-;   CALL blank_missile
+;   CALL blank
 ;------------------------------------------------------------------------------
 
 blank:
     PUSH AF,DE
 
-    ; If missile is done at the top of the screen then there is an explosion to erase
     LD A,(_missile_state)
+
+    ; Missile at top of screen?
     BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
-    JR Z,.not_tos
+    JR Z,.not_at_top_of_screen
 
     ; Top of screen sub-states
     LD A,(_tos_sub_state)
@@ -24,18 +25,37 @@ blank:
 
     JR .done
 
-.not_tos
+.not_at_top_of_screen
     LD A,(_missile_state)
 
-    BIT _MISSILE_STATE_HIT_A_SHIELD_BIT,A
-    JR NZ,.explosion
-
-    AND _MISSILE_STATE_ACTIVE | _MISSILE_STATE_NEW | _MISSILE_STATE_MISSILES_COLLIDED
+    AND _MISSILE_STATE_ACTIVE_VALUE |  _MISSILE_STATE_MISSILES_COLLIDED_VALUE
     JR NZ,.missile
 
     JR .done
 
 .missile:
+    CALL _blank_missile
+    JR .done
+    
+.explosion:
+    CALL _blank_explosion
+    ; Fall through
+
+.done
+    POP DE,AF
+
+    RET
+
+;------------------------------------------------------------------------------
+; Erase the player missile.
+;
+; Usage:
+;   CALL _blank_missile
+;------------------------------------------------------------------------------
+
+_blank_missile:
+    PUSH AF,DE
+
     ; Erase the missile
     LD A,(_missile_x)                                   ; Coords
     LD D,A
@@ -48,12 +68,11 @@ blank:
 
     LD DE,sprites.PLAYER_MISSILE                        ; Sprite/mask  
     PUSH DE
-    
-    LD D,0x00
-    LD E,utils.TRUE_VALUE    
+                               
+    LD E,utils.TRUE_VALUE                               ; Blanking (not drawing)
     PUSH DE 
 
-    LD DE,collision.dummy_collision                     ; Where to record collision data
+    LD DE,collision.dummy_collision                     ; Ignore collision data
     PUSH DE
 
     CALL draw.draw_sprite                               ; Erase the player missile 
@@ -64,22 +83,24 @@ blank:
     POP DE
     POP DE
 
-    JR .done
-    
-.explosion:
-    ; Erase explosion
-    LD A,(_missile_x)                                    ; Coords
+    POP DE,AF
+
+    RET
+
+;------------------------------------------------------------------------------
+; Erase the player missile explosion.
+;
+; Usage:
+;   CALL _blank_explosion
+;------------------------------------------------------------------------------
+
+_blank_explosion:
+    PUSH AF,DE
+
+    LD A,(_missile_x)                                   ; Coords
     LD D,A
-
-    LD A,(_missile_state)
-    BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
     LD A,(_missile_y)
-    JR NZ,.explosion_at_top_of_screen
-    DEC A                                               ; TODO Hack to get shield destruction working!
-    DEC A                                               ; But breaks top of screen erasure - Must be a better solution
-
-.explosion_at_top_of_screen:
-    LD E,A                                              ; than branching on state here?
+    LD E,A
     PUSH DE
          
     LD DE, sprites.PLAYER_MISSILE_EXPLOSION_DIMS        ; Dimensions
@@ -88,11 +109,10 @@ blank:
     LD DE,sprites.PLAYER_MISSILE_EXPLOSION              ; Sprite mask  
     PUSH DE
 
-    LD D,0x00
-    LD E,utils.TRUE_VALUE
+    LD E,utils.TRUE_VALUE                               ; Blanking (not drawing)
     PUSH DE 
 
-    LD DE,collision.dummy_collision                     ; Where to record collision data
+    LD DE,collision.dummy_collision                     ; Ignore collision data
     PUSH DE
 
     CALL draw.draw_sprite                               ; Erase the player missile explosion
@@ -103,42 +123,65 @@ blank:
     POP DE
     POP DE
 
-.done
     POP DE,AF
 
     RET
 
 ;------------------------------------------------------------------------------
-; Draws the current player missile or player missile explosion 
-; based on (_missile_state).
+; Draw the player missile or explosion based on (_missile_state).
 ;
 ; Usage:
-;   CALL draw_missile
+;   CALL draw
 ;------------------------------------------------------------------------------
 
 draw:
     PUSH AF,DE
 
-    ; If the missile has reached the top of the screen then draw an explosion
     LD A,(_missile_state)
-    BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A
-    JR Z,.not_tos
+
+    BIT _MISSILE_STATE_TOP_OF_SCREEN_BIT,A              ; At top of screen?
+    JR Z,.not_at_top_of_screen                          
 
     LD A,(_tos_sub_state)
+
     BIT _TOS_SUB_STATE_REACHED_TOP_OF_SCREEN_BIT,A
     JR NZ,.explosion
 
     JR .done
 
-.not_tos:
-    ; If the missile is new or active then draw a missile 
+.not_at_top_of_screen:
+    
     LD A,(_missile_state)
-    AND _MISSILE_STATE_NEW | _MISSILE_STATE_ACTIVE 
+
+    BIT _MISSILE_STATE_ACTIVE_BIT,A
     JR NZ,.missile
 
     JR .done
 
 .missile
+    CALL _draw_missile
+
+    JR .done
+
+.explosion:
+    CALL _draw_explosion
+    ; Fall through
+
+.done:
+    POP DE,AF
+
+    RET
+
+;------------------------------------------------------------------------------
+; Draw the player missile.
+;
+; Usage:
+;   CALL _draw_missile
+;------------------------------------------------------------------------------
+
+_draw_missile:
+    PUSH AF,DE
+
     ; Draw missile
     LD A, (_missile_x)                                  ; Coords
     LD D,A
@@ -167,10 +210,20 @@ draw:
     POP DE
     POP DE
 
-    JR .done
+    POP DE,AF
 
-.explosion:
-    ; Draw explosion
+    RET
+
+;------------------------------------------------------------------------------
+; Draw the player missile explosion.
+;
+; Usage:
+;   CALL _draw_explosion
+;------------------------------------------------------------------------------
+
+_draw_explosion:
+    PUSH AF,DE
+
     LD A, (_missile_x)                                  ; Coords
     LD D,A
     LD A, (_missile_y)
@@ -198,7 +251,6 @@ draw:
     POP DE
     POP DE
 
-.done:
     POP DE,AF
 
     RET

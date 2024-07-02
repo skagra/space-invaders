@@ -43,7 +43,6 @@ update:
     LD (saucer.enabled),A
 
 .saucer_done:
-
     LD A,(_life_lost_pausing)
     BIT utils.TRUE_BIT,A                                    ; Is the game paused due to player being hit?
     JR NZ,.life_lost_pausing                                ; Y - handle it
