@@ -2,7 +2,7 @@
 ; Process start of alien landed or alien missile hitting the player.
 ;
 ; Usage:
-;   CALL event_alien_landed_begin / event_alien_missile_hit_player_begin
+;    CALL event_alien_landed_begin / event_alien_missile_hit_player_begin
 ;------------------------------------------------------------------------------
 
 event_alien_landed_begin:
@@ -25,7 +25,7 @@ event_alien_missile_hit_player_begin:
     ; Fall through
 
 .set_state:
-    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                      ; Flag there is now no missile
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                ; Flag there is now no missile
     LD (_missile_state),A
 
     POP AF
@@ -36,7 +36,7 @@ event_alien_missile_hit_player_begin:
 ; Process end of alien landed or alien missile hitting the player.
 ;
 ; Usage:
-;   CALL event_alien_landed_end / event_alien_missile_hit_player_end
+;    CALL event_alien_landed_end / event_alien_missile_hit_player_end
 ;------------------------------------------------------------------------------
 
 event_alien_landed_end:
@@ -54,7 +54,7 @@ event_alien_missile_hit_player_end:
 ; Process player missile hitting an alien.
 ;
 ; Usage:
-;   CALL event_player_missile_hit_alien 
+;    CALL event_player_missile_hit_alien 
 ;------------------------------------------------------------------------------
 
 event_player_missile_hit_alien:
@@ -62,7 +62,7 @@ event_player_missile_hit_alien:
 
     CALL _blank_missile                                 ; Blank the missile missile immediately
 
-    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                      ; Set state to indicate we have no current missile
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                ; Set state to indicate we have no current missile
     LD (_missile_state),A
 
     LD A,utils.FALSE_VALUE                              ; Can't fire another missile while an alien is exploding
@@ -76,7 +76,7 @@ event_player_missile_hit_alien:
 ; Process end of alien explosion.
 ;
 ; Usage:
-;   CALL event_alien_explosion_done 
+;    CALL event_alien_explosion_done 
 ;------------------------------------------------------------------------------
 
 event_alien_explosion_done:
@@ -89,6 +89,12 @@ event_alien_explosion_done:
 
     RET
 
+;------------------------------------------------------------------------------
+; Process missile hitting a shield.
+;
+; Usage:
+;    CALL event_player_missile_hit_shield 
+;------------------------------------------------------------------------------
 event_player_missile_hit_shield:
     PUSH AF
     
@@ -107,6 +113,13 @@ event_player_missile_hit_shield:
     POP AF
     
     RET
+
+;------------------------------------------------------------------------------
+; Process missile to missile collision.
+;
+; Usage:
+;    CALL event_missiles_collided 
+;------------------------------------------------------------------------------
 
 event_missiles_collided:
     PUSH AF

@@ -7,7 +7,7 @@
 ;------------------------------------------------------------------------------
 
 update:
-    PUSH AF,BC,DE,HL
+    PUSH AF
 
     ; Grab the current missile state
     LD A,(_missile_state)
@@ -53,28 +53,27 @@ update:
     JP .done    
 
 .no_missile
-    ; No current missile - is the fire button down?
-    LD DE,(keyboard.keys_down)                          ; Read the keyboard
-    BIT keyboard.FIRE_KEY_DOWN_BIT,E                    ; Fire pressed?
-    JP Z,.done                                          ; No
-
-    LD A,(_can_fire)                                    ; Is player firing enabled?
+    ; Is player firing enabled?
+    LD A,(_can_fire)                                    
     BIT utils.TRUE_BIT,A
     JR Z,.done                                          ; Disabled - so done
+
+    ; No current missile - is the fire button down?
+    LD A,(keyboard.keys_down)                           ; Read the keyboard
+    BIT keyboard.FIRE_KEY_DOWN_BIT,A                    ; Fire pressed?
+    JP Z,.done                                          ; No                             
 
     ; Set start x coord
     LD A,(player.player_x)
     ADD A,0x04                                          ; TODO Move this out to a constant value
-    LD HL,_missile_x
-    LD (HL),A
+    LD (_missile_x),A
 
     ; Set start y coord 
-    LD A,layout.PLAYER_MISSILE_START_Y 
-    LD HL,_missile_y       
-    LD (HL),A
+    LD A,layout.PLAYER_MISSILE_START_Y    
+    LD (_missile_y),A
 
-    LD HL,_missile_state                                ; Flag the missile as active  
-    LD (HL),_MISSILE_STATE_ACTIVE_VALUE
+    LD A,_MISSILE_STATE_ACTIVE_VALUE                    ; Flag the missile as active  
+    LD (_missile_state),A
 
     LD A,(shot_count)                                   ; Count one more missile fired
     INC A
@@ -83,67 +82,66 @@ update:
     JR .done
 
 .active:
-    ; Check whether the missile has reached to top of the screen
-    LD A,(_missile_y)
-    CP A,layout.PLAYER_MISSILE_MIN_Y
-    JR C,.active_reached_top_of_screen
+    LD A,(_missile_y)                                   ; Check whether the missile has reached to top of the screen
+    CP A,layout.PLAYER_MISSILE_MIN_Y 
+    JR C,.active_reached_top_of_screen                  ; Yes - so process iot
 
     ; Active missile moving up the screen
-    LD A,(_missile_y)
+    LD A,(_missile_y)                                   ; Update missile Y coord
     SUB _MISSILE_STEP_SIZE
     LD (_missile_y),A
     
     JR .done
 
 .active_reached_top_of_screen:
-    LD A,_MISSILE_STATE_TOP_OF_SCREEN_VALUE                                          
+    LD A,_MISSILE_STATE_TOP_OF_SCREEN_VALUE             ; Flag missile had reached the top of screen                                
     LD (_missile_state),A
 
-    LD A,_TOS_SUB_STATE_REACHED_TOP_OF_SCREEN_VALUE
+    LD A,_TOS_SUB_STATE_REACHED_TOP_OF_SCREEN_VALUE     ; Top of screen sub-state - just reached the top of the screen
     LD (_tos_sub_state),A
 
     JR .done
 
 .reached_top_of_screen:
-    LD A,_TOS_SUB_STATE_AT_TOP_OF_SCREEN_VALUE
+    LD A,_TOS_SUB_STATE_AT_TOP_OF_SCREEN_VALUE          ; Flag the missile is at the top of the screen
     LD (_tos_sub_state),A                                                
 
-    LD A,_MISSILE_EXPLOSION_CYCLES
+    LD A,_MISSILE_EXPLOSION_CYCLES                      ; Initialize the missile explosion count down
     LD (_missile_explosion_cycle_count),A
 
     JR .done
 
 .at_top_of_screen:
-    LD A,(_missile_explosion_cycle_count)
+    LD A,(_missile_explosion_cycle_count)               ; Decrement explosion counter
     DEC A
     LD (_missile_explosion_cycle_count),A
-    JR NZ,.done
+    JR NZ,.done                                         ; Done with the explosion?
 
-    LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_VALUE                                                 
+    LD A,_TOS_SUB_STATE_DONE_AT_TOP_OF_SCREEN_VALUE     ; Yes - Done, so flag in sub-state                                         
     LD (_tos_sub_state),A
 
     JR .done
 
 .done_at_top_of_screen:
-    LD A,_MISSILE_STATE_NO_MISSILE_VALUE
-    LD (_missile_state),A
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                ; Done at stop of screen
+    LD (_missile_state),A                               ; Flag there is now no missile
 
     JR .done
 
 .hit_an_alien
-    LD A,_MISSILE_STATE_NO_MISSILE_VALUE
-    LD (_missile_state),A
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                ; Missile has hit an alien
+    LD (_missile_state),A                               ; Flag there is now no missile
 
     JR .done
 
 .missiles_collided:
-    LD A,_MISSILE_STATE_NO_MISSILE_VALUE
-    LD (_missile_state),A
+    LD A,_MISSILE_STATE_NO_MISSILE_VALUE                ; Missiles have collided
+    LD (_missile_state),A                               ; Flag there is now no missile
 
     JR .done
 
 .done
-    POP HL,DE,BC,AF
+    POP AF
 
     RET
 

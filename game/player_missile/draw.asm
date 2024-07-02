@@ -150,7 +150,6 @@ draw:
     JR .done
 
 .not_at_top_of_screen:
-    
     LD A,(_missile_state)
 
     BIT _MISSILE_STATE_ACTIVE_BIT,A
@@ -194,9 +193,8 @@ _draw_missile:
 
     LD DE,sprites.PLAYER_MISSILE                        ; Sprite    
     PUSH DE
-
-    LD D,0x00
-    LD E,utils.FALSE_VALUE
+                                    
+    LD E,utils.FALSE_VALUE                              ; Drawing (not blanking)
     PUSH DE 
 
     LD DE,collision.player_missile_collision            ; Where to record collision data
@@ -236,8 +234,7 @@ _draw_explosion:
     LD DE,sprites.PLAYER_MISSILE_EXPLOSION              ; Sprite    
     PUSH DE
 
-    LD D,0x00
-    LD E,utils.FALSE_VALUE
+    LD E,utils.FALSE_VALUE                              ; Drawing not blanking
     PUSH DE 
 
     LD DE,collision.dummy_collision                     ; Where to record collision data
