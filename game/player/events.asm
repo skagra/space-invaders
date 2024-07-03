@@ -1,3 +1,10 @@
+;------------------------------------------------------------------------------
+; Process alien landed and alien hit by an alien missile
+; 
+; Usage:
+;   CALL event_alien_landed_begin/event_alien_missile_hit_player_begin
+;------------------------------------------------------------------------------
+
 event_alien_landed_begin:
 event_alien_missile_hit_player_begin:
     PUSH AF,DE,HL
@@ -22,7 +29,7 @@ event_alien_landed_end:
 event_alien_missile_hit_player_end:
     PUSH AF
     
-    CALL blank ; TODO Not clear where this is needed
+    CALL blank ; TODO Not clear why this is needed
 
     LD A,_PLAYER_STATE_DONE_EXPLODING_VALUE
     LD (_player_state),A

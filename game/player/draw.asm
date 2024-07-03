@@ -1,5 +1,5 @@
 ;------------------------------------------------------------------------------
-; Draw the player base
+; Draw the player base or explosion based on _player_state
 ; 
 ; Usage:
 ;   CALL draw
@@ -12,7 +12,28 @@ draw:
     BIT _PLAYER_STATE_EXPLODING_BIT,A
     JR NZ,.draw_explosion
 
-    ; Draw the player base sprite
+    CALL _draw_player
+
+    JR .done
+
+.draw_explosion
+    CALL _draw_explosion
+    ; Fall through
+
+.done
+    POP DE,AF
+
+    RET
+
+;------------------------------------------------------------------------------
+; Draw the player base 
+; 
+; Usage:
+;   CALL _draw_player
+;------------------------------------------------------------------------------
+_draw_player:
+    PUSH AF,DE
+
     LD A, (player_x)                                    ; Player base coords
     LD D,A
     LD E, layout.PLAYER_Y
@@ -30,9 +51,20 @@ draw:
     POP DE
     POP DE
 
-    JR .done
+    POP DE,AF
 
-.draw_explosion
+    RET
+
+;------------------------------------------------------------------------------
+; Draw the player base explosion 
+; 
+; Usage:
+;   CALL _draw_explosion
+;------------------------------------------------------------------------------
+
+_draw_explosion:
+    PUSH AF,DE
+
     LD A, (player_x)                                    ; Player base coords
     LD D,A
     LD E, layout.PLAYER_Y
@@ -50,10 +82,16 @@ draw:
     POP DE
     POP DE
 
-.done
     POP DE,AF
 
     RET
+
+;------------------------------------------------------------------------------
+; Blank the player base or explosion based on _player_state
+; 
+; Usage:
+;   CALL blank
+;------------------------------------------------------------------------------
 
 blank:
     PUSH AF,DE
@@ -65,7 +103,29 @@ blank:
     BIT _PLAYER_STATE_DONE_EXPLODING_BIT,A
     JR NZ,.blank_explosion
 
-    ; Erase the player base sprite
+    CALL _blank_player
+
+    JR .done
+
+.blank_explosion   
+    CALL _blank_explosion
+    ; Fall through
+
+.done
+    POP DE,AF
+
+    RET
+
+;------------------------------------------------------------------------------
+; Blank the player base 
+; 
+; Usage:
+;   CALL _blank_player
+;------------------------------------------------------------------------------
+
+_blank_player:
+    PUSH AF,DE
+
     LD A, (player_x)                                    ; Coords
     LD D,A
     LD E, layout.PLAYER_Y
@@ -83,9 +143,20 @@ blank:
     POP DE
     POP DE
 
-    JR .done
+    POP DE,AF
 
-.blank_explosion   
+    RET
+
+;------------------------------------------------------------------------------
+; Blank the player base explosion
+; 
+; Usage:
+;   CALL _blank_explosion
+;------------------------------------------------------------------------------
+
+_blank_explosion:
+    PUSH AF,DE
+
     LD A, (player_x)                                    ; Player base coords
     LD D,A
     LD E, layout.PLAYER_Y
@@ -103,7 +174,6 @@ blank:
     POP DE
     POP DE
 
-.done
     POP DE,AF
 
     RET

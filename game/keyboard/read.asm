@@ -33,10 +33,10 @@
 ; have been released since last press:
 ;
 ; * Flagged if pressed: 
-;      LEFT_KEY_DOWN_MAS, RIGHT_KEY_DOWN_MAS, FIRE_KEY_DOWN_MASK
+;      LEFT_KEY_DOWN_MASK, RIGHT_KEY_DOWN_MASK
 ;
-; * Flagged if pressed and has been released since last press: 
-;      P1_KEY_DOWN_MAS, P2_KEY_DOWN_MASK, CREDS_KEY_DOWN_MASK
+; * Flagged if pressed and released since last press: 
+;      P1_KEY_DOWN_MAS, P2_KEY_DOWN_MASK, CREDS_KEY_DOWN_MASK, FIRE_KEY_DOWN_MASK
 ; 
 ; Usage:
 ;   CALL get_keys
@@ -108,17 +108,17 @@ get_keys:
     RET
 
 .LEFT_RIGHT_PORT:   EQU 0xFDFE
-.LEFT_KEY_BIT:      EQU 0               ; A key
-.RIGHT_KEY_BIT:     EQU 1               ; S key
+.LEFT_KEY_BIT:      EQU 0                               ; A key
+.RIGHT_KEY_BIT:     EQU 1                               ; S key
 
 .FIRE_PORT:         EQU 0xBFFE
-.FIRE_KEY_BIT:      EQU 0               ; Enter key
+.FIRE_KEY_BIT:      EQU 0                               ; Enter key
 
 .CREDS_PLAY_PORT:   EQU 0xF7FE
-.P1_KEY_BIT:        EQU 0               ; 1 key
-.P2_KEY_BIT:        EQU 1               ; 2 key
-.CRED_KEY_BIT:      EQU 4               ; 5 key
+.P1_KEY_BIT:        EQU 0                               ; 1 key
+.P2_KEY_BIT:        EQU 1                               ; 2 key
+.CRED_KEY_BIT:      EQU 4                               ; 5 key
 
 .SPACE_PORT:        EQU 0x7FFE        
-.SPACE_KEY_BIT:     EQU 0               ; Space bar
+.SPACE_KEY_BIT:     EQU 0                               ; Space bar
  
