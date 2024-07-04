@@ -1,5 +1,5 @@
 ;------------------------------------------------------------------------------
-; Handle even where an alien is hit by a player missile
+; Handle event where an alien is hit by a player missile
 ; 
 ; Usage:
 ;   PUSH rr                                 ; Alien type
@@ -15,7 +15,7 @@ event_alien_hit_by_player_missile:
 
     PARAMS_IX 4                                         ; Point IX at the first stack parameter
 
-    LD HL,.ALIEN_SCORE_VALUES                            ; Alien score lookup table
+    LD HL,.ALIEN_SCORE_VALUES                           ; Alien score lookup table
     LD B,0x00                                               
     LD C,(IX+.PARAM_ALIEN_TYPE)                         ; Alien type gives index into table
     ADD HL,BC                                           ; Add the index to the base
@@ -31,3 +31,28 @@ event_alien_hit_by_player_missile:
 
 ; Alien scores index by the alien type
 .ALIEN_SCORE_VALUES: BYTE 0x10,0x20,0x30
+
+event_game_over:
+    PUSH AF,HL
+
+    LD A,(score_msb_player_1)
+    LD HL,(score_high)
+    CP H
+    JR C,.done
+    JR NZ,.update
+
+    LD A,(score_lsb_player_1)
+    CP L
+    JR C,.done
+
+.update
+    LD A,(score_msb_player_1)
+    LD (score_msb_high),A
+
+    LD A,(score_lsb_player_1)
+    LD (score_lsb_high),A
+
+.done
+    POP HL,AF
+
+    RET

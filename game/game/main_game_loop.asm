@@ -128,6 +128,9 @@ main_game_loop:
 
 .game_over
     CALL game_screen.print_game_over
+    CALL scoring.event_game_over
+    CALL game_screen.print_score_high
+    CALL double_buffer.flush_buffer_to_screen
     JR .done
 
 .test_demo_ended:
